@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Equilibrium Terapias Energéticas - Agenda de Gráficos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --roxo-escuro: #2d1b4e;
+      --roxo-medio: #5b3a7d;
+      --roxo-claro: #7c5295;
+      --dourado: #d4af37;
+      --dourado-escuro: #bfa230;
+      --branco: #ffffff;
+      --cinza-claro: #f5f5f5;
+      --cinza-medio: #e0e0e0;
+      --texto: #333333;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--cinza-claro);
+      color: var(--texto);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: linear-gradient(180deg, var(--roxo-escuro), var(--roxo-medio));
+      color: var(--branco);
+      display: flex;
+      flex-direction: column;
+      padding: 24px 0;
+      position: fixed;
+      height: 100vh;
+      z-index: 100;
+    }
+
+    .sidebar-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      text-align: center;
+      padding: 0 20px 30px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--dourado);
+    }
+
+    .nav-list {
+      list-style: none;
+      margin-top: 20px;
+    }
+
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 24px;
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      border-left: 4px solid transparent;
+    }
+
+    .nav-item a:hover,
+    .nav-item.active a {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--dourado);
+      border-left-color: var(--dourado);
+    }
+
+    .nav-item.active a {
+      font-weight: 600;
+    }
+
+    .nav-icon {
+      font-size: 1.1rem;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 260px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--dourado), var(--dourado-escuro));
+      color: var(--roxo-escuro);
+      padding: 24px 32px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+
+    .header-subtitle {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      font-weight: 500;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--roxo-escuro);
+      color: var(--dourado);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    /* Content Area */
+    .content {
+      padding: 32px;
+      flex: 1;
+    }
+
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .page-title {
+      font-size: 1.3rem;
+      color: var(--roxo-escuro);
+      font-weight: 600;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--roxo-medio), var(--roxo-claro));
+      color: var(--branco);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--roxo-escuro), var(--roxo-medio));
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(91, 58, 125, 0.3);
+    }
+
+    .btn-secondary {
+      background: var(--cinza-medio);
+      color: var(--texto);
+    }
+
+    .btn-secondary:hover {
+      background: #d1d1d1;
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #c0392b, #e74c3c);
+      color: var(--branco);
+    }
+
+    .btn-danger:hover {
+      background: linear-gradient(135deg, #a93226, #c0392b);
+    }
+
+    .btn-sm {
+      padding: 8px 14px;
+      font-size: 0.8rem;
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 220px;
+      flex: 1;
+    }
+
+    .filter-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--roxo-escuro);
+    }
+
+    .filter-group input,
+    .filter-group select {
+      padding: 12px 16px;
+      border: 1px solid var(--cinza-medio);
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem;
+      background: var(--branco);
+      transition: border-color 0.3s ease;
+    }
+
+    .filter-group input:focus,
+    .filter-group select:focus {
+      outline: none;
+      border-color: var(--roxo-claro);
+      box-shadow: 0 0 0 3px rgba(124, 82, 149, 0.1);
+    }
+
+    /* Table */
+    .table-container {
+      background: var(--branco);
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: linear-gradient(135deg, var(--roxo-medio), var(--roxo-claro));
+      color: var(--dourado);
+    }
+
+    th {
+      padding: 16px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid var(--dourado);
+    }
+
+    td {
+      padding: 16px;
+      border-bottom: 1px solid var(--cinza-medio);
+      font-size: 0.9rem;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background: rgba(212, 175, 55, 0.05);
+    }
+
+    .badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .badge-em-andamento {
+      background: #e3f2fd;
+      color: #1976d2;
+    }
+
+    .badge-concluido {
+      background: #e8f5e9;
+      color: #388e3c;
+    }
+
+    .badge-agendado {
+      background: #fff3e0;
+      color: #f57c00;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-edit {
+      background: linear-gradient(135deg, var(--dourado), var(--dourado-escuro));
+      color: var(--roxo-escuro);
+    }
+
+    .btn-edit:hover {
+      background: linear-gradient(135deg, #c9a22e, var(--dourado));
+    }
+
+    .btn-delete {
+      background: #f5f5f5;
+      color: #c0392b;
+      border: 1px solid #e0e0e0;
+    }
+
+    .btn-delete:hover {
+      background: #c0392b;
+      color: var(--branco);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px;
+      color: #777;
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(45, 27, 78, 0.7);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--branco);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 700px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      transform: translateY(-20px);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.active .modal {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, var(--roxo-medio), var(--roxo-claro));
+      color: var(--dourado);
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--dourado);
+    }
+
+    .modal-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--dourado);
+      font-size: 1.5rem;
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s ease;
+    }
+
+    .modal-close:hover {
+      background: rgba(212, 175, 55, 0.2);
+    }
+
+    .modal-body {
+      padding: 28px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.col-2 {
+      grid-column: span 2;
+    }
+
+    .form-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--roxo-escuro);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 12px 16px;
+      border: 1px solid var(--cinza-medio);
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem;
+      background: var(--branco);
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--roxo-claro);
+      box-shadow: 0 0 0 3px rgba(124, 82, 149, 0.1);
+    }
+
+    .form-group input[readonly] {
+      background: var(--cinza-claro);
+      cursor: not-allowed;
+    }
+
+    .form-hint {
+      grid-column: span 2;
+      font-size: 0.82rem;
+      color: var(--roxo-claro);
+      font-style: italic;
+      margin-top: -8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 20px 28px;
+      background: #fafafa;
+      border-top: 1px solid var(--cinza-medio);
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      body {
+        flex-direction: column;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-group.col-2,
+      .form-hint {
+        grid-column: span 1;
+      }
+
+      th,
+      td {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-title">Equilibrium<br />Terapias Energéticas</div>
+    <nav>
+      <ul class="nav-list">
+        <li class="nav-item"><a href="#"><span class="nav-icon">🏠</span> Dashboard</a></li>
+        <li class="nav-item"><a href="#"><span class="nav-icon">👥</span> Clientes</a></li>
+        <li class="nav-item active"><a href="#"><span class="nav-icon">✨</span> Tratamentos</a></li>
+        <li class="nav-item"><a href="#"><span class="nav-icon">📅</span> Agenda</a></li>
+        <li class="nav-item"><a href="#"><span class="nav-icon">📊</span> Relatórios</a></li>
+        <li class="nav-item"><a href="#"><span class="nav-icon">⚙️</span> Configurações</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="header">
+      <div>
+        <h1 class="header-title">Agenda de Gráficos</h1>
+        <p class="header-subtitle">Gestão de Tratamentos Energéticos</p>
+      </div>
+      <div class="user-info">
+        <div class="user-avatar">ET</div>
+        <span>Administrador</span>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="content-header">
+        <h2 class="page-title">Lista de Tratamentos</h2>
+        <button class="btn btn-primary" onclick="openModal()">
+          <span>+</span> Novo Tratamento
+        </button>
+      </div>
+
+      <div class="filters">
+        <div class="filter-group">
+          <label for="searchClient">Buscar por cliente</label>
+          <input type="text" id="searchClient" placeholder="Digite o nome do cliente..." oninput="renderTable()" />
+        </div>
+        <div class="filter-group">
+          <label for="filterStatus">Filtrar por status</label>
+          <select id="filterStatus" onchange="renderTable()">
+            <option value="">Todos os status</option>
+            <option value="Em andamento">Em andamento</option>
+            <option value="Concluído">Concluído</option>
+            <option value="Agendado">Agendado</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Tratamento_ID</th>
+              <th>Cliente</th>
+              <th>Gráfico</th>
+              <th>Data Início</th>
+              <th>Dias Montado</th>
+              <th>Horas Montado</th>
+              <th>Data Fim</th>
+              <th>Status do Gráfico</th>
+              <th>Local do Gráfico</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="treatmentsTable">
+            <!-- Dados renderizados via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">Novo Tratamento</h3>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="treatmentForm" class="form-grid" onsubmit="saveTreatment(event)">
+          <input type="hidden" id="treatmentId" />
+
+          <div class="form-group col-2">
+            <label for="cliente">Cliente</label>
+            <input type="text" id="cliente" required placeholder="Nome do cliente" />
+          </div>
+
+          <div class="form-group">
+            <label for="grafico">Gráfico</label>
+            <select id="grafico" required>
+              <option value="">Selecione</option>
+              <option value="9 Círculos">9 Círculos</option>
+              <option value="Bagua">Bagua</option>
+              <option value="Radiônica">Radiônica</option>
+              <option value="Quântico">Quântico</option>
+              <option value="Cura">Cura</option>
+              <option value="Personalizado">Personalizado</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="status">Status do Gráfico</label>
+            <select id="status" required>
+              <option value="">Selecione</option>
+              <option value="Em andamento">Em andamento</option>
+              <option value="Concluído">Concluído</option>
+              <option value="Agendado">Agendado</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="dataInicio">Data Início</label>
+            <input type="date" id="dataInicio" required />
+          </div>
+
+          <div class="form-group">
+            <label for="diasMontado">Dias Montado</label>
+            <input type="number" id="diasMontado" min="1" placeholder="Ex: 60" oninput="handleDiasMontado()" />
+          </div>
+
+          <div class="form-group">
+            <label for="horasMontado">Horas Montado</label>
+            <input type="number" id="horasMontado" min="1" placeholder="Ex: 72" required />
+          </div>
+
+          <div class="form-group">
+            <label for="dataFim">Data Fim</label>
+            <input type="date" id="dataFim" required />
+          </div>
+
+          <div class="form-hint">
+            💡 Preencha 'Dias Montado' para calcular automaticamente ou digite a Data Fim manualmente.
+          </div>
+
+          <div class="form-group col-2">
+            <label for="local">Local do Gráfico</label>
+            <input type="text" id="local" required placeholder="Ex: Sala Principal, Online..." />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="document.getElementById('treatmentForm').dispatchEvent(new Event('submit'))">Salvar Tratamento</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'equilibrium_tratamentos';
+
+    const sampleData = [
+      { id: 'TR-000001', cliente: 'Maria da Silva', grafico: '9 Círculos', dataInicio: '2026-01-10', diasMontado: 60, horasMontado: 72, dataFim: '2026-03-10', status: 'Em andamento', local: 'Sala Principal' },
+      { id: 'TR-000002', cliente: 'João Pereira', grafico: 'Bagua', dataInicio: '2025-11-05', diasMontado: 62, horasMontado: 48, dataFim: '2026-01-05', status: 'Concluído', local: 'Sala 2' },
+      { id: 'TR-000003', cliente: 'Simone Andrea', grafico: 'Radiônica', dataInicio: '2026-03-20', diasMontado: 90, horasMontado: 120, dataFim: '2026-06-20', status: 'Em andamento', local: 'Online' },
+      { id: 'TR-000004', cliente: 'Abreu da Silva', grafico: 'Quântico', dataInicio: '2026-02-01', diasMontado: 90, horasMontado: 72, dataFim: '2026-05-01', status: 'Agendado', local: 'Sala Principal' },
+      { id: 'TR-000005', cliente: 'Suze', grafico: 'Cura', dataInicio: '2026-04-04', diasMontado: 90, horasMontado: 96, dataFim: '2026-07-04', status: 'Em andamento', local: 'Online' },
+      { id: 'TR-000006', cliente: 'Rosa', grafico: '9 Círculos', dataInicio: '2026-05-30', diasMontado: 90, horasMontado: 48, dataFim: '2026-08-30', status: 'Agendado', local: 'Sala 2' }
+    ];
+
+    function initStorage() {
+      if (!localStorage.getItem(STORAGE_KEY)) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(sampleData));
+      }
+    }
+
+    function getTreatments() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    }
+
+    function setTreatments(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function generateNextId() {
+      const treatments = getTreatments();
+      const max = treatments.reduce((acc, t) => {
+        const num = parseInt(t.id.replace('TR-', ''), 10);
+        return num > acc ? num : acc;
+      }, 0);
+      const next = max + 1;
+      return 'TR-' + String(next).padStart(6, '0');
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '-';
+      const [year, month, day] = dateStr.split('-');
+      return `${day}/${month}/${year}`;
+    }
+
+    function getBadgeClass(status) {
+      switch (status) {
+        case 'Em andamento': return 'badge-em-andamento';
+        case 'Concluído': return 'badge-concluido';
+        case 'Agendado': return 'badge-agendado';
+        default: return '';
+      }
+    }
+
+    function renderTable() {
+      const treatments = getTreatments();
+      const search = document.getElementById('searchClient').value.toLowerCase();
+      const statusFilter = document.getElementById('filterStatus').value;
+      const tbody = document.getElementById('treatmentsTable');
+
+      const filtered = treatments.filter(t => {
+        const matchClient = t.cliente.toLowerCase().includes(search);
+        const matchStatus = statusFilter === '' || t.status === statusFilter;
+        return matchClient && matchStatus;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="10">
+              <div class="empty-state">
+                <div class="empty-state-icon">📭</div>
+                <p>Nenhum tratamento encontrado.</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(t => `
+        <tr>
+          <td><strong>${t.id}</strong></td>
+          <td>${t.cliente}</td>
+          <td>${t.grafico}</td>
+          <td>${formatDate(t.dataInicio)}</td>
+          <td>${t.diasMontado || '-'}</td>
+          <td>${t.horasMontado || '-'}</td>
+          <td>${formatDate(t.dataFim)}</td>
+          <td><span class="badge ${getBadgeClass(t.status)}">${t.status}</span></td>
+          <td>${t.local}</td>
+          <td>
+            <div class="actions">
+              <button class="btn btn-sm btn-edit" onclick="editTreatment('${t.id}')">Editar</button>
+              <button class="btn btn-sm btn-delete" onclick="deleteTreatment('${t.id}')">Excluir</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function openModal(id = null) {
+      const modal = document.getElementById('modalOverlay');
+      const title = document.getElementById('modalTitle');
+      const form = document.getElementById('treatmentForm');
+      form.reset();
+
+      document.getElementById('treatmentId').value = id || '';
+      document.getElementById('dataFim').readOnly = false;
+
+      if (id) {
+        const treatments = getTreatments();
+        const t = treatments.find(item => item.id === id);
+        if (t) {
+          title.textContent = 'Editar Tratamento';
+          document.getElementById('cliente').value = t.cliente;
+          document.getElementById('grafico').value = t.grafico;
+          document.getElementById('status').value = t.status;
+          document.getElementById('dataInicio').value = t.dataInicio;
+          document.getElementById('diasMontado').value = t.diasMontado || '';
+          document.getElementById('horasMontado').value = t.horasMontado || '';
+          document.getElementById('dataFim').value = t.dataFim;
+          document.getElementById('local').value = t.local;
+          handleDiasMontado();
+        }
+      } else {
+        title.textContent = 'Novo Tratamento';
+      }
+
+      modal.classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+    }
+
+    function handleDiasMontado() {
+      const diasInput = document.getElementById('diasMontado');
+      const dataInicioInput = document.getElementById('dataInicio');
+      const dataFimInput = document.getElementById('dataFim');
+      const dias = parseInt(diasInput.value, 10);
+
+      if (dataInicioInput.value && !isNaN(dias) && dias > 0) {
+        const start = new Date(dataInicioInput.value + 'T00:00:00');
+        const end = new Date(start);
+        end.setDate(start.getDate() + dias);
+        dataFimInput.value = end.toISOString().split('T')[0];
+        dataFimInput.readOnly = true;
+      } else {
+        dataFimInput.readOnly = false;
+      }
+    }
+
+    function saveTreatment(event) {
+      event.preventDefault();
+
+      const id = document.getElementById('treatmentId').value;
+      const treatments = getTreatments();
+
+      const treatment = {
+        id: id || generateNextId(),
+        cliente: document.getElementById('cliente').value.trim(),
+        grafico: document.getElementById('grafico').value,
+        status: document.getElementById('status').value,
+        dataInicio: document.getElementById('dataInicio').value,
+        diasMontado: parseInt(document.getElementById('diasMontado').value, 10) || '',
+        horasMontado: parseInt(document.getElementById('horasMontado').value, 10) || '',
+        dataFim: document.getElementById('dataFim').value,
+        local: document.getElementById('local').value.trim()
+      };
+
+      if (!treatment.dataFim) {
+        alert('Por favor, preencha a Data Fim ou informe os Dias Montado para cálculo automático.');
+        return;
+      }
+
+      if (id) {
+        const index = treatments.findIndex(t => t.id === id);
+        if (index !== -1) treatments[index] = treatment;
+      } else {
+        treatments.push(treatment);
+      }
+
+      setTreatments(treatments);
+      closeModal();
+      renderTable();
+    }
+
+    function editTreatment(id) {
+      openModal(id);
+    }
+
+    function deleteTreatment(id) {
+      if (confirm('Tem certeza que deseja excluir este tratamento?')) {
+        const treatments = getTreatments().filter(t => t.id !== id);
+        setTreatments(treatments);
+        renderTable();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initStorage();
+      renderTable();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    document.getElementById('modalOverlay').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('modalOverlay')) closeModal();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atendimentos - Equilibrium Terapias Energéticas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --purple-dark: #2D1B4E;
+      --purple-medium: #4A2B7A;
+      --purple-light: #5E3A99;
+      --gold: #D4AF37;
+      --gold-light: #C9A84C;
+      --bg: #F5F3F7;
+      --text: #2D1B4E;
+      --white: #ffffff;
+      --green: #2e7d32;
+      --green-light: #e8f5e9;
+      --red: #c62828;
+      --red-light: #ffebee;
+      --blue: #1565c0;
+      --blue-light: #e3f2fd;
+      --gold-bg: rgba(212, 175, 55, 0.12);
+      --shadow: 0 4px 20px rgba(45, 27, 78, 0.12);
+      --radius: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 260px;
+      height: 100vh;
+      background: linear-gradient(180deg, var(--purple-dark) 0%, var(--purple-medium) 100%);
+      display: flex;
+      flex-direction: column;
+      color: var(--white);
+      z-index: 1000;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar-header {
+      padding: 28px 24px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.22);
+    }
+
+    .sidebar-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1.2;
+    }
+
+    .sidebar-sub {
+      font-size: 12px;
+      color: var(--gold-light);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 22px;
+      margin: 4px 14px;
+      border-radius: var(--radius);
+      text-decoration: none;
+      color: rgba(255,255,255,0.85);
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      border-left: 4px solid transparent;
+    }
+
+    .sidebar-nav a:hover {
+      background: rgba(255,255,255,0.08);
+      color: var(--white);
+    }
+
+    .sidebar-nav a.active {
+      background: var(--gold-bg);
+      color: var(--gold);
+      border-left-color: var(--gold);
+    }
+
+    .sidebar-footer {
+      padding: 18px 22px;
+      border-top: 1px solid rgba(212, 175, 55, 0.22);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: var(--purple-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .user-info { line-height: 1.3; }
+    .user-name { font-size: 13px; font-weight: 600; }
+    .user-role { font-size: 11px; color: rgba(255,255,255,0.65); }
+
+    /* Main layout */
+    .main {
+      margin-left: 260px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      background: var(--white);
+      padding: 22px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(45,27,78,0.06);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 18px; }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--purple-dark);
+      cursor: pointer;
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 34px;
+      font-weight: 700;
+      color: var(--purple-dark);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-box input {
+      width: 260px;
+      padding: 10px 14px 10px 36px;
+      border: 1px solid rgba(74, 43, 122, 0.25);
+      border-radius: 24px;
+      font-size: 14px;
+      outline: none;
+      background: var(--bg);
+      color: var(--text);
+      transition: border-color 0.2s;
+    }
+
+    .search-box input:focus { border-color: var(--gold); }
+
+    .search-box::before {
+      content: "🔍";
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      opacity: 0.7;
+    }
+
+    .current-date {
+      font-size: 14px;
+      color: var(--purple-medium);
+      font-weight: 500;
+      text-transform: capitalize;
+    }
+
+    /* Content */
+    .content {
+      flex: 1;
+      padding: 28px 32px;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      border-radius: var(--radius);
+      padding: 12px 22px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn:active { transform: translateY(1px); }
+
+    .btn-primary {
+      background: var(--gold);
+      color: var(--purple-dark);
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.35);
+    }
+
+    .btn-primary:hover {
+      background: var(--gold-light);
+      box-shadow: 0 6px 16px rgba(212, 175, 55, 0.42);
+    }
+
+    .btn-secondary {
+      background: var(--white);
+      color: var(--purple-dark);
+      border: 1px solid rgba(74,43,122,0.25);
+    }
+
+    .btn-secondary:hover { background: var(--bg); }
+
+    .btn-icon {
+      padding: 8px;
+      border-radius: 8px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .btn-icon:hover { background: var(--gold-bg); }
+
+    .btn-icon.edit { color: var(--purple-medium); }
+    .btn-icon.delete { color: var(--red); }
+
+    .filter-group { display: flex; align-items: center; gap: 8px; }
+
+    .filter-group label { font-size: 13px; font-weight: 600; color: var(--purple-medium); }
+
+    .filter-group select {
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(74,43,122,0.25);
+      background: var(--white);
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+    }
+
+    .filter-group select:focus { border-color: var(--gold); }
+
+    /* Table */
+    .table-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      max-height: calc(100vh - 260px);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1100px;
+    }
+
+    thead {
+      background: var(--purple-medium);
+      color: var(--gold);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--text);
+      border-bottom: 1px solid rgba(74,43,122,0.08);
+      vertical-align: middle;
+    }
+
+    tbody tr:hover { background: var(--gold-bg); }
+
+    tbody tr:last-child td { border-bottom: none; }
+
+    .text-muted { color: rgba(45,27,78,0.55); font-size: 12px; }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-realizada { background: var(--green-light); color: var(--green); }
+    .badge-agendada { background: var(--gold-bg); color: #8a6d1c; }
+    .badge-cancelada { background: var(--red-light); color: var(--red); }
+    .badge-remarcada { background: var(--blue-light); color: var(--blue); }
+
+    .actions { display: flex; gap: 6px; }
+
+    .empty-state {
+      padding: 48px 24px;
+      text-align: center;
+      color: rgba(45,27,78,0.55);
+    }
+
+    .empty-state h3 { color: var(--purple-medium); margin-bottom: 8px; }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(45,27,78,0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 20px;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.open { display: flex; opacity: 1; }
+
+    .modal {
+      background: var(--white);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 820px;
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(45,27,78,0.35);
+      transform: translateY(12px);
+      transition: transform 0.25s ease;
+    }
+
+    .modal-overlay.open .modal { transform: translateY(0); }
+
+    .modal-header {
+      background: linear-gradient(90deg, var(--purple-dark), var(--purple-medium));
+      color: var(--gold);
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--gold);
+      font-size: 28px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+    }
+
+    .modal-form {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .form-section-title {
+      grid-column: 1 / -1;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--purple-medium);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 6px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(74,43,122,0.15);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.span-2 { grid-column: 1 / -1; }
+
+    .form-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--purple-medium);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 10px 12px;
+      border: 1px solid rgba(74,43,122,0.25);
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--white);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.18);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 64px;
+    }
+
+    .modal-footer {
+      padding: 18px 24px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      border-top: 1px solid rgba(74,43,122,0.12);
+      background: var(--bg);
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+
+    .backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(45,27,78,0.45);
+      z-index: 900;
+    }
+
+    .backdrop.show { display: block; }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; }
+      .menu-toggle { display: block; }
+      .header { padding: 18px 22px; }
+      .content { padding: 22px; }
+      .search-box input { width: 200px; }
+    }
+
+    @media (max-width: 640px) {
+      .page-title { font-size: 26px; }
+      .header { flex-wrap: wrap; gap: 12px; }
+      .header-right { width: 100%; justify-content: space-between; }
+      .search-box { flex: 1; }
+      .search-box input { width: 100%; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .modal-form { grid-template-columns: 1fr; }
+      .form-group.span-2 { grid-column: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">Equilibrium</div>
+      <div class="sidebar-sub">Terapias Energéticas</div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#"><span>🏠</span> Visão Geral</a>
+      <a href="clientes.html"><span>👥</span> Clientes</a>
+      <a href="agenda.html"><span>📅</span> Agenda</a>
+      <a href="atendimentos.html" class="active"><span>🩺</span> Atendimentos</a>
+      <a href="tratamentos.html"><span>📊</span> Tratamentos</a>
+      <a href="financeiro.html"><span>💰</span> Financeiro</a>
+      <a href="configuracoes.html"><span>⚙️</span> Configurações</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="avatar">SA</div>
+      <div class="user-info">
+        <div class="user-name">Simone Andrea</div>
+        <div class="user-role">Terapeuta</div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="backdrop" id="backdrop"></div>
+
+  <!-- Main -->
+  <main class="main">
+    <header class="header">
+      <div class="header-left">
+        <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">☰</button>
+        <h1 class="page-title">Atendimentos</h1>
+      </div>
+      <div class="header-right">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Buscar por cliente..." autocomplete="off" />
+        </div>
+        <div class="current-date" id="currentDate"></div>
+      </div>
+    </header>
+
+    <section class="content">
+      <div class="toolbar">
+        <button class="btn btn-primary" id="btnNew">+ Novo Atendimento</button>
+        <div class="filter-group">
+          <label for="statusFilter">Status:</label>
+          <select id="statusFilter">
+            <option value="Todos">Todos</option>
+            <option value="Realizada">Realizada</option>
+            <option value="Agendada">Agendada</option>
+            <option value="Cancelada">Cancelada</option>
+            <option value="Remarcada">Remarcada</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-wrap">
+          <table id="atendimentosTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th>Forma</th>
+                <th>Status</th>
+                <th>Queixa Principal</th>
+                <th>Sessões</th>
+                <th>Chakra</th>
+                <th>Aura</th>
+                <th>Bovis</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Novo Atendimento</h2>
+        <button class="modal-close" id="modalClose" aria-label="Fechar">&times;</button>
+      </div>
+      <form id="atendimentoForm">
+        <div class="modal-body">
+          <div class="modal-form">
+            <input type="hidden" id="atendimentoId" />
+
+            <div class="form-section-title">Sessão</div>
+            <div class="form-group span-2">
+              <label for="cliente">Cliente</label>
+              <input type="text" id="cliente" required />
+            </div>
+            <div class="form-group">
+              <label for="data">Data</label>
+              <input type="date" id="data" required />
+            </div>
+            <div class="form-group">
+              <label for="tipoConsulta">Tipo de Consulta</label>
+              <select id="tipoConsulta" required>
+                <option value="Avaliação">Avaliação</option>
+                <option value="Retorno">Retorno</option>
+                <option value="Sessão Avulsa">Sessão Avulsa</option>
+                <option value="Acompanhamento">Acompanhamento</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="formaAtendimento">Forma de Atendimento</label>
+              <select id="formaAtendimento" required>
+                <option value="Presencial">Presencial</option>
+                <option value="Online">Online</option>
+                <option value="Domicílio">Domicílio</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="statusSessao">Status da Sessão</label>
+              <select id="statusSessao" required>
+                <option value="Realizada">Realizada</option>
+                <option value="Agendada">Agendada</option>
+                <option value="Cancelada">Cancelada</option>
+                <option value="Remarcada">Remarcada</option>
+              </select>
+            </div>
+            <div class="form-group span-2">
+              <label for="queixaPrincipal">Queixa Principal</label>
+              <textarea id="queixaPrincipal"></textarea>
+            </div>
+            <div class="form-group span-2">
+              <label for="queixaSecundaria">Queixa Secundária</label>
+              <textarea id="queixaSecundaria"></textarea>
+            </div>
+            <div class="form-group span-2">
+              <label for="numeroSessoes">Número de Sessões</label>
+              <input type="number" id="numeroSessoes" min="0" />
+            </div>
+
+            <div class="form-section-title">Análise Energética</div>
+            <div class="form-group">
+              <label for="chakraDesequilibrio">Chakra em Desequilíbrio</label>
+              <input type="text" id="chakraDesequilibrio" />
+            </div>
+            <div class="form-group">
+              <label for="pctDesequilibrioChakra">% Desequilíbrio de Chakra</label>
+              <input type="number" id="pctDesequilibrioChakra" min="0" max="100" />
+            </div>
+            <div class="form-group">
+              <label for="atividadeChakra">Atividade Chakra</label>
+              <select id="atividadeChakra">
+                <option value="Hiperativo">Hiperativo</option>
+                <option value="Hipoativo">Hipoativo</option>
+                <option value="Equilibrado">Equilibrado</option>
+                <option value="Bloqueado">Bloqueado</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="protecaoAura">Proteção da Aura</label>
+              <select id="protecaoAura">
+                <option value="Forte">Forte</option>
+                <option value="Média">Média</option>
+                <option value="Fraca">Fraca</option>
+                <option value="Rompida">Rompida</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="tamanhoAura">Tamanho da Aura</label>
+              <input type="text" id="tamanhoAura" />
+            </div>
+            <div class="form-group">
+              <label for="pctDesequilibrioAura">% Deseq. Aura</label>
+              <input type="number" id="pctDesequilibrioAura" min="0" max="100" />
+            </div>
+            <div class="form-group">
+              <label for="coresExcesso">Cores em Excesso</label>
+              <input type="text" id="coresExcesso" />
+            </div>
+            <div class="form-group">
+              <label for="coresFalta">Cores em Falta</label>
+              <input type="text" id="coresFalta" />
+            </div>
+            <div class="form-group span-2">
+              <label for="bovis">Bovis</label>
+              <input type="number" id="bovis" />
+            </div>
+
+            <div class="form-section-title">Diagnóstico</div>
+            <div class="form-group">
+              <label for="campoAfetado">Campo Afetado</label>
+              <input type="text" id="campoAfetado" />
+            </div>
+            <div class="form-group">
+              <label for="sistemaDesequilibrio">Sistema em Desequilíbrio</label>
+              <input type="text" id="sistemaDesequilibrio" />
+            </div>
+            <div class="form-group">
+              <label for="orgaoDesequilibrio">Órgão em Desequilíbrio</label>
+              <input type="text" id="orgaoDesequilibrio" />
+            </div>
+            <div class="form-group">
+              <label for="glandulaDesequilibrio">Glândula em Desequilíbrio</label>
+              <input type="text" id="glandulaDesequilibrio" />
+            </div>
+            <div class="form-group span-2">
+              <label for="analiseEspecifica">Análise Específica</label>
+              <textarea id="analiseEspecifica"></textarea>
+            </div>
+            <div class="form-group span-2">
+              <label for="causaRaiz">Causa Raiz do Desequilíbrio</label>
+              <textarea id="causaRaiz"></textarea>
+            </div>
+            <div class="form-group span-2">
+              <label for="consequencias">Consequências dos Desequilíbrios</label>
+              <textarea id="consequencias"></textarea>
+            </div>
+            <div class="form-group span-2">
+              <label for="outroSintoma">Outro Sintoma / Queixa</label>
+              <textarea id="outroSintoma"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnCancel">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Atendimento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const STORAGE_KEY = 'equilibrium_atendimentos';
+
+      const defaultData = [
+        { id: 'AT-000001', cliente: 'Maria da Silva', data: '2026-03-05', tipoConsulta: 'Avaliação', formaAtendimento: 'Presencial', statusSessao: 'Realizada', queixaPrincipal: 'Insônia', queixaSecundaria: 'Glândula em deseq', numeroSessoes: 8, chakraDesequilibrio: 'Coronário', pctDesequilibrioChakra: 30, atividadeChakra: 'Hipoativo', protecaoAura: 'Média', tamanhoAura: '1.2m', pctDesequilibrioAura: 25, coresExcesso: 'Vermelho', coresFalta: 'Verde', bovis: 6500, campoAfetado: 'Físico', analiseEspecifica: 'Mapeamento completo', causaRaiz: 'Estresse crônico', sistemaDesequilibrio: 'Nervoso', orgaoDesequilibrio: 'Tireoide', glandulaDesequilibrio: 'Pineal', consequencias: 'Fadiga e irritabilidade', outroSintoma: 'Dificuldade de concentração' },
+        { id: 'AT-000002', cliente: 'João Pereira', data: '2026-01-05', tipoConsulta: 'Retorno', formaAtendimento: 'Online', statusSessao: 'Realizada', queixaPrincipal: 'Alergia', queixaSecundaria: '', numeroSessoes: 5, chakraDesequilibrio: 'Laríngeo', pctDesequilibrioChakra: 20, atividadeChakra: 'Hiperativo', protecaoAura: 'Fraca', tamanhoAura: '1.0m', pctDesequilibrioAura: 40, coresExcesso: 'Laranja', coresFalta: 'Azul', bovis: 5800, campoAfetado: 'Energético', analiseEspecifica: 'Teste de intolerância', causaRaiz: 'Desequilíbrio alérgico', sistemaDesequilibrio: 'Imunológico', orgaoDesequilibrio: 'Pele', glandulaDesequilibrio: 'Suprarenal', consequencias: 'Coceira e inflamação', outroSintoma: '' },
+        { id: 'AT-000003', cliente: 'Simone Andrea', data: '2026-05-20', tipoConsulta: 'Avaliação', formaAtendimento: 'Presencial', statusSessao: 'Realizada', queixaPrincipal: 'Tabagismo', queixaSecundaria: 'Ansiedade', numeroSessoes: 15, chakraDesequilibrio: 'Frontal', pctDesequilibrioChakra: 45, atividadeChakra: 'Bloqueado', protecaoAura: 'Rompida', tamanhoAura: '0.8m', pctDesequilibrioAura: 60, coresExcesso: 'Cinza', coresFalta: 'Dourado', bovis: 4200, campoAfetado: 'Emocional', analiseEspecifica: 'Análise de vícios', causaRaiz: 'Trauma emocional', sistemaDesequilibrio: 'Respiratório', orgaoDesequilibrio: 'Pulmões', glandulaDesequilibrio: 'Timo', consequencias: 'Dependência química', outroSintoma: '' },
+        { id: 'AT-000004', cliente: 'Abreu da Silva', data: '2025-03-30', tipoConsulta: 'Acompanhamento', formaAtendimento: 'Online', statusSessao: 'Realizada', queixaPrincipal: 'Ansiedade', queixaSecundaria: 'Pavor', numeroSessoes: 3, chakraDesequilibrio: 'Básico', pctDesequilibrioChakra: 25, atividadeChakra: 'Hiperativo', protecaoAura: 'Média', tamanhoAura: '1.1m', pctDesequilibrioAura: 20, coresExcesso: 'Amarelo', coresFalta: 'Rosa', bovis: 7000, campoAfetado: 'Mental', analiseEspecifica: 'Radiestesia avançada', causaRaiz: 'Medo do futuro', sistemaDesequilibrio: 'Digestivo', orgaoDesequilibrio: 'Estômago', glandulaDesequilibrio: '', consequencias: 'Tensão muscular', outroSintoma: '' },
+        { id: 'AT-000005', cliente: 'Suze', data: '2026-04-04', tipoConsulta: 'Retorno', formaAtendimento: 'Presencial', statusSessao: 'Agendada', queixaPrincipal: 'Pavor', queixaSecundaria: 'Alergia', numeroSessoes: 12, chakraDesequilibrio: 'Umbilical', pctDesequilibrioChakra: 35, atividadeChakra: 'Bloqueado', protecaoAura: 'Fraca', tamanhoAura: '0.9m', pctDesequilibrioAura: 50, coresExcesso: 'Preto', coresFalta: 'Violeta', bovis: 5100, campoAfetado: 'Emocional', analiseEspecifica: 'Limpeza energética', causaRaiz: 'Trauma infantil', sistemaDesequilibrio: 'Reprodutor', orgaoDesequilibrio: 'Útero', glandulaDesequilibrio: 'Hipófise', consequencias: 'Medo intenso', outroSintoma: '' }
+      ];
+
+      let atendimentos = [];
+
+      const tableBody = document.getElementById('tableBody');
+      const searchInput = document.getElementById('searchInput');
+      const statusFilter = document.getElementById('statusFilter');
+      const currentDateEl = document.getElementById('currentDate');
+      const modalOverlay = document.getElementById('modalOverlay');
+      const atendimentoForm = document.getElementById('atendimentoForm');
+      const modalTitle = document.getElementById('modalTitle');
+      const atendimentoIdField = document.getElementById('atendimentoId');
+      const btnNew = document.getElementById('btnNew');
+      const btnCancel = document.getElementById('btnCancel');
+      const modalClose = document.getElementById('modalClose');
+      const menuToggle = document.getElementById('menuToggle');
+      const sidebar = document.getElementById('sidebar');
+      const backdrop = document.getElementById('backdrop');
+
+      function initStorage() {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          try {
+            atendimentos = JSON.parse(stored);
+          } catch (e) {
+            atendimentos = [];
+          }
+        }
+        if (!atendimentos || atendimentos.length === 0) {
+          atendimentos = JSON.parse(JSON.stringify(defaultData));
+          saveStorage();
+        }
+      }
+
+      function saveStorage() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(atendimentos));
+      }
+
+      function formatDateBR(dateString) {
+        if (!dateString) return '-';
+        const [y, m, d] = dateString.split('-');
+        return `${d}/${m}/${y}`;
+      }
+
+      function getNextId() {
+        const max = atendimentos.reduce((acc, item) => {
+          const num = parseInt(item.id.replace(/\D/g, ''), 10) || 0;
+          return num > acc ? num : acc;
+        }, 0);
+        return 'AT-' + String(max + 1).padStart(6, '0');
+      }
+
+      function badgeClass(status) {
+        switch (status) {
+          case 'Realizada': return 'badge-realizada';
+          case 'Agendada': return 'badge-agendada';
+          case 'Cancelada': return 'badge-cancelada';
+          case 'Remarcada': return 'badge-remarcada';
+          default: return 'badge-agendada';
+        }
+      }
+
+      function render() {
+        const term = (searchInput.value || '').toLowerCase().trim();
+        const status = statusFilter.value;
+
+        const filtered = atendimentos.filter(item => {
+          const matchesTerm = !term || (item.cliente || '').toLowerCase().includes(term);
+          const matchesStatus = status === 'Todos' || item.statusSessao === status;
+          return matchesTerm && matchesStatus;
+        });
+
+        tableBody.innerHTML = '';
+
+        if (filtered.length === 0) {
+          tableBody.innerHTML = `<tr><td colspan="12" class="empty-state"><h3>Nenhum atendimento encontrado</h3><p>Ajuste os filtros ou cadastre um novo atendimento.</p></td></tr>`;
+          return;
+        }
+
+        filtered.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>${item.id}</strong></td>
+            <td>${item.cliente || '-'}</td>
+            <td>${formatDateBR(item.data)}</td>
+            <td>${item.tipoConsulta || '-'}</td>
+            <td>${item.formaAtendimento || '-'}</td>
+            <td><span class="badge ${badgeClass(item.statusSessao)}">${item.statusSessao || '-'}</span></td>
+            <td>${item.queixaPrincipal || '-'}</td>
+            <td>${item.numeroSessoes || '-'}</td>
+            <td>${item.chakraDesequilibrio || '-'} ${item.pctDesequilibrioChakra ? '(' + item.pctDesequilibrioChakra + '%)' : ''}</td>
+            <td>${item.tamanhoAura || '-'} ${item.protecaoAura ? '- ' + item.protecaoAura : ''}</td>
+            <td>${item.bovis || '-'}</td>
+            <td>
+              <div class="actions">
+                <button class="btn-icon edit" data-id="${item.id}" aria-label="Editar">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                </button>
+                <button class="btn-icon delete" data-id="${item.id}" aria-label="Excluir">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+              </div>
+            </td>
+          `;
+          tableBody.appendChild(tr);
+        });
+      }
+
+      function openModal(id = null) {
+        atendimentoForm.reset();
+        if (id) {
+          const item = atendimentos.find(a => a.id === id);
+          if (!item) return;
+          modalTitle.textContent = 'Editar Atendimento';
+          atendimentoIdField.value = item.id;
+          document.getElementById('cliente').value = item.cliente || '';
+          document.getElementById('data').value = item.data || '';
+          document.getElementById('tipoConsulta').value = item.tipoConsulta || 'Avaliação';
+          document.getElementById('formaAtendimento').value = item.formaAtendimento || 'Presencial';
+          document.getElementById('statusSessao').value = item.statusSessao || 'Realizada';
+          document.getElementById('queixaPrincipal').value = item.queixaPrincipal || '';
+          document.getElementById('queixaSecundaria').value = item.queixaSecundaria || '';
+          document.getElementById('numeroSessoes').value = item.numeroSessoes || '';
+          document.getElementById('chakraDesequilibrio').value = item.chakraDesequilibrio || '';
+          document.getElementById('pctDesequilibrioChakra').value = item.pctDesequilibrioChakra || '';
+          document.getElementById('atividadeChakra').value = item.atividadeChakra || 'Hiperativo';
+          document.getElementById('protecaoAura').value = item.protecaoAura || 'Forte';
+          document.getElementById('tamanhoAura').value = item.tamanhoAura || '';
+          document.getElementById('pctDesequilibrioAura').value = item.pctDesequilibrioAura || '';
+          document.getElementById('coresExcesso').value = item.coresExcesso || '';
+          document.getElementById('coresFalta').value = item.coresFalta || '';
+          document.getElementById('bovis').value = item.bovis || '';
+          document.getElementById('campoAfetado').value = item.campoAfetado || '';
+          document.getElementById('sistemaDesequilibrio').value = item.sistemaDesequilibrio || '';
+          document.getElementById('orgaoDesequilibrio').value = item.orgaoDesequilibrio || '';
+          document.getElementById('glandulaDesequilibrio').value = item.glandulaDesequilibrio || '';
+          document.getElementById('analiseEspecifica').value = item.analiseEspecifica || '';
+          document.getElementById('causaRaiz').value = item.causaRaiz || '';
+          document.getElementById('consequencias').value = item.consequencias || '';
+          document.getElementById('outroSintoma').value = item.outroSintoma || '';
+        } else {
+          modalTitle.textContent = 'Novo Atendimento';
+          atendimentoIdField.value = '';
+          document.getElementById('data').value = new Date().toISOString().split('T')[0];
+          document.getElementById('statusSessao').value = 'Agendada';
+        }
+        modalOverlay.classList.add('open');
+      }
+
+      function closeModal() {
+        modalOverlay.classList.remove('open');
+      }
+
+      function saveItem(e) {
+        e.preventDefault();
+        const id = atendimentoIdField.value;
+        const payload = {
+          id: id || getNextId(),
+          cliente: document.getElementById('cliente').value.trim(),
+          data: document.getElementById('data').value,
+          tipoConsulta: document.getElementById('tipoConsulta').value,
+          formaAtendimento: document.getElementById('formaAtendimento').value,
+          statusSessao: document.getElementById('statusSessao').value,
+          queixaPrincipal: document.getElementById('queixaPrincipal').value.trim(),
+          queixaSecundaria: document.getElementById('queixaSecundaria').value.trim(),
+          numeroSessoes: Number(document.getElementById('numeroSessoes').value) || 0,
+          chakraDesequilibrio: document.getElementById('chakraDesequilibrio').value.trim(),
+          pctDesequilibrioChakra: Number(document.getElementById('pctDesequilibrioChakra').value) || 0,
+          atividadeChakra: document.getElementById('atividadeChakra').value,
+          protecaoAura: document.getElementById('protecaoAura').value,
+          tamanhoAura: document.getElementById('tamanhoAura').value.trim(),
+          pctDesequilibrioAura: Number(document.getElementById('pctDesequilibrioAura').value) || 0,
+          coresExcesso: document.getElementById('coresExcesso').value.trim(),
+          coresFalta: document.getElementById('coresFalta').value.trim(),
+          bovis: Number(document.getElementById('bovis').value) || 0,
+          campoAfetado: document.getElementById('campoAfetado').value.trim(),
+          sistemaDesequilibrio: document.getElementById('sistemaDesequilibrio').value.trim(),
+          orgaoDesequilibrio: document.getElementById('orgaoDesequilibrio').value.trim(),
+          glandulaDesequilibrio: document.getElementById('glandulaDesequilibrio').value.trim(),
+          analiseEspecifica: document.getElementById('analiseEspecifica').value.trim(),
+          causaRaiz: document.getElementById('causaRaiz').value.trim(),
+          consequencias: document.getElementById('consequencias').value.trim(),
+          outroSintoma: document.getElementById('outroSintoma').value.trim()
+        };
+
+        if (id) {
+          const idx = atendimentos.findIndex(a => a.id === id);
+          if (idx >= 0) atendimentos[idx] = payload;
+        } else {
+          atendimentos.push(payload);
+        }
+        saveStorage();
+        render();
+        closeModal();
+      }
+
+      function deleteItem(id) {
+        if (!confirm('Deseja realmente excluir este atendimento?')) return;
+        atendimentos = atendimentos.filter(a => a.id !== id);
+        saveStorage();
+        render();
+      }
+
+      function setDate() {
+        const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+        const text = new Date().toLocaleDateString('pt-BR', options);
+        currentDateEl.textContent = text.charAt(0).toUpperCase() + text.slice(1);
+      }
+
+      function toggleMenu() {
+        sidebar.classList.toggle('open');
+        backdrop.classList.toggle('show');
+      }
+
+      // Event bindings
+      btnNew.addEventListener('click', () => openModal());
+      btnCancel.addEventListener('click', closeModal);
+      modalClose.addEventListener('click', closeModal);
+      modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
+      atendimentoForm.addEventListener('submit', saveItem);
+      searchInput.addEventListener('input', render);
+      statusFilter.addEventListener('change', render);
+
+      tableBody.addEventListener('click', e => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+        const id = btn.dataset.id;
+        if (btn.classList.contains('edit')) openModal(id);
+        if (btn.classList.contains('delete')) deleteItem(id);
+      });
+
+      menuToggle.addEventListener('click', toggleMenu);
+      backdrop.addEventListener('click', toggleMenu);
+
+      // Init
+      initStorage();
+      setDate();
+      render();
+    })();
+  </script>
+</body>
+</html>

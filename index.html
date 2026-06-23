@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Equilibrium Terapias Energéticas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #2D1B4E 0%, #4A2B7A 100%);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+      padding: 48px 32px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      border-radius: 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      animation: fadeInUp 0.9s ease-out both;
+    }
+
+    .logo-wrapper {
+      margin-bottom: 28px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .logo-icon {
+      width: 72px;
+      height: 72px;
+      color: #D4AF37;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      color: #D4AF37;
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 28px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .welcome {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.78);
+      margin-bottom: 36px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 16px 36px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #2D1B4E;
+      background: #D4AF37;
+      border: none;
+      border-radius: 50px;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(212, 175, 55, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(212, 175, 55, 0.45);
+      background: #E5C24A;
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .footer {
+      margin-top: 32px;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 40px 24px;
+        border-radius: 20px;
+      }
+
+      h1 {
+        font-size: 2.4rem;
+      }
+
+      h2 {
+        font-size: 1rem;
+        letter-spacing: 1.5px;
+      }
+
+      .btn {
+        padding: 14px 28px;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <div class="logo-wrapper" aria-label="Logo Equilibrium">
+      <svg class="logo-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M32 8 C32 8 20 18 20 30 C20 42 32 54 32 54 C32 54 44 42 44 30 C44 18 32 8 32 8 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+        <circle cx="32" cy="30" r="5" stroke="currentColor" stroke-width="2.5"/>
+        <path d="M32 18 C32 18 26 24 26 30 C26 36 32 42 32 42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M32 18 C32 18 38 24 38 30 C38 36 32 42 32 42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <h1>Equilibrium</h1>
+    <h2>Terapias Energéticas</h2>
+
+    <p class="welcome">
+      Bem-vindo ao espaço dedicado ao seu equilíbrio e bem-estar. Aqui, corpo, mente e energia se encontram para transformar sua jornada de cura.
+    </p>
+
+    <a href="login.html" class="btn" role="button">Acessar o Sistema</a>
+
+    <p class="footer">© 2024 Equilibrium Terapias Energéticas. Todos os direitos reservados.</p>
+  </main>
+</body>
+</html>
