@@ -1,4 +1,4 @@
-    body {
+markdown    body {
         display: flex;<br/>
         background-color: #f4f7f6;<br/>
         color: #333;<br/>
@@ -289,3 +289,166 @@
         .dashboard-row { grid-template-columns: 1fr; }
     }
 </style>
+markdown<!-- SIDEBAR -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <span class="logo-text">Equilibrium</span>
+        <span class="logo-subtext">TERAPIAS ENERGÉTICAS</span>
+    </div>
+    
+    <nav class="nav-menu">
+        <a href="visao-geral.html" class="nav-item active">
+            <span>📊</span> Visão Geral
+        </a>
+        <a href="clientes.html" class="nav-item">
+            <span>👥</span> Clientes
+        </a>
+        <a href="agenda.html" class="nav-item">
+            <span>📅</span> Agenda
+        </a>
+        <a href="atendimentos.html" class="nav-item">
+            <span>🩺</span> Atendimentos
+        </a>
+        <a href="tratamentos.html" class="nav-item">
+            <span>🔬</span> Tratamentos
+        </a>
+        <a href="agenda-graficos.html" class="nav-item">
+            <span>📈</span> Agenda Gráficos
+        </a>
+        <a href="financeiro.html" class="nav-item">
+            <span>💰</span> Financeiro
+        </a>
+    </nav>
+
+    <div class="user-profile">
+        <div class="user-avatar">S</div>
+        <div>
+            <p style="font-size: 14px; font-weight: 600;">Simone</p>
+            <p style="font-size: 11px; color: rgba(255,255,255,0.5);">Terapeuta</p>
+        </div>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    <div class="header">
+        <div class="header-title">
+            <h1>Visão Geral</h1>
+            <p>Quarta-feira, 24 de junho de 2026</p>
+        </div>
+        <div class="search-bar">
+            <span>🔍</span>
+            <input type="text" placeholder="Buscar paciente ou serviço...">
+        </div>
+    </div>
+
+    <!-- METRICS -->
+    <div class="metrics-grid">
+        <div class="card">
+            <div class="card-icon icon-1">👥</div>
+            <div class="card-info">
+                <h3>7</h3>
+                <p>Total de Clientes</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon icon-2">🩺</div>
+            <div class="card-info">
+                <h3>3</h3>
+                <p>Atendimentos Hoje</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon icon-3">💰</div>
+            <div class="card-info">
+                <h3>R$ 2.400</h3>
+                <p>Faturamento Mês</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon icon-4">📈</div>
+            <div class="card-info">
+                <h3>82%</h3>
+                <p>Taxa de Retorno</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD ROW -->
+    <div class="dashboard-row">
+        <!-- CHART -->
+        <div class="section-card">
+            <h2>Atendimentos da Semana <span style="font-size: 12px; color: #888; font-weight: normal;">Junho 2026</span></h2>
+            <div class="chart-container">
+                <div class="bar-wrapper">
+                    <div class="bar" style="height: 55%;">
+                        <span class="bar-value">5</span>
+                    </div>
+                    <span class="bar-label">Seg</span>
+                </div>
+                <div class="bar-wrapper">
+                    <div class="bar" style="height: 88%;">
+                        <span class="bar-value">8</span>
+                    </div>
+                    <span class="bar-label">Ter</span>
+                </div>
+                <div class="bar-wrapper">
+                    <div class="bar" style="height: 66%;">
+                        <span class="bar-value">6</span>
+                    </div>
+                    <span class="bar-label">Qua</span>
+                </div>
+                <div class="bar-wrapper">
+                    <div class="bar" style="height: 100%;">
+                        <span class="bar-value">9</span>
+                    </div>
+                    <span class="bar-label">Qui</span>
+                </div>
+                <div class="bar-wrapper">
+                    <div class="bar" style="height: 77%;">
+                        <span class="bar-value">7</span>
+                    </div>
+                    <span class="bar-label">Sex</span>
+                </div>
+                <div class="bar-wrapper">
+                    <div class="bar" style="height: 44%;">
+                        <span class="bar-value">4</span>
+                    </div>
+                    <span class="bar-label">Sáb</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIST -->
+        <div class="section-card">
+            <h2>Próximos Atendimentos</h2>
+            <ul class="appointment-list">
+                <li class="appointment-item">
+                    <div class="patient-info">
+                        <h4>Ana Carolina</h4>
+                        <p>Reiki • 14:00</p>
+                    </div>
+                    <span class="status-badge status-confirmed">Confirmado</span>
+                </li>
+                <li class="appointment-item">
+                    <div class="patient-info">
+                        <h4>Marcos Oliveira</h4>
+                        <p>Cromoterapia • 15:30</p>
+                    </div>
+                    <span class="status-badge status-confirmed">Confirmado</span>
+                </li>
+                <li class="appointment-item">
+                    <div class="patient-info">
+                        <h4>Juliana Costa</h4>
+                        <p>Barras Access • 09:00 (Amanhã)</p>
+                    </div>
+                    <span class="status-badge status-pending">Pendente</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2024 Equilibrium Terapias Energéticas. Todos os direitos reservados.
+    </div>
+</div>
