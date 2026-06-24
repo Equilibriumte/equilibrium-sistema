@@ -1,454 +1,473 @@
-markdown    body {
-        display: flex;<br/>
-        background-color: #f4f7f6;<br/>
-        color: #333;<br/>
-        min-height: 100vh;
-    }
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visão Geral - Equilibrium Terapias Energéticas</title>
+    <style>
+        * {
+            margin: 0;<br/>
+            padding: 0;<br/>
+            box-sizing: border-box;<br/>
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-    /* SIDEBAR */
-    .sidebar {
-        width: 260px;<br/>
-        background-color: #3d1d5f;<br/>
-        color: white;<br/>
-        display: flex;<br/>
-        flex-direction: column;<br/>
-        position: fixed;<br/>
-        height: 100vh;<br/>
-        transition: all 0.3s;
-    }
+        body {
+            display: flex;<br/>
+            background-color: #f4f7f6;<br/>
+            color: #333;<br/>
+            min-height: 100vh;
+        }
 
-    .sidebar-header {
-        padding: 30px 20px;<br/>
-        text-align: center;<br/>
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
+        /* SIDEBAR */
+        aside {
+            width: 260px;<br/>
+            background-color: #3d1d5f;<br/>
+            height: 100vh;<br/>
+            position: fixed;<br/>
+            display: flex;<br/>
+            flex-direction: column;<br/>
+            color: white;<br/>
+            z-index: 1000;
+        }
 
-    .logo-text {
-        font-weight: 700;<br/>
-        font-size: 18px;<br/>
-        letter-spacing: 1px;<br/>
-        text-transform: uppercase;
-    }
+        .sidebar-header {
+            padding: 30px 25px;<br/>
+            text-align: center;
+        }
 
-    .logo-subtext {
-        display: block;<br/>
-        font-size: 10px;<br/>
-        color: #d4af37;<br/>
-        letter-spacing: 2px;
-    }
+        .sidebar-header h1 {
+            font-size: 22px;<br/>
+            font-weight: 700;<br/>
+            letter-spacing: 1px;
+        }
 
-    .nav-menu {
-        flex-grow: 1;<br/>
-        padding: 20px 0;
-    }
+        .sidebar-header span {
+            display: block;<br/>
+            font-size: 10px;<br/>
+            color: #d4af37;<br/>
+            margin-top: 5px;<br/>
+            letter-spacing: 2px;
+        }
 
-    .nav-item {
-        padding: 12px 25px;<br/>
-        display: flex;<br/>
-        align-items: center;<br/>
-        text-decoration: none;<br/>
-        color: rgba(255,255,255,0.7);<br/>
-        transition: 0.3s;<br/>
-        font-size: 15px;
-    }
+        nav {
+            flex-grow: 1;<br/>
+            margin-top: 20px;
+        }
 
-    .nav-item:hover {<br/>
-        background-color: rgba(255,255,255,0.1);<br/>
-        color: white;
-    }
+        .nav-link {
+            display: flex;<br/>
+            align-items: center;<br/>
+            padding: 12px 25px;<br/>
+            text-decoration: none;<br/>
+            color: rgba(255, 255, 255, 0.7);<br/>
+            transition: all 0.3s;<br/>
+            font-size: 15px;
+        }
 
-    .nav-item.active {
-        background-color: #d4af37;<br/>
-        color: #3d1d5f;<br/>
-        font-weight: 600;
-    }
+        .nav-link i {
+            margin-right: 15px;<br/>
+            font-style: normal;<br/>
+            font-size: 18px;
+        }
 
-    .nav-item span {
-        margin-right: 15px;<br/>
-        font-size: 18px;
-    }
+        .nav-link:hover {<br/>
+            color: white;<br/>
+            background-color: rgba(255, 255, 255, 0.1);
+        }
 
-    .user-profile {
-        padding: 20px;<br/>
-        border-top: 1px solid rgba(255,255,255,0.1);<br/>
-        display: flex;<br/>
-        align-items: center;
-    }
+        .nav-link.active {
+            background-color: #d4af37;<br/>
+            color: #3d1d5f;<br/>
+            font-weight: 600;
+        }
 
-    .user-avatar {
-        width: 35px;<br/>
-        height: 35px;<br/>
-        background-color: #d4af37;<br/>
-        border-radius: 50%;<br/>
-        display: flex;<br/>
-        align-items: center;<br/>
-        justify-content: center;<br/>
-        margin-right: 10px;<br/>
-        font-weight: bold;<br/>
-        color: #3d1d5f;
-    }
+        .user-profile {
+            padding: 20px 25px;<br/>
+            border-top: 1px solid rgba(255, 255, 255, 0.1);<br/>
+            display: flex;<br/>
+            align-items: center;
+        }
 
-    /* MAIN CONTENT */
-    .main-content {
-        margin-left: 260px;<br/>
-        flex-grow: 1;<br/>
-        padding: 30px;
-    }
+        .avatar {
+            width: 35px;<br/>
+            height: 35px;<br/>
+            background-color: #d4af37;<br/>
+            color: #3d1d5f;<br/>
+            border-radius: 50%;<br/>
+            display: flex;<br/>
+            align-items: center;<br/>
+            justify-content: center;<br/>
+            font-weight: bold;<br/>
+            margin-right: 12px;
+        }
 
-    .header {
-        display: flex;<br/>
-        justify-content: space-between;<br/>
-        align-items: center;<br/>
-        margin-bottom: 30px;
-    }
+        .user-info span {
+            display: block;<br/>
+            font-size: 14px;
+        }
 
-    .header-title h1 {
-        font-size: 24px;<br/>
-        color: #3d1d5f;
-    }
+        .user-info small {
+            font-size: 11px;<br/>
+            color: rgba(255, 255, 255, 0.5);
+        }
 
-    .header-title p {
-        font-size: 14px;<br/>
-        color: #777;
-    }
+        /* MAIN CONTENT */
+        main {
+            margin-left: 260px;<br/>
+            flex-grow: 1;<br/>
+            padding: 30px;
+        }
 
-    .search-bar {
-        background: white;<br/>
-        padding: 8px 15px;<br/>
-        border-radius: 20px;<br/>
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);<br/>
-        display: flex;<br/>
-        align-items: center;
-    }
+        header {
+            display: flex;<br/>
+            justify-content: space-between;<br/>
+            align-items: center;<br/>
+            margin-bottom: 30px;
+        }
 
-    .search-bar input {
-        border: none;<br/>
-        outline: none;<br/>
-        padding: 5px;<br/>
-        width: 200px;
-    }
+        .header-title h2 {
+            color: #3d1d5f;<br/>
+            font-size: 24px;
+        }
 
-    /* METRIC CARDS */
-    .metrics-grid {
-        display: grid;<br/>
-        grid-template-columns: repeat(4, 1fr);<br/>
-        gap: 20px;<br/>
-        margin-bottom: 30px;
-    }
+        .header-title p {
+            font-size: 14px;<br/>
+            color: #777;<br/>
+            margin-top: 5px;
+        }
 
-    .card {
-        background: white;<br/>
-        padding: 20px;<br/>
-        border-radius: 12px;<br/>
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);<br/>
-        display: flex;<br/>
-        align-items: center;
-    }
+        .search-bar input {
+            padding: 10px 20px;<br/>
+            border-radius: 25px;<br/>
+            border: 1px solid #ddd;<br/>
+            width: 300px;<br/>
+            outline: none;<br/>
+            font-size: 14px;
+        }
 
-    .card-icon {
-        width: 50px;<br/>
-        height: 50px;<br/>
-        border-radius: 10px;<br/>
-        display: flex;<br/>
-        align-items: center;<br/>
-        justify-content: center;<br/>
-        font-size: 24px;<br/>
-        margin-right: 15px;
-    }
+        /* METRICS */
+        .metrics-grid {
+            display: grid;<br/>
+            grid-template-columns: repeat(4, 1fr);<br/>
+            gap: 20px;<br/>
+            margin-bottom: 30px;
+        }
 
-    .icon-1 { background-color: #e8f0fe; color: #4285f4; }<br/>
-    .icon-2 { background-color: #e6fffa; color: #38b2ac; }<br/>
-    .icon-3 { background-color: #fffaf0; color: #ed8936; }<br/>
-    .icon-4 { background-color: #fff5f5; color: #f56565; }
+        .card {
+            background: white;<br/>
+            padding: 20px;<br/>
+            border-radius: 12px;<br/>
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);<br/>
+            display: flex;<br/>
+            align-items: center;
+        }
 
-    .card-info h3 {
-        font-size: 22px;<br/>
-        margin-bottom: 2px;
-    }
+        .card-icon {
+            width: 50px;<br/>
+            height: 50px;<br/>
+            border-radius: 10px;<br/>
+            display: flex;<br/>
+            align-items: center;<br/>
+            justify-content: center;<br/>
+            font-size: 24px;<br/>
+            margin-right: 15px;
+        }
 
-    .card-info p {
-        font-size: 12px;<br/>
-        color: #888;<br/>
-        text-transform: uppercase;<br/>
-        letter-spacing: 0.5px;
-    }
+        .card-info h3 {
+            font-size: 13px;<br/>
+            color: #777;<br/>
+            font-weight: 500;
+        }
 
-    /* CHARTS AND LISTS */
-    .dashboard-row {
-        display: grid;<br/>
-        grid-template-columns: 1.5fr 1fr;<br/>
-        gap: 20px;
-    }
+        .card-info p {
+            font-size: 20px;<br/>
+            font-weight: 700;<br/>
+            color: #333;
+        }
 
-    .section-card {
-        background: white;<br/>
-        padding: 25px;<br/>
-        border-radius: 12px;<br/>
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    }
+        .bg-blue { background-color: #e3f2fd; color: #1976d2; }<br/>
+        .bg-purple { background-color: #f3e5f5; color: #7b1fa2; }<br/>
+        .bg-green { background-color: #e8f5e9; color: #388e3c; }<br/>
+        .bg-gold { background-color: #fff8e1; color: #fbc02d; }
 
-    .section-card h2 {
-        font-size: 18px;<br/>
-        margin-bottom: 20px;<br/>
-        color: #3d1d5f;<br/>
-        display: flex;<br/>
-        justify-content: space-between;<br/>
-        align-items: center;
-    }
+        /* DASHBOARD SECTIONS */
+        .dashboard-row {
+            display: grid;<br/>
+            grid-template-columns: 1.5fr 1fr;<br/>
+            gap: 20px;
+        }
 
-    /* CSS BAR CHART */
-    .chart-container {
-        display: flex;<br/>
-        align-items: flex-end;<br/>
-        justify-content: space-between;<br/>
-        height: 200px;<br/>
-        padding-top: 20px;
-    }
+        .section-card {
+            background: white;<br/>
+            padding: 25px;<br/>
+            border-radius: 12px;<br/>
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
 
-    .bar-wrapper {
-        display: flex;<br/>
-        flex-direction: column;<br/>
-        align-items: center;<br/>
-        flex: 1;
-    }
+        .section-card h4 {
+            margin-bottom: 20px;<br/>
+            color: #3d1d5f;<br/>
+            font-size: 18px;
+        }
 
-    .bar {
-        width: 30px;<br/>
-        background: linear-gradient(to top, #3d1d5f, #d4af37);<br/>
-        border-radius: 5px 5px 0 0;<br/>
-        transition: height 0.5s ease;<br/>
-        position: relative;
-    }
+        /* CHART BARS */
+        .chart-container {
+            display: flex;<br/>
+            align-items: flex-end;<br/>
+            justify-content: space-between;<br/>
+            height: 200px;<br/>
+            padding-top: 20px;
+        }
 
-    .bar:hover {<br/>
-        filter: brightness(1.1);
-    }
+        .chart-column {
+            display: flex;<br/>
+            flex-direction: column;<br/>
+            align-items: center;<br/>
+            width: 12%;
+        }
 
-    .bar-label {
-        margin-top: 10px;<br/>
-        font-size: 12px;<br/>
-        color: #777;
-    }
+        .bar {
+            width: 100%;<br/>
+            background: linear-gradient(to top, #3d1d5f, #d4af37);<br/>
+            border-radius: 5px 5px 0 0;<br/>
+            transition: height 0.5s ease;
+        }
 
-    .bar-value {
-        position: absolute;<br/>
-        top: -20px;<br/>
-        width: 100%;<br/>
-        text-align: center;<br/>
-        font-size: 11px;<br/>
-        font-weight: bold;
-    }
+        .day-label {
+            margin-top: 10px;<br/>
+            font-size: 12px;<br/>
+            color: #777;
+        }
 
-    /* APPOINTMENT LIST */
-    .appointment-list {
-        list-style: none;
-    }
+        /* APPOINTMENTS LIST */
+        .appointment-item {
+            display: flex;<br/>
+            justify-content: space-between;<br/>
+            align-items: center;<br/>
+            padding: 15px 0;<br/>
+            border-bottom: 1px solid #eee;
+        }
 
-    .appointment-item {
-        padding: 15px 0;<br/>
-        border-bottom: 1px solid #eee;<br/>
-        display: flex;<br/>
-        justify-content: space-between;<br/>
-        align-items: center;
-    }
+        .appointment-item:last-child {<br/>
+            border-bottom: none;
+        }
 
-    .appointment-item:last-child {<br/>
-        border-bottom: none;
-    }
+        .patient-info h5 {
+            font-size: 14px;<br/>
+            color: #333;
+        }
 
-    .patient-info h4 {
-        font-size: 14px;<br/>
-        margin-bottom: 2px;
-    }
+        .patient-info p {
+            font-size: 12px;<br/>
+            color: #777;
+        }
 
-    .patient-info p {
-        font-size: 12px;<br/>
-        color: #888;
-    }
+        .appointment-time {
+            text-align: right;
+        }
 
-    .status-badge {
-        padding: 4px 10px;<br/>
-        border-radius: 20px;<br/>
-        font-size: 11px;<br/>
-        font-weight: 600;
-    }
+        .time {
+            display: block;<br/>
+            font-size: 14px;<br/>
+            font-weight: 600;
+        }
 
-    .status-confirmed { background-color: #c6f6d5; color: #2f855a; }<br/>
-    .status-pending { background-color: #feebc8; color: #c05621; }
+        .status {
+            font-size: 11px;<br/>
+            font-weight: 700;<br/>
+            text-transform: uppercase;
+        }
 
-    .footer {
-        margin-top: 40px;<br/>
-        text-align: center;<br/>
-        font-size: 12px;<br/>
-        color: #aaa;<br/>
-        padding-bottom: 20px;
-    }
+        .status-confirmado { color: #28a745; }<br/>
+        .status-pendente { color: #fd7e14; }
 
-    @media (max-width: 1024px) {<br/>
-        .metrics-grid { grid-template-columns: repeat(2, 1fr); }<br/>
-        .dashboard-row { grid-template-columns: 1fr; }
-    }
-</style>
-markdown<!-- SIDEBAR -->
-<div class="sidebar">
-    <div class="sidebar-header">
-        <span class="logo-text">Equilibrium</span>
-        <span class="logo-subtext">TERAPIAS ENERGÉTICAS</span>
-    </div>
-    
-    <nav class="nav-menu">
-        <a href="visao-geral.html" class="nav-item active">
-            <span>📊</span> Visão Geral
-        </a>
-        <a href="clientes.html" class="nav-item">
-            <span>👥</span> Clientes
-        </a>
-        <a href="agenda.html" class="nav-item">
-            <span>📅</span> Agenda
-        </a>
-        <a href="atendimentos.html" class="nav-item">
-            <span>🩺</span> Atendimentos
-        </a>
-        <a href="tratamentos.html" class="nav-item">
-            <span>🔬</span> Tratamentos
-        </a>
-        <a href="agenda-graficos.html" class="nav-item">
-            <span>📈</span> Agenda Gráficos
-        </a>
-        <a href="financeiro.html" class="nav-item">
-            <span>💰</span> Financeiro
-        </a>
-    </nav>
+        footer {
+            margin-top: 40px;<br/>
+            text-align: center;<br/>
+            font-size: 12px;<br/>
+            color: #999;<br/>
+            padding-bottom: 20px;
+        }
 
-    <div class="user-profile">
-        <div class="user-avatar">S</div>
-        <div>
-            <p style="font-size: 14px; font-weight: 600;">Simone</p>
-            <p style="font-size: 11px; color: rgba(255,255,255,0.5);">Terapeuta</p>
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {<br/>
+            .metrics-grid { grid-template-columns: repeat(2, 1fr); }<br/>
+            .dashboard-row { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {<br/>
+            aside { width: 70px; }<br/>
+            .sidebar-header h1, .sidebar-header span, .nav-text, .user-info, .avatar-text { display: none; }<br/>
+            .nav-link { justify-content: center; padding: 15px 0; }<br/>
+            .nav-link i { margin-right: 0; }<br/>
+            main { margin-left: 70px; padding: 15px; }<br/>
+            .metrics-grid { grid-template-columns: 1fr; }<br/>
+            .search-bar { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside>
+        <div class="sidebar-header">
+            <h1 class="logo-text">Equilibrium</h1>
+            <span class="logo-text">TERAPIAS ENERGÉTICAS</span>
         </div>
-    </div>
-</div>
 
-<!-- MAIN CONTENT -->
-<div class="main-content">
-    <div class="header">
-        <div class="header-title">
-            <h1>Visão Geral</h1>
-            <p>Quarta-feira, 24 de junho de 2026</p>
-        </div>
-        <div class="search-bar">
-            <span>🔍</span>
-            <input type="text" placeholder="Buscar paciente ou serviço...">
-        </div>
-    </div>
+        <nav>
+            <a href="visao-geral.html" class="nav-link active">
+                <i>📊</i> <span class="nav-text">Visão Geral</span>
+            </a>
+            <a href="clientes.html" class="nav-link">
+                <i>👥</i> <span class="nav-text">Clientes</span>
+            </a>
+            <a href="agenda.html" class="nav-link">
+                <i>📅</i> <span class="nav-text">Agenda</span>
+            </a>
+            <a href="atendimentos.html" class="nav-link">
+                <i>🩺</i> <span class="nav-text">Atendimentos</span>
+            </a>
+            <a href="tratamentos.html" class="nav-link">
+                <i>🔬</i> <span class="nav-text">Tratamentos</span>
+            </a>
+            <a href="agenda-graficos.html" class="nav-link">
+                <i>📈</i> <span class="nav-text">Agenda Gráficos</span>
+            </a>
+            <a href="financeiro.html" class="nav-link">
+                <i>💰</i> <span class="nav-text">Financeiro</span>
+            </a>
+        </nav>
 
-    <!-- METRICS -->
-    <div class="metrics-grid">
-        <div class="card">
-            <div class="card-icon icon-1">👥</div>
-            <div class="card-info">
-                <h3>7</h3>
-                <p>Total de Clientes</p>
+        <div class="user-profile">
+            <div class="avatar">S</div>
+            <div class="user-info">
+                <span class="avatar-text">Simone</span>
+                <small class="avatar-text">Terapeuta</small>
             </div>
         </div>
-        <div class="card">
-            <div class="card-icon icon-2">🩺</div>
-            <div class="card-info">
-                <h3>3</h3>
-                <p>Atendimentos Hoje</p>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-icon icon-3">💰</div>
-            <div class="card-info">
-                <h3>R$ 2.400</h3>
-                <p>Faturamento Mês</p>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-icon icon-4">📈</div>
-            <div class="card-info">
-                <h3>82%</h3>
-                <p>Taxa de Retorno</p>
-            </div>
-        </div>
-    </div>
+    </aside>
 
-    <!-- DASHBOARD ROW -->
-    <div class="dashboard-row">
-        <!-- CHART -->
-        <div class="section-card">
-            <h2>Atendimentos da Semana <span style="font-size: 12px; color: #888; font-weight: normal;">Junho 2026</span></h2>
-            <div class="chart-container">
-                <div class="bar-wrapper">
-                    <div class="bar" style="height: 55%;">
-                        <span class="bar-value">5</span>
-                    </div>
-                    <span class="bar-label">Seg</span>
-                </div>
-                <div class="bar-wrapper">
-                    <div class="bar" style="height: 88%;">
-                        <span class="bar-value">8</span>
-                    </div>
-                    <span class="bar-label">Ter</span>
-                </div>
-                <div class="bar-wrapper">
-                    <div class="bar" style="height: 66%;">
-                        <span class="bar-value">6</span>
-                    </div>
-                    <span class="bar-label">Qua</span>
-                </div>
-                <div class="bar-wrapper">
-                    <div class="bar" style="height: 100%;">
-                        <span class="bar-value">9</span>
-                    </div>
-                    <span class="bar-label">Qui</span>
-                </div>
-                <div class="bar-wrapper">
-                    <div class="bar" style="height: 77%;">
-                        <span class="bar-value">7</span>
-                    </div>
-                    <span class="bar-label">Sex</span>
-                </div>
-                <div class="bar-wrapper">
-                    <div class="bar" style="height: 44%;">
-                        <span class="bar-value">4</span>
-                    </div>
-                    <span class="bar-label">Sáb</span>
+    <!-- MAIN CONTENT -->
+    <main>
+        <header>
+            <div class="header-title">
+                <h2>Visão Geral</h2>
+                <p>Quarta-feira, 24 de junho de 2026</p>
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar paciente ou serviço...">
+            </div>
+        </header>
+
+        <!-- METRICS -->
+        <section class="metrics-grid">
+            <div class="card">
+                <div class="card-icon bg-blue">👥</div>
+                <div class="card-info">
+                    <h3>Total de Clientes</h3>
+                    <p>7</p>
                 </div>
             </div>
-        </div>
+            <div class="card">
+                <div class="card-icon bg-purple">🩺</div>
+                <div class="card-info">
+                    <h3>Atendimentos Hoje</h3>
+                    <p>3</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-green">💰</div>
+                <div class="card-info">
+                    <h3>Faturamento do Mês</h3>
+                    <p>R$ 2.400</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-gold">📈</div>
+                <div class="card-info">
+                    <h3>Taxa de Retorno</h3>
+                    <p>82%</p>
+                </div>
+            </div>
+        </section>
 
-        <!-- LIST -->
-        <div class="section-card">
-            <h2>Próximos Atendimentos</h2>
-            <ul class="appointment-list">
-                <li class="appointment-item">
+        <div class="dashboard-row">
+            <!-- CHART -->
+            <section class="section-card">
+                <h4>Atendimentos da Semana</h4>
+                <div class="chart-container">
+                    <div class="chart-column">
+                        <div class="bar" style="height: 55%;"></div>
+                        <span class="day-label">Seg</span>
+                    </div>
+                    <div class="chart-column">
+                        <div class="bar" style="height: 88%;"></div>
+                        <span class="day-label">Ter</span>
+                    </div>
+                    <div class="chart-column">
+                        <div class="bar" style="height: 66%;"></div>
+                        <span class="day-label">Qua</span>
+                    </div>
+                    <div class="chart-column">
+                        <div class="bar" style="height: 100%;"></div>
+                        <span class="day-label">Qui</span>
+                    </div>
+                    <div class="chart-column">
+                        <div class="bar" style="height: 77%;"></div>
+                        <span class="day-label">Sex</span>
+                    </div>
+                    <div class="chart-column">
+                        <div class="bar" style="height: 44%;"></div>
+                        <span class="day-label">Sáb</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- LIST -->
+            <section class="section-card">
+                <h4>Próximos Atendimentos</h4>
+                
+                <div class="appointment-item">
                     <div class="patient-info">
-                        <h4>Ana Carolina</h4>
-                        <p>Reiki • 14:00</p>
+                        <h5>Ana Carolina</h5>
+                        <p>Reiki</p>
                     </div>
-                    <span class="status-badge status-confirmed">Confirmado</span>
-                </li>
-                <li class="appointment-item">
-                    <div class="patient-info">
-                        <h4>Marcos Oliveira</h4>
-                        <p>Cromoterapia • 15:30</p>
+                    <div class="appointment-time">
+                        <span class="time">14:00</span>
+                        <span class="status status-confirmado">Confirmado</span>
                     </div>
-                    <span class="status-badge status-confirmed">Confirmado</span>
-                </li>
-                <li class="appointment-item">
-                    <div class="patient-info">
-                        <h4>Juliana Costa</h4>
-                        <p>Barras Access • 09:00 (Amanhã)</p>
-                    </div>
-                    <span class="status-badge status-pending">Pendente</span>
-                </li>
-            </ul>
-        </div>
-    </div>
+                </div>
 
-    <div class="footer">
-        © 2024 Equilibrium Terapias Energéticas. Todos os direitos reservados.
-    </div>
-</div>
+                <div class="appointment-item">
+                    <div class="patient-info">
+                        <h5>Marcos Oliveira</h5>
+                        <p>Cromoterapia</p>
+                    </div>
+                    <div class="appointment-time">
+                        <span class="time">15:30</span>
+                        <span class="status status-confirmado">Confirmado</span>
+                    </div>
+                </div>
+
+                <div class="appointment-item">
+                    <div class="patient-info">
+                        <h5>Juliana Costa</h5>
+                        <p>Barras Access</p>
+                    </div>
+                    <div class="appointment-time">
+                        <span class="time">09:00 (Amanhã)</span>
+                        <span class="status status-pendente">Pendente</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p>© 2026 Equilibrium Terapias Energéticas. Todos os direitos reservados.</p>
+        </footer>
+    </main>
+
+</body>
+</html>   
