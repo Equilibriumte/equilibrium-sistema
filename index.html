@@ -1,172 +1,128 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Equilibrium Terapias Energéticas</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html, body {
-      height: 100%;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #2D1B4E 0%, #4A2B7A 100%);
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 20px;
-      overflow-x: hidden;
-    }
-
-    .container {
-      max-width: 520px;
-      width: 100%;
-      text-align: center;
-      padding: 48px 32px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(212, 175, 55, 0.25);
-      border-radius: 24px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-      animation: fadeInUp 0.9s ease-out both;
-    }
-
-    .logo-wrapper {
-      margin-bottom: 28px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .logo-icon {
-      width: 72px;
-      height: 72px;
-      color: #D4AF37;
-    }
-
-    h1 {
-      font-family: 'Playfair Display', serif;
-      color: #D4AF37;
-      font-size: 3rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-    }
-
-    h2 {
-      font-family: 'Inter', sans-serif;
-      font-size: 1.25rem;
-      font-weight: 300;
-      color: rgba(255, 255, 255, 0.85);
-      margin-bottom: 28px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .welcome {
-      font-size: 1rem;
-      line-height: 1.7;
-      color: rgba(255, 255, 255, 0.78);
-      margin-bottom: 36px;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 16px 36px;
-      font-family: 'Inter', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      color: #2D1B4E;
-      background: #D4AF37;
-      border: none;
-      border-radius: 50px;
-      text-decoration: none;
-      cursor: pointer;
-      box-shadow: 0 8px 24px rgba(212, 175, 55, 0.35);
-      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-    }
-
-    .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 32px rgba(212, 175, 55, 0.45);
-      background: #E5C24A;
-    }
-
-    .btn:active {
-      transform: translateY(0);
-    }
-
-    .footer {
-      margin-top: 32px;
-      font-size: 0.75rem;
-      color: rgba(255, 255, 255, 0.45);
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(24px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        padding: 40px 24px;
-        border-radius: 20px;
-      }
-
-      h1 {
-        font-size: 2.4rem;
-      }
-
-      h2 {
-        font-size: 1rem;
-        letter-spacing: 1.5px;
-      }
-
-      .btn {
-        padding: 14px 28px;
-        width: 100%;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equilibrium Terapias Energéticas</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            background-color: #2a1616; 
+            background: linear-gradient(135deg, #2a1616 0%, #3d1d5f 50%, #2a1616 100%);
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+        }
+        .logo {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 30px;
+        }
+        .logo-img {
+            max-width: 320px;
+            width: 100%;
+            height: auto;
+        }
+        h1 {
+            color: #d4af37;
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            color: #d4af37;
+            font-size: 14px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+        .welcome {
+            color: white;
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        .btn-acessar {
+            display: inline-block;
+            background-color: #d4af37;
+            color: #2a1616;
+            padding: 16px 50px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+        }
+        .btn-acessar:hover {
+            background-color: #c5a030;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.5);
+        }
+        footer {
+            margin-top: 60px;
+            color: rgba(255,255,255,0.4);
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body>
-  <main class="container">
-    <div class="logo-wrapper" aria-label="Logo Equilibrium">
-      <svg class="logo-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M32 8 C32 8 20 18 20 30 C20 42 32 54 32 54 C32 54 44 42 44 30 C44 18 32 8 32 8 Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
-        <circle cx="32" cy="30" r="5" stroke="currentColor" stroke-width="2.5"/>
-        <path d="M32 18 C32 18 26 24 26 30 C26 36 32 42 32 42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <path d="M32 18 C32 18 38 24 38 30 C38 36 32 42 32 42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>
+    <div class="container">
+        <!-- Logo grande -->
+        <div class="logo">
+            <svg viewBox="0 0 320 100" width="320" height="100" style="max-width:100%;height:auto">
+                <defs>
+                    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#d4af37"/>
+                        <stop offset="50%" style="stop-color:#f0d060"/>
+                        <stop offset="100%" style="stop-color:#b8962e"/>
+                    </linearGradient>
+                </defs>
+                <!-- Triângulo -->
+                <polygon points="10,90 55,10 100,90" fill="none" stroke="url(#gold)" stroke-width="2.5"/>
+                <!-- Linhas internas do triângulo -->
+                <line x1="55" y1="10" x2="55" y2="90" stroke="url(#gold)" stroke-width="1.5"/>
+                <line x1="10" y1="90" x2="55" y2="50" stroke="url(#gold)" stroke-width="1.5"/>
+                <line x1="100" y1="90" x2="55" y2="50" stroke="url(#gold)" stroke-width="1.5"/>
+                <!-- Círculo/cabeça -->
+                <circle cx="55" cy="28" r="8" fill="none" stroke="url(#gold)" stroke-width="2"/>
+                <!-- Coração -->
+                <path d="M55,38 C48,38 42,44 42,50 C42,58 55,65 55,65 C55,65 68,58 68,50 C68,44 62,38 55,38Z" fill="none" stroke="url(#gold)" stroke-width="1.5"/>
+                <!-- Casa -->
+                <polygon points="25,75 25,60 30,55 35,60 35,75" fill="none" stroke="url(#gold)" stroke-width="1.5"/>
+                <line x1="28" y1="67" x2="28" y2="60" stroke="url(#gold)" stroke-width="1"/>
+                <line x1="32" y1="67" x2="32" y2="60" stroke="url(#gold)" stroke-width="1"/>
+                <line x1="25" y1="60" x2="30" y2="55" stroke="url(#gold)" stroke-width="1"/>
+                <line x1="35" y1="60" x2="30" y2="55" stroke="url(#gold)" stroke-width="1"/>
+                <!-- Cachorro -->
+                <path d="M70,65 C75,60 85,60 90,65 C95,70 95,80 90,85 C85,90 75,90 70,85" fill="none" stroke="url(#gold)" stroke-width="1.5"/>
+                <circle cx="85" cy="70" r="2" fill="url(#gold)"/>
+                <!-- Pêndulo -->
+                <line x1="55" y1="65" x2="55" y2="95" stroke="url(#gold)" stroke-width="1.5"/>
+                <circle cx="55" cy="97" r="4" fill="url(#gold)"/>
+                <!-- Texto Equilibrium -->
+                <text x="120" y="40" font-family="'Times New Roman', serif" font-size="28" font-weight="bold" fill="url(#gold)" letter-spacing="1">Equilibrium</text>
+                <!-- Linha separadora -->
+                <line x1="120" y1="50" x2="310" y2="50" stroke="url(#gold)" stroke-width="1"/>
+                <!-- Texto Terapias -->
+                <text x="120" y="70" font-family="'Segoe UI', sans-serif" font-size="12" fill="url(#gold)" letter-spacing="3">TERAPIAS ENERGÉTICAS</text>
+            </svg>
+        </div>
+
+        <p class="welcome">Bem-vindo ao espaço de organização do grupo</p>
+
+        <a href="login.html" class="btn-acessar">Acessar o Sistema</a>
+
+        <footer>© 2026 Equilibrium Terapias Energéticas. Todos os direitos reservados.</footer>
     </div>
-
-    <h1>Equilibrium</h1>
-    <h2>Terapias Energéticas</h2>
-
-    <p class="welcome">
-      Bem-vindo ao espaço dedicado ao seu equilíbrio e bem-estar. Aqui, corpo, mente e energia se encontram para transformar sua jornada de cura.
-    </p>
-
-    <a href="login.html" class="btn" role="button">Acessar o Sistema</a>
-
-    <p class="footer">© 2024 Equilibrium Terapias Energéticas. Todos os direitos reservados.</p>
-  </main>
 </body>
 </html>
