@@ -87,9 +87,9 @@
             </div>
             <div class="header-actions">
                 <div class="search-bar">
-                    <input type="text" placeholder="Buscar cliente...">
+                    <input type="text" id="buscaCliente" placeholder="Buscar cliente..." oninput="filtrarClientes()">
                 </div>
-                <a href="ficha-cliente.html" class="btn btn-gold">+ Novo Cliente</a>
+                <button class="btn btn-gold" onclick="abrirNovoCliente()">+ Novo Cliente</button>
             </div>
         </header>
 
@@ -100,67 +100,59 @@
                         <th>Nome</th>
                         <th>Telefone</th>
                         <th>Email</th>
-                        <th>Último Atendimento</th>
-                        <th>Tratamento</th>
-                        <th>Status</th>
+                        <th>Endereço</th>
+                        <th>Status Pagamento</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="tabelaClientes">
                     <tr onclick="window.location='ficha-cliente.html'">
                         <td class="client-name">Maria da Silva</td>
                         <td>(11) 99999-8888</td>
                         <td>maria@email.com</td>
-                        <td>20/06/2026</td>
-                        <td>Reiki</td>
-                        <td><span class="badge badge-success">Ativo</span></td>
+                        <td>Rua das Flores, 123 - Centro, São Paulo - SP</td>
+                        <td><span class="badge badge-success">Em dia</span></td>
                     </tr>
                     <tr onclick="window.location='ficha-cliente.html'">
                         <td class="client-name">Ana Carolina</td>
                         <td>(11) 98888-7777</td>
                         <td>ana@email.com</td>
-                        <td>18/06/2026</td>
-                        <td>Reiki</td>
-                        <td><span class="badge badge-success">Ativo</span></td>
+                        <td>Av. Paulista, 500 - Bela Vista, São Paulo - SP</td>
+                        <td><span class="badge badge-success">Em dia</span></td>
                     </tr>
                     <tr onclick="window.location='ficha-cliente.html'">
                         <td class="client-name">Marcos Oliveira</td>
                         <td>(11) 97777-6666</td>
                         <td>marcos@email.com</td>
-                        <td>15/06/2026</td>
-                        <td>Cromoterapia</td>
-                        <td><span class="badge badge-success">Ativo</span></td>
+                        <td>Rua Augusta, 300 - Consolação, São Paulo - SP</td>
+                        <td><span class="badge badge-warning">Pendente</span></td>
                     </tr>
                     <tr onclick="window.location='ficha-cliente.html'">
                         <td class="client-name">Juliana Costa</td>
                         <td>(11) 96666-5555</td>
                         <td>juliana@email.com</td>
-                        <td>10/06/2026</td>
-                        <td>Barras Access</td>
-                        <td><span class="badge badge-info">Novo</span></td>
+                        <td>Rua Oscar Freire, 200 - Jardins, São Paulo - SP</td>
+                        <td><span class="badge badge-success">Em dia</span></td>
                     </tr>
                     <tr onclick="window.location='ficha-cliente.html'">
                         <td class="client-name">Carlos Mendes</td>
                         <td>(11) 95555-4444</td>
                         <td>carlos@email.com</td>
-                        <td>05/06/2026</td>
-                        <td>Reiki</td>
-                        <td><span class="badge badge-success">Ativo</span></td>
+                        <td>Rua da Consolação, 1000 - Consolação, São Paulo - SP</td>
+                        <td><span class="badge badge-success">Em dia</span></td>
                     </tr>
                     <tr onclick="window.location='ficha-cliente.html'">
                         <td class="client-name">Fernanda Lima</td>
                         <td>(11) 94444-3333</td>
                         <td>fernanda@email.com</td>
-                        <td>28/05/2026</td>
-                        <td>Cromoterapia</td>
-                        <td><span class="badge badge-warning">Inativo</span></td>
+                        <td>Rua Haddock Lobo, 400 - Cerqueira César, São Paulo - SP</td>
+                        <td><span class="badge badge-danger">Inadimplente</span></td>
                     </tr>
                     <tr onclick="window.location='ficha-cliente.html'">
                         <td class="client-name">Roberto Alves</td>
                         <td>(11) 93333-2222</td>
                         <td>roberto@email.com</td>
-                        <td>20/05/2026</td>
-                        <td>Barras Access</td>
-                        <td><span class="badge badge-success">Ativo</span></td>
+                        <td>Rua Bela Cintra, 600 - Consolação, São Paulo - SP</td>
+                        <td><span class="badge badge-success">Em dia</span></td>
                     </tr>
                 </tbody>
             </table>
@@ -168,5 +160,20 @@
 
         <footer>© 2026 Equilibrium Terapias Energéticas. Todos os direitos reservados.</footer>
     </main>
+
+    <script>
+        function filtrarClientes() {
+            const input = document.getElementById('buscaCliente').value.toLowerCase();
+            const linhas = document.querySelectorAll('#tabelaClientes tr');
+            linhas.forEach(linha => {
+                const texto = linha.textContent.toLowerCase();
+                linha.style.display = texto.includes(input) ? '' : 'none';
+            });
+        }
+
+        function abrirNovoCliente() {
+            window.location.href = 'ficha-cliente.html?novo=true';
+        }
+    </script>
 </body>
 </html>
