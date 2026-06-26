@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha do Cliente - Equilibrium Terapias Energéticas</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { display: flex; background-color: #f4f7f6; color: #333; min-height: 100vh; }
+        aside { width: 260px; background-color: #3d1d5f; height: 100vh; position: fixed; display: flex; flex-direction: column; color: white; z-index: 1000; }
+        .sidebar-header { padding: 30px 25px; text-align: center; }
+        .sidebar-header img { max-width: 180px; height: auto; }
+        nav { flex-grow: 1; margin-top: 20px; }
+        .nav-link { display: flex; align-items: center; padding: 12px 25px; text-decoration: none; color: rgba(255,255,255,0.7); transition: all 0.3s; font-size: 15px; }
+        .nav-link i { margin-right: 15px; font-style: normal; font-size: 18px; }
+        .nav-link:hover { color: white; background-color: rgba(255,255,255,0.1); }
+        .nav-link.active { background-color: #d4af37; color: #3d1d5f; font-weight: 600; }
+        .user-profile { padding: 20px 25px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; }
+        .avatar { width: 35px; height: 35px; background-color: #d4af37; color: #3d1d5f; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 12px; }
+        .user-info span { display: block; font-size: 14px; }
+        .user-info small { font-size: 11px; color: rgba(255,255,255,0.5); }
+        main { margin-left: 260px; flex-grow: 1; padding: 30px; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
+        .header-title h2 { color: #3d1d5f; font-size: 24px; }
+        .header-title p { font-size: 14px; color: #777; margin-top: 5px; }
+        .header-actions { display: flex; gap: 10px; }
+        .btn { padding: 10px 20px; border-radius: 8px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-gold { background-color: #d4af37; color: #3d1d5f; }
+        .btn-gold:hover { background-color: #c5a030; }
+        .btn-outline { background: transparent; border: 2px solid #3d1d5f; color: #3d1d5f; }
+        .btn-outline:hover { background: #3d1d5f; color: white; }
+        .btn-sm { padding: 6px 14px; font-size: 12px; }
+        .btn-danger { background-color: #dc3545; color: white; }
+        .btn-danger:hover { background-color: #c82333; }
+        .btn-success { background-color: #28a745; color: white; }
+        .btn-success:hover { background-color: #218838; }
+
+        /* Breadcrumb */
+        .breadcrumb { font-size: 13px; color: #999; margin-bottom: 20px; }
+        .breadcrumb a { color: #3d1d5f; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+
+        /* Grid da ficha */
+        .ficha-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .ficha-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .ficha-card h4 { color: #3d1d5f; font-size: 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .ficha-card.full-width { grid-column: 1 / -1; }
+
+        /* Dados pessoais */
+        .info-row { display: flex; margin-bottom: 12px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; }
+        .info-label { width: 120px; font-size: 13px; color: #777; font-weight: 500; }
+        .info-value { flex: 1; font-size: 14px; color: #333; }
+
+        /* Tabela de atendimentos */
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        thead th { background-color: #3d1d5f; color: white; padding: 12px 15px; text-align: left; font-weight: 600; font-size: 13px; }
+        tbody td { padding: 12px 15px; border-bottom: 1px solid #eee; }
+        tbody tr:hover { background-color: #f9f5ff; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+        .badge-success { background-color: #d4edda; color: #155724; }
+        .badge-warning { background-color: #fff3cd; color: #856404; }
+        .badge-info { background-color: #d1ecf1; color: #0c5460; }
+
+        /* Financeiro */
+        .finance-resumo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
+        .finance-item { text-align: center; padding: 15px; background: #f8f9fa; border-radius: 8px; }
+        .finance-item .valor { font-size: 22px; font-weight: 700; color: #3d1d5f; }
+        .finance-item .label { font-size: 12px; color: #777; margin-top: 5px; }
+        .finance-item .positivo { color: #28a745; }
+        .finance-item .negativo { color: #dc3545; }
+
+        /* Anotações */
+        textarea { width: 100%; min-height: 120px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; resize: vertical; outline: none; font-family: inherit; }
+        textarea:focus { border-color: #d4af37; }
+
+        /* Modal de relatórios */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: white; border-radius: 12px; padding: 30px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; }
+        .modal h3 { color: #3d1d5f; margin-bottom: 20px; }
+        .modal-option { display: flex; align-items: center; padding: 15px; border: 1px solid #eee; border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: all 0.3s; }
+        .modal-option:hover { border-color: #d4af37; background: #fffdf5; }
+        .modal-option .icon { font-size: 24px; margin-right: 15px; }
+        .modal-option .text h5 { font-size: 14px; color: #333; }
+        .modal-option .text p { font-size: 12px; color: #777; }
+        .modal-close { float: right; background: none; border: none; font-size: 24px; cursor: pointer; color: #999; }
+
+        /* Responsivo */
+        @media (max-width: 1024px) {
+            .ficha-grid { grid-template-columns: 1fr; }
+            .finance-resumo { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            aside { width: 70px; }
+            .sidebar-header h1, .sidebar-header span, .nav-text, .user-info { display: none; }
+            .sidebar-header img { max-width: 50px; }
+            .nav-link { justify-content: center; padding: 15px 0; }
+            .nav-link i { margin-right: 0; }
+            main { margin-left: 70px; padding: 15px; }
+            header { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <aside>
+        <div class="sidebar-header">
+            <img src="Equilibrium.logo.png" alt="Equilibrium">
+        </div>
+        <nav>
+            <a href="visao-geral.html" class="nav-link"><i>📊</i> <span class="nav-text">Visão Geral</span></a>
+            <a href="clientes.html" class="nav-link active"><i>👥</i> <span class="nav-text">Clientes</span></a>
+            <a href="agenda.html" class="nav-link"><i>📅</i> <span class="nav-text">Agenda</span></a>
+            <a href="atendimentos.html" class="nav-link"><i>🩺</i> <span class="nav-text">Atendimentos</span></a>
+            <a href="tratamentos.html" class="nav-link"><i>🔬</i> <span class="nav-text">Tratamentos</span></a>
+            <a href="agenda-graficos.html" class="nav-link"><i>📈</i> <span class="nav-text">Agenda Gráficos</span></a>
+            <a href="financeiro.html" class="nav-link"><i>💰</i> <span class="nav-text">Financeiro</span></a>
+        </nav>
+        <div class="user-profile">
+            <div class="avatar">S</div>
+            <div class="user-info">
+                <span>Simone</span>
+                <small>Terapeuta</small>
+            </div>
+        </div>
+    </aside>
+
+    <main>
+        <div class="breadcrumb">
+            <a href="clientes.html">Clientes</a> > Ficha do Cliente
+        </div>
+
+        <header>
+            <div class="header-title">
+                <h2>👤 Maria da Silva</h2>
+                <p>Cliente desde 15/01/2026</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-gold" onclick="abrirModalRelatorio()">📄 Baixar Relatório</button>
+                <button class="btn btn-outline">✏️ Editar</button>
+            </div>
+        </header>
+
+        <div class="ficha-grid">
+            <!-- Dados Pessoais -->
+            <div class="ficha-card">
+                <h4>📋 Dados Pessoais</h4>
+                <div class="info-row">
+                    <span class="info-label">Nome completo</span>
+                    <span class="info-value">Maria da Silva</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Telefone</span>
+                    <span class="info-value">(11) 99999-8888</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email</span>
+                    <span class="info-value">maria.silva@email.com</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Endereço</span>
+                    <span class="info-value">Rua das Flores, 123 - São Paulo, SP</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Data de nasc.</span>
+                    <span class="info-value">15/03/1985</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Indicação</span>
+                    <span class="info-value">João Pereira</span>
+                </div>
+            </div>
+
+            <!-- Financeiro -->
+            <div class="ficha-card">
+                <h4>💰 Financeiro</h4>
+                <div class="finance-resumo">
+                    <div class="finance-item">
+                        <div class="valor positivo">R$ 850</div>
+                        <div class="label">Total pago</div>
+                    </div>
+                    <div class="finance-item">
+                        <div class="valor negativo">R$ 200</div>
+                        <div class="label">Pendente</div>
+                    </div>
+                    <div class="finance-item">
+                        <div class="valor">R$ 150</div>
+                        <div class="label">Última sessão</div>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr><th>Data</th><th>Valor</th><th>Forma</th><th>Status</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>20/06/2026</td><td>R$ 150</td><td>Pix</td><td><span class="badge badge-success">Pago</span></td></tr>
+                        <tr><td>10/06/2026</td><td>R$ 150</td><td>Pix</td><td><span class="badge badge-success">Pago</span></td></tr>
+                        <tr><td>25/05/2026</td><td>R$ 200</td><td>Dinheiro</td><td><span class="badge badge-warning">Pendente</span></td></tr>
+                        <tr><td>15/05/2026</td><td>R$ 150</td><td>Pix</td><td><span class="badge badge-success">Pago</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Histórico de Atendimentos -->
+            <div class="ficha-card full-width">
+                <h4>🩺 Histórico de Atendimentos</h4>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr><th>Data</th><th>Tipo</th><th>Duração</th><th>Terapeuta</th><th>Observações</th><th>Status</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>20/06/2026</td>
+                                <td>Reiki</td>
+                                <td>60 min</td>
+                                <td>Simone</td>
+                                <td>Paciente relatou melhora na ansiedade</td>
+                                <td><span class="badge badge-success">Concluído</span></td>
+                            </tr>
+                            <tr>
+                                <td>10/06/2026</td>
+                                <td>Cromoterapia</td>
+                                <td>45 min</td>
+                                <td>Simone</td>
+                                <td>Sessão com foco em equilíbrio emocional</td>
+                                <td><span class="badge badge-success">Concluído</span></td>
+                            </tr>
+                            <tr>
+                                <td>25/05/2026</td>
+                                <td>Barras Access</td>
+                                <td>60 min</td>
+                                <td>Ana</td>
+                                <td>Primeira sessão, paciente respondeu bem</td>
+                                <td><span class="badge badge-success">Concluído</span></td>
+                            </tr>
+                            <tr>
+                                <td>15/05/2026</td>
+                                <td>Reiki</td>
+                                <td>60 min</td>
+                                <td>Simone</td>
+                                <td>Sessão inicial de avaliação</td>
+                                <td><span class="badge badge-success">Concluído</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tratamentos -->
+            <div class="ficha-card">
+                <h4>🔬 Tratamentos</h4>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr><th>Tratamento</th><th>Início</th><th>Sessões</th><th>Status</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Reiki</td><td>15/05/2026</td><td>3/10</td><td><span class="badge badge-info">Em andamento</span></td></tr>
+                            <tr><td>Cromoterapia</td><td>10/06/2026</td><td>1/5</td><td><span class="badge badge-info">Em andamento</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Anotações da Terapeuta -->
+            <div class="ficha-card">
+                <h4>📝 Anotações da Terapeuta</h4>
+                <textarea placeholder="Observações livres sobre o cliente...">Paciente responde bem a sessões de Reiki. Relatou melhora significativa na qualidade do sono após a segunda sessão. Sensível a estímulos visuais durante cromoterapia. Próximo passo: avaliar necessidade de sessão focada em limpeza energética do ambiente.</textarea>
+                <div style="margin-top: 10px; text-align: right;">
+                    <button class="btn btn-sm btn-gold">💾 Salvar anotações</button>
+                </div>
+            </div>
+        </div>
+
+        <footer style="text-align: center; font-size: 12px; color: #999; margin-top: 40px; padding-bottom: 20px;">
+            © 2026 Equilibrium Terapias Energéticas. Todos os direitos reservados.
+        </footer>
+    </main>
+
+    <!-- Modal de Relatórios -->
+    <div class="modal-overlay" id="modalRelatorios">
+        <div class="modal">
+            <button class="modal-close" onclick="fecharModalRelatorio()">✕</button>
+            <h3>📄 Baixar Relatório</h3>
+            <p style="color: #777; font-size: 14px; margin-bottom: 20px;">Escolha o tipo de relatório para download:</p>
+            
+            <div class="modal-option" onclick="baixarRelatorio('individual')">
+                <div class="icon">👤</div>
+                <div class="text">
+                    <h5>Relatório Individual</h5>
+                    <p>Ficha completa deste cliente com todos os dados</p>
+                </div>
+            </div>
+            <div class="modal-option" onclick="baixarRelatorio('atendimentos')">
+                <div class="icon">📅</div>
+                <div class="text">
+                    <h5>Relatório de Atendimentos do Mês</h5>
+                    <p>Todos os atendimentos realizados no período</p>
+                </div>
+            </div>
+            <div class="modal-option" onclick="baixarRelatorio('financeiro')">
+                <div class="icon">💰</div>
+                <div class="text">
+                    <h5>Relatório Financeiro</h5>
+                    <p>Faturamento, pendências e formas de pagamento</p>
+                </div>
+            </div>
+            <div class="modal-option" onclick="baixarRelatorio('geral')">
+                <div class="icon">📊</div>
+                <div class="text">
+                    <h5>Relatório Geral de Clientes</h5>
+                    <p>Todos os clientes com dados completos (backup)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function abrirModalRelatorio() {
+            document.getElementById('modalRelatorios').classList.add('active');
+        }
+        function fecharModalRelatorio() {
+            document.getElementById('modalRelatorios').classList.remove('active');
+        }
+        function baixarRelatorio(tipo) {
+            fecharModalRelatorio();
+            const nomes = {
+                individual: 'Relatorio_Individual_Maria_da_Silva.pdf',
+                atendimentos: 'Relatorio_Atendimentos_Junho_2026.pdf',
+                financeiro: 'Relatorio_Financeiro_Junho_2026.pdf',
+                geral: 'Relatorio_Geral_Clientes_Junho_2026.pdf'
+            };
+            alert(`✅ Relatório "${nomes[tipo]}" gerado com sucesso!\n\nEm breve você poderá baixar o arquivo.`);
+        }
+        // Fechar modal clicando fora
+        document.getElementById('modalRelatorios').addEventListener('click', function(e) {
+            if (e.target === this) fecharModalRelatorio();
+        });
+    </script>
+</body>
+</html>
