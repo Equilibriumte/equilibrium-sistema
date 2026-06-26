@@ -191,24 +191,43 @@
         }
 
         function salvarCliente() {
-            const nome = document.getElementById('nome').value;
-            const whats = document.getElementById('whatsapp').value.replace(/\D/g, '');
-            const email = document.getElementById('email').value;
+            const nome = document.getElementById('nome').value.trim();
+            const whatsRaw = document.getElementById('whatsapp').value.replace(/\D/g, '');
+            const email = document.getElementById('email').value.trim();
 
             if (!nome) { alert('Preencha o nome do cliente.'); return; }
-            if (whats.length !== 13) { alert('WhatsApp inválido. Digite 13 dígitos (ex: 5511999998888).'); return; }
+            if (whatsRaw.length !== 13) { alert('WhatsApp inválido. Digite 13 dígitos (ex: 5511999998888).'); return; }
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('Email inválido.'); return; }
 
-            const whatsFormatado = '+' + whats.slice(0,2) + ' (' + whats.slice(2,4) + ') ' + whats.slice(4,9) + '-' + whats.slice(9);
-            const rua = document.getElementById('rua').value || '-';
-            const numero = document.getElementById('numero').value || '-';
-            const bairro = document.getElementById('bairro').value || '-';
-            const cidade = document.getElementById('cidade').value || '-';
-            const estado = document.getElementById('estado').value || '-';
-            const cep = document.getElementById('cep').value || '-';
+            const whatsFormatado = '+' + whatsRaw.slice(0,2) + ' (' + whatsRaw.slice(2,4) + ') ' + whatsRaw.slice(4,9) + '-' + whatsRaw.slice(9);
+            const rua = document.getElementById('rua').value.trim() || '-';
+            const numero = document.getElementById('numero').value.trim() || '-';
+            const bairro = document.getElementById('bairro').value.trim() || '-';
+            const cidade = document.getElementById('cidade').value.trim() || '-';
+            const estado = document.getElementById('estado').value.trim() || '-';
+            const cep = document.getElementById('cep').value.trim() || '-';
             const endereco = rua + ', ' + numero + ' - ' + bairro + ', ' + cidade + ' - ' + estado + ', ' + cep;
+            const instagram = document.getElementById('instagram').value.trim() || '-';
+            const nascimento = document.getElementById('nascimento').value || '-';
+            const indicacao = document.getElementById('indicacao').value.trim() || '-';
 
-            alert('✅ Cliente cadastrado com sucesso!\n\nNome: ' + nome + '\nWhatsApp: ' + whatsFormatado + '\nEmail: ' + email + '\nEndereço: ' + endereco + '\n\nOs dados foram salvos localmente.');
+            const novoCliente = {
+                nome: nome,
+                whatsapp: whatsFormatado,
+                email: email,
+                instagram: instagram,
+                endereco: endereco,
+                nascimento: nascimento,
+                indicacao: indicacao,
+                statusPagamento: 'Em dia',
+                dataCadastro: new Date().toLocaleDateString('pt-BR')
+            };
+
+            let clientes = JSON.parse(localStorage.getItem('equilibriumClientes')) || [];
+            clientes.push(novoCliente);
+            localStorage.setItem('equilibriumClientes', JSON.stringify(clientes));
+
+            alert('✅ Cliente cadastrado com sucesso!');
             window.location.href = 'clientes.html';
         }
     </script>
