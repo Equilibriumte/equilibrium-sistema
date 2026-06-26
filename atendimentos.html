@@ -416,18 +416,18 @@
           <div class="card">
             <h3>2. Análise Inicial</h3>
             <div class="form-grid">
-              <div class="form-group">
-                <label for="bovis">Bovis</label>
-                <input type="number" id="bovis" />
-              </div>
-              <div class="form-group">
-                <label for="tamanhoAura">Tamanho da Aura (%)</label>
-                <input type="number" id="tamanhoAura" min="0" max="100" />
-              </div>
-              <div class="form-group">
-                <label for="protecaoAura">Proteção da Aura (%)</label>
-                <input type="number" id="protecaoAura" min="0" max="100" />
-              </div>
+                      <div class="form-group">
+            <label for="bovis">Bovis</label>
+            <input type="text" id="bovis" maxlength="5" placeholder="Ex: 12000" oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+          </div>
+          <div class="form-group">
+            <label for="tamanhoAura">Tamanho da Aura (%)</label>
+            <input type="text" id="tamanhoAura" maxlength="3" placeholder="Ex: 75" oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+          </div>
+          <div class="form-group">
+            <label for="protecaoAura">Proteção da Aura (%)</label>
+            <input type="text" id="protecaoAura" maxlength="3" placeholder="Ex: 80" oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+          </div>
               <div class="form-group full">
                 <label>Chakras</label>
                 <div class="chakras-grid">
