@@ -8,21 +8,24 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { display: flex; background-color: #f4f7f6; color: #333; min-height: 100vh; }
         aside { width: 260px; background-color: #3d1d5f; height: 100vh; position: fixed; display: flex; flex-direction: column; color: white; z-index: 1000; }
-        .sidebar-header { padding: 30px 25px; text-align: center; }
+        .sidebar-header { padding: 25px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .sidebar-header img { max-width: 180px; height: auto; }
-        nav { flex-grow: 1; margin-top: 20px; }
-        .nav-link { display: flex; align-items: center; padding: 12px 25px; text-decoration: none; color: rgba(255,255,255,0.7); transition: all 0.3s; font-size: 15px; }
-        .nav-link i { margin-right: 15px; font-style: normal; font-size: 18px; }
-        .nav-link:hover { color: white; background-color: rgba(255,255,255,0.1); }
-        .nav-link.active { background-color: #d4af37; color: #3d1d5f; font-weight: 600; }
-        .user-profile { padding: 20px 25px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; }
-        .avatar { width: 35px; height: 35px; background-color: #d4af37; color: #3d1d5f; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 12px; }
-        .user-info span { display: block; font-size: 14px; }
+        nav { flex-grow: 1; padding: 10px 0; overflow-y: auto; }
+        .nav-link { display: flex; align-items: center; padding: 12px 22px; text-decoration: none; color: rgba(255,255,255,0.7); transition: all 0.3s; font-size: 14px; border-left: 3px solid transparent; }
+        .nav-link i { margin-right: 14px; font-style: normal; font-size: 18px; width: 22px; text-align: center; }
+        .nav-link:hover { color: white; background-color: rgba(255,255,255,0.08); border-left-color: #d4af37; }
+        .nav-link.active { background-color: rgba(212,175,55,0.15); color: #d4af37; border-left-color: #d4af37; font-weight: 600; }
+        .user-profile { padding: 15px 22px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; }
+        .avatar { width: 36px; height: 36px; background: linear-gradient(135deg, #d4af37, #b8962e); color: #3d1d5f; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; margin-right: 12px; }
+        .user-info span { display: block; font-size: 14px; font-weight: 500; }
         .user-info small { font-size: 11px; color: rgba(255,255,255,0.5); }
-        main { margin-left: 260px; flex-grow: 1; padding: 30px; }
+        main { margin-left: 260px; flex-grow: 1; padding: 30px; min-height: 100vh; }
+        .breadcrumb { font-size: 13px; color: #999; margin-bottom: 20px; }
+        .breadcrumb a { color: #3d1d5f; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
         .header-title h2 { color: #3d1d5f; font-size: 24px; }
-        .header-title p { font-size: 14px; color: #777; margin-top: 5px; }
+        .header-title p { font-size: 14px; color: #888; margin-top: 4px; }
         .header-actions { display: flex; gap: 10px; }
         .btn { padding: 10px 20px; border-radius: 8px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
         .btn-gold { background-color: #d4af37; color: #3d1d5f; }
@@ -34,24 +37,22 @@
         .btn-danger:hover { background-color: #c82333; }
         .btn-success { background-color: #28a745; color: white; }
         .btn-success:hover { background-color: #218838; }
-
-        /* Breadcrumb */
-        .breadcrumb { font-size: 13px; color: #999; margin-bottom: 20px; }
-        .breadcrumb a { color: #3d1d5f; text-decoration: none; }
-        .breadcrumb a:hover { text-decoration: underline; }
-
-        /* Grid da ficha */
         .ficha-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
         .ficha-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .ficha-card h4 { color: #3d1d5f; font-size: 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
         .ficha-card.full-width { grid-column: 1 / -1; }
-
-        /* Dados pessoais */
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 13px; color: #555; font-weight: 500; margin-bottom: 5px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; transition: border 0.3s; font-family: inherit; }
+        .form-group input:focus, .form-group select:focus { border-color: #d4af37; }
+        .form-group input.error { border-color: #dc3545; }
+        .form-group .error-msg { font-size: 11px; color: #dc3545; margin-top: 3px; display: none; }
+        .form-group input.error + .error-msg { display: block; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .form-row-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; }
         .info-row { display: flex; margin-bottom: 12px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; }
         .info-label { width: 120px; font-size: 13px; color: #777; font-weight: 500; }
         .info-value { flex: 1; font-size: 14px; color: #333; }
-
-        /* Tabela de atendimentos */
         .table-responsive { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; font-size: 14px; }
         thead th { background-color: #3d1d5f; color: white; padding: 12px 15px; text-align: left; font-weight: 600; font-size: 13px; }
@@ -61,20 +62,15 @@
         .badge-success { background-color: #d4edda; color: #155724; }
         .badge-warning { background-color: #fff3cd; color: #856404; }
         .badge-info { background-color: #d1ecf1; color: #0c5460; }
-
-        /* Financeiro */
+        .badge-danger { background-color: #f8d7da; color: #721c24; }
         .finance-resumo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
         .finance-item { text-align: center; padding: 15px; background: #f8f9fa; border-radius: 8px; }
         .finance-item .valor { font-size: 22px; font-weight: 700; color: #3d1d5f; }
         .finance-item .label { font-size: 12px; color: #777; margin-top: 5px; }
         .finance-item .positivo { color: #28a745; }
         .finance-item .negativo { color: #dc3545; }
-
-        /* Anotações */
         textarea { width: 100%; min-height: 120px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; resize: vertical; outline: none; font-family: inherit; }
         textarea:focus { border-color: #d4af37; }
-
-        /* Modal de relatórios */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
         .modal-overlay.active { display: flex; }
         .modal { background: white; border-radius: 12px; padding: 30px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; }
@@ -85,20 +81,17 @@
         .modal-option .text h5 { font-size: 14px; color: #333; }
         .modal-option .text p { font-size: 12px; color: #777; }
         .modal-close { float: right; background: none; border: none; font-size: 24px; cursor: pointer; color: #999; }
-
-        /* Responsivo */
-        @media (max-width: 1024px) {
-            .ficha-grid { grid-template-columns: 1fr; }
-            .finance-resumo { grid-template-columns: 1fr; }
-        }
+        footer { text-align: center; font-size: 12px; color: #aaa; padding: 20px 0; margin-top: 20px; }
+        @media (max-width: 1024px) { .ficha-grid, .form-row, .form-row-3 { grid-template-columns: 1fr; } .finance-resumo { grid-template-columns: 1fr; } }
         @media (max-width: 768px) {
-            aside { width: 70px; }
-            .sidebar-header h1, .sidebar-header span, .nav-text, .user-info { display: none; }
-            .sidebar-header img { max-width: 50px; }
-            .nav-link { justify-content: center; padding: 15px 0; }
+            aside { width: 65px; }
+            .sidebar-header img { max-width: 45px; }
+            .nav-link { justify-content: center; padding: 14px 0; }
             .nav-link i { margin-right: 0; }
-            main { margin-left: 70px; padding: 15px; }
-            header { flex-direction: column; align-items: flex-start; }
+            .nav-text, .user-info { display: none; }
+            .user-profile { justify-content: center; }
+            .avatar { margin-right: 0; }
+            main { margin-left: 65px; padding: 15px; }
         }
     </style>
 </head>
@@ -127,17 +120,19 @@
 
     <main>
         <div class="breadcrumb">
-            <a href="clientes.html">Clientes</a> > Ficha do Cliente
+            <a href="clientes.html">Clientes</a> > <span id="breadcrumbNome">Nova Cliente</span>
         </div>
 
         <header>
             <div class="header-title">
-                <h2>👤 Maria da Silva</h2>
-                <p>Cliente desde 15/01/2026</p>
+                <h2 id="tituloFicha">👤 Nova Cliente</h2>
+                <p id="subtituloFicha">Preencha os dados para cadastrar</p>
             </div>
             <div class="header-actions">
-                <button class="btn btn-gold" onclick="abrirModalRelatorio()">📄 Baixar Relatório</button>
-                <button class="btn btn-outline">✏️ Editar</button>
+                <button class="btn btn-gold" id="btnRelatorio" onclick="abrirModalRelatorio()" style="display:none">📄 Baixar Relatório</button>
+                <button class="btn btn-outline" id="btnEditar" onclick="ativarEdicao()">✏️ Editar</button>
+                <button class="btn btn-success" id="btnSalvar" onclick="salvarDados()" style="display:none">💾 Salvar</button>
+                <button class="btn btn-danger" id="btnCancelar" onclick="cancelarEdicao()" style="display:none">✕ Cancelar</button>
             </div>
         </header>
 
@@ -145,29 +140,58 @@
             <!-- Dados Pessoais -->
             <div class="ficha-card">
                 <h4>📋 Dados Pessoais</h4>
-                <div class="info-row">
-                    <span class="info-label">Nome completo</span>
-                    <span class="info-value">Maria da Silva</span>
+                <div id="dadosVisualizacao">
+                    <div class="info-row"><span class="info-label">Nome completo</span><span class="info-value" id="vNome">Maria da Silva</span></div>
+                    <div class="info-row"><span class="info-label">WhatsApp</span><span class="info-value" id="vWhatsApp">+55 (11) 99999-8888</span></div>
+                    <div class="info-row"><span class="info-label">Email</span><span class="info-value" id="vEmail">maria.silva@email.com</span></div>
+                    <div class="info-row"><span class="info-label">Instagram</span><span class="info-value" id="vInstagram">@maria_silva</span></div>
+                    <div class="info-row"><span class="info-label">Endereço</span><span class="info-value" id="vEndereco">Rua das Flores, 123 - Centro, São Paulo - SP, 01001-000</span></div>
+                    <div class="info-row"><span class="info-label">Data de nasc.</span><span class="info-value" id="vNascimento">15/03/1985</span></div>
+                    <div class="info-row"><span class="info-label">Indicação</span><span class="info-value" id="vIndicacao">João Pereira</span></div>
                 </div>
-                <div class="info-row">
-                    <span class="info-label">Telefone</span>
-                    <span class="info-value">(11) 99999-8888</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Email</span>
-                    <span class="info-value">maria.silva@email.com</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Endereço</span>
-                    <span class="info-value">Rua das Flores, 123 - São Paulo, SP</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Data de nasc.</span>
-                    <span class="info-value">15/03/1985</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Indicação</span>
-                    <span class="info-value">João Pereira</span>
+                <div id="dadosEdicao" style="display:none">
+                    <div class="form-group">
+                        <label>Nome completo</label>
+                        <input type="text" id="eNome" value="Maria da Silva">
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp</label>
+                        <input type="text" id="eWhatsApp" placeholder="Digite o número com DDI (ex: 5511999998888)" maxlength="20" oninput="formatarWhatsApp(this)">
+                        <div class="error-msg">Formato inválido. Digite apenas números começando com 55</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="eEmail" value="maria.silva@email.com" oninput="validarEmail(this)">
+                        <div class="error-msg">Formato de email inválido</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Instagram</label>
+                        <input type="text" id="eInstagram" value="@maria_silva" placeholder="@usuario" oninput="validarInstagram(this)">
+                        <div class="error-msg">Formato inválido. Deve começar com @</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Endereço</label>
+                        <div class="form-row-3">
+                            <input type="text" id="eRua" placeholder="Rua" value="Rua das Flores" style="grid-column:1">
+                            <input type="text" id="eNumero" placeholder="Nº" value="123" style="grid-column:2">
+                            <input type="text" id="eBairro" placeholder="Bairro" value="Centro" style="grid-column:3">
+                        </div>
+                        <div class="form-row" style="margin-top:10px">
+                            <input type="text" id="eCidade" placeholder="Cidade" value="São Paulo">
+                            <input type="text" id="eEstado" placeholder="Estado" value="SP">
+                        </div>
+                        <div class="form-group" style="margin-top:10px">
+                            <input type="text" id="eCEP" placeholder="CEP" value="01001-000" maxlength="9" oninput="formatarCEP(this)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Data de nascimento</label>
+                        <input type="date" id="eNascimento" value="1985-03-15">
+                    </div>
+                    <div class="form-group">
+                        <label>Indicação</label>
+                        <input type="text" id="eIndicacao" value="João Pereira" placeholder="Quem indicou?">
+                    </div>
                 </div>
             </div>
 
@@ -175,30 +199,21 @@
             <div class="ficha-card">
                 <h4>💰 Financeiro</h4>
                 <div class="finance-resumo">
-                    <div class="finance-item">
-                        <div class="valor positivo">R$ 850</div>
-                        <div class="label">Total pago</div>
-                    </div>
-                    <div class="finance-item">
-                        <div class="valor negativo">R$ 200</div>
-                        <div class="label">Pendente</div>
-                    </div>
-                    <div class="finance-item">
-                        <div class="valor">R$ 150</div>
-                        <div class="label">Última sessão</div>
-                    </div>
+                    <div class="finance-item"><div class="valor positivo" id="totalPago">R$ 850</div><div class="label">Total pago</div></div>
+                    <div class="finance-item"><div class="valor negativo" id="totalPendente">R$ 200</div><div class="label">Pendente</div></div>
+                    <div class="finance-item"><div class="valor" id="ultimaSessao">R$ 150</div><div class="label">Última sessão</div></div>
                 </div>
-                <table>
-                    <thead>
-                        <tr><th>Data</th><th>Valor</th><th>Forma</th><th>Status</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>20/06/2026</td><td>R$ 150</td><td>Pix</td><td><span class="badge badge-success">Pago</span></td></tr>
-                        <tr><td>10/06/2026</td><td>R$ 150</td><td>Pix</td><td><span class="badge badge-success">Pago</span></td></tr>
-                        <tr><td>25/05/2026</td><td>R$ 200</td><td>Dinheiro</td><td><span class="badge badge-warning">Pendente</span></td></tr>
-                        <tr><td>15/05/2026</td><td>R$ 150</td><td>Pix</td><td><span class="badge badge-success">Pago</span></td></tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table>
+                        <thead><tr><th>Data</th><th>Valor</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr><td>20/06/2026</td><td>R$ 150</td><td><span class="badge badge-success">Pago</span></td></tr>
+                            <tr><td>10/06/2026</td><td>R$ 150</td><td><span class="badge badge-success">Pago</span></td></tr>
+                            <tr><td>25/05/2026</td><td>R$ 200</td><td><span class="badge badge-warning">Pendente</span></td></tr>
+                            <tr><td>15/05/2026</td><td>R$ 150</td><td><span class="badge badge-success">Pago</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Histórico de Atendimentos -->
@@ -206,42 +221,12 @@
                 <h4>🩺 Histórico de Atendimentos</h4>
                 <div class="table-responsive">
                     <table>
-                        <thead>
-                            <tr><th>Data</th><th>Tipo</th><th>Duração</th><th>Terapeuta</th><th>Observações</th><th>Status</th></tr>
-                        </thead>
+                        <thead><tr><th>Data</th><th>Tipo</th><th>Duração</th><th>Terapeuta</th><th>Observações</th><th>Status</th></tr></thead>
                         <tbody>
-                            <tr>
-                                <td>20/06/2026</td>
-                                <td>Reiki</td>
-                                <td>60 min</td>
-                                <td>Simone</td>
-                                <td>Paciente relatou melhora na ansiedade</td>
-                                <td><span class="badge badge-success">Concluído</span></td>
-                            </tr>
-                            <tr>
-                                <td>10/06/2026</td>
-                                <td>Cromoterapia</td>
-                                <td>45 min</td>
-                                <td>Simone</td>
-                                <td>Sessão com foco em equilíbrio emocional</td>
-                                <td><span class="badge badge-success">Concluído</span></td>
-                            </tr>
-                            <tr>
-                                <td>25/05/2026</td>
-                                <td>Barras Access</td>
-                                <td>60 min</td>
-                                <td>Ana</td>
-                                <td>Primeira sessão, paciente respondeu bem</td>
-                                <td><span class="badge badge-success">Concluído</span></td>
-                            </tr>
-                            <tr>
-                                <td>15/05/2026</td>
-                                <td>Reiki</td>
-                                <td>60 min</td>
-                                <td>Simone</td>
-                                <td>Sessão inicial de avaliação</td>
-                                <td><span class="badge badge-success">Concluído</span></td>
-                            </tr>
+                            <tr><td>20/06/2026</td><td>Reiki</td><td>60 min</td><td>Simone</td><td>Melhora na ansiedade</td><td><span class="badge badge-success">Concluído</span></td></tr>
+                            <tr><td>10/06/2026</td><td>Cromoterapia</td><td>45 min</td><td>Simone</td><td>Equilíbrio emocional</td><td><span class="badge badge-success">Concluído</span></td></tr>
+                            <tr><td>25/05/2026</td><td>Barras Access</td><td>60 min</td><td>Ana</td><td>Primeira sessão</td><td><span class="badge badge-success">Concluído</span></td></tr>
+                            <tr><td>15/05/2026</td><td>Reiki</td><td>60 min</td><td>Simone</td><td>Sessão inicial</td><td><span class="badge badge-success">Concluído</span></td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -252,9 +237,7 @@
                 <h4>🔬 Tratamentos</h4>
                 <div class="table-responsive">
                     <table>
-                        <thead>
-                            <tr><th>Tratamento</th><th>Início</th><th>Sessões</th><th>Status</th></tr>
-                        </thead>
+                        <thead><tr><th>Tratamento</th><th>Início</th><th>Sessões</th><th>Status</th></tr></thead>
                         <tbody>
                             <tr><td>Reiki</td><td>15/05/2026</td><td>3/10</td><td><span class="badge badge-info">Em andamento</span></td></tr>
                             <tr><td>Cromoterapia</td><td>10/06/2026</td><td>1/5</td><td><span class="badge badge-info">Em andamento</span></td></tr>
@@ -263,80 +246,247 @@
                 </div>
             </div>
 
-            <!-- Anotações da Terapeuta -->
+            <!-- Anotações -->
             <div class="ficha-card">
                 <h4>📝 Anotações da Terapeuta</h4>
-                <textarea placeholder="Observações livres sobre o cliente...">Paciente responde bem a sessões de Reiki. Relatou melhora significativa na qualidade do sono após a segunda sessão. Sensível a estímulos visuais durante cromoterapia. Próximo passo: avaliar necessidade de sessão focada em limpeza energética do ambiente.</textarea>
-                <div style="margin-top: 10px; text-align: right;">
-                    <button class="btn btn-sm btn-gold">💾 Salvar anotações</button>
+                <textarea id="anotacoes" disabled>Paciente responde bem a sessões de Reiki. Relatou melhora significativa na qualidade do sono após a segunda sessão.</textarea>
+                <div style="margin-top:10px;text-align:right">
+                    <button class="btn btn-sm btn-gold" id="btnSalvarAnotacoes" onclick="salvarAnotacoes()" style="display:none">💾 Salvar anotações</button>
                 </div>
             </div>
         </div>
 
-        <footer style="text-align: center; font-size: 12px; color: #999; margin-top: 40px; padding-bottom: 20px;">
-            © 2026 Equilibrium Terapias Energéticas. Todos os direitos reservados.
-        </footer>
+        <footer>© 2026 Equilibrium Terapias Energéticas. Todos os direitos reservados.</footer>
     </main>
 
-    <!-- Modal de Relatórios -->
+    <!-- Modal Relatórios -->
     <div class="modal-overlay" id="modalRelatorios">
         <div class="modal">
             <button class="modal-close" onclick="fecharModalRelatorio()">✕</button>
             <h3>📄 Baixar Relatório</h3>
-            <p style="color: #777; font-size: 14px; margin-bottom: 20px;">Escolha o tipo de relatório para download:</p>
-            
+            <p style="color:#777;font-size:14px;margin-bottom:20px">Escolha o tipo de relatório:</p>
             <div class="modal-option" onclick="baixarRelatorio('individual')">
                 <div class="icon">👤</div>
-                <div class="text">
-                    <h5>Relatório Individual</h5>
-                    <p>Ficha completa deste cliente com todos os dados</p>
-                </div>
+                <div class="text"><h5>Relatório Individual</h5><p>Ficha completa deste cliente</p></div>
             </div>
             <div class="modal-option" onclick="baixarRelatorio('atendimentos')">
                 <div class="icon">📅</div>
-                <div class="text">
-                    <h5>Relatório de Atendimentos do Mês</h5>
-                    <p>Todos os atendimentos realizados no período</p>
-                </div>
+                <div class="text"><h5>Relatório de Atendimentos</h5><p>Atendimentos do período</p></div>
             </div>
             <div class="modal-option" onclick="baixarRelatorio('financeiro')">
                 <div class="icon">💰</div>
-                <div class="text">
-                    <h5>Relatório Financeiro</h5>
-                    <p>Faturamento, pendências e formas de pagamento</p>
-                </div>
+                <div class="text"><h5>Relatório Financeiro</h5><p>Faturamento e pendências</p></div>
             </div>
             <div class="modal-option" onclick="baixarRelatorio('geral')">
                 <div class="icon">📊</div>
-                <div class="text">
-                    <h5>Relatório Geral de Clientes</h5>
-                    <p>Todos os clientes com dados completos (backup)</p>
-                </div>
+                <div class="text"><h5>Relatório Geral</h5><p>Todos os clientes (backup)</p></div>
             </div>
         </div>
     </div>
 
     <script>
+        let modoEdicao = false;
+        const params = new URLSearchParams(window.location.search);
+        const ehNovo = params.get('novo') === 'true';
+
+        if (ehNovo) {
+            document.getElementById('tituloFicha').textContent = '👤 Nova Cliente';
+            document.getElementById('subtituloFicha').textContent = 'Preencha os dados para cadastrar';
+            document.getElementById('breadcrumbNome').textContent = 'Nova Cliente';
+            document.getElementById('btnRelatorio').style.display = 'none';
+            ativarEdicao();
+        } else {
+            document.getElementById('tituloFicha').textContent = '👤 Maria da Silva';
+            document.getElementById('subtituloFicha').textContent = 'Cliente desde 15/01/2026';
+            document.getElementById('breadcrumbNome').textContent = 'Maria da Silva';
+            document.getElementById('btnRelatorio').style.display = '';
+        }
+
+        function formatarWhatsApp(input) {
+            let val = input.value.replace(/\D/g, '');
+            if (val.length > 0 && val[0] !== '5') val = '55' + val;
+            if (val.length > 13) val = val.slice(0, 13);
+            input.value = val;
+            if (val.length === 13) {
+                input.classList.remove('error');
+                const formatado = '+' + val.slice(0,2) + ' (' + val.slice(2,4) + ') ' + val.slice(4,9) + '-' + val.slice(9);
+                document.getElementById('vWhatsApp').textContent = formatado;
+            } else if (val.length > 0) {
+                input.classList.add('error');
+            } else {
+                input.classList.remove('error');
+            }
+        }
+
+        function validarEmail(input) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (input.value && !regex.test(input.value)) {
+                input.classList.add('error');
+            } else {
+                input.classList.remove('error');
+            }
+        }
+
+        function validarInstagram(input) {
+            let val = input.value;
+            if (val && !val.startsWith('@')) {
+                input.classList.add('error');
+            } else {
+                input.classList.remove('error');
+            }
+        }
+
+        function formatarCEP(input) {
+            let val = input.value.replace(/\D/g, '');
+            if (val.length > 5) val = val.slice(0,5) + '-' + val.slice(5,8);
+            input.value = val;
+        }
+
+        function ativarEdicao() {
+            modoEdicao = true;
+            document.getElementById('dadosVisualizacao').style.display = 'none';
+            document.getElementById('dadosEdicao').style.display = 'block';
+            document.getElementById('btnEditar').style.display = 'none';
+            document.getElementById('btnSalvar').style.display = '';
+            document.getElementById('btnCancelar').style.display = '';
+            document.getElementById('anotacoes').disabled = false;
+            document.getElementById('btnSalvarAnotacoes').style.display = '';
+        }
+
+        function cancelarEdicao() {
+            modoEdicao = false;
+            document.getElementById('dadosVisualizacao').style.display = 'block';
+            document.getElementById('dadosEdicao').style.display = 'none';
+            document.getElementById('btnEditar').style.display = '';
+            document.getElementById('btnSalvar').style.display = 'none';
+            document.getElementById('btnCancelar').style.display = 'none';
+            document.getElementById('anotacoes').disabled = true;
+            document.getElementById('btnSalvarAnotacoes').style.display = 'none';
+        }
+
+        function salvarDados() {
+            const nome = document.getElementById('eNome').value;
+            const whats = document.getElementById('eWhatsApp').value.replace(/\D/g, '');
+            const email = document.getElementById('eEmail').value;
+            const insta = document.getElementById('eInstagram').value;
+            const rua = document.getElementById('eRua').value;
+            const numero = document.getElementById('eNumero').value;
+            const bairro = document.getElementById('eBairro').value;
+            const cidade = document.getElementById('eCidade').value;
+            const estado = document.getElementById('eEstado').value;
+            const cep = document.getElementById('eCEP').value;
+
+            if (!nome || whats.length < 13 || !email) {
+                alert('Preencha os campos obrigatórios: Nome, WhatsApp (13 dígitos) e Email.');
+                return;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Email inválido. Digite um email no formato correto (ex: nome@email.com).');
+                return;
+            }
+
+            if (insta && !insta.startsWith('@')) {
+                alert('Instagram deve começar com @');
+                return;
+            }
+
+            const whatsFormatado = '+' + whats.slice(0,2) + ' (' + whats.slice(2,4) + ') ' + whats.slice(4,9) + '-' + whats.slice(9);
+            const enderecoCompleto = rua + ', ' + numero + ' - ' + bairro + ', ' + cidade + ' - ' + estado + ', ' + cep;
+
+            document.getElementById('vNome').textContent = nome;
+            document.getElementById('vWhatsApp').textContent = whatsFormatado;
+            document.getElementById('vEmail').textContent = email;
+            document.getElementById('vInstagram').textContent = insta || '-';
+            document.getElementById('vEndereco').textContent = enderecoCompleto;
+            document.getElementById('tituloFicha').textContent = '👤 ' + nome;
+            document.getElementById('breadcrumbNome').textContent = nome;
+
+            cancelarEdicao();
+            alert('✅ Dados salvos com sucesso!');
+        }
+
+        function salvarAnotacoes() {
+            alert('✅ Anotações salvas com sucesso!');
+        }
+
         function abrirModalRelatorio() {
             document.getElementById('modalRelatorios').classList.add('active');
         }
         function fecharModalRelatorio() {
             document.getElementById('modalRelatorios').classList.remove('active');
         }
-        function baixarRelatorio(tipo) {
-            fecharModalRelatorio();
-            const nomes = {
-                individual: 'Relatorio_Individual_Maria_da_Silva.pdf',
-                atendimentos: 'Relatorio_Atendimentos_Junho_2026.pdf',
-                financeiro: 'Relatorio_Financeiro_Junho_2026.pdf',
-                geral: 'Relatorio_Geral_Clientes_Junho_2026.pdf'
-            };
-            alert(`✅ Relatório "${nomes[tipo]}" gerado com sucesso!\n\nEm breve você poderá baixar o arquivo.`);
-        }
-        // Fechar modal clicando fora
         document.getElementById('modalRelatorios').addEventListener('click', function(e) {
             if (e.target === this) fecharModalRelatorio();
         });
+
+        function baixarRelatorio(tipo) {
+            fecharModalRelatorio();
+            const nome = document.getElementById('vNome').textContent;
+            const data = new Date().toLocaleDateString('pt-BR');
+            let conteudo = '';
+            let nomeArquivo = '';
+
+            if (tipo === 'individual') {
+                nomeArquivo = 'Relatorio_Individual_' + nome.replace(/\s/g, '_') + '.txt';
+                conteudo = '=== RELATÓRIO INDIVIDUAL ===\n\n';
+                conteudo += 'Cliente: ' + nome + '\n';
+                conteudo += 'WhatsApp: ' + document.getElementById('vWhatsApp').textContent + '\n';
+                conteudo += 'Email: ' + document.getElementById('vEmail').textContent + '\n';
+                conteudo += 'Instagram: ' + document.getElementById('vInstagram').textContent + '\n';
+                conteudo += 'Endereço: ' + document.getElementById('vEndereco').textContent + '\n';
+                conteudo += 'Data de nascimento: ' + document.getElementById('vNascimento').textContent + '\n';
+                conteudo += 'Indicação: ' + document.getElementById('vIndicacao').textContent + '\n';
+                conteudo += '\nTotal pago: ' + document.getElementById('totalPago').textContent + '\n';
+                conteudo += 'Pendente: ' + document.getElementById('totalPendente').textContent + '\n';
+                conteudo += 'Última sessão: ' + document.getElementById('ultimaSessao').textContent + '\n';
+                conteudo += '\nAnotações:\n' + document.getElementById('anotacoes').value + '\n';
+                conteudo += '\nGerado em: ' + data;
+            } else if (tipo === 'atendimentos') {
+                nomeArquivo = 'Relatorio_Atendimentos_' + data.replace(/\//g, '-') + '.txt';
+                conteudo = '=== RELATÓRIO DE ATENDIMENTOS ===\n\n';
+                conteudo += 'Cliente: ' + nome + '\n';
+                conteudo += 'Período: Junho/2026\n\n';
+                conteudo += '20/06/2026 - Reiki - 60min - Simone - Concluído\n';
+                conteudo += '10/06/2026 - Cromoterapia - 45min - Simone - Concluído\n';
+                conteudo += '25/05/2026 - Barras Access - 60min - Ana - Concluído\n';
+                conteudo += '15/05/2026 - Reiki - 60min - Simone - Concluído\n';
+                conteudo += '\nGerado em: ' + data;
+            } else if (tipo === 'financeiro') {
+                nomeArquivo = 'Relatorio_Financeiro_' + data.replace(/\//g, '-') + '.txt';
+                conteudo = '=== RELATÓRIO FINANCEIRO ===\n\n';
+                conteudo += 'Cliente: ' + nome + '\n';
+                conteudo += 'Total pago: R$ 850,00\n';
+                conteudo += 'Pendente: R$ 200,00\n';
+                conteudo += 'Última sessão: R$ 150,00\n\n';
+                conteudo += 'Histórico:\n';
+                conteudo += '20/06/2026 - R$ 150,00 - Pago\n';
+                conteudo += '10/06/2026 - R$ 150,00 - Pago\n';
+                conteudo += '25/05/2026 - R$ 200,00 - Pendente\n';
+                conteudo += '15/05/2026 - R$ 150,00 - Pago\n';
+                conteudo += '\nGerado em: ' + data;
+            } else if (tipo === 'geral') {
+                nomeArquivo = 'Backup_Geral_Clientes_' + data.replace(/\//g, '-') + '.txt';
+                conteudo = '=== BACKUP GERAL DE CLIENTES ===\n\n';
+                conteudo += 'Data: ' + data + '\n\n';
+                conteudo += '1. Maria da Silva - (11) 99999-8888 - maria@email.com\n';
+                conteudo += '2. Ana Carolina - (11) 98888-7777 - ana@email.com\n';
+                conteudo += '3. Marcos Oliveira - (11) 97777-6666 - marcos@email.com\n';
+                conteudo += '4. Juliana Costa - (11) 96666-5555 - juliana@email.com\n';
+                conteudo += '5. Carlos Mendes - (11) 95555-4444 - carlos@email.com\n';
+                conteudo += '6. Fernanda Lima - (11) 94444-3333 - fernanda@email.com\n';
+                conteudo += '7. Roberto Alves - (11) 93333-2222 - roberto@email.com\n';
+                conteudo += '\n=== FIM DO BACKUP ===\n';
+            }
+
+            const blob = new Blob([conteudo], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = nomeArquivo;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
     </script>
 </body>
 </html>
