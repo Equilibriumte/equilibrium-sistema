@@ -616,9 +616,75 @@
     }
 
     function toggleChakra(el) {
-      el.classList.toggle('selected');
+      const nome = el.querySelector('.chakra-nome');
+      const input = el.querySelector('.chakra-input');
+      const valor = el.querySelector('.chakra-valor');
+      
+      if (el.classList.contains('selected')) {
+        el.classList.remove('selected');
+        el.style.backgroundColor = '';
+        el.style.color = '';
+        nome.style.display = 'inline';
+        input.style.display = 'none';
+        input.value = '';
+        valor.style.display = 'none';
+      } else if (input.style.display === 'inline-block' || input.style.display === 'inline') {
+        if (input.value.trim() !== '') {
+          el.classList.remove('selected');
+          el.style.backgroundColor = '';
+          el.style.color = '';
+          nome.style.display = 'inline';
+          input.style.display = 'none';
+          input.value = '';
+          valor.style.display = 'none';
+        } else {
+          input.focus();
+        }
+      } else {
+        nome.style.display = 'none';
+        input.style.display = 'inline-block';
+        input.focus();
+      }
+      atualizarChakrasSelecionados();
+    }
+
+    function chakraInputKeyup(input, event) {
+      if (event.key === 'Enter') {
+        const el = input.closest('.chakra-item');
+        const valor = input.value.trim();
+        if (valor !== '' && !isNaN(valor) && parseInt(valor) >= 0 && parseInt(valor) <= 100) {
+          const cor = el.getAttribute('data-cor');
+          el.classList.add('selected');
+          el.style.backgroundColor = cor;
+          el.style.color = '#fff';
+          input.style.display = 'none';
+          el.querySelector('.chakra-nome').style.display = 'none';
+          el.querySelector('.chakra-valor').textContent = valor + '%';
+          el.querySelector('.chakra-valor').style.display = 'inline';
+        } else {
+          input.focus();
+        }
+        atualizarChakrasSelecionados();
+      } else if (event.key === 'Escape') {
+        const el = input.closest('.chakra-item');
+        el.classList.remove('selected');
+        el.style.backgroundColor = '';
+        el.style.color = '';
+        el.querySelector('.chakra-nome').style.display = 'inline';
+        input.style.display = 'none';
+        input.value = '';
+        el.querySelector('.chakra-valor').style.display = 'none';
+        atualizarChakrasSelecionados();
+      }
+    }
+
+    function atualizarChakrasSelecionados() {
       const selecionados = [];
-      document.querySelectorAll('.chakra-item.selected').forEach(c => selecionados.push(c.textContent.trim()));
+      document.querySelectorAll('.chakra-item.selected').forEach(c => {
+        const nome = c.getAttribute('data-chakra');
+        const valor = c.querySelector('.chakra-valor').textContent;
+        selecionados.push(nome + ':' + valor);
+      });
       document.getElementById('chakrasSelecionados').value = selecionados.join(', ');
     }
 
