@@ -23,13 +23,11 @@
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
         .header-title h2 { color: #3d1d5f; font-size: 24px; }
         .header-title p { font-size: 14px; color: #888; margin-top: 4px; }
-        .header-actions { display: flex; gap: 10px; }
+        .header-actions { display: flex; gap: 10px; align-items: center; }
         .btn { padding: 10px 20px; border-radius: 8px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
         .btn-gold { background-color: #d4af37; color: #3d1d5f; }
         .btn-gold:hover { background-color: #c5a030; }
-        .btn-outline { background: transparent; border: 2px solid #3d1d5f; color: #3d1d5f; }
-        .btn-outline:hover { background: #3d1d5f; color: white; }
-        .search-bar input { padding: 10px 20px; border-radius: 25px; border: 1px solid #e0e0e0; width: 300px; outline: none; font-size: 14px; background: white; transition: border 0.3s; }
+        .search-bar input { padding: 10px 20px; border-radius: 25px; border: 1px solid #e0e0e0; width: 280px; outline: none; font-size: 14px; background: white; transition: border 0.3s; }
         .search-bar input:focus { border-color: #d4af37; }
         .table-responsive { overflow-x: auto; background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
         table { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -39,10 +37,11 @@
         .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
         .badge-success { background-color: #d4edda; color: #155724; }
         .badge-warning { background-color: #fff3cd; color: #856404; }
-        .badge-info { background-color: #d1ecf1; color: #0c5460; }
+        .badge-danger { background-color: #f8d7da; color: #721c24; }
         .client-name { color: #3d1d5f; font-weight: 600; }
-        .client-name:hover { color: #d4af37; }
         footer { text-align: center; font-size: 12px; color: #aaa; padding: 20px 0; margin-top: 20px; }
+        .empty-state { text-align: center; padding: 60px 20px; color: #aaa; display: none; }
+        .empty-state i { font-size: 60px; display: block; margin-bottom: 15px; }
         @media (max-width: 768px) {
             aside { width: 65px; }
             .sidebar-header img { max-width: 45px; }
@@ -83,13 +82,13 @@
         <header>
             <div class="header-title">
                 <h2>👥 Clientes</h2>
-                <p>7 clientes cadastrados</p>
+                <p id="totalClientes">0 clientes cadastrados</p>
             </div>
             <div class="header-actions">
                 <div class="search-bar">
                     <input type="text" id="buscaCliente" placeholder="Buscar cliente..." oninput="filtrarClientes()">
                 </div>
-                <button class="btn btn-gold" onclick="abrirNovoCliente()">+ Novo Cliente</button>
+                <a href="novo-cliente.html" class="btn btn-gold">+ Novo Cliente</a>
             </div>
         </header>
 
@@ -104,64 +103,53 @@
                         <th>Status Pagamento</th>
                     </tr>
                 </thead>
-                <tbody id="tabelaClientes">
-                    <tr onclick="window.location='ficha-cliente.html'">
-                        <td class="client-name">Maria da Silva</td>
-                        <td>(11) 99999-8888</td>
-                        <td>maria@email.com</td>
-                        <td>Rua das Flores, 123 - Centro, São Paulo - SP</td>
-                        <td><span class="badge badge-success">Em dia</span></td>
-                    </tr>
-                    <tr onclick="window.location='ficha-cliente.html'">
-                        <td class="client-name">Ana Carolina</td>
-                        <td>(11) 98888-7777</td>
-                        <td>ana@email.com</td>
-                        <td>Av. Paulista, 500 - Bela Vista, São Paulo - SP</td>
-                        <td><span class="badge badge-success">Em dia</span></td>
-                    </tr>
-                    <tr onclick="window.location='ficha-cliente.html'">
-                        <td class="client-name">Marcos Oliveira</td>
-                        <td>(11) 97777-6666</td>
-                        <td>marcos@email.com</td>
-                        <td>Rua Augusta, 300 - Consolação, São Paulo - SP</td>
-                        <td><span class="badge badge-warning">Pendente</span></td>
-                    </tr>
-                    <tr onclick="window.location='ficha-cliente.html'">
-                        <td class="client-name">Juliana Costa</td>
-                        <td>(11) 96666-5555</td>
-                        <td>juliana@email.com</td>
-                        <td>Rua Oscar Freire, 200 - Jardins, São Paulo - SP</td>
-                        <td><span class="badge badge-success">Em dia</span></td>
-                    </tr>
-                    <tr onclick="window.location='ficha-cliente.html'">
-                        <td class="client-name">Carlos Mendes</td>
-                        <td>(11) 95555-4444</td>
-                        <td>carlos@email.com</td>
-                        <td>Rua da Consolação, 1000 - Consolação, São Paulo - SP</td>
-                        <td><span class="badge badge-success">Em dia</span></td>
-                    </tr>
-                    <tr onclick="window.location='ficha-cliente.html'">
-                        <td class="client-name">Fernanda Lima</td>
-                        <td>(11) 94444-3333</td>
-                        <td>fernanda@email.com</td>
-                        <td>Rua Haddock Lobo, 400 - Cerqueira César, São Paulo - SP</td>
-                        <td><span class="badge badge-danger">Inadimplente</span></td>
-                    </tr>
-                    <tr onclick="window.location='ficha-cliente.html'">
-                        <td class="client-name">Roberto Alves</td>
-                        <td>(11) 93333-2222</td>
-                        <td>roberto@email.com</td>
-                        <td>Rua Bela Cintra, 600 - Consolação, São Paulo - SP</td>
-                        <td><span class="badge badge-success">Em dia</span></td>
-                    </tr>
-                </tbody>
+                <tbody id="tabelaClientes"></tbody>
             </table>
+            <div class="empty-state" id="emptyState">
+                <i>📂</i>
+                <p>Nenhum cliente cadastrado ainda.</p>
+                <p style="font-size:13px;margin-top:5px">Clique em "+ Novo Cliente" para começar.</p>
+            </div>
         </div>
 
         <footer>© 2026 Equilibrium Terapias Energéticas. Todos os direitos reservados.</footer>
     </main>
 
     <script>
+        function carregarClientes() {
+            const clientes = JSON.parse(localStorage.getItem('equilibriumClientes')) || [];
+            const tbody = document.getElementById('tabelaClientes');
+            const empty = document.getElementById('emptyState');
+            const total = document.getElementById('totalClientes');
+
+            total.textContent = clientes.length + ' cliente(s) cadastrado(s)';
+
+            if (clientes.length === 0) {
+                tbody.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+            empty.style.display = 'none';
+            tbody.innerHTML = '';
+
+            clientes.forEach((c, index) => {
+                const tr = document.createElement('tr');
+                tr.onclick = function() {
+                    window.location = 'ficha-cliente.html?id=' + index;
+                };
+                const statusClass = c.statusPagamento === 'Em dia' ? 'badge-success' : 
+                                    c.statusPagamento === 'Pendente' ? 'badge-warning' : 'badge-danger';
+                tr.innerHTML = `
+                    <td class="client-name">${c.nome}</td>
+                    <td>${c.whatsapp}</td>
+                    <td>${c.email}</td>
+                    <td>${c.endereco}</td>
+                    <td><span class="badge ${statusClass}">${c.statusPagamento || 'Em dia'}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
         function filtrarClientes() {
             const input = document.getElementById('buscaCliente').value.toLowerCase();
             const linhas = document.querySelectorAll('#tabelaClientes tr');
@@ -171,9 +159,8 @@
             });
         }
 
-        function abrirNovoCliente() {
-            window.location.href = 'ficha-cliente.html?novo=true';
-        }
+        // Carregar clientes ao abrir a página
+        carregarClientes();
     </script>
 </body>
 </html>
