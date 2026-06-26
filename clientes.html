@@ -1,1309 +1,172 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clientes - Equilibrium Terapias Energéticas</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --purple-dark: #2D1B4E;
-            --purple-medium: #4A2B7A;
-            --purple-light: #5E3A99;
-            --gold: #D4AF37;
-            --gold-light: #C9A84C;
-            --bg: #F5F3F7;
-            --text: #1f2937;
-            --text-muted: #6b7280;
-            --border: #d1d5db;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 260px;
-            height: 100vh;
-            background: linear-gradient(180deg, var(--purple-dark) 0%, var(--purple-medium) 100%);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            z-index: 1000;
-            transition: transform 0.3s ease;
-        }
-
-        .sidebar-header {
-            padding: 24px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .logo-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 28px;
-            color: var(--gold);
-            font-weight: 700;
-            line-height: 1.1;
-        }
-
-        .logo-subtitle {
-            font-size: 12px;
-            color: var(--gold-light);
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-top: 4px;
-        }
-
-        .sidebar-nav {
-            flex: 1;
-            padding: 16px 0;
-            overflow-y: auto;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 13px 24px;
-            color: rgba(255, 255, 255, 0.85);
-            text-decoration: none;
-            font-size: 15px;
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-        }
-
-        .nav-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-
-        .nav-item.active {
-            background: rgba(212, 175, 55, 0.15);
-            color: var(--gold);
-            border-left-color: var(--gold);
-        }
-
-        .nav-icon {
-            font-size: 18px;
-            width: 24px;
-            text-align: center;
-        }
-
-        .sidebar-footer {
-            padding: 16px 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: var(--gold);
-            color: var(--purple-dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 15px;
-            flex-shrink: 0;
-        }
-
-        .user-name {
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .user-role {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .sidebar-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            display: none;
-        }
-
-        .sidebar-backdrop.active {
-            display: block;
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-left: 260px;
-            padding: 28px 32px;
-            min-height: 100vh;
-        }
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 28px;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: var(--purple-dark);
-            cursor: pointer;
-            padding: 4px;
-        }
-
-        .page-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 34px;
-            color: var(--purple-dark);
-            font-weight: 700;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-
-        .search-box {
-            position: relative;
-        }
-
-        .search-box input {
-            padding: 10px 16px 10px 40px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            width: 300px;
-            font-size: 14px;
-            transition: all 0.2s;
-            background: white;
-        }
-
-        .search-box input:focus {
-            outline: none;
-            border-color: var(--purple-light);
-            box-shadow: 0 0 0 3px rgba(94, 58, 153, 0.1);
-        }
-
-        .search-box::before {
-            content: "🔍";
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 14px;
-            opacity: 0.6;
-        }
-
-        .current-date {
-            color: var(--purple-medium);
-            font-weight: 500;
-            font-size: 14px;
-            white-space: nowrap;
-        }
-
-        /* Toolbar */
-        .toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-
-        .filter-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .filter-group label {
-            color: var(--purple-medium);
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .filter-group select {
-            padding: 9px 12px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: white;
-            font-size: 14px;
-            color: var(--text);
-            cursor: pointer;
-            min-width: 140px;
-        }
-
-        .filter-group select:focus {
-            outline: none;
-            border-color: var(--purple-light);
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s ease;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: var(--gold);
-            color: var(--purple-dark);
-        }
-
-        .btn-primary:hover {
-            background: var(--gold-light);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
-        }
-
-        .btn-secondary {
-            background: white;
-            color: var(--purple-medium);
-            border: 1px solid var(--purple-medium);
-        }
-
-        .btn-secondary:hover {
-            background: var(--bg);
-        }
-
-        .btn-danger {
-            background: #dc2626;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #b91c1c;
-        }
-
-        .btn-icon {
-            width: 34px;
-            height: 34px;
-            border-radius: 6px;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-edit {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .btn-edit:hover {
-            background: #bfdbfe;
-        }
-
-        .btn-delete {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .btn-delete:hover {
-            background: #fecaca;
-        }
-
-        /* Table */
-        .table-container {
-            overflow-x: auto;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(45, 27, 78, 0.08);
-            background: white;
-        }
-
-        .clients-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 1700px;
-        }
-
-        .clients-table thead {
-            position: sticky;
-            top: 0;
-        }
-
-        .clients-table th {
-            background: var(--purple-medium);
-            color: var(--gold);
-            padding: 14px 16px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-        }
-
-        .clients-table td {
-            padding: 12px 16px;
-            border-bottom: 1px solid #f3f4f6;
-            white-space: nowrap;
-            font-size: 13px;
-            color: #374151;
-        }
-
-        .clients-table tbody tr:hover td {
-            background: #fafafa;
-        }
-
-        .clients-table tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        .actions {
-            display: flex;
-            gap: 6px;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .badge-fonte {
-            background: #ede9fe;
-            color: var(--purple-light);
-        }
-
-        .badge-status-ativo {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .badge-status-inativo {
-            background: #e5e7eb;
-            color: #4b5563;
-        }
-
-        .badge-status-bloqueado {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .badge-pagamento-pago {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .badge-pagamento-pendente {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .badge-pagamento-atrasado {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .empty-message {
-            text-align: center;
-            padding: 40px !important;
-            color: var(--text-muted);
-            font-size: 14px !important;
-        }
-
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.55);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            padding: 20px;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal {
-            background: white;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 720px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-            animation: modalSlide 0.3s ease;
-        }
-
-        @keyframes modalSlide {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 22px 28px;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .modal-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 26px;
-            color: var(--purple-dark);
-            font-weight: 700;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 32px;
-            color: var(--text-muted);
-            cursor: pointer;
-            line-height: 1;
-            transition: color 0.2s;
-        }
-
-        .modal-close:hover {
-            color: var(--purple-dark);
-        }
-
-        .modal-form {
-            padding: 28px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .col-span-2 {
-            grid-column: span 2;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            color: var(--purple-medium);
-            font-size: 13px;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 11px 14px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 14px;
-            color: var(--text);
-            transition: all 0.2s;
-            background: white;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--purple-light);
-            box-shadow: 0 0 0 3px rgba(94, 58, 153, 0.1);
-        }
-
-        .form-group input::placeholder {
-            color: #9ca3af;
-        }
-
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            padding: 20px 28px;
-            border-top: 1px solid #e5e7eb;
-            background: #fafafa;
-        }
-
-        .modal-confirm .modal-body {
-            padding: 28px;
-            font-size: 15px;
-            color: #374151;
-            line-height: 1.6;
-        }
-
-        /* Responsive */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { display: flex; background-color: #f4f7f6; color: #333; min-height: 100vh; }
+        aside { width: 260px; background-color: #3d1d5f; height: 100vh; position: fixed; display: flex; flex-direction: column; color: white; z-index: 1000; }
+        .sidebar-header { padding: 25px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-header img { max-width: 180px; height: auto; }
+        nav { flex-grow: 1; padding: 10px 0; overflow-y: auto; }
+        .nav-link { display: flex; align-items: center; padding: 12px 22px; text-decoration: none; color: rgba(255,255,255,0.7); transition: all 0.3s; font-size: 14px; border-left: 3px solid transparent; }
+        .nav-link i { margin-right: 14px; font-style: normal; font-size: 18px; width: 22px; text-align: center; }
+        .nav-link:hover { color: white; background-color: rgba(255,255,255,0.08); border-left-color: #d4af37; }
+        .nav-link.active { background-color: rgba(212,175,55,0.15); color: #d4af37; border-left-color: #d4af37; font-weight: 600; }
+        .user-profile { padding: 15px 22px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; }
+        .avatar { width: 36px; height: 36px; background: linear-gradient(135deg, #d4af37, #b8962e); color: #3d1d5f; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; margin-right: 12px; }
+        .user-info span { display: block; font-size: 14px; font-weight: 500; }
+        .user-info small { font-size: 11px; color: rgba(255,255,255,0.5); }
+        main { margin-left: 260px; flex-grow: 1; padding: 30px; min-height: 100vh; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
+        .header-title h2 { color: #3d1d5f; font-size: 24px; }
+        .header-title p { font-size: 14px; color: #888; margin-top: 4px; }
+        .header-actions { display: flex; gap: 10px; }
+        .btn { padding: 10px 20px; border-radius: 8px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-gold { background-color: #d4af37; color: #3d1d5f; }
+        .btn-gold:hover { background-color: #c5a030; }
+        .btn-outline { background: transparent; border: 2px solid #3d1d5f; color: #3d1d5f; }
+        .btn-outline:hover { background: #3d1d5f; color: white; }
+        .search-bar input { padding: 10px 20px; border-radius: 25px; border: 1px solid #e0e0e0; width: 300px; outline: none; font-size: 14px; background: white; transition: border 0.3s; }
+        .search-bar input:focus { border-color: #d4af37; }
+        .table-responsive { overflow-x: auto; background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        thead th { background-color: #3d1d5f; color: white; padding: 14px 18px; text-align: left; font-weight: 600; font-size: 13px; }
+        tbody td { padding: 14px 18px; border-bottom: 1px solid #f0f0f0; }
+        tbody tr:hover { background-color: #f9f5ff; cursor: pointer; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+        .badge-success { background-color: #d4edda; color: #155724; }
+        .badge-warning { background-color: #fff3cd; color: #856404; }
+        .badge-info { background-color: #d1ecf1; color: #0c5460; }
+        .client-name { color: #3d1d5f; font-weight: 600; }
+        .client-name:hover { color: #d4af37; }
+        footer { text-align: center; font-size: 12px; color: #aaa; padding: 20px 0; margin-top: 20px; }
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-                padding: 20px;
-            }
-
-            .menu-toggle {
-                display: block;
-            }
-
-            .page-title {
-                font-size: 26px;
-            }
-
-            .search-box input {
-                width: 100%;
-                min-width: 240px;
-            }
-
-            .page-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .header-right {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .toolbar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .btn {
-                justify-content: center;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .col-span-2 {
-                grid-column: span 1;
-            }
+            aside { width: 65px; }
+            .sidebar-header img { max-width: 45px; }
+            .nav-link { justify-content: center; padding: 14px 0; }
+            .nav-link i { margin-right: 0; }
+            .nav-text, .user-info { display: none; }
+            .user-profile { justify-content: center; }
+            .avatar { margin-right: 0; }
+            main { margin-left: 65px; padding: 15px; }
+            .search-bar { display: none; }
         }
     </style>
 </head>
 <body>
-    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
-    
-    <aside class="sidebar" id="sidebar">
+    <aside>
         <div class="sidebar-header">
-            <div class="logo">
-                <div class="logo-title">Equilibrium</div>
-                <div class="logo-subtitle">Terapias Energéticas</div>
-            </div>
+            <img src="Equilibrium.logo.png" alt="Equilibrium">
         </div>
-        <nav class="sidebar-nav">
-            <a href="#" class="nav-item">
-                <span class="nav-icon">🏠</span>
-                <span>Visão Geral</span>
-            </a>
-            <a href="#" class="nav-item active">
-                <span class="nav-icon">👥</span>
-                <span>Clientes</span>
-            </a>
-            <a href="#" class="nav-item">
-                <span class="nav-icon">📅</span>
-                <span>Agenda</span>
-            </a>
-            <a href="#" class="nav-item">
-                <span class="nav-icon">🩺</span>
-                <span>Atendimentos</span>
-            </a>
-            <a href="#" class="nav-item">
-                <span class="nav-icon">📊</span>
-                <span>Tratamentos</span>
-            </a>
-            <a href="#" class="nav-item">
-                <span class="nav-icon">💰</span>
-                <span>Financeiro</span>
-            </a>
-            <a href="#" class="nav-item">
-                <span class="nav-icon">⚙️</span>
-                <span>Configurações</span>
-            </a>
+        <nav>
+            <a href="visao-geral.html" class="nav-link"><i>📊</i> <span class="nav-text">Visão Geral</span></a>
+            <a href="clientes.html" class="nav-link active"><i>👥</i> <span class="nav-text">Clientes</span></a>
+            <a href="agenda.html" class="nav-link"><i>📅</i> <span class="nav-text">Agenda</span></a>
+            <a href="atendimentos.html" class="nav-link"><i>🩺</i> <span class="nav-text">Atendimentos</span></a>
+            <a href="tratamentos.html" class="nav-link"><i>🔬</i> <span class="nav-text">Tratamentos</span></a>
+            <a href="agenda-graficos.html" class="nav-link"><i>📈</i> <span class="nav-text">Agenda Gráficos</span></a>
+            <a href="financeiro.html" class="nav-link"><i>💰</i> <span class="nav-text">Financeiro</span></a>
         </nav>
-        <div class="sidebar-footer">
-            <div class="avatar">SA</div>
+        <div class="user-profile">
+            <div class="avatar">S</div>
             <div class="user-info">
-                <div class="user-name">Simone</div>
-                <div class="user-role">Terapeuta</div>
+                <span>Simone</span>
+                <small>Terapeuta</small>
             </div>
         </div>
     </aside>
 
-    <main class="main-content">
-        <header class="page-header">
-            <div class="header-left">
-                <button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
-                <h1 class="page-title">Clientes</h1>
+    <main>
+        <header>
+            <div class="header-title">
+                <h2>👥 Clientes</h2>
+                <p>7 clientes cadastrados</p>
             </div>
-            <div class="header-right">
-                <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Buscar cliente..." autocomplete="off">
+            <div class="header-actions">
+                <div class="search-bar">
+                    <input type="text" placeholder="Buscar cliente...">
                 </div>
-                <div class="current-date" id="currentDate"></div>
+                <a href="ficha-cliente.html" class="btn btn-gold">+ Novo Cliente</a>
             </div>
         </header>
 
-        <div class="toolbar">
-            <div class="filter-group">
-                <label for="statusFilter">Status:</label>
-                <select id="statusFilter">
-                    <option value="Todos">Todos</option>
-                    <option value="Ativo">Ativo</option>
-                    <option value="Inativo">Inativo</option>
-                    <option value="Bloqueado">Bloqueado</option>
-                </select>
-            </div>
-            <button class="btn btn-primary" id="btnNovoCliente">+ Novo Cliente</button>
-        </div>
-
-        <div class="table-container">
-            <table class="clients-table" id="clientsTable">
+        <div class="table-responsive">
+            <table>
                 <thead>
                     <tr>
-                        <th>Cliente_ID</th>
-                        <th>Nome do Cliente</th>
-                        <th>Digitável</th>
-                        <th>WhatsApp</th>
-                        <th>Data_Nascimento</th>
-                        <th>Instagram</th>
+                        <th>Nome</th>
+                        <th>Telefone</th>
                         <th>Email</th>
-                        <th>Cidade</th>
-                        <th>Estado</th>
-                        <th>Fonte</th>
+                        <th>Último Atendimento</th>
+                        <th>Tratamento</th>
                         <th>Status</th>
-                        <th># Total_Sessões</th>
-                        <th>Data_Último Pagamento</th>
-                        <th>Método Pagamento</th>
-                        <th>Status_Pagamento</th>
-                        <th>Ações</th>
                     </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody>
+                    <tr onclick="window.location='ficha-cliente.html'">
+                        <td class="client-name">Maria da Silva</td>
+                        <td>(11) 99999-8888</td>
+                        <td>maria@email.com</td>
+                        <td>20/06/2026</td>
+                        <td>Reiki</td>
+                        <td><span class="badge badge-success">Ativo</span></td>
+                    </tr>
+                    <tr onclick="window.location='ficha-cliente.html'">
+                        <td class="client-name">Ana Carolina</td>
+                        <td>(11) 98888-7777</td>
+                        <td>ana@email.com</td>
+                        <td>18/06/2026</td>
+                        <td>Reiki</td>
+                        <td><span class="badge badge-success">Ativo</span></td>
+                    </tr>
+                    <tr onclick="window.location='ficha-cliente.html'">
+                        <td class="client-name">Marcos Oliveira</td>
+                        <td>(11) 97777-6666</td>
+                        <td>marcos@email.com</td>
+                        <td>15/06/2026</td>
+                        <td>Cromoterapia</td>
+                        <td><span class="badge badge-success">Ativo</span></td>
+                    </tr>
+                    <tr onclick="window.location='ficha-cliente.html'">
+                        <td class="client-name">Juliana Costa</td>
+                        <td>(11) 96666-5555</td>
+                        <td>juliana@email.com</td>
+                        <td>10/06/2026</td>
+                        <td>Barras Access</td>
+                        <td><span class="badge badge-info">Novo</span></td>
+                    </tr>
+                    <tr onclick="window.location='ficha-cliente.html'">
+                        <td class="client-name">Carlos Mendes</td>
+                        <td>(11) 95555-4444</td>
+                        <td>carlos@email.com</td>
+                        <td>05/06/2026</td>
+                        <td>Reiki</td>
+                        <td><span class="badge badge-success">Ativo</span></td>
+                    </tr>
+                    <tr onclick="window.location='ficha-cliente.html'">
+                        <td class="client-name">Fernanda Lima</td>
+                        <td>(11) 94444-3333</td>
+                        <td>fernanda@email.com</td>
+                        <td>28/05/2026</td>
+                        <td>Cromoterapia</td>
+                        <td><span class="badge badge-warning">Inativo</span></td>
+                    </tr>
+                    <tr onclick="window.location='ficha-cliente.html'">
+                        <td class="client-name">Roberto Alves</td>
+                        <td>(11) 93333-2222</td>
+                        <td>roberto@email.com</td>
+                        <td>20/05/2026</td>
+                        <td>Barras Access</td>
+                        <td><span class="badge badge-success">Ativo</span></td>
+                    </tr>
+                </tbody>
             </table>
         </div>
+
+        <footer>© 2026 Equilibrium Terapias Energéticas. Todos os direitos reservados.</footer>
     </main>
-
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal">
-            <div class="modal-header">
-                <h2 class="modal-title" id="modalTitle">Novo Cliente</h2>
-                <button class="modal-close" id="modalClose" type="button">&times;</button>
-            </div>
-            <form id="clientForm">
-                <input type="hidden" id="clientId">
-                <div class="modal-form">
-                    <div class="form-grid">
-                        <div class="form-group col-span-2">
-                            <label for="nome">Nome do Cliente *</label>
-                            <input type="text" id="nome" required placeholder="Digite o nome completo">
-                        </div>
-                        <div class="form-group">
-                            <label for="digitavel">Digitável</label>
-                            <input type="text" id="digitavel" inputmode="numeric" placeholder="Apenas números">
-                        </div>
-                        <div class="form-group">
-                            <label for="whatsapp">WhatsApp</label>
-                            <input type="text" id="whatsapp" placeholder="+55 (XX) XXXXX-XXXX">
-                        </div>
-                        <div class="form-group">
-                            <label for="dataNascimento">Data_Nascimento</label>
-                            <input type="date" id="dataNascimento">
-                        </div>
-                        <div class="form-group">
-                            <label for="instagram">Instagram</label>
-                            <input type="text" id="instagram" placeholder="@username">
-                        </div>
-                        <div class="form-group col-span-2">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" placeholder="cliente@email.com">
-                        </div>
-                        <div class="form-group">
-                            <label for="cidade">Cidade</label>
-                            <input type="text" id="cidade" placeholder="Cidade">
-                        </div>
-                        <div class="form-group">
-                            <label for="estado">Estado</label>
-                            <select id="estado">
-                                <option value="">Selecione</option>
-                                <option value="SP">SP</option>
-                                <option value="RJ">RJ</option>
-                                <option value="MG">MG</option>
-                                <option value="ES">ES</option>
-                                <option value="PR">PR</option>
-                                <option value="SC">SC</option>
-                                <option value="RS">RS</option>
-                                <option value="MS">MS</option>
-                                <option value="MT">MT</option>
-                                <option value="GO">GO</option>
-                                <option value="DF">DF</option>
-                                <option value="BA">BA</option>
-                                <option value="PE">PE</option>
-                                <option value="CE">CE</option>
-                                <option value="PA">PA</option>
-                                <option value="AM">AM</option>
-                                <option value="MA">MA</option>
-                                <option value="RN">RN</option>
-                                <option value="PB">PB</option>
-                                <option value="AL">AL</option>
-                                <option value="SE">SE</option>
-                                <option value="PI">PI</option>
-                                <option value="TO">TO</option>
-                                <option value="RO">RO</option>
-                                <option value="AC">AC</option>
-                                <option value="AP">AP</option>
-                                <option value="RR">RR</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="fonte">Fonte</label>
-                            <select id="fonte">
-                                <option value="">Selecione</option>
-                                <option value="Instagram">Instagram</option>
-                                <option value="Facebook">Facebook</option>
-                                <option value="Indicação">Indicação</option>
-                                <option value="WhatsApp">WhatsApp</option>
-                                <option value="Google">Google</option>
-                                <option value="Site">Site</option>
-                                <option value="Orgânico">Orgânico</option>
-                                <option value="Outro">Outro</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="status">Status</label>
-                            <select id="status">
-                                <option value="Ativo">Ativo</option>
-                                <option value="Inativo">Inativo</option>
-                                <option value="Bloqueado">Bloqueado</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="totalSessoes"># Total_Sessões</label>
-                            <input type="number" id="totalSessoes" min="0" placeholder="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="metodoPagamento">Método Pagamento</label>
-                            <select id="metodoPagamento">
-                                <option value="">Selecione</option>
-                                <option value="PIX">PIX</option>
-                                <option value="Cartão Crédito">Cartão Crédito</option>
-                                <option value="Cartão Débito">Cartão Débito</option>
-                                <option value="Dinheiro">Dinheiro</option>
-                                <option value="Boleto">Boleto</option>
-                                <option value="Outro">Outro</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="dataUltimoPagamento">Data_Último Pagamento</label>
-                            <input type="date" id="dataUltimoPagamento">
-                        </div>
-                        <div class="form-group">
-                            <label for="statusPagamento">Status_Pagamento</label>
-                            <select id="statusPagamento">
-                                <option value="Pago">Pago</option>
-                                <option value="Pendente">Pendente</option>
-                                <option value="Atrasado">Atrasado</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="btnCancelar">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="confirmOverlay">
-        <div class="modal modal-confirm">
-            <div class="modal-header">
-                <h2 class="modal-title">Confirmar Exclusão</h2>
-                <button class="modal-close" id="confirmClose" type="button">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p>Deseja realmente excluir o cliente <strong id="confirmClienteNome"></strong>?</p>
-                <p style="font-size: 13px; color: #6b7280; margin-top: 8px;">Esta ação não poderá ser desfeita.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="btnCancelarExclusao">Cancelar</button>
-                <button type="button" class="btn btn-danger" id="btnConfirmarExclusao">Excluir</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const STORAGE_KEY = 'equilibrium_clientes';
-        const estados = ['SP', 'RJ', 'MG', 'ES', 'PR', 'SC', 'RS', 'MS', 'MT', 'GO', 'DF', 'BA', 'PE', 'CE', 'PA', 'AM', 'MA', 'RN', 'PB', 'AL', 'SE', 'PI', 'TO', 'RO', 'AC', 'AP', 'RR'];
-
-        const sampleData = [
-            {
-                id: 'CL-000001',
-                nome: 'Maria da Silva',
-                digitavel: '5511999991111',
-                whatsapp: '+55 (11) 99999-1111',
-                dataNascimento: '1985-10-15',
-                instagram: '@maria',
-                email: 'maria@email.com',
-                cidade: 'São Paulo',
-                estado: 'SP',
-                fonte: 'Instagram',
-                status: 'Ativo',
-                totalSessoes: 8,
-                dataUltimoPagamento: '2026-01-10',
-                metodoPagamento: 'PIX',
-                statusPagamento: 'Pago'
-            },
-            {
-                id: 'CL-000002',
-                nome: 'João Pereira',
-                digitavel: '18999991212',
-                whatsapp: '+55 (18) 99999-1212',
-                dataNascimento: '1990-07-03',
-                instagram: '@joao',
-                email: 'joao@email.com',
-                cidade: 'Rio de Janeiro',
-                estado: 'RJ',
-                fonte: 'Indicação',
-                status: 'Ativo',
-                totalSessoes: 5,
-                dataUltimoPagamento: '2026-01-25',
-                metodoPagamento: 'PIX',
-                statusPagamento: 'Pago'
-            },
-            {
-                id: 'CL-000003',
-                nome: 'Abreu da Silva',
-                digitavel: '11999994545',
-                whatsapp: '+55 (11) 99999-4545',
-                dataNascimento: '2000-06-05',
-                instagram: '@abreu',
-                email: 'abreu@email.com',
-                cidade: 'São Paulo',
-                estado: 'SP',
-                fonte: 'Instagram',
-                status: 'Ativo',
-                totalSessoes: 3,
-                dataUltimoPagamento: '2026-02-05',
-                metodoPagamento: 'PIX',
-                statusPagamento: 'Pago'
-            },
-            {
-                id: 'CL-000004',
-                nome: 'Suze',
-                digitavel: '11988887777',
-                whatsapp: '+55 (11) 98888-7777',
-                dataNascimento: '2000-06-03',
-                instagram: '@suze',
-                email: 'suze@gmail.com',
-                cidade: 'São Paulo',
-                estado: 'SP',
-                fonte: 'WhatsApp',
-                status: 'Ativo',
-                totalSessoes: 12,
-                dataUltimoPagamento: '',
-                metodoPagamento: 'PIX',
-                statusPagamento: 'Pago'
-            },
-            {
-                id: 'CL-000005',
-                nome: 'Rosa',
-                digitavel: '11977776666',
-                whatsapp: '+55 (11) 97777-6666',
-                dataNascimento: '1995-12-20',
-                instagram: '@rosa',
-                email: 'rosa@email.com',
-                cidade: 'São Paulo',
-                estado: 'SP',
-                fonte: 'Indicação',
-                status: 'Ativo',
-                totalSessoes: 6,
-                dataUltimoPagamento: '',
-                metodoPagamento: 'PIX',
-                statusPagamento: 'Pago'
-            },
-            {
-                id: 'CL-000006',
-                nome: 'Simone Andrea',
-                digitavel: '11966665555',
-                whatsapp: '+55 (11) 96666-5555',
-                dataNascimento: '1988-04-08',
-                instagram: '@simone',
-                email: 'simone@email.com',
-                cidade: 'São Paulo',
-                estado: 'SP',
-                fonte: 'Instagram',
-                status: 'Ativo',
-                totalSessoes: 15,
-                dataUltimoPagamento: '',
-                metodoPagamento: 'Cartão Crédito',
-                statusPagamento: 'Pago'
-            },
-            {
-                id: 'CL-000007',
-                nome: 'Isis',
-                digitavel: '11955554444',
-                whatsapp: '+55 (11) 95555-4444',
-                dataNascimento: '1992-09-10',
-                instagram: '@isis',
-                email: 'isis@email.com',
-                cidade: 'São Paulo',
-                estado: 'SP',
-                fonte: 'Facebook',
-                status: 'Ativo',
-                totalSessoes: 4,
-                dataUltimoPagamento: '',
-                metodoPagamento: 'PIX',
-                statusPagamento: 'Pendente'
-            }
-        ];
-
-        function loadClientes() {
-            const data = localStorage.getItem(STORAGE_KEY);
-            return data ? JSON.parse(data) : [];
-        }
-
-        function saveClientes(clientes) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(clientes));
-        }
-
-        function initData() {
-            if (!localStorage.getItem(STORAGE_KEY)) {
-                saveClientes(sampleData);
-            }
-        }
-
-        function formatDateBR(dateString) {
-            if (!dateString) return '—';
-            const [year, month, day] = dateString.split('-');
-            return `${day}/${month}/${year}`;
-        }
-
-        function formatWhatsApp(value) {
-            const digits = value.replace(/\D/g, '');
-            if (digits.length === 0) return '';
-            if (digits.length <= 2) return `+55 (${digits}`;
-            if (digits.length <= 7) return `+55 (${digits.slice(0, 2)}) ${digits.slice(2)}`;
-            if (digits.length <= 11) return `+55 (${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
-            return `+55 (${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`;
-        }
-
-        function generateNextId() {
-            const clientes = loadClientes();
-            let maxNum = 0;
-            clientes.forEach(c => {
-                const num = parseInt(c.id.replace('CL-', ''), 10);
-                if (num > maxNum) maxNum = num;
-            });
-            return `CL-${String(maxNum + 1).padStart(6, '0')}`;
-        }
-
-        function isValidEmail(email) {
-            if (!email) return true;
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        }
-
-        function getBadgeClass(prefix, value) {
-            const normalized = value.toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/\s+/g, '-');
-            return `${prefix}-${normalized}`;
-        }
-
-        function filterClientes() {
-            const search = document.getElementById('searchInput').value.toLowerCase().trim();
-            const statusFilter = document.getElementById('statusFilter').value;
-
-            return loadClientes().filter(cliente => {
-                const matchesSearch = !search ||
-                    cliente.nome.toLowerCase().includes(search) ||
-                    cliente.digitavel.includes(search) ||
-                    cliente.whatsapp.toLowerCase().includes(search) ||
-                    cliente.email.toLowerCase().includes(search);
-
-                const matchesStatus = statusFilter === 'Todos' || cliente.status === statusFilter;
-
-                return matchesSearch && matchesStatus;
-            });
-        }
-
-        function renderTable() {
-            const clientes = filterClientes();
-            const tbody = document.querySelector('#clientsTable tbody');
-            tbody.innerHTML = '';
-
-            if (clientes.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="16" class="empty-message">Nenhum cliente encontrado.</td></tr>';
-                return;
-            }
-
-            clientes.forEach(cliente => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${cliente.id}</strong></td>
-                    <td>${cliente.nome}</td>
-                    <td>${cliente.digitavel}</td>
-                    <td>${cliente.whatsapp}</td>
-                    <td>${formatDateBR(cliente.dataNascimento)}</td>
-                    <td>${cliente.instagram}</td>
-                    <td>${cliente.email}</td>
-                    <td>${cliente.cidade}</td>
-                    <td>${cliente.estado}</td>
-                    <td><span class="badge badge-fonte">${cliente.fonte}</span></td>
-                    <td><span class="badge ${getBadgeClass('badge-status', cliente.status)}">${cliente.status}</span></td>
-                    <td>${cliente.totalSessoes}</td>
-                    <td>${formatDateBR(cliente.dataUltimoPagamento)}</td>
-                    <td>${cliente.metodoPagamento}</td>
-                    <td><span class="badge ${getBadgeClass('badge-pagamento', cliente.statusPagamento)}">${cliente.statusPagamento}</span></td>
-                    <td class="actions">
-                        <button type="button" class="btn-icon btn-edit" onclick="editClient('${cliente.id}')" title="Editar">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                        </button>
-                        <button type="button" class="btn-icon btn-delete" onclick="deleteClient('${cliente.id}')" title="Excluir">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function openModal() {
-            document.getElementById('modalOverlay').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal() {
-            document.getElementById('modalOverlay').classList.remove('active');
-            document.body.style.overflow = '';
-            document.getElementById('clientForm').reset();
-            document.getElementById('clientId').value = '';
-            document.getElementById('modalTitle').textContent = 'Novo Cliente';
-        }
-
-        function editClient(id) {
-            const clientes = loadClientes();
-            const cliente = clientes.find(c => c.id === id);
-            if (!cliente) return;
-
-            document.getElementById('clientId').value = cliente.id;
-            document.getElementById('nome').value = cliente.nome;
-            document.getElementById('digitavel').value = cliente.digitavel;
-            document.getElementById('whatsapp').value = cliente.whatsapp;
-            document.getElementById('dataNascimento').value = cliente.dataNascimento;
-            document.getElementById('instagram').value = cliente.instagram;
-            document.getElementById('email').value = cliente.email;
-            document.getElementById('cidade').value = cliente.cidade;
-            document.getElementById('estado').value = cliente.estado;
-            document.getElementById('fonte').value = cliente.fonte;
-            document.getElementById('status').value = cliente.status;
-            document.getElementById('totalSessoes').value = cliente.totalSessoes;
-            document.getElementById('dataUltimoPagamento').value = cliente.dataUltimoPagamento;
-            document.getElementById('metodoPagamento').value = cliente.metodoPagamento;
-            document.getElementById('statusPagamento').value = cliente.statusPagamento;
-
-            document.getElementById('modalTitle').textContent = 'Editar Cliente';
-            openModal();
-        }
-
-        let clienteToDelete = null;
-
-        function deleteClient(id) {
-            const clientes = loadClientes();
-            const cliente = clientes.find(c => c.id === id);
-            if (!cliente) return;
-
-            clienteToDelete = id;
-            document.getElementById('confirmClienteNome').textContent = cliente.nome;
-            document.getElementById('confirmOverlay').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeConfirmModal() {
-            document.getElementById('confirmOverlay').classList.remove('active');
-            document.body.style.overflow = '';
-            clienteToDelete = null;
-        }
-
-        function updateCurrentDate() {
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            let dateStr = new Date().toLocaleDateString('pt-BR', options);
-            dateStr = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
-            document.getElementById('currentDate').textContent = dateStr;
-        }
-
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('sidebarBackdrop').classList.toggle('active');
-        }
-
-        function closeSidebar() {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebarBackdrop').classList.remove('active');
-        }
-
-        document.getElementById('btnNovoCliente').addEventListener('click', function() {
-            document.getElementById('clientId').value = '';
-            document.getElementById('modalTitle').textContent = 'Novo Cliente';
-            document.getElementById('clientForm').reset();
-            openModal();
-        });
-
-        document.getElementById('modalClose').addEventListener('click', closeModal);
-        document.getElementById('btnCancelar').addEventListener('click', closeModal);
-
-        document.getElementById('modalOverlay').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
-        });
-
-        document.getElementById('confirmClose').addEventListener('click', closeConfirmModal);
-        document.getElementById('btnCancelarExclusao').addEventListener('click', closeConfirmModal);
-
-        document.getElementById('btnConfirmarExclusao').addEventListener('click', function() {
-            if (!clienteToDelete) return;
-            const clientes = loadClientes().filter(c => c.id !== clienteToDelete);
-            saveClientes(clientes);
-            renderTable();
-            closeConfirmModal();
-        });
-
-        document.getElementById('clientForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const email = document.getElementById('email').value.trim();
-            if (!isValidEmail(email)) {
-                alert('Por favor, insira um email válido.');
-                return;
-            }
-
-            const instagram = document.getElementById('instagram').value.trim();
-
-            const cliente = {
-                id: document.getElementById('clientId').value || generateNextId(),
-                nome: document.getElementById('nome').value.trim(),
-                digitavel: document.getElementById('digitavel').value.trim(),
-                whatsapp: document.getElementById('whatsapp').value.trim(),
-                dataNascimento: document.getElementById('dataNascimento').value,
-                instagram: instagram,
-                email: email,
-                cidade: document.getElementById('cidade').value.trim(),
-                estado: document.getElementById('estado').value,
-                fonte: document.getElementById('fonte').value,
-                status: document.getElementById('status').value,
-                totalSessoes: parseInt(document.getElementById('totalSessoes').value) || 0,
-                dataUltimoPagamento: document.getElementById('dataUltimoPagamento').value,
-                metodoPagamento: document.getElementById('metodoPagamento').value,
-                statusPagamento: document.getElementById('statusPagamento').value
-            };
-
-            const clientes = loadClientes();
-            const existingIndex = clientes.findIndex(c => c.id === cliente.id);
-
-            if (existingIndex >= 0) {
-                clientes[existingIndex] = cliente;
-            } else {
-                clientes.push(cliente);
-            }
-
-            saveClientes(clientes);
-            renderTable();
-            closeModal();
-        });
-
-        document.getElementById('digitavel').addEventListener('input', function(e) {
-            e.target.value = e.target.value.replace(/\D/g, '');
-        });
-
-        document.getElementById('whatsapp').addEventListener('input', function(e) {
-            e.target.value = formatWhatsApp(e.target.value);
-        });
-
-        document.getElementById('instagram').addEventListener('blur', function(e) {
-            let value = e.target.value.trim();
-            if (value && !value.startsWith('@')) {
-                e.target.value = '@' + value;
-            }
-        });
-
-        document.getElementById('searchInput').addEventListener('input', renderTable);
-        document.getElementById('statusFilter').addEventListener('change', renderTable);
-
-        document.getElementById('menuToggle').addEventListener('click', toggleSidebar);
-        document.getElementById('sidebarBackdrop').addEventListener('click', closeSidebar);
-
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', closeSidebar);
-        });
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeModal();
-                closeConfirmModal();
-                closeSidebar();
-            }
-        });
-
-        initData();
-        updateCurrentDate();
-        renderTable();
-        setInterval(updateCurrentDate, 60000);
-    </script>
 </body>
 </html>
