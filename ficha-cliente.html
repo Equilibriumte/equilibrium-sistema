@@ -43,13 +43,13 @@
         .ficha-card.full-width { grid-column: 1 / -1; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-size: 13px; color: #555; font-weight: 500; margin-bottom: 5px; }
-        .form-group input, .form-group select { width: 100%; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; transition: border 0.3s; font-family: inherit; }
-        .form-group input:focus, .form-group select:focus { border-color: #d4af37; }
+        .form-group input { width: 100%; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; transition: border 0.3s; font-family: inherit; }
+        .form-group input:focus { border-color: #d4af37; }
         .form-group input.error { border-color: #dc3545; }
-        .form-group .error-msg { font-size: 11px; color: #dc3545; margin-top: 3px; display: none; }
-        .form-group input.error + .error-msg { display: block; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .form-row-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; }
+        .error-msg { font-size: 11px; color: #dc3545; margin-top: 3px; display: none; }
+        .form-group input.error + .error-msg { display: block; }
         .info-row { display: flex; margin-bottom: 12px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; }
         .info-label { width: 120px; font-size: 13px; color: #777; font-weight: 500; }
         .info-value { flex: 1; font-size: 14px; color: #333; }
@@ -82,7 +82,7 @@
         .modal-option .text p { font-size: 12px; color: #777; }
         .modal-close { float: right; background: none; border: none; font-size: 24px; cursor: pointer; color: #999; }
         footer { text-align: center; font-size: 12px; color: #aaa; padding: 20px 0; margin-top: 20px; }
-        @media (max-width: 1024px) { .ficha-grid, .form-row, .form-row-3 { grid-template-columns: 1fr; } .finance-resumo { grid-template-columns: 1fr; } }
+        @media (max-width: 1024px) { .ficha-grid { grid-template-columns: 1fr; } .finance-resumo { grid-template-columns: 1fr; } }
         @media (max-width: 768px) {
             aside { width: 65px; }
             .sidebar-header img { max-width: 45px; }
@@ -120,16 +120,16 @@
 
     <main>
         <div class="breadcrumb">
-            <a href="clientes.html">Clientes</a> > <span id="breadcrumbNome">Nova Cliente</span>
+            <a href="clientes.html">Clientes</a> > <span id="breadcrumbNome">Carregando...</span>
         </div>
 
         <header>
             <div class="header-title">
-                <h2 id="tituloFicha">👤 Nova Cliente</h2>
-                <p id="subtituloFicha">Preencha os dados para cadastrar</p>
+                <h2 id="tituloFicha">👤 Carregando...</h2>
+                <p id="subtituloFicha"></p>
             </div>
             <div class="header-actions">
-                <button class="btn btn-gold" id="btnRelatorio" onclick="abrirModalRelatorio()" style="display:none">📄 Baixar Relatório</button>
+                <button class="btn btn-gold" id="btnRelatorio" onclick="abrirModalRelatorio()">📄 Baixar Relatório</button>
                 <button class="btn btn-outline" id="btnEditar" onclick="ativarEdicao()">✏️ Editar</button>
                 <button class="btn btn-success" id="btnSalvar" onclick="salvarDados()" style="display:none">💾 Salvar</button>
                 <button class="btn btn-danger" id="btnCancelar" onclick="cancelarEdicao()" style="display:none">✕ Cancelar</button>
@@ -137,23 +137,20 @@
         </header>
 
         <div class="ficha-grid">
-            <!-- Dados Pessoais -->
             <div class="ficha-card">
                 <h4>📋 Dados Pessoais</h4>
                 <div id="dadosVisualizacao">
-                    <div class="info-row"><span class="info-label">Nome completo</span><span class="info-value" id="vNome">Maria da Silva</span></div>
-                    <div class="info-row"><span class="info-label">WhatsApp</span><span class="info-value" id="vWhatsApp">+55 (11) 99999-8888</span></div>
-                    <div class="info-row"><span class="info-label">Email</span><span class="info-value" id="vEmail">maria.silva@email.com</span></div>
-                    <div class="info-row"><span class="info-label">Instagram</span><span class="info-value" id="vInstagram">@maria_silva</span></div>
-                    <div class="info-row"><span class="info-label">Endereço</span><span class="info-value" id="vEndereco">Rua das Flores, 123 - Centro, São Paulo - SP, 01001-000</span></div>
-                    <div class="info-row"><span class="info-label">Data de nasc.</span><span class="info-value" id="vNascimento">15/03/1985</span></div>
-                    <div class="info-row"><span class="info-label">Indicação</span><span class="info-value" id="vIndicacao">João Pereira</span></div>
+                    <div class="info-row"><span class="info-label">Nome completo</span><span class="info-value" id="vNome">-</span></div>
+                    <div class="info-row"><span class="info-label">WhatsApp</span><span class="info-value" id="vWhatsApp">-</span></div>
+                    <div class="info-row"><span class="info-label">Email</span><span class="info-value" id="vEmail">-</span></div>
+                    <div class="info-row"><span class="info-label">Instagram</span><span class="info-value" id="vInstagram">-</span></div>
+                    <div class="info-row"><span class="info-label">Endereço</span><span class="info-value" id="vEndereco">-</span></div>
+                    <div class="info-row"><span class="info-label">Data de nasc.</span><span class="info-value" id="vNascimento">-</span></div>
+                    <div class="info-row"><span class="info-label">Indicação</span><span class="info-value" id="vIndicacao">-</span></div>
+                    <div class="info-row"><span class="info-label">Cadastro</span><span class="info-value" id="vCadastro">-</span></div>
                 </div>
                 <div id="dadosEdicao" style="display:none">
-                    <div class="form-group">
-                        <label>Nome completo</label>
-                        <input type="text" id="eNome" value="Maria da Silva">
-                    </div>
+                    <div class="form-group"><label>Nome completo</label><input type="text" id="eNome"></div>
                     <div class="form-group">
                         <label>WhatsApp</label>
                         <input type="text" id="eWhatsApp" placeholder="Digite o número com DDI (ex: 5511999998888)" maxlength="20" oninput="formatarWhatsApp(this)">
@@ -161,95 +158,78 @@
                     </div>
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email" id="eEmail" value="maria.silva@email.com" oninput="validarEmail(this)">
+                        <input type="email" id="eEmail" oninput="validarEmail(this)">
                         <div class="error-msg">Formato de email inválido</div>
                     </div>
                     <div class="form-group">
                         <label>Instagram</label>
-                        <input type="text" id="eInstagram" value="@maria_silva" placeholder="@usuario" oninput="validarInstagram(this)">
+                        <input type="text" id="eInstagram" placeholder="@usuario" oninput="validarInstagram(this)">
                         <div class="error-msg">Formato inválido. Deve começar com @</div>
                     </div>
                     <div class="form-group">
                         <label>Endereço</label>
                         <div class="form-row-3">
-                            <input type="text" id="eRua" placeholder="Rua" value="Rua das Flores" style="grid-column:1">
-                            <input type="text" id="eNumero" placeholder="Nº" value="123" style="grid-column:2">
-                            <input type="text" id="eBairro" placeholder="Bairro" value="Centro" style="grid-column:3">
+                            <input type="text" id="eRua" placeholder="Rua">
+                            <input type="text" id="eNumero" placeholder="Nº">
+                            <input type="text" id="eBairro" placeholder="Bairro">
                         </div>
                         <div class="form-row" style="margin-top:10px">
-                            <input type="text" id="eCidade" placeholder="Cidade" value="São Paulo">
-                            <input type="text" id="eEstado" placeholder="Estado" value="SP">
+                            <input type="text" id="eCidade" placeholder="Cidade">
+                            <input type="text" id="eEstado" placeholder="Estado">
                         </div>
                         <div class="form-group" style="margin-top:10px">
-                            <input type="text" id="eCEP" placeholder="CEP" value="01001-000" maxlength="9" oninput="formatarCEP(this)">
+                            <input type="text" id="eCEP" placeholder="CEP" maxlength="9" oninput="formatarCEP(this)">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label>Data de nascimento</label>
-                        <input type="date" id="eNascimento" value="1985-03-15">
-                    </div>
-                    <div class="form-group">
-                        <label>Indicação</label>
-                        <input type="text" id="eIndicacao" value="João Pereira" placeholder="Quem indicou?">
-                    </div>
+                    <div class="form-group"><label>Data de nascimento</label><input type="date" id="eNascimento"></div>
+                    <div class="form-group"><label>Indicação</label><input type="text" id="eIndicacao" placeholder="Quem indicou?"></div>
                 </div>
             </div>
 
-            <!-- Financeiro -->
             <div class="ficha-card">
                 <h4>💰 Financeiro</h4>
                 <div class="finance-resumo">
-                    <div class="finance-item"><div class="valor positivo" id="totalPago">R$ 850</div><div class="label">Total pago</div></div>
-                    <div class="finance-item"><div class="valor negativo" id="totalPendente">R$ 200</div><div class="label">Pendente</div></div>
-                    <div class="finance-item"><div class="valor" id="ultimaSessao">R$ 150</div><div class="label">Última sessão</div></div>
+                    <div class="finance-item"><div class="valor positivo" id="totalPago">R$ 0</div><div class="label">Total pago</div></div>
+                    <div class="finance-item"><div class="valor negativo" id="totalPendente">R$ 0</div><div class="label">Pendente</div></div>
+                    <div class="finance-item"><div class="valor" id="ultimaSessao">R$ 0</div><div class="label">Última sessão</div></div>
                 </div>
                 <div class="table-responsive">
                     <table>
                         <thead><tr><th>Data</th><th>Valor</th><th>Status</th></tr></thead>
                         <tbody>
-                            <tr><td>20/06/2026</td><td>R$ 150</td><td><span class="badge badge-success">Pago</span></td></tr>
-                            <tr><td>10/06/2026</td><td>R$ 150</td><td><span class="badge badge-success">Pago</span></td></tr>
-                            <tr><td>25/05/2026</td><td>R$ 200</td><td><span class="badge badge-warning">Pendente</span></td></tr>
-                            <tr><td>15/05/2026</td><td>R$ 150</td><td><span class="badge badge-success">Pago</span></td></tr>
+                            <tr><td colspan="3" style="text-align:center;color:#aaa">Nenhum registro financeiro</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Histórico de Atendimentos -->
             <div class="ficha-card full-width">
                 <h4>🩺 Histórico de Atendimentos</h4>
                 <div class="table-responsive">
                     <table>
                         <thead><tr><th>Data</th><th>Tipo</th><th>Duração</th><th>Terapeuta</th><th>Observações</th><th>Status</th></tr></thead>
                         <tbody>
-                            <tr><td>20/06/2026</td><td>Reiki</td><td>60 min</td><td>Simone</td><td>Melhora na ansiedade</td><td><span class="badge badge-success">Concluído</span></td></tr>
-                            <tr><td>10/06/2026</td><td>Cromoterapia</td><td>45 min</td><td>Simone</td><td>Equilíbrio emocional</td><td><span class="badge badge-success">Concluído</span></td></tr>
-                            <tr><td>25/05/2026</td><td>Barras Access</td><td>60 min</td><td>Ana</td><td>Primeira sessão</td><td><span class="badge badge-success">Concluído</span></td></tr>
-                            <tr><td>15/05/2026</td><td>Reiki</td><td>60 min</td><td>Simone</td><td>Sessão inicial</td><td><span class="badge badge-success">Concluído</span></td></tr>
+                            <tr><td colspan="6" style="text-align:center;color:#aaa">Nenhum atendimento registrado</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Tratamentos -->
             <div class="ficha-card">
                 <h4>🔬 Tratamentos</h4>
                 <div class="table-responsive">
                     <table>
                         <thead><tr><th>Tratamento</th><th>Início</th><th>Sessões</th><th>Status</th></tr></thead>
                         <tbody>
-                            <tr><td>Reiki</td><td>15/05/2026</td><td>3/10</td><td><span class="badge badge-info">Em andamento</span></td></tr>
-                            <tr><td>Cromoterapia</td><td>10/06/2026</td><td>1/5</td><td><span class="badge badge-info">Em andamento</span></td></tr>
+                            <tr><td colspan="4" style="text-align:center;color:#aaa">Nenhum tratamento registrado</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Anotações -->
             <div class="ficha-card">
                 <h4>📝 Anotações da Terapeuta</h4>
-                <textarea id="anotacoes" disabled>Paciente responde bem a sessões de Reiki. Relatou melhora significativa na qualidade do sono após a segunda sessão.</textarea>
+                <textarea id="anotacoes" disabled placeholder="Nenhuma anotação..."></textarea>
                 <div style="margin-top:10px;text-align:right">
                     <button class="btn btn-sm btn-gold" id="btnSalvarAnotacoes" onclick="salvarAnotacoes()" style="display:none">💾 Salvar anotações</button>
                 </div>
@@ -259,7 +239,6 @@
         <footer>© 2026 Equilibrium Terapias Energéticas. Todos os direitos reservados.</footer>
     </main>
 
-    <!-- Modal Relatórios -->
     <div class="modal-overlay" id="modalRelatorios">
         <div class="modal">
             <button class="modal-close" onclick="fecharModalRelatorio()">✕</button>
@@ -285,21 +264,47 @@
     </div>
 
     <script>
+        let clienteId = null;
+        let clienteAtual = null;
         let modoEdicao = false;
-        const params = new URLSearchParams(window.location.search);
-        const ehNovo = params.get('novo') === 'true';
 
-        if (ehNovo) {
-            document.getElementById('tituloFicha').textContent = '👤 Nova Cliente';
-            document.getElementById('subtituloFicha').textContent = 'Preencha os dados para cadastrar';
-            document.getElementById('breadcrumbNome').textContent = 'Nova Cliente';
-            document.getElementById('btnRelatorio').style.display = 'none';
-            ativarEdicao();
-        } else {
-            document.getElementById('tituloFicha').textContent = '👤 Maria da Silva';
-            document.getElementById('subtituloFicha').textContent = 'Cliente desde 15/01/2026';
-            document.getElementById('breadcrumbNome').textContent = 'Maria da Silva';
-            document.getElementById('btnRelatorio').style.display = '';
+        function carregarCliente() {
+            const params = new URLSearchParams(window.location.search);
+            clienteId = parseInt(params.get('id'));
+            const clientes = JSON.parse(localStorage.getItem('equilibriumClientes')) || [];
+
+            if (isNaN(clienteId) || clienteId < 0 || clienteId >= clientes.length) {
+                document.getElementById('tituloFicha').textContent = '👤 Cliente não encontrado';
+                document.getElementById('breadcrumbNome').textContent = 'Não encontrado';
+                document.getElementById('subtituloFicha').textContent = 'Cliente não existe ou foi removido';
+                document.getElementById('btnEditar').style.display = 'none';
+                document.getElementById('btnRelatorio').style.display = 'none';
+                return;
+            }
+
+            clienteAtual = clientes[clienteId];
+            const c = clienteAtual;
+
+            document.getElementById('tituloFicha').textContent = '👤 ' + c.nome;
+            document.getElementById('breadcrumbNome').textContent = c.nome;
+            document.getElementById('subtituloFicha').textContent = 'Cliente desde ' + (c.dataCadastro || '-');
+
+            document.getElementById('vNome').textContent = c.nome;
+            document.getElementById('vWhatsApp').textContent = c.whatsapp || '-';
+            document.getElementById('vEmail').textContent = c.email || '-';
+            document.getElementById('vInstagram').textContent = c.instagram || '-';
+            document.getElementById('vEndereco').textContent = c.endereco || '-';
+            document.getElementById('vNascimento').textContent = c.nascimento ? new Date(c.nascimento).toLocaleDateString('pt-BR') : '-';
+            document.getElementById('vIndicacao').textContent = c.indicacao || '-';
+            document.getElementById('vCadastro').textContent = c.dataCadastro || '-';
+
+            document.getElementById('totalPago').textContent = c.totalPago || 'R$ 0';
+            document.getElementById('totalPendente').textContent = c.totalPendente || 'R$ 0';
+            document.getElementById('ultimaSessao').textContent = c.ultimaSessao || 'R$ 0';
+
+            if (c.anotacoes) {
+                document.getElementById('anotacoes').value = c.anotacoes;
+            }
         }
 
         function formatarWhatsApp(input) {
@@ -307,11 +312,7 @@
             if (val.length > 0 && val[0] !== '5') val = '55' + val;
             if (val.length > 13) val = val.slice(0, 13);
             input.value = val;
-            if (val.length === 13) {
-                input.classList.remove('error');
-                const formatado = '+' + val.slice(0,2) + ' (' + val.slice(2,4) + ') ' + val.slice(4,9) + '-' + val.slice(9);
-                document.getElementById('vWhatsApp').textContent = formatado;
-            } else if (val.length > 0) {
+            if (val.length > 0 && val.length !== 13) {
                 input.classList.add('error');
             } else {
                 input.classList.remove('error');
@@ -328,8 +329,7 @@
         }
 
         function validarInstagram(input) {
-            let val = input.value;
-            if (val && !val.startsWith('@')) {
+            if (input.value && !input.value.startsWith('@')) {
                 input.classList.add('error');
             } else {
                 input.classList.remove('error');
@@ -343,6 +343,7 @@
         }
 
         function ativarEdicao() {
+            if (!clienteAtual) return;
             modoEdicao = true;
             document.getElementById('dadosVisualizacao').style.display = 'none';
             document.getElementById('dadosEdicao').style.display = 'block';
@@ -351,6 +352,27 @@
             document.getElementById('btnCancelar').style.display = '';
             document.getElementById('anotacoes').disabled = false;
             document.getElementById('btnSalvarAnotacoes').style.display = '';
+
+            document.getElementById('eNome').value = clienteAtual.nome || '';
+            const whatsRaw = (clienteAtual.whatsapp || '').replace(/\D/g, '');
+            document.getElementById('eWhatsApp').value = whatsRaw;
+            document.getElementById('eEmail').value = clienteAtual.email || '';
+            document.getElementById('eInstagram').value = clienteAtual.instagram || '';
+
+            const endereco = clienteAtual.endereco || '';
+            const partes = endereco.split(' - ');
+            const ruaNum = partes[0] ? partes[0].split(', ') : ['', ''];
+            document.getElementById('eRua').value = ruaNum[0] || '';
+            document.getElementById('eNumero').value = ruaNum[1] || '';
+            document.getElementById('eBairro').value = partes[1] || '';
+            document.getElementById('eCidade').value = partes[2] ? partes[2].split(' - ')[0] : '';
+            document.getElementById('eEstado').value = partes[2] ? partes[2].split(' - ')[1] || '' : '';
+            document.getElementById('eCEP').value = partes[3] || '';
+
+            if (clienteAtual.nascimento) {
+                document.getElementById('eNascimento').value = clienteAtual.nascimento;
+            }
+            document.getElementById('eIndicacao').value = clienteAtual.indicacao || '';
         }
 
         function cancelarEdicao() {
@@ -365,41 +387,46 @@
         }
 
         function salvarDados() {
-            const nome = document.getElementById('eNome').value;
-            const whats = document.getElementById('eWhatsApp').value.replace(/\D/g, '');
-            const email = document.getElementById('eEmail').value;
-            const insta = document.getElementById('eInstagram').value;
-            const rua = document.getElementById('eRua').value;
-            const numero = document.getElementById('eNumero').value;
-            const bairro = document.getElementById('eBairro').value;
-            const cidade = document.getElementById('eCidade').value;
-            const estado = document.getElementById('eEstado').value;
-            const cep = document.getElementById('eCEP').value;
+            const nome = document.getElementById('eNome').value.trim();
+            const whatsRaw = document.getElementById('eWhatsApp').value.replace(/\D/g, '');
+            const email = document.getElementById('eEmail').value.trim();
 
-            if (!nome || whats.length < 13 || !email) {
-                alert('Preencha os campos obrigatórios: Nome, WhatsApp (13 dígitos) e Email.');
-                return;
-            }
+            if (!nome) { alert('Preencha o nome do cliente.'); return; }
+            if (whatsRaw.length !== 13) { alert('WhatsApp inválido. Digite 13 dígitos (ex: 5511999998888).'); return; }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('Email inválido.'); return; }
 
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                alert('Email inválido. Digite um email no formato correto (ex: nome@email.com).');
-                return;
-            }
+            const insta = document.getElementById('eInstagram').value.trim();
+            if (insta && !insta.startsWith('@')) { alert('Instagram deve começar com @'); return; }
 
-            if (insta && !insta.startsWith('@')) {
-                alert('Instagram deve começar com @');
-                return;
-            }
+            const whatsFormatado = '+' + whatsRaw.slice(0,2) + ' (' + whatsRaw.slice(2,4) + ') ' + whatsRaw.slice(4,9) + '-' + whatsRaw.slice(9);
+            const rua = document.getElementById('eRua').value.trim() || '-';
+            const numero = document.getElementById('eNumero').value.trim() || '-';
+            const bairro = document.getElementById('eBairro').value.trim() || '-';
+            const cidade = document.getElementById('eCidade').value.trim() || '-';
+            const estado = document.getElementById('eEstado').value.trim() || '-';
+            const cep = document.getElementById('eCEP').value.trim() || '-';
+            const endereco = rua + ', ' + numero + ' - ' + bairro + ', ' + cidade + ' - ' + estado + ', ' + cep;
+            const nascimento = document.getElementById('eNascimento').value || '-';
+            const indicacao = document.getElementById('eIndicacao').value.trim() || '-';
 
-            const whatsFormatado = '+' + whats.slice(0,2) + ' (' + whats.slice(2,4) + ') ' + whats.slice(4,9) + '-' + whats.slice(9);
-            const enderecoCompleto = rua + ', ' + numero + ' - ' + bairro + ', ' + cidade + ' - ' + estado + ', ' + cep;
+            const clientes = JSON.parse(localStorage.getItem('equilibriumClientes')) || [];
+            clientes[clienteId].nome = nome;
+            clientes[clienteId].whatsapp = whatsFormatado;
+            clientes[clienteId].email = email;
+            clientes[clienteId].instagram = insta || '-';
+            clientes[clienteId].endereco = endereco;
+            clientes[clienteId].nascimento = nascimento;
+            clientes[clienteId].indicacao = indicacao;
+            localStorage.setItem('equilibriumClientes', JSON.stringify(clientes));
 
+            clienteAtual = clientes[clienteId];
             document.getElementById('vNome').textContent = nome;
             document.getElementById('vWhatsApp').textContent = whatsFormatado;
             document.getElementById('vEmail').textContent = email;
             document.getElementById('vInstagram').textContent = insta || '-';
-            document.getElementById('vEndereco').textContent = enderecoCompleto;
+            document.getElementById('vEndereco').textContent = endereco;
+            document.getElementById('vNascimento').textContent = nascimento ? new Date(nascimento).toLocaleDateString('pt-BR') : '-';
+            document.getElementById('vIndicacao').textContent = indicacao;
             document.getElementById('tituloFicha').textContent = '👤 ' + nome;
             document.getElementById('breadcrumbNome').textContent = nome;
 
@@ -408,6 +435,10 @@
         }
 
         function salvarAnotacoes() {
+            const texto = document.getElementById('anotacoes').value;
+            const clientes = JSON.parse(localStorage.getItem('equilibriumClientes')) || [];
+            clientes[clienteId].anotacoes = texto;
+            localStorage.setItem('equilibriumClientes', JSON.stringify(clientes));
             alert('✅ Anotações salvas com sucesso!');
         }
 
@@ -423,60 +454,48 @@
 
         function baixarRelatorio(tipo) {
             fecharModalRelatorio();
-            const nome = document.getElementById('vNome').textContent;
+            if (!clienteAtual) return;
+            const c = clienteAtual;
             const data = new Date().toLocaleDateString('pt-BR');
             let conteudo = '';
             let nomeArquivo = '';
 
             if (tipo === 'individual') {
-                nomeArquivo = 'Relatorio_Individual_' + nome.replace(/\s/g, '_') + '.txt';
+                nomeArquivo = 'Relatorio_Individual_' + c.nome.replace(/\s/g, '_') + '.txt';
                 conteudo = '=== RELATÓRIO INDIVIDUAL ===\n\n';
-                conteudo += 'Cliente: ' + nome + '\n';
-                conteudo += 'WhatsApp: ' + document.getElementById('vWhatsApp').textContent + '\n';
-                conteudo += 'Email: ' + document.getElementById('vEmail').textContent + '\n';
-                conteudo += 'Instagram: ' + document.getElementById('vInstagram').textContent + '\n';
-                conteudo += 'Endereço: ' + document.getElementById('vEndereco').textContent + '\n';
-                conteudo += 'Data de nascimento: ' + document.getElementById('vNascimento').textContent + '\n';
-                conteudo += 'Indicação: ' + document.getElementById('vIndicacao').textContent + '\n';
-                conteudo += '\nTotal pago: ' + document.getElementById('totalPago').textContent + '\n';
-                conteudo += 'Pendente: ' + document.getElementById('totalPendente').textContent + '\n';
-                conteudo += 'Última sessão: ' + document.getElementById('ultimaSessao').textContent + '\n';
-                conteudo += '\nAnotações:\n' + document.getElementById('anotacoes').value + '\n';
+                conteudo += 'Cliente: ' + c.nome + '\n';
+                conteudo += 'WhatsApp: ' + c.whatsapp + '\n';
+                conteudo += 'Email: ' + c.email + '\n';
+                conteudo += 'Instagram: ' + (c.instagram || '-') + '\n';
+                conteudo += 'Endereço: ' + (c.endereco || '-') + '\n';
+                conteudo += 'Data de nascimento: ' + (c.nascimento ? new Date(c.nascimento).toLocaleDateString('pt-BR') : '-') + '\n';
+                conteudo += 'Indicação: ' + (c.indicacao || '-') + '\n';
+                conteudo += 'Data de cadastro: ' + (c.dataCadastro || '-') + '\n';
+                conteudo += '\nAnotações:\n' + (c.anotacoes || 'Nenhuma') + '\n';
                 conteudo += '\nGerado em: ' + data;
             } else if (tipo === 'atendimentos') {
                 nomeArquivo = 'Relatorio_Atendimentos_' + data.replace(/\//g, '-') + '.txt';
                 conteudo = '=== RELATÓRIO DE ATENDIMENTOS ===\n\n';
-                conteudo += 'Cliente: ' + nome + '\n';
+                conteudo += 'Cliente: ' + c.nome + '\n';
                 conteudo += 'Período: Junho/2026\n\n';
-                conteudo += '20/06/2026 - Reiki - 60min - Simone - Concluído\n';
-                conteudo += '10/06/2026 - Cromoterapia - 45min - Simone - Concluído\n';
-                conteudo += '25/05/2026 - Barras Access - 60min - Ana - Concluído\n';
-                conteudo += '15/05/2026 - Reiki - 60min - Simone - Concluído\n';
+                conteudo += 'Nenhum atendimento registrado.\n';
                 conteudo += '\nGerado em: ' + data;
             } else if (tipo === 'financeiro') {
                 nomeArquivo = 'Relatorio_Financeiro_' + data.replace(/\//g, '-') + '.txt';
                 conteudo = '=== RELATÓRIO FINANCEIRO ===\n\n';
-                conteudo += 'Cliente: ' + nome + '\n';
-                conteudo += 'Total pago: R$ 850,00\n';
-                conteudo += 'Pendente: R$ 200,00\n';
-                conteudo += 'Última sessão: R$ 150,00\n\n';
-                conteudo += 'Histórico:\n';
-                conteudo += '20/06/2026 - R$ 150,00 - Pago\n';
-                conteudo += '10/06/2026 - R$ 150,00 - Pago\n';
-                conteudo += '25/05/2026 - R$ 200,00 - Pendente\n';
-                conteudo += '15/05/2026 - R$ 150,00 - Pago\n';
+                conteudo += 'Cliente: ' + c.nome + '\n';
+                conteudo += 'Total pago: ' + (c.totalPago || 'R$ 0') + '\n';
+                conteudo += 'Pendente: ' + (c.totalPendente || 'R$ 0') + '\n';
+                conteudo += 'Última sessão: ' + (c.ultimaSessao || 'R$ 0') + '\n';
                 conteudo += '\nGerado em: ' + data;
             } else if (tipo === 'geral') {
                 nomeArquivo = 'Backup_Geral_Clientes_' + data.replace(/\//g, '-') + '.txt';
                 conteudo = '=== BACKUP GERAL DE CLIENTES ===\n\n';
                 conteudo += 'Data: ' + data + '\n\n';
-                conteudo += '1. Maria da Silva - (11) 99999-8888 - maria@email.com\n';
-                conteudo += '2. Ana Carolina - (11) 98888-7777 - ana@email.com\n';
-                conteudo += '3. Marcos Oliveira - (11) 97777-6666 - marcos@email.com\n';
-                conteudo += '4. Juliana Costa - (11) 96666-5555 - juliana@email.com\n';
-                conteudo += '5. Carlos Mendes - (11) 95555-4444 - carlos@email.com\n';
-                conteudo += '6. Fernanda Lima - (11) 94444-3333 - fernanda@email.com\n';
-                conteudo += '7. Roberto Alves - (11) 93333-2222 - roberto@email.com\n';
+                const clientes = JSON.parse(localStorage.getItem('equilibriumClientes')) || [];
+                clientes.forEach((cli, i) => {
+                    conteudo += (i+1) + '. ' + cli.nome + ' - ' + (cli.whatsapp || '-') + ' - ' + (cli.email || '-') + '\n';
+                });
                 conteudo += '\n=== FIM DO BACKUP ===\n';
             }
 
@@ -487,6 +506,8 @@
             link.click();
             URL.revokeObjectURL(link.href);
         }
+
+        carregarCliente();
     </script>
 </body>
 </html>
