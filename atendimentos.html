@@ -462,11 +462,13 @@
                 <textarea id="diagnosticoInicial"></textarea>
               </div>
             </div>
-            <div class="form-actions">
-              <button type="button" class="btn" onclick="irParaSessao(1)">← Anterior</button>
-              <button type="button" class="btn btn-primary" onclick="irParaSessao(3)">Próximo: Análise Específica →</button>
-            </div>
+                   <div class="form-actions">
+          <button type="button" class="btn" onclick="irParaSessao(1)">← Anterior</button>
+          <div style="display:flex;gap:10px">
+            <button type="button" class="btn btn-success" onclick="salvarAtendimento()">💾 Salvar Dados</button>
+            <button type="button" class="btn btn-primary" onclick="irParaSessao(3)">Próximo: Análise Específica →</button>
           </div>
+        </div>
         </section>
 
         <section id="sessao3" class="sessao-content">
