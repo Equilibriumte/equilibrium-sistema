@@ -507,7 +507,33 @@
             URL.revokeObjectURL(link.href);
         }
 
+           function carregarHistoricoAtendimentos() {
+        const tbody = document.getElementById('historicoAtendimentos');
+        const atendimentos = JSON.parse(localStorage.getItem('equilibriumAtendimentos')) || [];
+        const clienteNome = document.getElementById('vNome').textContent;
+        
+        const atendimentosCliente = atendimentos.filter(a => a.cliente === clienteNome || a.clienteNome === clienteNome);
+        
+        if (atendimentosCliente.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#aaa">Nenhum atendimento registrado</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = atendimentosCliente.sort((a,b) => b.data.localeCompare(a.data)).map(a => {
+            const statusClass = a.status === 'Concluído' ? 'badge-success' : a.status === 'Em andamento' ? 'badge-warning' : a.status === 'Agendado' ? 'badge-info' : 'badge-danger';
+            const dataFormatada = a.data ? new Date(a.data + 'T12:00:00').toLocaleDateString('pt-BR') : '-';
+            return `<tr>
+                <td>${dataFormatada}</td>
+                <td>${a.tipo || '-'}</td>
+                <td>${a.queixaPrincipal || '-'}</td>
+                <td>${a.diagnosticoInicial || a.diagnosticoEspecifico || '-'}</td>
+                <td><span class="badge ${statusClass}">${a.status || '-'}</span></td>
+            </tr>`;
+        }).join('');
+    }
         carregarCliente();
+            carregarCliente();
+    carregarHistoricoAtendimentos();
     </script>
 </body>
 </html>
