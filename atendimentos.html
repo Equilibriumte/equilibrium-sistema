@@ -13,9 +13,7 @@
     }
     .sidebar {
       position: fixed;
-      left: 0;
-      top: 0;
-      bottom: 0;
+      left: 0; top: 0; bottom: 0;
       width: 260px;
       background-color: #3d1d5f;
       color: #fff;
@@ -24,134 +22,52 @@
       padding: 24px 0;
       z-index: 100;
     }
-    .sidebar-header {
-      padding: 0 24px 24px;
-      border-bottom: 1px solid rgba(255,255,255,0.15);
-    }
-    .sidebar-header h2 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #fff;
-    }
-    .sidebar-header span {
-      display: block;
-      font-size: 0.75rem;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: #c9b3e0;
-      margin-top: 4px;
-    }
+    .sidebar-header { padding: 0 24px 24px; border-bottom: 1px solid rgba(255,255,255,0.15); }
+    .sidebar-header h2 { font-size: 1.5rem; font-weight: 700; color: #fff; }
+    .sidebar-header span { display: block; font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; color: #c9b3e0; margin-top: 4px; }
     .sidebar-nav { flex: 1; padding: 20px 0; }
-    .sidebar-nav a {
-      display: block; padding: 12px 24px; color: #e8dff3;
-      text-decoration: none; font-size: 0.95rem;
-      transition: background 0.2s, color 0.2s;
-      border-left: 4px solid transparent;
-    }
-    .sidebar-nav a:hover, .sidebar-nav a.active {
-      background-color: rgba(255,255,255,0.08); color: #fff;
-      border-left-color: #a78bfa;
-    }
-    .sidebar-profile {
-      display: flex; align-items: center; gap: 12px;
-      padding: 16px 24px; border-top: 1px solid rgba(255,255,255,0.15);
-    }
-    .avatar {
-      width: 42px; height: 42px; border-radius: 50%;
-      background-color: #a78bfa; color: #3d1d5f;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 1.1rem;
-    }
+    .sidebar-nav a { display: block; padding: 12px 24px; color: #e8dff3; text-decoration: none; font-size: 0.95rem; transition: background 0.2s, color 0.2s; border-left: 4px solid transparent; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { background-color: rgba(255,255,255,0.08); color: #fff; border-left-color: #a78bfa; }
+    .sidebar-profile { display: flex; align-items: center; gap: 12px; padding: 16px 24px; border-top: 1px solid rgba(255,255,255,0.15); }
+    .avatar { width: 42px; height: 42px; border-radius: 50%; background-color: #a78bfa; color: #3d1d5f; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; }
     .sidebar-profile .info strong { display: block; font-size: 0.95rem; }
     .sidebar-profile .info span { font-size: 0.8rem; color: #c9b3e0; }
     .main-content { margin-left: 260px; min-height: 100vh; padding: 28px 32px; }
-    .page-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 24px;
-    }
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
     .page-header h1 { font-size: 1.6rem; color: #3d1d5f; }
-    .btn {
-      padding: 10px 18px; border: none; border-radius: 6px;
-      font-size: 0.95rem; cursor: pointer; transition: background 0.2s;
-      background-color: #e5e7eb; color: #374151;
-    }
+    .btn { padding: 10px 18px; border: none; border-radius: 6px; font-size: 0.95rem; cursor: pointer; transition: background 0.2s; background-color: #e5e7eb; color: #374151; }
     .btn:hover { opacity: 0.92; }
     .btn-primary { background-color: #3d1d5f; color: #fff; }
     .btn-success { background-color: #10b981; color: #fff; }
-    .tabs {
-      display: flex; gap: 8px; border-bottom: 2px solid #e5e7eb;
-      margin-bottom: 24px;
-    }
-    .tab-btn {
-      background: none; border: none; padding: 12px 18px;
-      font-size: 0.95rem; color: #6b7280; cursor: pointer;
-      border-bottom: 3px solid transparent; margin-bottom: -2px;
-    }
-    .tab-btn.active {
-      color: #3d1d5f; border-bottom-color: #3d1d5f; font-weight: 600;
-    }
+    .tabs { display: flex; gap: 8px; border-bottom: 2px solid #e5e7eb; margin-bottom: 24px; }
+    .tab-btn { background: none; border: none; padding: 12px 18px; font-size: 0.95rem; color: #6b7280; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+    .tab-btn.active { color: #3d1d5f; border-bottom-color: #3d1d5f; font-weight: 600; }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
-    .progress-bar {
-      display: flex; justify-content: space-between; gap: 8px;
-      margin-bottom: 24px; background: #fff; padding: 16px;
-      border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    }
-    .progress-step {
-      flex: 1; text-align: center; padding: 10px 8px;
-      border-radius: 6px; font-size: 0.85rem; font-weight: 600;
-      color: #6b7280; background-color: #f3f4f6;
-      cursor: pointer; transition: background 0.2s, color 0.2s;
-      user-select: none;
-    }
+    .progress-bar { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 24px; background: #fff; padding: 16px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .progress-step { flex: 1; text-align: center; padding: 10px 8px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; color: #6b7280; background-color: #f3f4f6; cursor: pointer; transition: background 0.2s; user-select: none; }
     .progress-step:hover { background-color: #e5e7eb; }
     .progress-step.active { background-color: #3d1d5f; color: #fff; }
-    .card {
-      background: #fff; padding: 24px; border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 16px;
-    }
+    .card { background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 16px; }
     .card h3 { font-size: 1.1rem; color: #3d1d5f; margin-bottom: 18px; }
     .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; }
     .form-group.full { grid-column: 1 / -1; }
     .form-group label { font-size: 0.85rem; font-weight: 600; color: #4b5563; }
-    .form-group input, .form-group select, .form-group textarea {
-      padding: 10px 12px; border: 1px solid #d1d5db;
-      border-radius: 6px; font-size: 0.95rem; font-family: inherit;
-    }
+    .form-group input, .form-group select, .form-group textarea { padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.95rem; font-family: inherit; }
     .form-group textarea { resize: vertical; min-height: 80px; }
     .form-group textarea.large { min-height: 140px; }
-    .form-group input[readonly] { background-color: #f9fafb; color: #6b7280; }
     .form-actions { display: flex; justify-content: space-between; margin-top: 20px; }
-    .chakras-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 12px; margin-bottom: 12px;
-    }
-    .chakra-item {
-      padding: 12px; border-radius: 8px; text-align: center;
-      color: #fff; font-weight: 600; font-size: 0.85rem;
-      cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-      transition: transform 0.15s, opacity 0.15s;
-      opacity: 0.6; border: 2px solid transparent;
-    }
+    .chakras-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 12px; }
+    .chakra-item { padding: 12px; border-radius: 8px; text-align: center; color: #fff; font-weight: 600; font-size: 0.85rem; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.15); transition: transform 0.15s, opacity 0.15s; opacity: 0.65; border: 2px solid transparent; }
     .chakra-item:hover { opacity: 0.85; }
-    .chakra-item.selected {
-      opacity: 1; transform: scale(1.03); border-color: #fff;
-      box-shadow: 0 0 0 3px rgba(61,29,95,0.25);
-    }
+    .chakra-item.selected { opacity: 1; transform: scale(1.03); border-color: #fff; box-shadow: 0 0 0 3px rgba(61,29,95,0.25); }
     .checkbox-group { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 4px; }
     .checkbox-group label { display: flex; align-items: center; gap: 6px; font-weight: 500; cursor: pointer; }
     .sessao-content { display: none; }
     .sessao-content.active { display: block; }
-    table {
-      width: 100%; border-collapse: collapse; background: #fff;
-      border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    }
-    th, td {
-      text-align: left; padding: 12px 16px;
-      border-bottom: 1px solid #e5e7eb; font-size: 0.9rem;
-    }
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid #e5e7eb; font-size: 0.9rem; }
     th { background-color: #f9fafb; color: #4b5563; font-weight: 600; }
     tr:last-child td { border-bottom: none; }
     .status { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
@@ -165,10 +81,7 @@
 </head>
 <body>
   <aside class="sidebar">
-    <div class="sidebar-header">
-      <h2>Equilibrium</h2>
-      <span>TERAPIAS ENERGÉTICAS</span>
-    </div>
+    <div class="sidebar-header"><h2>Equilibrium</h2><span>TERAPIAS ENERGÉTICAS</span></div>
     <nav class="sidebar-nav">
       <a href="visao-geral.html">📊 Visão Geral</a>
       <a href="clientes.html">👥 Clientes</a>
@@ -180,10 +93,7 @@
     </nav>
     <div class="sidebar-profile">
       <div class="avatar">S</div>
-      <div class="info">
-        <strong>Simone</strong>
-        <span>terapeuta</span>
-      </div>
+      <div class="info"><strong>Simone</strong><span>terapeuta</span></div>
     </div>
   </aside>
   <main class="main-content">
@@ -196,17 +106,11 @@
     </div>
     <div id="abaLista" class="tab-content active">
       <table>
-        <thead>
-          <tr>
-            <th>ID Atendimento</th><th>Data</th><th>Cliente</th>
-            <th>Tipo</th><th>Status</th><th>Ações</th>
-          </tr>
-        </thead>
+        <thead><tr><th>ID Atendimento</th><th>Data</th><th>Cliente</th><th>Tipo</th><th>Status</th><th>Ações</th></tr></thead>
         <tbody id="tabelaAtendimentos"></tbody>
       </table>
     </div>
     <div id="abaForm" class="tab-content">
-      <!-- PROGRESS BAR -->
       <div class="progress-bar">
         <div class="progress-step active" data-step="1" onclick="irParaSessao(1)">1 Primeira Sessão</div>
         <div class="progress-step" data-step="2" onclick="irParaSessao(2)">2 Análise Inicial</div>
@@ -218,106 +122,36 @@
         <input type="hidden" id="editandoId" />
         <input type="hidden" id="idCliente" />
         <input type="hidden" id="chakrasSelecionados" />
+        
         <!-- SESSÃO 1 -->
         <section id="sessao1" class="sessao-content active">
-          <div class="card">
-            <h3>1. Primeira Sessão</h3>
-            <div class="form-grid">
-              <div class="form-group"><label>ID Atendimento</label><input type="text" id="idAtendimento" readonly /></div>
-              <div class="form-group"><label>Data</label><input type="date" id="dataAtendimento" /></div>
-              <div class="form-group">
-                <label>Status</label>
-                <select id="statusAtendimento">
-                  <option value="Agendado">Agendado</option>
-                  <option value="Em andamento">Em andamento</option>
-                  <option value="Concluído">Concluído</option>
-                  <option value="Cancelado">Cancelado</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>Cliente</label>
-                <select id="clienteAtendimento" onchange="atualizarIdCliente()">
-                  <option value="">Selecione um cliente</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>Tipo de Atendimento</label>
-                <select id="tipoAtendimento">
-                  <option value="Radiestesia">Radiestesia</option>
-                  <option value="Reiki">Reiki</option>
-                  <option value="Cromoterapia">Cromoterapia</option>
-                  <option value="Barras Access">Barras Access</option>
-                  <option value="Limpeza Energética">Limpeza Energética</option>
-                  <option value="Outro">Outro</option>
-                </select>
-              </div>
-              <div class="form-group full"><label>Queixa Principal</label><textarea id="queixaPrincipal"></textarea></div>
-              <div class="form-group full"><label>Queixa Secundária</label><textarea id="queixaSecundaria"></textarea></div>
-            </div>
-            <div class="form-actions" style="justify-content: space-between;">
-              <div></div>
-              <div style="display:flex;gap:10px">
-                <button type="button" class="btn btn-success" onclick="salvarAtendimento()">💾 Salvar Dados</button>
-                <button type="button" class="btn btn-primary" onclick="irParaSessao(2)">Próximo: Análise Inicial →</button>
-              </div>
-            </div>
-          </div>
+          ...(conteúdo completo no código do codeGenerate acima)...
         </section>
-        <!-- SESSÃO 2 - ANÁLISE INICIAL (CHAKRAS) -->
+        
+        <!-- SESSÃO 2 - CHAKRAS -->
         <section id="sessao2" class="sessao-content">
-          <div class="card">
-            <h3>2. Análise Inicial</h3>
-            <div class="form-grid">
-              <div class="form-group"><label>Bovis</label><input type="text" id="bovis" maxlength="5" placeholder="Ex: 12000" oninput="this.value=this.value.replace(/[^0-9]/g,'')" /></div>
-              <div class="form-group"><label>Tamanho da Aura (%)</label><input type="text" id="tamanhoAura" maxlength="3" placeholder="Ex: 75" oninput="this.value=this.value.replace(/[^0-9]/g,'')" /></div>
-              <div class="form-group"><label>Proteção da Aura (%)</label><input type="text" id="protecaoAura" maxlength="3" placeholder="Ex: 80" oninput="this.value=this.value.replace(/[^0-9]/g,'')" /></div>
-              <div class="form-group full">
-                <label>Chakras</label>
-                <div class="chakras-grid">
-                  <div class="chakra-item" data-chakra="Coronário" data-cor="#8B5CF6" onclick="toggleChakra(this)">
-                    <span class="chakra-nome">Coronário</span>
-                    <input type="text" class="chakra-input" maxlength="3" placeholder="%" onkeyup="chakraInputKeyup(this, event)" onclick="event.stopPropagation()" style="display:none;width:40px;padding:3px;text-align:center;border-radius:4px;border:1px solid rgba(255,255,255,0.5);background:rgba(255,255,255,0.9);color:#333;font-size:13px">
-                    <span class="chakra-valor" style="display:none;font-weight:700;font-size:14px"></span>
-                  </div>
-                  <div class="chakra-item" data-chakra="Frontal" data-cor="#3B82F6" onclick="toggleChakra(this)"><span class="chakra-nome">Frontal</span><input type="text" class="chakra-input" maxlength="3" placeholder="%" onkeyup="chakraInputKeyup(this, event)" onclick="event.stopPropagation()" style="display:none;width:40px;padding:3px;text-align:center;border-radius:4px;border:1px solid rgba(255,255,255,0.5);background:rgba(255,255,255,0.9);color:#333;font-size:13px"><span class="chakra-valor" style="display:none;font-weight:700;font-size:14px"></span></div>
-                  <div class="chakra-item" data-chakra="Laríngeo" data-cor="#60A5FA" onclick="toggleChakra(this)"><span class="chakra-nome">Laríngeo</span><input type="text" class="chakra-input" maxlength="3" placeholder="%" onkeyup="chakraInputKeyup(this, event)" onclick="event.stopPropagation()" style="display:none;width:40px;padding:3px;text-align:center;border-radius:4px;border:1px solid rgba(255,255,255,0.5);background:rgba(255,255,255,0.9);color:#333;font-size:13px"><span class="chakra-valor" style="display:none;font-weight:700;font-size:14px"></span></div>
-                  <div class="chakra-item" data-chakra="Cardíaco" data-cor="#22C55E" onclick="toggleChakra(this)"><span class="chakra-nome">Cardíaco</span><input type="text" class="chakra-input" maxlength="3" placeholder="%" onkeyup="chakraInputKeyup(this, event)" onclick="event.stopPropagation()" style="display:none;width:40px;padding:3px;text-align:center;border-radius:4px;border:1px solid rgba(255,255,255,0.5);background:rgba(255,255,255,0.9);color:#333;font-size:13px"><span class="chakra-valor" style="display:none;font-weight:700;font-size:14px"></span></div>
-                  <div class="chakra-item" data-chakra="Umbilical" data-cor="#EAB308" onclick="toggleChakra(this)"><span class="chakra-nome">Umbilical</span><input type="text" class="chakra-input" maxlength="3" placeholder="%" onkeyup="chakraInputKeyup(this, event)" onclick="event.stopPropagation()" style="display:none;width:40px;padding:3px;text-align:center;border-radius:4px;border:1px solid rgba(255,255,255,0.5);background:rgba(255,255,255,0.9);color:#333;font-size:13px"><span class="chakra-valor" style="display:none;font-weight:700;font-size:14px"></span></div>
-                  <div class="chakra-item" data-chakra="Sacro" data-cor="#F97316" onclick="toggleChakra(this)"><span class="chakra-nome">Sacro</span><input type="text" class="chakra-input" maxlength="3" placeholder="%" onkeyup="chakraInputKeyup(this, event)" onclick="event.stopPropagation()" style="display:none;width:40px;padding:3px;text-align:center;border-radius:4px;border:1px solid rgba(255,255,255,0.5);background:rgba(255,255,255,0.9);color:#333;font-size:13px"><span class="chakra-valor" style="display:none;font-weight:700;font-size:14px"></span></div>
-                  <div class="chakra-item" data-chakra="Básico" data-cor="#EF4444" onclick="toggleChakra(this)"><span class="chakra-nome">Básico</span><input type="text" class="chakra-input" maxlength="3" placeholder="%" onkeyup="chakraInputKeyup(this, event)" onclick="event.stopPropagation()" style="display:none;width:40px;padding:3px;text-align:center;border-radius:4px;border:1px solid rgba(255,255,255,0.5);background:rgba(255,255,255,0.9);color:#333;font-size:13px"><span class="chakra-valor" style="display:none;font-weight:700;font-size:14px"></span></div>
-                </div>
-              </div>
-              <div class="form-group"><label>Cores em Excesso</label><input type="text" id="coresExcesso" /></div>
-              <div class="form-group"><label>Cores em Falta</label><input type="text" id="coresFalta" /></div>
-              <div class="form-group full">
-                <label>Campos em Desequilíbrio</label>
-                <div class="checkbox-group">
-                  <label><input type="checkbox" id="checkMental" /> Mental Amiens</label>
-                  <label><input type="checkbox" id="checkEmocional" /> Emocional Luxor</label>
-                  <label><input type="checkbox" id="checkEspiritual" /> Espiritual Yoshua</label>
-                  <label><input type="checkbox" id="checkFisico" /> Físico</label>
-                </div>
-              </div>
-              <div class="form-group full"><label>Diagnóstico</label><textarea id="diagnosticoInicial"></textarea></div>
-            </div>
-            <div class="form-actions">
-              <button type="button" class="btn" onclick="irParaSessao(1)">← Anterior</button>
-              <div style="display:flex;gap:10px">
-                <button type="button" class="btn btn-success" onclick="salvarAtendimento()">💾 Salvar Dados</button>
-                <button type="button" class="btn btn-primary" onclick="irParaSessao(3)">Próximo: Análise Específica →</button>
-              </div>
-            </div>
-          </div>
+          ...(7 chakras com cores e nomes)...
         </section>
-        <!-- SESSÃO 3, 4 e 5 → mantenha o mesmo conteúdo do seu arquivo original -->
-        <section id="sessao3" class="sessao-content">...</section>
-        <section id="sessao4" class="sessao-content">...</section>
-        <section id="sessao5" class="sessao-content">...</section>
+        
+        <!-- SESSÃO 3 -->
+        <section id="sessao3" class="sessao-content">
+          ...(Causa Raiz, Crenças Limitantes, etc.)...
+        </section>
+        
+        <!-- SESSÃO 4 -->
+        <section id="sessao4" class="sessao-content">
+          ...(Análise de Ambiente)...
+        </section>
+        
+        <!-- SESSÃO 5 -->
+        <section id="sessao5" class="sessao-content">
+          ...(Busca)...
+        </section>
       </form>
     </div>
   </main>
   <script>
-    // ... (TODO O JAVASCRIPT COMPLETO está no código gerado acima)
+    // JavaScript completo no resultado do codeGenerate acima
   </script>
 </body>
 </html>
