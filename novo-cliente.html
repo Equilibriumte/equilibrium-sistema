@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
+<script src="js/database.js"></script>
+    <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Novo Cliente - Equilibrium Terapias Energéticas</title>
@@ -266,12 +267,16 @@
                 dataCadastro: new Date().toLocaleDateString('pt-BR')
             };
 
-            let clientes = JSON.parse(localStorage.getItem('equilibriumClientes')) || [];
-            clientes.push(novoCliente);
-            localStorage.setItem('equilibriumClientes', JSON.stringify(clientes));
-
-            alert('✅ Cliente cadastrado com sucesso!\n📱 ' + whatsFormatado);
-            window.location.href = 'clientes.html';
+                    Database.salvarCliente(novoCliente).then(function(res) {
+              alert('✅ Cliente cadastrado com sucesso!\n📱 ' + novoCliente.whatsapp);
+              window.location.href = 'clientes.html';
+            }).catch(function() {
+              let clientes = JSON.parse(localStorage.getItem('equilibriumClientes') || '[]');
+              clientes.push(novoCliente);
+              localStorage.setItem('equilibriumClientes', JSON.stringify(clientes));
+              alert('✅ Cliente cadastrado com sucesso!\n📱 ' + novoCliente.whatsapp);
+              window.location.href = 'clientes.html';
+            });
         }
     </script>
 </body>
