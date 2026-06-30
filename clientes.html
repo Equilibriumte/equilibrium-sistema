@@ -1,167 +1,354 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clientes - Equilibrium Terapias Energéticas</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { display: flex; background-color: #f4f7f6; color: #333; min-height: 100vh; }
-        aside { width: 260px; background-color: #3d1d5f; height: 100vh; position: fixed; display: flex; flex-direction: column; color: white; z-index: 1000; }
-        .sidebar-header { padding: 25px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .sidebar-header img { max-width: 180px; height: auto; }
-        nav { flex-grow: 1; padding: 10px 0; overflow-y: auto; }
-        .nav-link { display: flex; align-items: center; padding: 12px 22px; text-decoration: none; color: rgba(255,255,255,0.7); transition: all 0.3s; font-size: 14px; border-left: 3px solid transparent; }
-        .nav-link i { margin-right: 14px; font-style: normal; font-size: 18px; width: 22px; text-align: center; }
-        .nav-link:hover { color: white; background-color: rgba(255,255,255,0.08); border-left-color: #d4af37; }
-        .nav-link.active { background-color: rgba(212,175,55,0.15); color: #d4af37; border-left-color: #d4af37; font-weight: 600; }
-        .user-profile { padding: 15px 22px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; }
-        .avatar { width: 36px; height: 36px; background: linear-gradient(135deg, #d4af37, #b8962e); color: #3d1d5f; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; margin-right: 12px; }
-        .user-info span { display: block; font-size: 14px; font-weight: 500; }
-        .user-info small { font-size: 11px; color: rgba(255,255,255,0.5); }
-        main { margin-left: 260px; flex-grow: 1; padding: 30px; min-height: 100vh; }
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
-        .header-title h2 { color: #3d1d5f; font-size: 24px; }
-        .header-title p { font-size: 14px; color: #888; margin-top: 4px; }
-        .header-actions { display: flex; gap: 10px; align-items: center; }
-        .btn { padding: 10px 20px; border-radius: 8px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
-        .btn-gold { background-color: #d4af37; color: #3d1d5f; }
-        .btn-gold:hover { background-color: #c5a030; }
-        .search-bar input { padding: 10px 20px; border-radius: 25px; border: 1px solid #e0e0e0; width: 280px; outline: none; font-size: 14px; background: white; transition: border 0.3s; }
-        .search-bar input:focus { border-color: #d4af37; }
-        .table-responsive { overflow-x: auto; background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-        table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        thead th { background-color: #3d1d5f; color: white; padding: 14px 18px; text-align: left; font-weight: 600; font-size: 13px; }
-        tbody td { padding: 14px 18px; border-bottom: 1px solid #f0f0f0; }
-        tbody tr:hover { background-color: #f9f5ff; cursor: pointer; }
-        .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
-        .badge-success { background-color: #d4edda; color: #155724; }
-        .badge-warning { background-color: #fff3cd; color: #856404; }
-        .badge-danger { background-color: #f8d7da; color: #721c24; }
-        .client-name { color: #3d1d5f; font-weight: 600; }
-        footer { text-align: center; font-size: 12px; color: #aaa; padding: 20px 0; margin-top: 20px; }
-        .empty-state { text-align: center; padding: 60px 20px; color: #aaa; display: none; }
-        .empty-state i { font-size: 60px; display: block; margin-bottom: 15px; }
-        @media (max-width: 768px) {
-            aside { width: 65px; }
-            .sidebar-header img { max-width: 45px; }
-            .nav-link { justify-content: center; padding: 14px 0; }
-            .nav-link i { margin-right: 0; }
-            .nav-text, .user-info { display: none; }
-            .user-profile { justify-content: center; }
-            .avatar { margin-right: 0; }
-            main { margin-left: 65px; padding: 15px; }
-            .search-bar { display: none; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clientes - Equilibrium Radiestesia</title>
+  <script src="js/database.js"></script>
+  <style>
+    :root {
+      --roxo: #4B0082;
+      --roxo-escuro: #2E0052;
+      --dourado: #DAA520;
+      --dourado-claro: #F0C869;
+      --branco: #FFFFFF;
+      --cinza: #F5F5F5;
+      --cinza-escuro: #666666;
+      --texto: #333333;
+      --sombra: rgba(0, 0, 0, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--cinza);
+      color: var(--texto);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 20px;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      background: linear-gradient(135deg, var(--roxo), var(--roxo-escuro));
+      padding: 24px 28px;
+      border-radius: 10px;
+      box-shadow: 0 4px 14px var(--sombra);
+      margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+      font-size: 1.75rem;
+      color: var(--dourado);
+      font-weight: 600;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background-color: var(--dourado);
+      color: var(--roxo-escuro);
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .btn:hover {
+      background-color: var(--dourado-claro);
+      transform: translateY(-1px);
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 16px;
+    }
+
+    .search-box {
+      width: 100%;
+      max-width: 360px;
+      padding: 10px 14px;
+      border: 2px solid #E0E0E0;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-box:focus {
+      outline: none;
+      border-color: var(--dourado);
+      box-shadow: 0 0 0 3px rgba(218, 165, 32, 0.2);
+    }
+
+    .card {
+      background-color: var(--branco);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px var(--sombra);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background-color: var(--roxo);
+      color: var(--dourado);
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #EEEEEE;
+    }
+
+    th {
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background-color: #FAFAFA;
+    }
+
+    .empty td {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--cinza-escuro);
+      font-style: italic;
+    }
+
+    .action-btn {
+      background-color: transparent;
+      color: var(--roxo);
+      border: 1px solid var(--roxo);
+      padding: 6px 12px;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    .action-btn:hover {
+      background-color: var(--roxo);
+      color: var(--dourado);
+    }
+
+    @media (max-width: 640px) {
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .toolbar {
+        justify-content: stretch;
+      }
+      .search-box {
+        max-width: none;
+      }
+      th, td {
+        padding: 12px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <aside>
-        <div class="sidebar-header">
-            <img src="Equilibrium.logo.png" alt="Equilibrium">
-        </div>
-        <nav>
-            <a href="visao-geral.html" class="nav-link"><i>📊</i> <span class="nav-text">Visão Geral</span></a>
-            <a href="clientes.html" class="nav-link active"><i>👥</i> <span class="nav-text">Clientes</span></a>
-            <a href="agenda.html" class="nav-link"><i>📅</i> <span class="nav-text">Agenda</span></a>
-            <a href="atendimentos.html" class="nav-link"><i>🩺</i> <span class="nav-text">Atendimentos</span></a>
-            <a href="tratamentos.html" class="nav-link"><i>🔬</i> <span class="nav-text">Tratamentos</span></a>
-            <a href="agenda-graficos.html" class="nav-link"><i>📈</i> <span class="nav-text">Agenda Gráficos</span></a>
-            <a href="financeiro.html" class="nav-link"><i>💰</i> <span class="nav-text">Financeiro</span></a>
-        </nav>
-        <div class="user-profile">
-            <div class="avatar">S</div>
-            <div class="user-info">
-                <span>Simone</span>
-                <small>Terapeuta</small>
-            </div>
-        </div>
-    </aside>
+  <div class="container">
+    <header class="page-header">
+      <h1>Clientes</h1>
+      <a href="novo-cliente.html" class="btn">+ Novo Cliente</a>
+    </header>
 
-    <main>
-        <header>
-            <div class="header-title">
-                <h2>👥 Clientes</h2>
-                <p id="totalClientes">0 clientes cadastrados</p>
-            </div>
-            <div class="header-actions">
-                <div class="search-bar">
-                    <input type="text" id="buscaCliente" placeholder="Buscar cliente..." oninput="filtrarClientes()">
-                </div>
-                <a href="novo-cliente.html" class="btn btn-gold">+ Novo Cliente</a>
-            </div>
-        </header>
+    <div class="toolbar">
+      <input type="text" id="busca" class="search-box" placeholder="Buscar por nome ou WhatsApp..." autocomplete="off">
+    </div>
 
-        <div class="table-responsive">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Telefone</th>
-                        <th>Email</th>
-                        <th>Endereço</th>
-                        <th>Status Pagamento</th>
-                    </tr>
-                </thead>
-                <tbody id="tabelaClientes"></tbody>
-            </table>
-            <div class="empty-state" id="emptyState">
-                <i>📂</i>
-                <p>Nenhum cliente cadastrado ainda.</p>
-                <p style="font-size:13px;margin-top:5px">Clique em "+ Novo Cliente" para começar.</p>
-            </div>
-        </div>
+    <div class="card">
+      <table id="tabela-clientes">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>WhatsApp</th>
+            <th>Cidade/Estado</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="empty">
+            <td colspan="4">Carregando clientes...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-        <footer>© 2026 Equilibrium Terapias Energéticas. Todos os direitos reservados.</footer>
-    </main>
+  <script>
+    let todosClientes = [];
 
-    <script>
-        function carregarClientes() {
-            const clientes = JSON.parse(localStorage.getItem('equilibriumClientes')) || [];
-            const tbody = document.getElementById('tabelaClientes');
-            const empty = document.getElementById('emptyState');
-            const total = document.getElementById('totalClientes');
+    function obterValor(cliente, ...campos) {
+      for (const campo of campos) {
+        if (cliente[campo] !== undefined && cliente[campo] !== null && cliente[campo] !== '') {
+          return cliente[campo];
+        }
+      }
+      return '-';
+    }
 
-            total.textContent = clientes.length + ' cliente(s) cadastrado(s)';
+    function formatarCidadeEstado(cliente) {
+      const cidade = cliente.cidade || cliente.city || '';
+      const estado = cliente.estado || cliente.uf || cliente.state || '';
 
-            if (clientes.length === 0) {
-                tbody.innerHTML = '';
-                empty.style.display = 'block';
-                return;
-            }
-            empty.style.display = 'none';
-            tbody.innerHTML = '';
+      if (cidade && estado) {
+        return `${cidade} - ${estado}`;
+      }
 
-            clientes.forEach((c, index) => {
-                const tr = document.createElement('tr');
-                tr.onclick = function() {
-                    window.location = 'ficha-cliente.html?id=' + index;
-                };
-                const statusClass = c.statusPagamento === 'Em dia' ? 'badge-success' : 
-                                    c.statusPagamento === 'Pendente' ? 'badge-warning' : 'badge-danger';
-                tr.innerHTML = `
-                    <td class="client-name">${c.nome}</td>
-                    <td>${c.whatsapp}</td>
-                    <td>${c.email}</td>
-                    <td>${c.endereco}</td>
-                    <td><span class="badge ${statusClass}">${c.statusPagamento || 'Em dia'}</span></td>
-                `;
-                tbody.appendChild(tr);
-            });
-         });
+      if (cliente.endereco && typeof cliente.endereco === 'object') {
+        const cid = cliente.endereco.cidade || cliente.endereco.city || '';
+        const est = cliente.endereco.estado || cliente.endereco.uf || cliente.endereco.state || '';
+        if (cid && est) return `${cid} - ${est}`;
+        return cid || JSON.stringify(cliente.endereco);
+      }
+
+      if (cliente.endereco && typeof cliente.endereco === 'string') {
+        const endereco = cliente.endereco;
+        const match = endereco.match(/([^,]+)\s*-\s*([A-Za-z]{2})/);
+        if (match) return `${match[1].trim()} - ${match[2].trim().toUpperCase()}`;
+
+        const partes = endereco.split(',').map(p => p.trim()).filter(Boolean);
+        if (partes.length >= 2) {
+          const uf = partes[partes.length - 1].toUpperCase();
+          const cidadeNome = partes[partes.length - 2];
+          return `${cidadeNome} - ${uf}`;
+        }
+        return endereco;
+      }
+
+      return cidade || estado || '-';
+    }
+
+    function renderizarTabela(clientes) {
+      const tbody = document.querySelector('#tabela-clientes tbody');
+      tbody.innerHTML = '';
+
+      if (!clientes || clientes.length === 0) {
+        const linha = document.createElement('tr');
+        linha.className = 'empty';
+        const celula = document.createElement('td');
+        celula.setAttribute('colspan', '4');
+        celula.textContent = todosClientes.length === 0
+          ? 'Nenhum cliente cadastrado. Clique em "+ Novo Cliente" para começar.'
+          : 'Nenhum cliente encontrado para a busca.';
+        linha.appendChild(celula);
+        tbody.appendChild(linha);
+        return;
+      }
+
+      clientes.forEach(cliente => {
+        const linha = document.createElement('tr');
+
+        const nome = obterValor(cliente, 'nome', 'name');
+        const whatsapp = obterValor(cliente, 'whatsapp', 'telefone', 'phone');
+        const cidadeEstado = formatarCidadeEstado(cliente);
+
+        const celulaNome = document.createElement('td');
+        celulaNome.textContent = nome;
+        linha.appendChild(celulaNome);
+
+        const celulaWhats = document.createElement('td');
+        celulaWhats.textContent = whatsapp;
+        linha.appendChild(celulaWhats);
+
+        const celulaCidade = document.createElement('td');
+        celulaCidade.textContent = cidadeEstado;
+        linha.appendChild(celulaCidade);
+
+        const celulaAcoes = document.createElement('td');
+        const botao = document.createElement('button');
+        botao.className = 'action-btn';
+        botao.textContent = 'Ver Ficha';
+        botao.addEventListener('click', () => verFicha(cliente.id));
+        celulaAcoes.appendChild(botao);
+        linha.appendChild(celulaAcoes);
+
+        tbody.appendChild(linha);
+      });
+    }
+
+    async function carregarClientes() {
+      const tbody = document.querySelector('#tabela-clientes tbody');
+      tbody.innerHTML = '<tr class="empty"><td colspan="4">Carregando clientes...</td></tr>';
+
+      try {
+        let clientes = [];
+        if (window.Database && typeof Database.syncClientes === 'function') {
+          const resultado = Database.syncClientes();
+          clientes = resultado && typeof resultado.then === 'function' ? await resultado : resultado;
         }
 
-        function filtrarClientes() {
-            const input = document.getElementById('buscaCliente').value.toLowerCase();
-            const linhas = document.querySelectorAll('#tabelaClientes tr');
-            linhas.forEach(linha => {
-                const texto = linha.textContent.toLowerCase();
-                linha.style.display = texto.includes(input) ? '' : 'none';
-            });
+        if (!Array.isArray(clientes)) {
+          clientes = [];
         }
 
-        // Carregar clientes ao abrir a página
-        carregarClientes();
-    </script>
+        todosClientes = clientes;
+        renderizarTabela(todosClientes);
+      } catch (erro) {
+        console.error('Erro ao carregar clientes:', erro);
+        tbody.innerHTML = '<tr class="empty"><td colspan="4">Erro ao carregar clientes. Tente novamente.</td></tr>';
+      }
+    }
+
+    function filtrarClientes(termo) {
+      const normalizado = termo.toLowerCase().trim();
+      if (!normalizado) {
+        renderizarTabela(todosClientes);
+        return;
+      }
+
+      const filtrados = todosClientes.filter(cliente => {
+        const nome = String(obterValor(cliente, 'nome', 'name')).toLowerCase();
+        const whatsapp = String(obterValor(cliente, 'whatsapp', 'telefone', 'phone')).toLowerCase();
+        return nome.includes(normalizado) || whatsapp.includes(normalizado);
+      });
+
+      renderizarTabela(filtrados);
+    }
+
+    function verFicha(id) {
+      window.location.href = `ficha-cliente.html?id=${encodeURIComponent(id)}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      carregarClientes();
+
+      const campoBusca = document.getElementById('busca');
+      if (campoBusca) {
+        campoBusca.addEventListener('input', (evento) => filtrarClientes(evento.target.value));
+      }
+    });
+  </script>
 </body>
 </html>
