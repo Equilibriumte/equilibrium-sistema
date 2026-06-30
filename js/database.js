@@ -1,124 +1,54 @@
-const BASE_URL = "https://script.google.com/macros/s/AKfycbzsWzi-CTjdjG1eI-bfN5Kvy8qKQgQkzjvI6MmLgHY-xoPqhurk6_Zzo_EA5fGsje6E/exec";
+// js/database.js
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzsWzi-CTjdjG1eI-bfN5Kvy8qKQgQkzjvI6MmLgHY-xoPqhurk6_Zzo_EA5fGsje6E/exec";
 
-async function apiCallWithMode(action, params = {}, method = "GET", mode = "cors") {
-    console.log(`[database.js] apiCall iniciada: action=${action}, method=${method.toUpperCase()}, mode=${mode}`);
+function normalizarResposta(resultado) {
+  if (Array.isArray(resultado)) {
+    return resultado;
+  }
 
-    const queryParams = new URLSearchParams();
-    queryParams.append("action", action);
+  if (resultado && typeof resultado === "object" && "data" in resultado) {
+    return resultado.data;
+  }
 
-    for (const key in params) {
-        if (Object.prototype.hasOwnProperty.call(params, key)) {
-            const value = typeof params[key] === "object" ? JSON.stringify(params[key]) : params[key];
-            queryParams.append(key, value);
-        }
-    }
-
-    let url = BASE_URL;
-    const options = {
-        method: method.toUpperCase(),
-        redirect: "follow",
-        mode: mode
-    };
-
-    if (method.toUpperCase() === "GET") {
-        url = `${BASE_URL}?${queryParams.toString()}`;
-        console.log(`[database.js] GET URL: ${url}`);
-    } else {
-        options.headers = {
-            "Content-Type": "application/x-www-form-urlencoded"
-        };
-        options.body = queryParams.toString();
-        console.log(`[database.js] POST body: ${queryParams.toString()}`);
-    }
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000);
-    options.signal = controller.signal;
-
-    try {
-        const response = await fetch(url, options);
-        clearTimeout(timeoutId);
-        console.log(`[database.js] Resposta recebida: status=${response.status}, mode=${mode}`);
-
-        if (mode === "no-cors") {
-            console.log("[database.js] Resposta opaca (no-cors). Não é possível validar o corpo.");
-            return { success: true, message: "Requisição enviada no modo no-cors" };
-        }
-
-        const text = await response.text();
-        console.log(`[database.js] Corpo da resposta: ${text.substring(0, 1000)}`);
-
-        let data;
-        try {
-            data = JSON.parse(text);
-        } catch (parseError) {
-            console.warn("[database.js] Resposta não é JSON válido:", parseError);
-            data = { success: response.ok, text: text };
-        }
-
-        if (!response.ok) {
-            throw new Error(`Erro HTTP ${response.status}: ${JSON.stringify(data)}`);
-        }
-
-        return data;
-    } catch (error) {
-        clearTimeout(timeoutId);
-        console.error(`[database.js] Erro na apiCall (mode=${mode}):`, error);
-        throw error;
-    }
+  return [];
 }
 
-async function apiCall(action, params = {}, method = "GET") {
-    try {
-        return await apiCallWithMode(action, params, method, "cors");
-    } catch (corsError) {
-        console.warn("[database.js] CORS falhou ou resposta bloqueada. Tentando fallback no-cors...", corsError);
-        return await apiCallWithMode(action, params, method, "no-cors");
-    }
+async function buscarClientes() {
+  try {
+    console.log("[database] buscarClientes: iniciando requisição");
+
+    const resposta = await fetch(`${SCRIPT_URL}?acao=buscarClientes`);
+    console.log("[database] buscarClientes: status HTTP", resposta.status);
+
+    const resultado = await resposta.json();
+    console.log("[database] buscarClientes: resposta bruta", resultado);
+
+    const dados = normalizarResposta(resultado);
+    console.log("[database] buscarClientes: dados normalizados", dados);
+
+    return dados;
+  } catch (erro) {
+    console.error("[database] buscarClientes: erro", erro);
+    return [];
+  }
 }
 
-function salvarCliente(cliente) {
-    console.log("[database.js] salvarCliente chamado:", cliente);
-    return apiCall("salvarCliente", cliente, "POST")
-        .then((result) => {
-            console.log("[database.js] salvarCliente concluído com sucesso:", result);
-            return result;
-        })
-        .catch((error) => {
-            console.error("[database.js] salvarCliente falhou:", error);
-            throw error;
-        });
-}
+async function buscarAtendimentos() {
+  try {
+    console.log("[database] buscarAtendimentos: iniciando requisição");
 
-function salvarAtendimento(atendimento) {
-    console.log("[database.js] salvarAtendimento chamado:", atendimento);
-    return apiCall("salvarAtendimento", atendimento, "POST")
-        .then((result) => {
-            console.log("[database.js] salvarAtendimento concluído com sucesso:", result);
-            return result;
-        })
-        .catch((error) => {
-            console.error("[database.js] salvarAtendimento falhou:", error);
-            throw error;
-        });
-}
+    const resposta = await fetch(`${SCRIPT_URL}?acao=buscarAtendimentos`);
+    console.log("[database] buscarAtendimentos: status HTTP", resposta.status);
 
-function buscarClientes() {
-    console.log("[database.js] buscarClientes chamado");
-    return apiCall("buscarClientes", {}, "GET");
-}
+    const resultado = await resposta.json();
+    console.log("[database] buscarAtendimentos: resposta bruta", resultado);
 
-function buscarAtendimentos() {
-    console.log("[database.js] buscarAtendimentos chamado");
-    return apiCall("buscarAtendimentos", {}, "GET");
-}
+    const dados = normalizarResposta(resultado);
+    console.log("[database] buscarAtendimentos: dados normalizados", dados);
 
-if (typeof module !== "undefined" && module.exports) {
-    module.exports = {
-        apiCall,
-        salvarCliente,
-        salvarAtendimento,
-        buscarClientes,
-        buscarAtendimentos
-    };
+    return dados;
+  } catch (erro) {
+    console.error("[database] buscarAtendimentos: erro", erro);
+    return [];
+  }
 }
