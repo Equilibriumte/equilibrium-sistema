@@ -128,60 +128,61 @@
 
     <script src="js/database.js"></script>
     <script>
-        const whatsappInput = document.getElementById('whatsapp');
+    // MÁSCARA DE WHATSAPP
+    const handlePhone = (event) => {
+        let input = event.target;
+        input.value = phoneMask(input.value);
+    }
 
-        whatsappInput.addEventListener('input', function () {
-            let value = this.value.replace(/\D/g, '').slice(0, 11);
+    const phoneMask = (value) => {
+        if (!value) return "";
+        value = value.replace(/\D/g, '');
+        value = value.replace(/(\d{2})(\d)/, "($1) $2");
+        value = value.replace(/(\d{5})(\d)/, "$1-$2");
+        return value;
+    }
 
-            if (value.length <= 2) {
-                this.value = value.length ? '(' + value : '';
-            } else if (value.length <= 7) {
-                this.value = '(' + value.slice(0, 2) + ') ' + value.slice(2);
-            } else {
-                this.value = '(' + value.slice(0, 2) + ') ' + value.slice(2, 7) + '-' + value.slice(7);
-            }
-        });
+    document.getElementById('whatsapp').addEventListener('input', handlePhone);
 
-        async function enviarFormulario() {
-            const nomeInput = document.getElementById('nome');
-            const whatsappInput = document.getElementById('whatsapp');
-            const btnSalvar = document.getElementById('btnSalvar');
+    // FUNÇÃO PARA SALVAR
+    async function enviarFormulario(event) {
+        event.preventDefault();
+        
+        const btn = document.getElementById('btnSalvar');
+        const feedback = document.getElementById('feedback');
+        
+        btn.disabled = true;
+        btn.textContent = "Salvando na nuvem...";
 
-            const nome = nomeInput.value.trim();
-            const whatsapp = whatsappInput.value.trim();
-            const somenteNumeros = whatsapp.replace(/\D/g, '');
+        const dados = {
+            nome: document.getElementById('nome').value,
+            whatsapp: document.getElementById('whatsapp').value,
+            email: document.getElementById('email').value,
+            instagram: document.getElementById('instagram').value,
+            rua: document.getElementById('rua').value,
+            numero: document.getElementById('numero').value,
+            bairro: document.getElementById('bairro').value,
+            cidade: document.getElementById('cidade').value,
+            estado: document.getElementById('estado').value,
+            cep: document.getElementById('cep').value,
+            nascimento: document.getElementById('nascimento').value,
+            indicacao: document.getElementById('indicacao').value,
+            dataCadastro: new Date().toLocaleDateString('pt-BR')
+        };
 
-            if (!nome) {
-                alert('Por favor, preencha o nome do cliente.');
-                nomeInput.focus();
-                return;
-            }
-
-            if (!whatsapp || somenteNumeros.length < 10) {
-                alert('Por favor, preencha o WhatsApp corretamente no formato (00) 00000-0000.');
-                whatsappInput.focus();
-                return;
-            }
-
-            const novoCliente = {
-                nome: nome,
-                whatsapp: whatsapp
-            };
-
-            const textoOriginal = btnSalvar.textContent;
-            btnSalvar.textContent = 'Salvando...';
-            btnSalvar.disabled = true;
-
-            try {
-                await window.salvarCliente(novoCliente);
-                alert('Cliente salvo com sucesso!');
-                window.location.href = 'clientes.html';
-            } catch (erro) {
-                alert('Erro ao salvar cliente: ' + (erro.message || 'Tente novamente.'));
-                btnSalvar.textContent = textoOriginal;
-                btnSalvar.disabled = false;
-            }
+        try {
+            // Chama a função que está no js/database.js
+            await salvarCliente(dados);
+            alert("✅ Cliente salvo com sucesso na planilha!");
+            window.location.href = 'clientes.html';
+        } catch (error) {
+            console.error(error);
+            alert("❌ Erro ao salvar. Verifique sua conexão.");
+        } finally {
+            btn.disabled = false;
+            btn.textContent = "Salvar Cliente";
         }
-    </script>
+    }
+</script>
 </body>
 </html>
