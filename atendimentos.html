@@ -1,666 +1,686 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atendimentos - Equilibrium</title>
-    <style>
-        :root {
-            --roxo-escuro: #2E1A47;
-            --roxo-medio: #4B2C7A;
-            --roxo-claro: #7D5BA6;
-            --dourado: #C9A227;
-            --dourado-claro: #E6C86C;
-            --branco: #F9F7F3;
-            --cinza: #E8E4E1;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atendimentos - Equilibrium</title>
+  <style>
+    :root {
+      --roxo: #5e2a82;
+      --roxo-escuro: #3f165c;
+      --dourado: #c5a059;
+      --dourado-claro: #e5cd96;
+      --fundo: #f8f7f9;
+      --branco: #ffffff;
+      --texto: #2f2f2f;
+      --borda: #dedede;
+    }
 
-        * {
-            box-sizing: border-box;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--roxo-escuro) 0%, var(--roxo-medio) 100%);
-            color: var(--branco);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 40px 20px;
-        }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--fundo);
+      color: var(--texto);
+      line-height: 1.5;
+    }
 
-        .container {
-            width: 100%;
-            max-width: 900px;
-            background-color: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--dourado);
-            border-radius: 16px;
-            padding: 32px;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-        }
+    header {
+      background: linear-gradient(135deg, var(--roxo) 0%, var(--roxo-escuro) 100%);
+      color: var(--dourado-claro);
+      padding: 2rem 1rem;
+      text-align: center;
+      border-bottom: 4px solid var(--dourado);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
 
-        h1 {
-            text-align: center;
-            color: var(--dourado);
-            margin-bottom: 8px;
-        }
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
 
-        .subtitulo {
-            text-align: center;
-            color: var(--dourado-claro);
-            margin-bottom: 28px;
-            font-size: 1rem;
-        }
+    header p {
+      font-size: 0.95rem;
+      color: var(--dourado-claro);
+      opacity: 0.9;
+      margin-top: 0.25rem;
+    }
 
-        .steps {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 32px;
-            position: relative;
-        }
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
 
-        .steps::before {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--roxo-claro);
-            z-index: 0;
-        }
+    .card {
+      background: var(--branco);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
 
-        .step {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            flex: 1;
-        }
+    .progress-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      position: relative;
+    }
 
-        .step .dot {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--roxo-claro);
-            color: var(--branco);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            border: 2px solid var(--dourado);
-        }
+    .progress-bar::before {
+      content: '';
+      position: absolute;
+      top: 14px;
+      left: 12%;
+      right: 12%;
+      height: 4px;
+      background: var(--borda);
+      z-index: 0;
+    }
 
-        .step.active .dot {
-            background: var(--dourado);
-            color: var(--roxo-escuro);
-        }
+    .progress-fill {
+      position: absolute;
+      top: 14px;
+      left: 12%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--dourado), var(--roxo));
+      z-index: 0;
+      transition: width 0.3s ease;
+    }
 
-        .step-label {
-            display: block;
-            margin-top: 6px;
-            font-size: 0.85rem;
-            color: var(--dourado-claro);
-        }
+    .step-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--borda);
+      color: var(--texto);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      position: relative;
+      z-index: 1;
+      transition: background 0.3s, color 0.3s;
+    }
 
-        .step-content {
-            display: none;
-            animation: fadeIn 0.3s ease-in-out;
-        }
+    .step-dot.active {
+      background: var(--roxo);
+      color: var(--dourado-claro);
+      box-shadow: 0 0 0 4px rgba(94,42,130,0.2);
+    }
 
-        .step-content.active {
-            display: block;
-        }
+    .step-dot.completed {
+      background: var(--dourado);
+      color: var(--roxo-escuro);
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    .step {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+    .step.active {
+      display: block;
+    }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--dourado-claro);
-            font-weight: 600;
-        }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-        input, select, textarea {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 8px;
-            border: 1px solid var(--dourado);
-            background: var(--roxo-escuro);
-            color: var(--branco);
-            font-size: 1rem;
-            outline: none;
-        }
+    .step-title {
+      font-size: 1.25rem;
+      color: var(--roxo);
+      margin-bottom: 1.25rem;
+      font-weight: 700;
+    }
 
-        input:focus, select:focus, textarea:focus {
-            border-color: var(--dourado-claro);
-            box-shadow: 0 0 8px rgba(201, 162, 39, 0.4);
-        }
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
 
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
+    label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+      color: var(--roxo-escuro);
+    }
 
-        .chakras-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-        }
+    input[type="text"],
+    input[type="tel"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--borda);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
 
-        .chakra-btn {
-            padding: 14px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            text-align: center;
-            transition: transform 0.2s, box-shadow 0.2s;
-            color: #fff;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-            font-size: 0.95rem;
-        }
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--roxo);
+      box-shadow: 0 0 0 3px rgba(94,42,130,0.15);
+    }
 
-        .chakra-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-        }
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
 
-        .chakra-btn[data-nome="Coronário"] { background: #9b59b6; }
-        .chakra-btn[data-nome="Frontal"] { background: #3b82c5; }
-        .chakra-btn[data-nome="Laringeo"] { background: #2ecc71; }
-        .chakra-btn[data-nome="Cardíaco"] { background: #f1c40f; color: #3d3d3d; text-shadow: none; }
-        .chakra-btn[data-nome="Plexo Solar"] { background: #e67e22; }
-        .chakra-btn[data-nome="Sacral"] { background: #e74c3c; }
-        .chakra-btn[data-nome="Básico"] { background: #c0392b; }
+    .chakras-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
 
-        .botoes-acao {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 28px;
-            gap: 12px;
-        }
+    .chakra-btn {
+      border: none;
+      border-radius: 10px;
+      padding: 1rem;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.12);
+      transition: transform 0.15s, opacity 0.2s;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+    }
 
-        .btn {
-            padding: 12px 24px;
-            border-radius: 8px;
-            border: none;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
+    .chakra-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
 
-        .btn:hover {
-            opacity: 0.9;
-        }
+    .chakra-btn small {
+      font-weight: 500;
+      font-size: 0.8rem;
+      opacity: 0.95;
+    }
 
-        .btn-secundario {
-            background: transparent;
-            border: 1px solid var(--dourado);
-            color: var(--dourado);
-        }
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+    }
 
-        .btn-primario {
-            background: var(--dourado);
-            color: var(--roxo-escuro);
-        }
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
 
-        .btn-desabilitado {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+    .btn:active {
+      transform: scale(0.98);
+    }
 
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.75);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
+    .btn-secondary {
+      background: var(--borda);
+      color: var(--texto);
+    }
 
-        .modal-overlay.active {
-            display: flex;
-        }
+    .btn-secondary:hover {
+      background: #c7c7c7;
+    }
 
-        .modal {
-            background: var(--roxo-escuro);
-            border: 1px solid var(--dourado);
-            border-radius: 12px;
-            padding: 24px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
-        }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--roxo) 0%, var(--roxo-escuro) 100%);
+      color: var(--dourado-claro);
+      border: 1px solid var(--dourado);
+    }
 
-        .modal h3 {
-            margin-top: 0;
-            color: var(--dourado);
-        }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #4a2166 0%, #2e0f45 100%);
+    }
 
-        .radio-group {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 20px;
-        }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
 
-        .radio-group label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            font-weight: 400;
-        }
+    .modal-overlay.active {
+      display: flex;
+    }
 
-        .mensagem {
-            text-align: center;
-            padding: 16px;
-            border-radius: 8px;
-            display: none;
-            margin-top: 16px;
-        }
+    .modal {
+      background: var(--branco);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 420px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      border-top: 5px solid var(--roxo);
+    }
 
-        .mensagem.sucesso {
-            background: rgba(46, 204, 113, 0.2);
-            color: #2ecc71;
-            border: 1px solid #2ecc71;
-            display: block;
-        }
+    .modal h3 {
+      color: var(--roxo);
+      margin-bottom: 1.25rem;
+      font-size: 1.2rem;
+    }
 
-        .mensagem.erro {
-            background: rgba(231, 76, 60, 0.2);
-            color: #e74c3c;
-            border: 1px solid #e74c3c;
-            display: block;
-        }
-    </style>
+    .estado-group {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .estado-option {
+      flex: 1;
+      border: 2px solid var(--borda);
+      border-radius: 8px;
+      padding: 0.75rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      font-weight: 600;
+    }
+
+    .estado-option:hover {
+      border-color: var(--roxo);
+    }
+
+    .estado-option input {
+      display: none;
+    }
+
+    .estado-option.selected {
+      border-color: var(--roxo);
+      background: rgba(94,42,130,0.08);
+      color: var(--roxo-escuro);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .alerta {
+      background: #fff3cd;
+      color: #856404;
+      padding: 0.75rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .alerta.active {
+      display: block;
+    }
+
+    @media (max-width: 480px) {
+      .chakras-grid {
+        grid-template-columns: 1fr;
+      }
+      header h1 { font-size: 1.4rem; }
+      .actions { flex-direction: column-reverse; gap: 0.75rem; }
+      .btn { width: 100%; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Atendimentos</h1>
-        <p class="subtitulo">Sistema Equilibrium - Registro de Sessão</p>
 
-        <div class="steps">
-            <div class="step active" id="step-indicador-1">
-                <span class="dot">1</span>
-                <span class="step-label">Cliente</span>
-            </div>
-            <div class="step" id="step-indicador-2">
-                <span class="dot">2</span>
-                <span class="step-label">Chakras</span>
-            </div>
-            <div class="step" id="step-indicador-3">
-                <span class="dot">3</span>
-                <span class="step-label">Observações</span>
-            </div>
-            <div class="step" id="step-indicador-4">
-                <span class="dot">4</span>
-                <span class="step-label">Salvar</span>
-            </div>
-        </div>
+  <header>
+    <h1>Equilibrium</h1>
+    <p>Cadastro de Atendimentos</p>
+  </header>
 
-        <form id="formAtendimento" onsubmit="event.preventDefault();">
-            <div class="step-content active" id="step-1">
-                <div class="form-group">
-                    <label for="cliente">Cliente</label>
-                    <select id="cliente" name="cliente" required>
-                        <option value="">Selecione um cliente</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="whatsapp">WhatsApp</label>
-                    <input type="text" id="whatsapp" name="whatsapp" placeholder="+55 (XX) XXXXX-XXXX" maxlength="17" required>
-                </div>
-            </div>
+  <main class="container">
+    <div class="card">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+        <div class="step-dot active" data-step="1">1</div>
+        <div class="step-dot" data-step="2">2</div>
+        <div class="step-dot" data-step="3">3</div>
+        <div class="step-dot" data-step="4">4</div>
+      </div>
 
-            <div class="step-content" id="step-2">
-                <div class="form-group">
-                    <label>Estado dos Chakras</label>
-                    <div class="chakras-grid" id="chakrasContainer">
-                        <button type="button" class="chakra-btn" data-nome="Coronário" data-cor="#9b59b6">Coronário</button>
-                        <button type="button" class="chakra-btn" data-nome="Frontal" data-cor="#3b82c5">Frontal</button>
-                        <button type="button" class="chakra-btn" data-nome="Laringeo" data-cor="#2ecc71">Laringeo</button>
-                        <button type="button" class="chakra-btn" data-nome="Cardíaco" data-cor="#f1c40f">Cardíaco</button>
-                        <button type="button" class="chakra-btn" data-nome="Plexo Solar" data-cor="#e67e22">Plexo Solar</button>
-                        <button type="button" class="chakra-btn" data-nome="Sacral" data-cor="#e74c3c">Sacral</button>
-                        <button type="button" class="chakra-btn" data-nome="Básico" data-cor="#c0392b">Básico</button>
-                    </div>
-                </div>
-            </div>
+      <div id="alerta" class="alerta"></div>
 
-            <div class="step-content" id="step-3">
-                <div class="form-group">
-                    <label for="observacoes">Observações</label>
-                    <textarea id="observacoes" name="observacoes" placeholder="Registre aqui as observações da sessão..."></textarea>
-                </div>
-            </div>
+      <form id="atendimentoForm" onsubmit="return false;">
+        <!-- Etapa 1 -->
+        <section class="step active" data-step="1">
+          <h2 class="step-title">Etapa 1: Cliente e Contato</h2>
+          <div class="form-group">
+            <label for="clienteSelect">Selecione o Cliente</label>
+            <select id="clienteSelect" required>
+              <option value="">-- Escolha um cliente --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="whatsapp">WhatsApp</label>
+            <input type="tel" id="whatsapp" placeholder="+55 (11) 99999-9999" maxlength="20" required>
+          </div>
+        </section>
 
-            <div class="step-content" id="step-4">
-                <div class="form-group">
-                    <label for="resumo">Resumo do Atendimento</label>
-                    <textarea id="resumo" name="resumo" readonly placeholder="Confirme os dados e clique em Salvar..."></textarea>
-                </div>
-            </div>
+        <!-- Etapa 2 -->
+        <section class="step" data-step="2">
+          <h2 class="step-title">Etapa 2: Queixas e Sintomas</h2>
+          <div class="form-group">
+            <label for="queixas">Descreva as queixas e sintomas</label>
+            <textarea id="queixas" placeholder="Ex: dores de cabeça frequentes, ansiedade, cansaço..." required></textarea>
+          </div>
+        </section>
 
-            <div class="botoes-acao">
-                <button type="button" class="btn btn-secundario" id="btnAnterior" onclick="mudarEtapa(-1)" disabled>Anterior</button>
-                <button type="button" class="btn btn-primario" id="btnProximo" onclick="mudarEtapa(1)">Próximo</button>
-            </div>
-        </form>
+        <!-- Etapa 3 -->
+        <section class="step" data-step="3">
+          <h2 class="step-title">Etapa 3: Tratamento - Chakras</h2>
+          <p style="margin-bottom:1rem; color:#555;">Clique em cada chakra para informar o percentual e o estado energético.</p>
+          <div class="chakras-grid" id="chakrasGrid"></div>
+        </section>
 
-        <div class="mensagem" id="mensagem"></div>
+        <!-- Etapa 4 -->
+        <section class="step" data-step="4">
+          <h2 class="step-title">Etapa 4: Observações e Recomendações</h2>
+          <div class="form-group">
+            <label for="observacoes">Observações</label>
+            <textarea id="observacoes" placeholder="Anotações gerais sobre o atendimento..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="recomendacoes">Recomendações</label>
+            <textarea id="recomendacoes" placeholder="Ex: meditação diária, alongamento, dieta..." required></textarea>
+          </div>
+        </section>
+      </form>
+
+      <div class="actions">
+        <button type="button" class="btn btn-secondary" id="btnAnterior" onclick="mudarEtapa(-1)">Anterior</button>
+        <button type="button" class="btn btn-primary" id="btnProximo" onclick="mudarEtapa(1)">Próximo</button>
+      </div>
     </div>
+  </main>
 
-    <div class="modal-overlay" id="modalChakra">
-        <div class="modal">
-            <h3 id="modalTitulo">Chakra</h3>
-            <div class="form-group">
-                <label for="chakraPercentual">Percentual (%)</label>
-                <input type="number" id="chakraPercentual" min="0" max="100" placeholder="0 a 100">
-            </div>
-            <div class="form-group">
-                <label>Estado</label>
-                <div class="radio-group">
-                    <label><input type="radio" name="chakraEstado" value="Hiper"> Hiper</label>
-                    <label><input type="radio" name="chakraEstado" value="Hipo"> Hipo</label>
-                </div>
-            </div>
-            <div class="botoes-acao" style="margin-top: 0;">
-                <button type="button" class="btn btn-secundario" onclick="fecharModalChakra()">Cancelar</button>
-                <button type="button" class="btn btn-primario" onclick="confirmarChakra()">Confirmar</button>
-            </div>
+  <!-- Modal de Chakras -->
+  <div class="modal-overlay" id="chakraModal">
+    <div class="modal">
+      <h3 id="modalChakraTitle">Avaliar Chakra</h3>
+      <div class="form-group">
+        <label for="percentualChakra">Percentual (%)</label>
+        <input type="number" id="percentualChakra" min="0" max="100" placeholder="0 a 100">
+      </div>
+      <div class="form-group">
+        <label>Estado energético</label>
+        <div class="estado-group">
+          <label class="estado-option" data-value="Hiper">
+            <input type="radio" name="estadoChakra" value="Hiper">
+            Hiper
+          </label>
+          <label class="estado-option" data-value="Hipo">
+            <input type="radio" name="estadoChakra" value="Hipo">
+            Hipo
+          </label>
         </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" onclick="fecharModalChakra()">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="salvarChakra()">Salvar</button>
+      </div>
     </div>
+  </div>
 
-    <script src="js/database.js"></script>
-    <script>
-        const chakrasState = {
-            'Coronário': null,
-            'Frontal': null,
-            'Laringeo': null,
-            'Cardíaco': null,
-            'Plexo Solar': null,
-            'Sacral': null,
-            'Básico': null
-        };
+  <script src="js/database.js"></script>
+  <script>
+    let etapaAtual = 1;
+    const totalEtapas = 4;
+    let chakraAtual = null;
 
-        let chakraAtual = null;
-        let etapaAtual = 1;
-        const totalEtapas = 4;
+    const chakras = [
+      { id: 'raiz', nome: 'Raiz', cor: '#c0392b', percentual: null, estado: null },
+      { id: 'sacral', nome: 'Sacral', cor: '#e67e22', percentual: null, estado: null },
+      { id: 'plexo', nome: 'Plexo Solar', cor: '#f1c40f', percentual: null, estado: null },
+      { id: 'cardiaco', nome: 'Cardíaco', cor: '#27ae60', percentual: null, estado: null },
+      { id: 'laringeo', nome: 'Laríngeo', cor: '#81d4fa', percentual: null, estado: null },
+      { id: 'terceiro_olho', nome: 'Terceiro Olho', cor: '#2980b9', percentual: null, estado: null },
+      { id: 'coroa', nome: 'Coroa', cor: '#8e44ad', percentual: null, estado: null }
+    ];
 
-        function init() {
-            carregarClientes();
-            aplicarMascaraWhatsApp();
-            bindChakras();
+    document.addEventListener('DOMContentLoaded', () => {
+      carregarClientes();
+      renderizarChakras();
+      atualizarWizard();
+      configurarEstadoModal();
+
+      document.getElementById('whatsapp').addEventListener('input', mascararWhatsApp);
+    });
+
+    function carregarClientes() {
+      const select = document.getElementById('clienteSelect');
+      let clientes = [];
+
+      if (typeof window.carregarClientes === 'function') {
+        try {
+          clientes = window.carregarClientes() || [];
+        } catch (e) {
+          console.error('Erro ao carregar clientes:', e);
         }
+      }
 
-        function carregarClientes() {
-            const select = document.getElementById('cliente');
-            select.innerHTML = '<option value="">Selecione um cliente</option>';
+      if (!Array.isArray(clientes) || clientes.length === 0) {
+        clientes = [
+          { id: 1, nome: 'Ana Silva' },
+          { id: 2, nome: 'Bruno Souza' },
+          { id: 3, nome: 'Carla Mendes' }
+        ];
+      }
 
-            let clientes = [];
-            if (typeof database !== 'undefined' && typeof database.listarClientes === 'function') {
-                clientes = database.listarClientes();
-            } else if (typeof listarClientes === 'function') {
-                clientes = listarClientes();
-            }
+      select.innerHTML = '<option value="">-- Escolha um cliente --</option>';
+      clientes.forEach(cliente => {
+        const option = document.createElement('option');
+        option.value = cliente.id || cliente.nome;
+        option.textContent = cliente.nome;
+        select.appendChild(option);
+      });
+    }
 
-            if (!Array.isArray(clientes)) {
-                clientes = [];
-            }
+    function mascararWhatsApp(e) {
+      let v = e.target.value.replace(/\D/g, '');
+      if (v.startsWith('55')) v = v.slice(2);
+      if (v.length > 11) v = v.slice(0, 11);
 
-            clientes.forEach(cliente => {
-                const nome = typeof cliente === 'string' ? cliente : cliente.nome;
-                const id = typeof cliente === 'object' && cliente.id ? cliente.id : nome;
-                if (nome) {
-                    const option = document.createElement('option');
-                    option.value = id;
-                    option.textContent = nome;
-                    select.appendChild(option);
-                }
-            });
+      let formatado = '+55 ';
+      if (v.length > 7) {
+        formatado += `(${v.slice(0, 2)}) ${v.slice(2, 7)}-${v.slice(7)}`;
+      } else if (v.length > 2) {
+        formatado += `(${v.slice(0, 2)}) ${v.slice(2)}`;
+      } else {
+        formatado += v;
+      }
+      e.target.value = formatado.trim();
+    }
+
+    function renderizarChakras() {
+      const grid = document.getElementById('chakrasGrid');
+      grid.innerHTML = '';
+
+      chakras.forEach((chakra, index) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'chakra-btn';
+        btn.style.background = chakra.cor;
+        btn.style.color = '#fff';
+        btn.innerHTML = `${chakra.nome} <small>${textoChakra(chakra)}</small>`;
+        btn.onclick = () => abrirModalChakra(index);
+        grid.appendChild(btn);
+      });
+    }
+
+    function textoChakra(chakra) {
+      if (chakra.percentual == null || !chakra.estado) return 'Não avaliado';
+      return `${chakra.percentual}% - ${chakra.estado}`;
+    }
+
+    function abrirModalChakra(index) {
+      chakraAtual = index;
+      const chakra = chakras[index];
+      document.getElementById('modalChakraTitle').textContent = `Avaliar: ${chakra.nome}`;
+      document.getElementById('percentualChakra').value = chakra.percentual || '';
+
+      document.querySelectorAll('.estado-option').forEach(opt => {
+        opt.classList.toggle('selected', opt.dataset.value === chakra.estado);
+      });
+
+      document.getElementById('chakraModal').classList.add('active');
+    }
+
+    function fecharModalChakra() {
+      document.getElementById('chakraModal').classList.remove('active');
+      chakraAtual = null;
+    }
+
+    function configurarEstadoModal() {
+      document.querySelectorAll('.estado-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+          document.querySelectorAll('.estado-option').forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+          const input = opt.querySelector('input');
+          input.checked = true;
+        });
+      });
+    }
+
+    function salvarChakra() {
+      if (chakraAtual === null) return;
+
+      const percentual = parseInt(document.getElementById('percentualChakra').value, 10);
+      const estado = document.querySelector('input[name="estadoChakra"]:checked')?.value;
+
+      if (isNaN(percentual) || percentual < 0 || percentual > 100) {
+        exibirAlerta('Informe um percentual válido entre 0 e 100.');
+        return;
+      }
+      if (!estado) {
+        exibirAlerta('Selecione o estado energético (Hiper ou Hipo).');
+        return;
+      }
+
+      chakras[chakraAtual].percentual = percentual;
+      chakras[chakraAtual].estado = estado;
+      renderizarChakras();
+      fecharModalChakra();
+    }
+
+    function exibirAlerta(mensagem) {
+      const alerta = document.getElementById('alerta');
+      alerta.textContent = mensagem;
+      alerta.classList.add('active');
+      setTimeout(() => alerta.classList.remove('active'), 4000);
+    }
+
+    function mudarEtapa(direcao) {
+      if (!validarEtapa(etapaAtual)) return;
+
+      const novaEtapa = etapaAtual + direcao;
+      if (novaEtapa < 1 || novaEtapa > totalEtapas) return;
+
+      if (novaEtapa === totalEtapas && direcao === 1) {
+        salvarAtendimento();
+        return;
+      }
+
+      etapaAtual = novaEtapa;
+      atualizarWizard();
+    }
+
+    function atualizarWizard() {
+      document.querySelectorAll('.step').forEach(sec => {
+        sec.classList.toggle('active', Number(sec.dataset.step) === etapaAtual);
+      });
+
+      document.querySelectorAll('.step-dot').forEach(dot => {
+        const step = Number(dot.dataset.step);
+        dot.classList.remove('active', 'completed');
+        if (step === etapaAtual) dot.classList.add('active');
+        else if (step < etapaAtual) dot.classList.add('completed');
+      });
+
+      const progresso = ((etapaAtual - 1) / (totalEtapas - 1)) * 100;
+      document.getElementById('progressFill').style.width = `${progresso}%`;
+
+      document.getElementById('btnAnterior').style.visibility = etapaAtual === 1 ? 'hidden' : 'visible';
+      const btnProximo = document.getElementById('btnProximo');
+      btnProximo.textContent = etapaAtual === totalEtapas - 1 ? 'Finalizar' : 'Próximo';
+    }
+
+    function validarEtapa(etapa) {
+      if (etapa === 1) {
+        const cliente = document.getElementById('clienteSelect').value;
+        const whatsapp = document.getElementById('whatsapp').value.replace(/\D/g, '');
+        if (!cliente) { exibirAlerta('Selecione um cliente.'); return false; }
+        if (whatsapp.length < 10) { exibirAlerta('Informe um WhatsApp válido com DDD.'); return false; }
+      }
+      if (etapa === 2) {
+        if (!document.getElementById('queixas').value.trim()) { exibirAlerta('Descreva as queixas e sintomas.'); return false; }
+      }
+      if (etapa === 4) {
+        if (!document.getElementById('recomendacoes').value.trim()) { exibirAlerta('Informe as recomendações.'); return false; }
+      }
+      return true;
+    }
+
+    function salvarAtendimento() {
+      const dados = {
+        clienteId: document.getElementById('clienteSelect').value,
+        clienteNome: document.getElementById('clienteSelect').selectedOptions[0].text,
+        whatsapp: document.getElementById('whatsapp').value.trim(),
+        queixas: document.getElementById('queixas').value.trim(),
+        chakras: chakras.map(c => ({
+          nome: c.nome,
+          percentual: c.percentual,
+          estado: c.estado
+        })),
+        observacoes: document.getElementById('observacoes').value.trim(),
+        recomendacoes: document.getElementById('recomendacoes').value.trim(),
+        dataHora: new Date().toISOString()
+      };
+
+      if (typeof window.salvarAtendimento === 'function') {
+        try {
+          window.salvarAtendimento(dados);
+          exibirAlerta('Atendimento salvo com sucesso!');
+          setTimeout(() => resetarFormulario(), 1500);
+        } catch (e) {
+          console.error('Erro ao salvar atendimento:', e);
+          exibirAlerta('Erro ao salvar atendimento.');
         }
+      } else {
+        console.warn('Função window.salvarAtendimento não encontrada. Dados:', dados);
+        exibirAlerta('Dados prontos para salvamento (database.js não expõe salvarAtendimento).');
+      }
+    }
 
-        function aplicarMascaraWhatsApp() {
-            const input = document.getElementById('whatsapp');
-            input.addEventListener('input', function () {
-                let valor = this.value.replace(/\D/g, '');
-                if (valor.length > 13) valor = valor.slice(0, 13);
-
-                if (valor.length > 11) {
-                    valor = valor.replace(/^(\d{2})(\d{2})(\d{5})(\d{4})$/, '+55 ($2) $3-$4');
-                } else if (valor.length > 9) {
-                    valor = valor.replace(/^(\d{2})(\d{2})(\d{4})(\d{4})$/, '+55 ($2) $3-$4');
-                } else if (valor.length > 7) {
-                    valor = valor.replace(/^(\d{2})(\d{2})(\d{4})(\d{0,4})$/, '+55 ($2) $3-$4');
-                } else if (valor.length > 4) {
-                    valor = valor.replace(/^(\d{2})(\d{2})(\d{0,4})$/, '+55 ($2) $3');
-                } else if (valor.length > 2) {
-                    valor = valor.replace(/^(\d{2})(\d{0,2})$/, '+55 ($2');
-                } else if (valor.length > 0) {
-                    valor = '+55 (' + valor;
-                }
-
-                this.value = valor;
-            });
-        }
-
-        function bindChakras() {
-            const botoes = document.querySelectorAll('.chakra-btn');
-            botoes.forEach(botao => {
-                botao.addEventListener('click', function () {
-                    abrirModalChakra(this.dataset.nome, this.dataset.cor);
-                });
-            });
-        }
-
-        function abrirModalChakra(nome, cor) {
-            chakraAtual = nome;
-            document.getElementById('modalTitulo').textContent = nome;
-            document.getElementById('chakraPercentual').value = chakrasState[nome] ? chakrasState[nome].percentual : '';
-
-            const estadoAtual = chakrasState[nome] ? chakrasState[nome].estado : '';
-            const radios = document.getElementsByName('chakraEstado');
-            radios.forEach(radio => {
-                radio.checked = radio.value === estadoAtual;
-            });
-
-            document.getElementById('modalChakra').classList.add('active');
-        }
-
-        function fecharModalChakra() {
-            document.getElementById('modalChakra').classList.remove('active');
-            chakraAtual = null;
-        }
-
-        function confirmarChakra() {
-            const percentual = parseInt(document.getElementById('chakraPercentual').value, 10);
-            const radios = document.getElementsByName('chakraEstado');
-            let estado = '';
-            for (const radio of radios) {
-                if (radio.checked) {
-                    estado = radio.value;
-                    break;
-                }
-            }
-
-            if (isNaN(percentual) || percentual < 0 || percentual > 100) {
-                alert('Informe um percentual válido entre 0 e 100.');
-                return;
-            }
-            if (!estado) {
-                alert('Selecione o estado: Hiper ou Hipo.');
-                return;
-            }
-
-            chakrasState[chakraAtual] = { percentual, estado };
-            atualizarBotaoChakra(chakraAtual);
-            fecharModalChakra();
-        }
-
-        function atualizarBotaoChakra(nome) {
-            const dados = chakrasState[nome];
-            const botoes = document.querySelectorAll('.chakra-btn');
-            botoes.forEach(botao => {
-                if (botao.dataset.nome === nome) {
-                    botao.textContent = `${nome} - ${dados.percentual}% - ${dados.estado}`;
-                }
-            });
-        }
-
-        function mudarEtapa(direcao) {
-            if (!validarEtapa(etapaAtual)) return;
-
-            const novaEtapa = etapaAtual + direcao;
-            if (novaEtapa < 1 || novaEtapa > totalEtapas) return;
-
-            document.getElementById(`step-${etapaAtual}`).classList.remove('active');
-            document.getElementById(`step-indicador-${etapaAtual}`).classList.remove('active');
-
-            etapaAtual = novaEtapa;
-
-            document.getElementById(`step-${etapaAtual}`).classList.add('active');
-            document.getElementById(`step-indicador-${etapaAtual}`).classList.add('active');
-
-            document.getElementById('btnAnterior').disabled = etapaAtual === 1;
-            document.getElementById('btnProximo').textContent = etapaAtual === totalEtapas ? 'Salvar' : 'Próximo';
-
-            if (etapaAtual === totalEtapas) {
-                gerarResumo();
-            }
-
-            if (etapaAtual === totalEtapas && direcao === 1) {
-                salvarAtendimento();
-            }
-        }
-
-        function validarEtapa(etapa) {
-            if (etapa === 1) {
-                const cliente = document.getElementById('cliente').value.trim();
-                const whatsapp = document.getElementById('whatsapp').value.trim();
-                if (!cliente) {
-                    alert('Selecione um cliente.');
-                    return false;
-                }
-                if (whatsapp.length < 17) {
-                    alert('Informe o WhatsApp completo no formato +55 (XX) XXXXX-XXXX.');
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        function gerarResumo() {
-            const cliente = document.getElementById('cliente');
-            const nomeCliente = cliente.options[cliente.selectedIndex].text;
-            const whatsapp = document.getElementById('whatsapp').value;
-            const observacoes = document.getElementById('observacoes').value;
-
-            let resumo = `Cliente: ${nomeCliente}\n`;
-            resumo += `WhatsApp: ${whatsapp}\n\n`;
-            resumo += 'Chakras:\n';
-
-            for (const [nome, dados] of Object.entries(chakrasState)) {
-                if (dados) {
-                    resumo += `- ${nome}: ${dados.percentual}% (${dados.estado})\n`;
-                } else {
-                    resumo += `- ${nome}: não avaliado\n`;
-                }
-            }
-
-            if (observacoes.trim()) {
-                resumo += `\nObservações:\n${observacoes}`;
-            }
-
-            document.getElementById('resumo').value = resumo;
-        }
-
-        function salvarAtendimento() {
-            const cliente = document.getElementById('cliente');
-            const nomeCliente = cliente.options[cliente.selectedIndex].text;
-            const whatsapp = document.getElementById('whatsapp').value;
-            const observacoes = document.getElementById('observacoes').value;
-
-            const chakras = [];
-            for (const [nome, dados] of Object.entries(chakrasState)) {
-                chakras.push({
-                    nome: nome,
-                    percentual: dados ? dados.percentual : 0,
-                    estado: dados ? dados.estado : 'Não avaliado'
-                });
-            }
-
-            const atendimento = {
-                cliente: nomeCliente,
-                whatsapp: whatsapp,
-                chakras: chakras,
-                observacoes: observacoes,
-                data: new Date().toISOString()
-            };
-
-            try {
-                if (typeof database !== 'undefined' && typeof database.salvarAtendimento === 'function') {
-                    database.salvarAtendimento(atendimento);
-                } else if (typeof salvarAtendimentoDB === 'function') {
-                    salvarAtendimentoDB(atendimento);
-                } else {
-                    const atendimentos = JSON.parse(localStorage.getItem('atendimentos_equilibrium') || '[]');
-                    atendimentos.push(atendimento);
-                    localStorage.setItem('atendimentos_equilibrium', JSON.stringify(atendimentos));
-                }
-
-                exibirMensagem('Atendimento salvo com sucesso!', 'sucesso');
-                setTimeout(() => {
-                    document.getElementById('formAtendimento').reset();
-                    resetarChakras();
-                    etapaAtual = 1;
-                    atualizarInterfaceEtapa();
-                    document.getElementById('mensagem').className = 'mensagem';
-                }, 2000);
-            } catch (erro) {
-                exibirMensagem('Erro ao salvar atendimento: ' + erro.message, 'erro');
-            }
-        }
-
-        function resetarChakras() {
-            for (const nome of Object.keys(chakrasState)) {
-                chakrasState[nome] = null;
-            }
-            const botoes = document.querySelectorAll('.chakra-btn');
-            botoes.forEach(botao => {
-                botao.textContent = botao.dataset.nome;
-            });
-        }
-
-        function atualizarInterfaceEtapa() {
-            for (let i = 1; i <= totalEtapas; i++) {
-                document.getElementById(`step-${i}`).classList.toggle('active', i === etapaAtual);
-                document.getElementById(`step-indicador-${i}`).classList.toggle('active', i === etapaAtual);
-            }
-            document.getElementById('btnAnterior').disabled = true;
-            document.getElementById('btnProximo').textContent = 'Próximo';
-        }
-
-        function exibirMensagem(texto, tipo) {
-            const mensagem = document.getElementById('mensagem');
-            mensagem.textContent = texto;
-            mensagem.className = 'mensagem ' + tipo;
-        }
-
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
+    function resetarFormulario() {
+      document.getElementById('atendimentoForm').reset();
+      chakras.forEach(c => { c.percentual = null; c.estado = null; });
+      renderizarChakras();
+      etapaAtual = 1;
+      atualizarWizard();
+    }
+  </script>
 </body>
 </html>
