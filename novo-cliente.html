@@ -3,8 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Novo Cliente</title>
+    <title>Novo Cliente - Sistema</title>
+    <script src="js/database.js"></script>
     <style>
+        :root {
+            --roxo-escuro: #2e003e;
+            --roxo-medio: #5a189a;
+            --roxo-claro: #9d4edd;
+            --dourado: #d4af37;
+            --dourado-claro: #f3e5ab;
+            --branco: #ffffff;
+            --cinza-claro: #f5f5f5;
+            --cinza-texto: #333333;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -13,176 +25,314 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #4a148c 0%, #7b1fa2 100%);
+            background: linear-gradient(135deg, var(--roxo-escuro) 0%, var(--roxo-medio) 100%);
             min-height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 20px;
+            align-items: flex-start;
+            padding: 40px 20px;
+            color: var(--cinza-texto);
         }
 
         .container {
-            background: #ffffff;
+            background-color: var(--branco);
             width: 100%;
-            max-width: 420px;
-            padding: 32px;
+            max-width: 800px;
             border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
         }
 
-        h1 {
-            color: #4a148c;
+        .header {
+            background: linear-gradient(90deg, var(--roxo-medio), var(--roxo-claro));
+            color: var(--branco);
+            padding: 30px;
             text-align: center;
+            border-bottom: 4px solid var(--dourado);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .header h1 span {
+            color: var(--dourado);
+        }
+
+        .formulario {
+            padding: 30px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .campo.full {
+            grid-column: 1 / -1;
+        }
+
+        .campo label {
+            font-weight: 600;
             margin-bottom: 8px;
-            font-size: 1.75rem;
-        }
-
-        .subtitle {
-            color: #666;
-            text-align: center;
-            margin-bottom: 24px;
+            color: var(--roxo-escuro);
             font-size: 0.95rem;
         }
 
-        form label {
-            display: block;
-            color: #4a148c;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-
-        form input {
-            width: 100%;
+        .campo input,
+        .campo select {
             padding: 12px 14px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 1rem;
-            margin-bottom: 18px;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        form input:focus {
+            transition: border-color 0.3s, box-shadow 0.3s;
             outline: none;
-            border-color: #ffd700;
-            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.25);
         }
 
-        button {
-            width: 100%;
-            padding: 14px;
+        .campo input:focus,
+        .campo select:focus {
+            border-color: var(--roxo-claro);
+            box-shadow: 0 0 0 3px rgba(157, 78, 221, 0.15);
+        }
+
+        .botoes {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
             border: none;
             border-radius: 8px;
-            background: #ffd700;
-            color: #4a148c;
             font-size: 1rem;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-        }
-
-        button:hover:not(:disabled) {
-            background: #ffdf33;
-        }
-
-        button:active:not(:disabled) {
-            transform: scale(0.98);
-        }
-
-        button:disabled {
-            background: #d4b800;
-            cursor: not-allowed;
-            opacity: 0.85;
-        }
-
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 18px;
-            color: #4a148c;
+            transition: transform 0.2s, opacity 0.2s;
             text-decoration: none;
-            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .back-link:hover {
-            text-decoration: underline;
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-salvar {
+            background: linear-gradient(90deg, var(--dourado), var(--dourado-claro));
+            color: var(--roxo-escuro);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-salvar:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-voltar {
+            background-color: transparent;
+            color: var(--roxo-medio);
+            border: 2px solid var(--roxo-medio);
+        }
+
+        .btn-voltar:hover {
+            background-color: var(--roxo-medio);
+            color: var(--branco);
+        }
+
+        .mensagem {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            display: none;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .mensagem.erro {
+            background-color: #ffe6e6;
+            color: #b00020;
+            border: 1px solid #ffb3b3;
+            display: block;
+        }
+
+        .mensagem.sucesso {
+            background-color: #e6f7e6;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+            display: block;
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.4rem;
+            }
+
+            .botoes {
+                flex-direction: column-reverse;
+            }
+
+            .btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Novo Cliente</h1>
-        <p class="subtitle">Preencha os dados para cadastrar</p>
+        <div class="header">
+            <h1>Cadastro de <span>Cliente</span></h1>
+        </div>
 
-        <form id="formCliente" onsubmit="event.preventDefault(); enviarFormulario();">
-            <label for="nome">Nome</label>
-            <input type="text" id="nome" name="nome" placeholder="Digite o nome completo" required>
+        <form id="formCliente" class="formulario" onsubmit="enviarFormulario(event)">
+            <div class="grid">
+                <div class="campo">
+                    <label for="nome">Nome</label>
+                    <input type="text" id="nome" name="nome" required placeholder="Nome completo">
+                </div>
 
-            <label for="whatsapp">WhatsApp</label>
-            <input type="text" id="whatsapp" name="whatsapp" placeholder="(00) 00000-0000" maxlength="15" required>
+                <div class="campo">
+                    <label for="whatsapp">WhatsApp</label>
+                    <input type="tel" id="whatsapp" name="whatsapp" required placeholder="(00) 00000-0000" maxlength="15" oninput="mascaraWhatsApp(this)">
+                </div>
 
-            <button type="submit" id="btnSalvar">Salvar Cliente</button>
+                <div class="campo">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="email@exemplo.com">
+                </div>
+
+                <div class="campo">
+                    <label for="instagram">Instagram</label>
+                    <input type="text" id="instagram" name="instagram" placeholder="@usuario">
+                </div>
+
+                <div class="campo full">
+                    <label for="rua">Rua</label>
+                    <input type="text" id="rua" name="rua" placeholder="Nome da rua">
+                </div>
+
+                <div class="campo">
+                    <label for="numero">Número</label>
+                    <input type="text" id="numero" name="numero" placeholder="Número">
+                </div>
+
+                <div class="campo">
+                    <label for="bairro">Bairro</label>
+                    <input type="text" id="bairro" name="bairro" placeholder="Bairro">
+                </div>
+
+                <div class="campo">
+                    <label for="cidade">Cidade</label>
+                    <input type="text" id="cidade" name="cidade" placeholder="Cidade">
+                </div>
+
+                <div class="campo">
+                    <label for="estado">Estado</label>
+                    <input type="text" id="estado" name="estado" placeholder="UF" maxlength="2">
+                </div>
+
+                <div class="campo">
+                    <label for="cep">CEP</label>
+                    <input type="text" id="cep" name="cep" placeholder="00000-000" maxlength="9">
+                </div>
+
+                <div class="campo">
+                    <label for="nascimento">Nascimento</label>
+                    <input type="date" id="nascimento" name="nascimento">
+                </div>
+
+                <div class="campo">
+                    <label for="indicacao">Indicação</label>
+                    <input type="text" id="indicacao" name="indicacao" placeholder="Quem indicou">
+                </div>
+            </div>
+
+            <div class="botoes">
+                <a href="clientes.html" class="btn btn-voltar">Voltar</a>
+                <button type="submit" class="btn btn-salvar" id="btnSalvar">Salvar Cliente</button>
+            </div>
+
+            <div id="mensagem" class="mensagem"></div>
         </form>
-
-        <a href="clientes.html" class="back-link">Voltar para lista de clientes</a>
     </div>
 
-    <script src="js/database.js"></script>
     <script>
-    // MÁSCARA DE WHATSAPP
-    const handlePhone = (event) => {
-        let input = event.target;
-        input.value = phoneMask(input.value);
-    }
+        function mascaraWhatsApp(input) {
+            let valor = input.value.replace(/\D/g, '');
 
-    const phoneMask = (value) => {
-        if (!value) return "";
-        value = value.replace(/\D/g, '');
-        value = value.replace(/(\d{2})(\d)/, "($1) $2");
-        value = value.replace(/(\d{5})(\d)/, "$1-$2");
-        return value;
-    }
+            if (valor.length > 11) {
+                valor = valor.slice(0, 11);
+            }
 
-    document.getElementById('whatsapp').addEventListener('input', handlePhone);
+            if (valor.length > 7) {
+                valor = `(${valor.slice(0, 2)}) ${valor.slice(2, 7)}-${valor.slice(7)}`;
+            } else if (valor.length > 2) {
+                valor = `(${valor.slice(0, 2)}) ${valor.slice(2)}`;
+            } else if (valor.length > 0) {
+                valor = `(${valor}`;
+            }
 
-    // FUNÇÃO PARA SALVAR
-    async function enviarFormulario(event) {
-        event.preventDefault();
-        
-        const btn = document.getElementById('btnSalvar');
-        const feedback = document.getElementById('feedback');
-        
-        btn.disabled = true;
-        btn.textContent = "Salvando na nuvem...";
-
-        const dados = {
-            nome: document.getElementById('nome').value,
-            whatsapp: document.getElementById('whatsapp').value,
-            email: document.getElementById('email').value,
-            instagram: document.getElementById('instagram').value,
-            rua: document.getElementById('rua').value,
-            numero: document.getElementById('numero').value,
-            bairro: document.getElementById('bairro').value,
-            cidade: document.getElementById('cidade').value,
-            estado: document.getElementById('estado').value,
-            cep: document.getElementById('cep').value,
-            nascimento: document.getElementById('nascimento').value,
-            indicacao: document.getElementById('indicacao').value,
-            dataCadastro: new Date().toLocaleDateString('pt-BR')
-        };
-
-        try {
-            // Chama a função que está no js/database.js
-            await salvarCliente(dados);
-            alert("✅ Cliente salvo com sucesso na planilha!");
-            window.location.href = 'clientes.html';
-        } catch (error) {
-            console.error(error);
-            alert("❌ Erro ao salvar. Verifique sua conexão.");
-        } finally {
-            btn.disabled = false;
-            btn.textContent = "Salvar Cliente";
+            input.value = valor;
         }
-    }
-</script>
+
+        async function enviarFormulario(event) {
+            event.preventDefault();
+
+            const btnSalvar = document.getElementById('btnSalvar');
+            const mensagem = document.getElementById('mensagem');
+            const textoOriginal = btnSalvar.innerText;
+
+            const dados = {
+                nome: document.getElementById('nome').value.trim(),
+                whatsapp: document.getElementById('whatsapp').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                instagram: document.getElementById('instagram').value.trim(),
+                rua: document.getElementById('rua').value.trim(),
+                numero: document.getElementById('numero').value.trim(),
+                bairro: document.getElementById('bairro').value.trim(),
+                cidade: document.getElementById('cidade').value.trim(),
+                estado: document.getElementById('estado').value.trim(),
+                cep: document.getElementById('cep').value.trim(),
+                nascimento: document.getElementById('nascimento').value,
+                indicacao: document.getElementById('indicacao').value.trim()
+            };
+
+            try {
+                btnSalvar.disabled = true;
+                btnSalvar.innerText = 'Salvando...';
+                mensagem.className = 'mensagem';
+                mensagem.style.display = 'none';
+
+                await salvarCliente(dados);
+
+                btnSalvar.innerText = 'Salvo com sucesso!';
+
+                setTimeout(() => {
+                    window.location.href = 'clientes.html';
+                }, 800);
+            } catch (erro) {
+                console.error('Erro ao salvar cliente:', erro);
+                mensagem.className = 'mensagem erro';
+                mensagem.innerText = 'Erro ao salvar cliente. Tente novamente.';
+                mensagem.style.display = 'block';
+
+                btnSalvar.disabled = false;
+                btnSalvar.innerText = textoOriginal;
+            }
+        }
+    </script>
 </body>
 </html>
