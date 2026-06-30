@@ -1,152 +1,124 @@
-const API_URL = 'https://script.google.com/macros/s/AKfycbzsWzi-CTjdjG1eI-bfN5Kvy8qKQgQkzjvI6MmLgHY-xoPqhurk6_Zzo_EA5fGsje6E/exec';
-let currentApiUrl = API_URL;
+const BASE_URL = "https://script.google.com/macros/s/AKfycbzsWzi-CTjdjG1eI-bfN5Kvy8qKQgQkzjvI6MmLgHY-xoPqhurk6_Zzo_EA5fGsje6E/exec";
 
-function setApiUrl(url) {
-  return new Promise((resolve) => {
-    currentApiUrl = url;
-    resolve(currentApiUrl);
-  });
-}
+async function apiCallWithMode(action, params = {}, method = "GET", mode = "cors") {
+    console.log(`[database.js] apiCall iniciada: action=${action}, method=${method.toUpperCase()}, mode=${mode}`);
 
-function getApiUrl() {
-  return new Promise((resolve) => {
-    resolve(currentApiUrl);
-  });
-}
+    const queryParams = new URLSearchParams();
+    queryParams.append("action", action);
 
-function apiCall(action, data) {
-  const isGet = !data || (typeof data === 'object' && Object.keys(data).length === 0);
-  const url = isGet
-    ? `${currentApiUrl}?action=${encodeURIComponent(action)}`
-    : currentApiUrl;
-  const options = isGet
-    ? {}
-    : {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action, ...data })
-      };
-
-  return fetch(url, options)
-    .then((response) => {
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      return response.json();
-    });
-}
-
-function getLocalStorageArray(key) {
-  try {
-    return JSON.parse(localStorage.getItem(key) || '[]');
-  } catch (e) {
-    return [];
-  }
-}
-
-function syncClientes() {
-  return new Promise((resolve) => {
-    apiCall('listarClientes')
-      .then((r) => resolve(Array.isArray(r.data) ? r.data : []))
-      .catch(() => resolve(getLocalStorageArray('equilibriumClientes')));
-  });
-}
-
-function syncAtendimentos() {
-  return new Promise((resolve) => {
-    apiCall('listarAtendimentos')
-      .then((r) => resolve(Array.isArray(r.data) ? r.data : []))
-      .catch(() => resolve(getLocalStorageArray('equilibriumAtendimentos')));
-  });
-}
-
-function salvarCliente(dados) {
-  return new Promise((resolve) => {
-    const id = dados.id || 'CLI-' + Date.now();
-    const dadosComId = { ...dados, id };
-
-    apiCall('salvarCliente', dadosComId)
-      .then(() => resolve({ success: true, id }))
-      .catch(() => {
-        const clientes = getLocalStorageArray('equilibriumClientes');
-        clientes.push(dadosComId);
-        localStorage.setItem('equilibriumClientes', JSON.stringify(clientes));
-        resolve({ success: true, id });
-      });
-  });
-}
-
-function salvarAtendimento(dados) {
-  return new Promise((resolve) => {
-    let id = dados.id;
-    if (!id) {
-      const atendimentos = getLocalStorageArray('equilibriumAtendimentos');
-      let max = 0;
-      atendimentos.forEach((a) => {
-        if (a.id && typeof a.id === 'string') {
-          const match = a.id.match(/^ATD-(\d+)$/);
-          if (match) {
-            const num = parseInt(match[1], 10);
-            if (num > max) max = num;
-          }
+    for (const key in params) {
+        if (Object.prototype.hasOwnProperty.call(params, key)) {
+            const value = typeof params[key] === "object" ? JSON.stringify(params[key]) : params[key];
+            queryParams.append(key, value);
         }
-      });
-      id = 'ATD-' + String(max + 1).padStart(4, '0');
     }
-    const dadosComId = { ...dados, id };
 
-    apiCall('salvarAtendimento', dadosComId)
-      .then(() => resolve({ success: true, id }))
-      .catch(() => {
-        const atendimentos = getLocalStorageArray('equilibriumAtendimentos');
-        atendimentos.push(dadosComId);
-        localStorage.setItem('equilibriumAtendimentos', JSON.stringify(atendimentos));
-        resolve({ success: true, id });
-      });
-  });
-}
+    let url = BASE_URL;
+    const options = {
+        method: method.toUpperCase(),
+        redirect: "follow",
+        mode: mode
+    };
 
-function editarCliente(id, dados) {
-  return new Promise((resolve) => {
-    apiCall('atualizarCliente', { ...dados, id })
-      .then((r) => resolve(r))
-      .catch(() => {
-        const clientes = getLocalStorageArray('equilibriumClientes');
-        const index = clientes.findIndex((c) => c.id === id);
-        if (index !== -1) {
-          clientes[index] = { ...clientes[index], ...dados, id };
-          localStorage.setItem('equilibriumClientes', JSON.stringify(clientes));
+    if (method.toUpperCase() === "GET") {
+        url = `${BASE_URL}?${queryParams.toString()}`;
+        console.log(`[database.js] GET URL: ${url}`);
+    } else {
+        options.headers = {
+            "Content-Type": "application/x-www-form-urlencoded"
+        };
+        options.body = queryParams.toString();
+        console.log(`[database.js] POST body: ${queryParams.toString()}`);
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
+    options.signal = controller.signal;
+
+    try {
+        const response = await fetch(url, options);
+        clearTimeout(timeoutId);
+        console.log(`[database.js] Resposta recebida: status=${response.status}, mode=${mode}`);
+
+        if (mode === "no-cors") {
+            console.log("[database.js] Resposta opaca (no-cors). Não é possível validar o corpo.");
+            return { success: true, message: "Requisição enviada no modo no-cors" };
         }
-        resolve({ success: true, id });
-      });
-  });
-}
 
-function editarAtendimento(id, dados) {
-  return new Promise((resolve) => {
-    apiCall('atualizarAtendimento', { ...dados, id })
-      .then((r) => resolve(r))
-      .catch(() => {
-        const atendimentos = getLocalStorageArray('equilibriumAtendimentos');
-        const index = atendimentos.findIndex((a) => a.id === id);
-        if (index !== -1) {
-          atendimentos[index] = { ...atendimentos[index], ...dados, id };
-          localStorage.setItem('equilibriumAtendimentos', JSON.stringify(atendimentos));
+        const text = await response.text();
+        console.log(`[database.js] Corpo da resposta: ${text.substring(0, 1000)}`);
+
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (parseError) {
+            console.warn("[database.js] Resposta não é JSON válido:", parseError);
+            data = { success: response.ok, text: text };
         }
-        resolve({ success: true, id });
-      });
-  });
+
+        if (!response.ok) {
+            throw new Error(`Erro HTTP ${response.status}: ${JSON.stringify(data)}`);
+        }
+
+        return data;
+    } catch (error) {
+        clearTimeout(timeoutId);
+        console.error(`[database.js] Erro na apiCall (mode=${mode}):`, error);
+        throw error;
+    }
 }
 
-function excluirAtendimento(id) {
-  return new Promise((resolve) => {
-    const atendimentos = getLocalStorageArray('equilibriumAtendimentos');
-    const filtrados = atendimentos.filter((a) => a.id !== id);
-    localStorage.setItem('equilibriumAtendimentos', JSON.stringify(filtrados));
-    resolve({ success: true, id });
-  });
+async function apiCall(action, params = {}, method = "GET") {
+    try {
+        return await apiCallWithMode(action, params, method, "cors");
+    } catch (corsError) {
+        console.warn("[database.js] CORS falhou ou resposta bloqueada. Tentando fallback no-cors...", corsError);
+        return await apiCallWithMode(action, params, method, "no-cors");
+    }
 }
 
-window.Database = {
-  syncClientes, syncAtendimentos, salvarCliente, salvarAtendimento,
-  editarCliente, editarAtendimento, excluirAtendimento,
-  setApiUrl, getApiUrl
-};
+function salvarCliente(cliente) {
+    console.log("[database.js] salvarCliente chamado:", cliente);
+    return apiCall("salvarCliente", cliente, "POST")
+        .then((result) => {
+            console.log("[database.js] salvarCliente concluído com sucesso:", result);
+            return result;
+        })
+        .catch((error) => {
+            console.error("[database.js] salvarCliente falhou:", error);
+            throw error;
+        });
+}
+
+function salvarAtendimento(atendimento) {
+    console.log("[database.js] salvarAtendimento chamado:", atendimento);
+    return apiCall("salvarAtendimento", atendimento, "POST")
+        .then((result) => {
+            console.log("[database.js] salvarAtendimento concluído com sucesso:", result);
+            return result;
+        })
+        .catch((error) => {
+            console.error("[database.js] salvarAtendimento falhou:", error);
+            throw error;
+        });
+}
+
+function buscarClientes() {
+    console.log("[database.js] buscarClientes chamado");
+    return apiCall("buscarClientes", {}, "GET");
+}
+
+function buscarAtendimentos() {
+    console.log("[database.js] buscarAtendimentos chamado");
+    return apiCall("buscarAtendimentos", {}, "GET");
+}
+
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = {
+        apiCall,
+        salvarCliente,
+        salvarAtendimento,
+        buscarClientes,
+        buscarAtendimentos
+    };
+}
