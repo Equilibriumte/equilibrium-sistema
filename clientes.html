@@ -1,177 +1,249 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clientes</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #2e1065 0%, #4c1d95 50%, #2e1065 100%);
-      color: #f3f4f6;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 40px 20px;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1000px;
-      background-color: rgba(255, 255, 255, 0.08);
-      border: 1px solid #d4af37;
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-      padding: 30px;
-    }
-
-    h1 {
-      color: #d4af37;
-      text-align: center;
-      margin-bottom: 24px;
-      font-weight: 600;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    }
-
-    .loading {
-      text-align: center;
-      color: #d4af37;
-      font-size: 1.1rem;
-      padding: 20px;
-      display: none;
-    }
-
-    .loading.visible {
-      display: block;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      overflow: hidden;
-    }
-
-    thead {
-      background-color: #d4af37;
-      color: #2e1065;
-    }
-
-    th, td {
-      padding: 14px 16px;
-      text-align: left;
-      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-    }
-
-    th {
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    tbody tr {
-      background-color: rgba(255, 255, 255, 0.05);
-      transition: background-color 0.2s ease;
-    }
-
-    tbody tr:hover {
-      background-color: rgba(212, 175, 55, 0.15);
-    }
-
-    tbody tr:nth-child(even) {
-      background-color: rgba(255, 255, 255, 0.03);
-    }
-
-    .empty {
-      text-align: center;
-      color: #d4af37;
-      padding: 30px;
-      font-style: italic;
-    }
-
-    .error {
-      text-align: center;
-      color: #fca5a5;
-      padding: 20px;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Lista de Clientes</h1>
-    <div id="loading" class="loading visible">Carregando...</div>
-    <div id="content" style="display: none;">
-      <table id="tabelaClientes">
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>E-mail</th>
-            <th>Telefone</th>
-            <th>Cidade</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
-      <div id="mensagemVazia" class="empty" style="display: none;">
-        Nenhum cliente encontrado.
-      </div>
-    </div>
-  </div>
-
-  <script src="js/database.js"></script>
-  <script>
-    async function carregarClientes() {
-      const loadingEl = document.getElementById('loading');
-      const contentEl = document.getElementById('content');
-      const tbodyEl = document.querySelector('#tabelaClientes tbody');
-      const mensagemVaziaEl = document.getElementById('mensagemVazia');
-
-      loadingEl.classList.add('visible');
-      contentEl.style.display = 'none';
-      tbodyEl.innerHTML = '';
-
-      try {
-        const clientes = await buscarClientes();
-
-        if (!clientes || clientes.length === 0) {
-          mensagemVaziaEl.style.display = 'block';
-          document.querySelector('#tabelaClientes').style.display = 'none';
-        } else {
-          mensagemVaziaEl.style.display = 'none';
-          document.querySelector('#tabelaClientes').style.display = 'table';
-
-          clientes.forEach(cliente => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td>${cliente.nome || ''}</td>
-              <td>${cliente.email || ''}</td>
-              <td>${cliente.telefone || ''}</td>
-              <td>${cliente.cidade || ''}</td>
-              <td>${cliente.estado || ''}</td>
-            `;
-            tbodyEl.appendChild(tr);
-          });
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes</title>
+    <style>
+        :root {
+            --roxo: #4b0082;
+            --roxo-claro: #6a0dad;
+            --dourado: #ffd700;
+            --dourado-escuro: #daa520;
+            --branco: #ffffff;
+            --fundo: #f5f0ff;
+            --texto: #333333;
         }
 
-        contentEl.style.display = 'block';
-      } catch (erro) {
-        contentEl.innerHTML = `<div class="error">Erro ao carregar os clientes: ${erro.message}</div>`;
-        contentEl.style.display = 'block';
-      } finally {
-        loadingEl.classList.remove('visible');
-      }
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    document.addEventListener('DOMContentLoaded', carregarClientes);
-  </script>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--roxo) 0%, #2e003e 100%);
+            min-height: 100vh;
+            color: var(--branco);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 2px solid var(--dourado);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.25);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--dourado);
+            margin-bottom: 25px;
+            font-size: 2rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(180deg, var(--dourado) 0%, var(--dourado-escuro) 100%);
+            color: var(--roxo);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--dourado);
+            border: 2px solid var(--dourado);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: var(--texto);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        thead {
+            background-color: var(--roxo-claro);
+            color: var(--dourado);
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e0d4f7;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #faf6ff;
+        }
+
+        tbody tr:hover {
+            background-color: #f0e6ff;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .mensagem-vazia {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .erro {
+            background-color: #fff0f0;
+            color: #a00000;
+            padding: 15px;
+            border-left: 5px solid #a00000;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            color: var(--dourado);
+            padding: 20px;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            th, td {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .toolbar {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gerenciamento de Clientes</h1>
+
+        <div id="erro" class="erro"></div>
+
+        <div class="toolbar">
+            <button class="btn" onclick="carregarClientes()">Atualizar Lista</button>
+            <button class="btn btn-secondary" onclick="window.location.href='index.html'">Voltar</button>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">Carregando clientes...</div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Telefone</th>
+                    <th>Cidade</th>
+                </tr>
+            </thead>
+            <tbody id="tabela-clientes">
+                <tr>
+                    <td colspan="5" class="mensagem-vazia">Nenhum cliente carregado ainda.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script>
+        async function carregarClientes() {
+            const tabela = document.getElementById('tabela-clientes');
+            const loading = document.getElementById('loading');
+            const erroDiv = document.getElementById('erro');
+
+            erroDiv.style.display = 'none';
+            erroDiv.textContent = '';
+            loading.style.display = 'block';
+
+            try {
+                const clientes = await buscarClientes();
+
+                if (!Array.isArray(clientes)) {
+                    console.warn('Resposta de buscarClientes não é um array. Tratando como lista vazia.', clientes);
+                    clientes = [];
+                }
+
+                tabela.innerHTML = '';
+
+                if (clientes.length === 0) {
+                    tabela.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="mensagem-vazia">Nenhum cliente encontrado.</td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                clientes.forEach(cliente => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${cliente.id ?? '-'}</td>
+                        <td>${cliente.nome ?? '-'}</td>
+                        <td>${cliente.email ?? '-'}</td>
+                        <td>${cliente.telefone ?? '-'}</td>
+                        <td>${cliente.cidade ?? '-'}</td>
+                    `;
+                    tabela.appendChild(tr);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar clientes:', error);
+                erroDiv.textContent = 'Erro ao carregar clientes. Tente novamente mais tarde.';
+                erroDiv.style.display = 'block';
+                tabela.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="mensagem-vazia">Não foi possível carregar os clientes.</td>
+                    </tr>
+                `;
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', carregarClientes);
+    </script>
 </body>
 </html>
