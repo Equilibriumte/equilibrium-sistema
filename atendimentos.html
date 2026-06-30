@@ -1,925 +1,666 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Atendimentos - Equilibrium Terapias Energéticas</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f6f9;
-      color: #333;
-    }
-    .sidebar {
-      position: fixed;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 260px;
-      background-color: #3d1d5f;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      padding: 24px 0;
-      z-index: 100;
-    }
-    .sidebar-header {
-      padding: 0 24px 24px;
-      border-bottom: 1px solid rgba(255,255,255,0.15);
-    }
-    .sidebar-header h2 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #fff;
-    }
-    .sidebar-header span {
-      display: block;
-      font-size: 0.75rem;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: #c9b3e0;
-      margin-top: 4px;
-    }
-    .sidebar-nav {
-      flex: 1;
-      padding: 20px 0;
-    }
-    .sidebar-nav a {
-      display: block;
-      padding: 12px 24px;
-      color: #e8dff3;
-      text-decoration: none;
-      font-size: 0.95rem;
-      transition: background 0.2s, color 0.2s;
-      border-left: 4px solid transparent;
-    }
-    .sidebar-nav a:hover,
-    .sidebar-nav a.active {
-      background-color: rgba(255,255,255,0.08);
-      color: #fff;
-      border-left-color: #a78bfa;
-    }
-    .sidebar-profile {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 16px 24px;
-      border-top: 1px solid rgba(255,255,255,0.15);
-    }
-    .avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background-color: #a78bfa;
-      color: #3d1d5f;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 1.1rem;
-    }
-    .sidebar-profile .info strong {
-      display: block;
-      font-size: 0.95rem;
-    }
-    .sidebar-profile .info span {
-      font-size: 0.8rem;
-      color: #c9b3e0;
-    }
-    .main-content {
-      margin-left: 260px;
-      min-height: 100vh;
-      padding: 28px 32px;
-    }
-    .page-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-    }
-    .page-header h1 {
-      font-size: 1.6rem;
-      color: #3d1d5f;
-    }
-    .btn {
-      padding: 10px 18px;
-      border: none;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-      background-color: #e5e7eb;
-      color: #374151;
-    }
-    .btn:hover { opacity: 0.92; }
-    .btn-primary { background-color: #3d1d5f; color: #fff; }
-    .btn-success { background-color: #10b981; color: #fff; }
-    .tabs {
-      display: flex;
-      gap: 8px;
-      border-bottom: 2px solid #e5e7eb;
-      margin-bottom: 24px;
-    }
-    .tab-btn {
-      background: none;
-      border: none;
-      padding: 12px 18px;
-      font-size: 0.95rem;
-      color: #6b7280;
-      cursor: pointer;
-      border-bottom: 3px solid transparent;
-      margin-bottom: -2px;
-    }
-    .tab-btn.active {
-      color: #3d1d5f;
-      border-bottom-color: #3d1d5f;
-      font-weight: 600;
-    }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    .progress-bar {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 24px;
-      background: #fff;
-      padding: 16px;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    }
-    .progress-step {
-      flex: 1;
-      text-align: center;
-      padding: 10px 8px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #6b7280;
-      background-color: #f3f4f6;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-      user-select: none;
-    }
-    .progress-step:hover { background-color: #e5e7eb; }
-    .progress-step.active {
-      background-color: #3d1d5f;
-      color: #fff;
-    }
-    .card {
-      background: #fff;
-      padding: 24px;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-      margin-bottom: 16px;
-    }
-    .card h3 {
-      font-size: 1.1rem;
-      color: #3d1d5f;
-      margin-bottom: 18px;
-    }
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-    }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .form-group.full { grid-column: 1 / -1; }
-    .form-group label {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #4b5563;
-    }
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      padding: 10px 12px;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      font-family: inherit;
-    }
-    .form-group textarea { resize: vertical; min-height: 80px; }
-    .form-group textarea.large { min-height: 140px; }
-    .form-group input[readonly] {
-      background-color: #f9fafb;
-      color: #6b7280;
-    }
-    .form-actions {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 20px;
-    }
-    .chakras-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-    .chakra-item {
-      padding: 12px;
-      border-radius: 8px;
-      text-align: center;
-      color: #fff;
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-      transition: transform 0.15s, opacity 0.15s;
-      opacity: 0.65;
-      border: 2px solid transparent;
-    }
-    .chakra-item:hover { opacity: 0.85; }
-    .chakra-item.selected {
-      opacity: 1;
-      transform: scale(1.03);
-      border-color: #fff;
-      box-shadow: 0 0 0 3px rgba(61,29,95,0.25);
-    }
-    .checkbox-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-top: 4px;
-    }
-    .checkbox-group label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-weight: 500;
-      cursor: pointer;
-    }
-    .sessao-content { display: none; }
-    .sessao-content.active { display: block; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    }
-    th, td {
-      text-align: left;
-      padding: 12px 16px;
-      border-bottom: 1px solid #e5e7eb;
-      font-size: 0.9rem;
-    }
-    th {
-      background-color: #f9fafb;
-      color: #4b5563;
-      font-weight: 600;
-    }
-    tr:last-child td { border-bottom: none; }
-    .status {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-    .status-agendado { background: #dbeafe; color: #1e40af; }
-    .status-em-andamento { background: #fef3c7; color: #92400e; }
-    .status-concluido { background: #d1fae5; color: #065f46; }
-    .status-cancelado { background: #fee2e2; color: #991b1b; }
-    .acoes button { margin-right: 6px; }
-    .empty-msg { text-align: center; color: #6b7280; padding: 24px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atendimentos - Equilibrium</title>
+    <style>
+        :root {
+            --roxo-escuro: #2E1A47;
+            --roxo-medio: #4B2C7A;
+            --roxo-claro: #7D5BA6;
+            --dourado: #C9A227;
+            --dourado-claro: #E6C86C;
+            --branco: #F9F7F3;
+            --cinza: #E8E4E1;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--roxo-escuro) 0%, var(--roxo-medio) 100%);
+            color: var(--branco);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--dourado);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--dourado);
+            margin-bottom: 8px;
+        }
+
+        .subtitulo {
+            text-align: center;
+            color: var(--dourado-claro);
+            margin-bottom: 28px;
+            font-size: 1rem;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            position: relative;
+        }
+
+        .steps::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--roxo-claro);
+            z-index: 0;
+        }
+
+        .step {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            flex: 1;
+        }
+
+        .step .dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--roxo-claro);
+            color: var(--branco);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 2px solid var(--dourado);
+        }
+
+        .step.active .dot {
+            background: var(--dourado);
+            color: var(--roxo-escuro);
+        }
+
+        .step-label {
+            display: block;
+            margin-top: 6px;
+            font-size: 0.85rem;
+            color: var(--dourado-claro);
+        }
+
+        .step-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dourado-claro);
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--dourado);
+            background: var(--roxo-escuro);
+            color: var(--branco);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--dourado-claro);
+            box-shadow: 0 0 8px rgba(201, 162, 39, 0.4);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .chakras-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .chakra-btn {
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            color: #fff;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            font-size: 0.95rem;
+        }
+
+        .chakra-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .chakra-btn[data-nome="Coronário"] { background: #9b59b6; }
+        .chakra-btn[data-nome="Frontal"] { background: #3b82c5; }
+        .chakra-btn[data-nome="Laringeo"] { background: #2ecc71; }
+        .chakra-btn[data-nome="Cardíaco"] { background: #f1c40f; color: #3d3d3d; text-shadow: none; }
+        .chakra-btn[data-nome="Plexo Solar"] { background: #e67e22; }
+        .chakra-btn[data-nome="Sacral"] { background: #e74c3c; }
+        .chakra-btn[data-nome="Básico"] { background: #c0392b; }
+
+        .botoes-acao {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 28px;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-secundario {
+            background: transparent;
+            border: 1px solid var(--dourado);
+            color: var(--dourado);
+        }
+
+        .btn-primario {
+            background: var(--dourado);
+            color: var(--roxo-escuro);
+        }
+
+        .btn-desabilitado {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--roxo-escuro);
+            border: 1px solid var(--dourado);
+            border-radius: 12px;
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal h3 {
+            margin-top: 0;
+            color: var(--dourado);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-weight: 400;
+        }
+
+        .mensagem {
+            text-align: center;
+            padding: 16px;
+            border-radius: 8px;
+            display: none;
+            margin-top: 16px;
+        }
+
+        .mensagem.sucesso {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            border: 1px solid #2ecc71;
+            display: block;
+        }
+
+        .mensagem.erro {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+            display: block;
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Atendimentos</h1>
+        <p class="subtitulo">Sistema Equilibrium - Registro de Sessão</p>
 
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <h2>Equilibrium</h2>
-      <span>TERAPIAS ENERGÉTICAS</span>
-    </div>
-    <nav class="sidebar-nav">
-      <a href="visao-geral.html">📊 Visão Geral</a>
-      <a href="clientes.html">👥 Clientes</a>
-      <a href="agenda.html">📅 Agenda</a>
-      <a href="atendimentos.html" class="active">🩺 Atendimentos</a>
-      <a href="tratamentos.html">🔬 Tratamentos</a>
-      <a href="agenda-graficos.html">📈 Agenda Gráficos</a>
-      <a href="financeiro.html">💰 Financeiro</a>
-    </nav>
-    <div class="sidebar-profile">
-      <div class="avatar">S</div>
-      <div class="info">
-        <strong>Simone</strong>
-        <span>terapeuta</span>
-      </div>
-    </div>
-  </aside>
-
-  <main class="main-content">
-    <div class="page-header">
-      <h1>🩺 Atendimentos</h1>
-      <button class="btn btn-primary" onclick="novoAtendimento()">+ Novo Atendimento</button>
-    </div>
-
-    <div class="tabs">
-      <button id="btnAbaLista" class="tab-btn active" onclick="mostrarAba('lista', this)">📋 Todos os Atendimentos</button>
-    </div>
-
-    <div id="abaLista" class="tab-content active">
-      <table>
-        <thead>
-          <tr>
-            <th>ID Atendimento</th>
-            <th>Data</th>
-            <th>Cliente</th>
-            <th>Tipo</th>
-            <th>Status</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="tabelaAtendimentos"></tbody>
-      </table>
-    </div>
-
-    <div id="abaForm" class="tab-content">
-      <div class="progress-bar">
-        <div class="progress-step active" data-step="1" onclick="irParaSessao(1)">1 Primeira Sessão</div>
-        <div class="progress-step" data-step="2" onclick="irParaSessao(2)">2 Análise Inicial</div>
-        <div class="progress-step" data-step="3" onclick="irParaSessao(3)">3 Análise Específica</div>
-        <div class="progress-step" data-step="4" onclick="irParaSessao(4)">4 Análise de Ambiente</div>
-        <div class="progress-step" data-step="5" onclick="irParaSessao(5)">5 Busca</div>
-      </div>
-
-      <form id="formAtendimento" onsubmit="event.preventDefault();">
-        <input type="hidden" id="editandoId" />
-        <input type="hidden" id="idCliente" />
-        <input type="hidden" id="chakrasSelecionados" />
-
-        <section id="sessao1" class="sessao-content active">
-          <div class="card">
-            <h3>1. Primeira Sessão</h3>
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="idAtendimento">ID Atendimento</label>
-                <input type="text" id="idAtendimento" readonly />
-              </div>
-              <div class="form-group">
-                <label for="dataAtendimento">Data</label>
-                <input type="date" id="dataAtendimento" />
-              </div>
-              <div class="form-group">
-                <label for="statusAtendimento">Status</label>
-                <select id="statusAtendimento">
-                  <option value="Agendado">Agendado</option>
-                  <option value="Em andamento">Em andamento</option>
-                  <option value="Concluído">Concluído</option>
-                  <option value="Cancelado">Cancelado</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="clienteAtendimento">Cliente</label>
-                <select id="clienteAtendimento" onchange="atualizarIdCliente()">
-                  <option value="">Selecione um cliente</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="tipoAtendimento">Tipo de Atendimento</label>
-                <select id="tipoAtendimento">
-                  <option value="Radiestesia">Radiestesia</option>
-                  <option value="Reiki">Reiki</option>
-                  <option value="Cromoterapia">Cromoterapia</option>
-                  <option value="Barras Access">Barras Access</option>
-                  <option value="Limpeza Energética">Limpeza Energética</option>
-                  <option value="Outro">Outro</option>
-                </select>
-              </div>
-              <div class="form-group full">
-                <label for="queixaPrincipal">Queixa Principal</label>
-                <textarea id="queixaPrincipal"></textarea>
-              </div>
-              <div class="form-group full">
-                <label for="queixaSecundaria">Queixa Secundária</label>
-                <textarea id="queixaSecundaria"></textarea>
-              </div>
+        <div class="steps">
+            <div class="step active" id="step-indicador-1">
+                <span class="dot">1</span>
+                <span class="step-label">Cliente</span>
             </div>
-            <div class="form-actions" style="justify-content: space-between;">
-              <div></div>
-              <div style="display:flex;gap:10px">
-                <button type="button" class="btn btn-success" onclick="salvarAtendimento()">💾 Salvar Dados</button>
-                <button type="button" class="btn btn-primary" onclick="irParaSessao(2)">Próximo: Análise Inicial →</button>
-              </div>
+            <div class="step" id="step-indicador-2">
+                <span class="dot">2</span>
+                <span class="step-label">Chakras</span>
             </div>
-          </div>
-        </section>
+            <div class="step" id="step-indicador-3">
+                <span class="dot">3</span>
+                <span class="step-label">Observações</span>
+            </div>
+            <div class="step" id="step-indicador-4">
+                <span class="dot">4</span>
+                <span class="step-label">Salvar</span>
+            </div>
+        </div>
 
-        <section id="sessao2" class="sessao-content">
-          <div class="card">
-            <h3>2. Análise Inicial</h3>
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="bovis">Bovis</label>
-                <input type="text" id="bovis" maxlength="5" placeholder="Ex: 12000" oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
-              </div>
-              <div class="form-group">
-                <label for="tamanhoAura">Tamanho da Aura (%)</label>
-                <input type="text" id="tamanhoAura" maxlength="3" placeholder="Ex: 75" oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
-              </div>
-              <div class="form-group">
-                <label for="protecaoAura">Proteção da Aura (%)</label>
-                <input type="text" id="protecaoAura" maxlength="3" placeholder="Ex: 80" oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
-              </div>
-              <div class="form-group full">
-                <label>Chakras</label>
-                <div class="chakras-grid">
-                  <div class="chakra-item" data-chakra="Coronário" data-cor="#8B5CF6" onclick="toggleChakra(this)">
-                    <span class="chakra-nome">Coronário</span>
-                    <input type="text" class="chakra-input" maxlength="3" placeholder="%" onkeyup="chakraInputKeyup(this, event)" onclick="event.stopPropagation()" style="display:none;width:40px;padding:3px;text-align:center;border-radius:4px;border:1px solid rgba(255,255,255,0.5);background:rgba(255,255,255,0.9);color:#333;font-size:13px">
-                    <span class="chakra-valor" style="display:none;font-weight:700;font-size:14px"></span>
-                  </div>
-                  <div class="chakra-item" data-chakra="Frontal" data-cor="#3B82F6" onclick="toggleChakra(this)">
-                    <span class="chakra-nome">Frontal</span>
-                    <input type="text" class="chakra-input" maxlength="3" placeholder="%" onkeyup="chakraInputKeyup(this, event)" onclick="event.stopPropagation()" style="display:none;width:40px;padding:3px;text-align:center;border-radius:4px;border:1px solid rgba(255,255,255,0.5);background:rgba(255,255,255,0.9);color:#333;font-size:13px">
-                    <span class="chakra-valor" style="display:none;font-weight:700;font-size:14px"></span>
-                  </div>
-                  <div class="chakra-item" data-chakra="Laríngeo" data-cor="#60A5FA" onclick="toggleChakra(this)">
-                    <span class="chakra-nome">Laríngeo</span>
-                    <input type="text" class="chakra-input" maxlength="3" placeholder="%" onkeyup="chakraInputKeyup(this, event)" onclick="event.stopPropagation()" style="display:none;width:40px;padding:3px;text-align:center;border-radius:4px;border:1px solid rgba(255,255,255,0.5);background:rgba(255,255,255,0.9);color:#333;font-size:13px">
-                    <span class="chakra-valor" style="display:none;font-weight:700;font-size:14px"></span>
-                  </div>
-                  <div class="chakra-item" data-chakra="Cardíaco" data-cor="#22C55E" onclick="toggleChakra(this)">
-                    <span class="chakra-nome">Cardíaco</span>
-                    <input type="text" class="chakra-input" maxlength="3" placeholder="%" onkeyup="chakraInputKeyup(this, event)" onclick="event.stopPropagation()" style="display:none;width:40px;padding:3px;text-align:center;border-radius:4px;border:1px solid rgba(255,255,255,0.5);background:rgba(255,255,255,0.9);color:#333;font-size:13px">
-                    <span class="chakra-valor" style="display:none;font-weight:700;font-size:14px"></span>
-                  </div>
-                  <div class="chakra-item" data-chakra="Umbilical" data-cor="#EAB308" onclick="toggleChakra(this)">
-                    <span class="chakra-nome">Umbilical</span>
-                    <input type="text" class="chakra-input" maxlength="3" placeholder="%" onkeyup="chakraInputKeyup(this, event)" onclick="event.stopPropagation()" style="display:none;width:40px;padding:3px;text-align:center;border-radius:4px;border:1px solid rgba(255,255,255,0.5);background:rgba(255,255,255,0.9);color:#333;font-size:13px">
-                    <span class="chakra-valor" style="display:none;font-weight:700;font-size:14px"></span>
-                  </div>
-                  <div class="chakra-item" data-chakra="Sacro" data-cor="#F97316" onclick="toggleChakra(this)">
-                    <span class="chakra-nome">Sacro</span>
-                    <input type="text" class="chakra-input" maxlength="3" placeholder="%" onkeyup="chakraInputKeyup(this, event)" onclick="event.stopPropagation()" style="display:none;width:40px;padding:3px;text-align:center;border-radius:4px;border:1px solid rgba(255,255,255,0.5);background:rgba(255,255,255,0.9);color:#333;font-size:13px">
-                    <span class="chakra-valor" style="display:none;font-weight:700;font-size:14px"></span>
-                  </div>
-                  <div class="chakra-item" data-chakra="Básico" data-cor="#EF4444" onclick="toggleChakra(this)">
-                    <span class="chakra-nome">Básico</span>
-                    <input type="text" class="chakra-input" maxlength="3" placeholder="%" onkeyup="chakraInputKeyup(this, event)" onclick="event.stopPropagation()" style="display:none;width:40px;padding:3px;text-align:center;border-radius:4px;border:1px solid rgba(255,255,255,0.5);background:rgba(255,255,255,0.9);color:#333;font-size:13px">
-                    <span class="chakra-valor" style="display:none;font-weight:700;font-size:14px"></span>
-                  </div>
+        <form id="formAtendimento" onsubmit="event.preventDefault();">
+            <div class="step-content active" id="step-1">
+                <div class="form-group">
+                    <label for="cliente">Cliente</label>
+                    <select id="cliente" name="cliente" required>
+                        <option value="">Selecione um cliente</option>
+                    </select>
                 </div>
-              </div>
-              <div class="form-group">
-                <label for="coresExcesso">Cores em Excesso</label>
-                <input type="text" id="coresExcesso" />
-              </div>
-              <div class="form-group">
-                <label for="coresFalta">Cores em Falta</label>
-                <input type="text" id="coresFalta" />
-              </div>
-              <div class="form-group full">
-                <label>Campos em Desequilíbrio</label>
-                <div class="checkbox-group">
-                  <label><input type="checkbox" id="checkMental" /> Mental Amiens</label>
-                  <label><input type="checkbox" id="checkEmocional" /> Emocional Luxor</label>
-                  <label><input type="checkbox" id="checkEspiritual" /> Espiritual Yoshua</label>
-                  <label><input type="checkbox" id="checkFisico" /> Físico</label>
+                <div class="form-group">
+                    <label for="whatsapp">WhatsApp</label>
+                    <input type="text" id="whatsapp" name="whatsapp" placeholder="+55 (XX) XXXXX-XXXX" maxlength="17" required>
                 </div>
-              </div>
-              <div class="form-group full">
-                <label for="diagnosticoInicial">Diagnóstico</label>
-                <textarea id="diagnosticoInicial"></textarea>
-              </div>
             </div>
-            <div class="form-actions">
-              <button type="button" class="btn" onclick="irParaSessao(1)">← Anterior</button>
-              <div style="display:flex;gap:10px">
-                <button type="button" class="btn btn-success" onclick="salvarAtendimento()">💾 Salvar Dados</button>
-                <button type="button" class="btn btn-primary" onclick="irParaSessao(3)">Próximo: Análise Específica →</button>
-              </div>
-            </div>
-          </div>
-        </section>
 
-        <section id="sessao3" class="sessao-content">
-          <div class="card">
-            <h3>3. Análise Específica</h3>
-            <div class="form-grid">
-              <div class="form-group full">
-                <label for="causaRaiz">Causa Raiz</label>
-                <textarea id="causaRaiz" class="large"></textarea>
-              </div>
-              <div class="form-group full">
-                <label for="crencasLimitantes">Crenças Limitantes</label>
-                <textarea id="crencasLimitantes" class="large"></textarea>
-              </div>
-              <div class="form-group full">
-                <label for="queixaEspecifica">Queixa Específica</label>
-                <textarea id="queixaEspecifica" class="large"></textarea>
-              </div>
-              <div class="form-group full">
-                <label for="diagnosticoEspecifico">Diagnóstico</label>
-                <textarea id="diagnosticoEspecifico"></textarea>
-              </div>
+            <div class="step-content" id="step-2">
+                <div class="form-group">
+                    <label>Estado dos Chakras</label>
+                    <div class="chakras-grid" id="chakrasContainer">
+                        <button type="button" class="chakra-btn" data-nome="Coronário" data-cor="#9b59b6">Coronário</button>
+                        <button type="button" class="chakra-btn" data-nome="Frontal" data-cor="#3b82c5">Frontal</button>
+                        <button type="button" class="chakra-btn" data-nome="Laringeo" data-cor="#2ecc71">Laringeo</button>
+                        <button type="button" class="chakra-btn" data-nome="Cardíaco" data-cor="#f1c40f">Cardíaco</button>
+                        <button type="button" class="chakra-btn" data-nome="Plexo Solar" data-cor="#e67e22">Plexo Solar</button>
+                        <button type="button" class="chakra-btn" data-nome="Sacral" data-cor="#e74c3c">Sacral</button>
+                        <button type="button" class="chakra-btn" data-nome="Básico" data-cor="#c0392b">Básico</button>
+                    </div>
+                </div>
             </div>
-            <div class="form-actions">
-              <button type="button" class="btn" onclick="irParaSessao(2)">← Anterior</button>
-              <div style="display:flex;gap:10px">
-                <button type="button" class="btn btn-success" onclick="salvarAtendimento()">💾 Salvar Dados</button>
-                <button type="button" class="btn btn-primary" onclick="irParaSessao(4)">Próximo: Análise de Ambiente →</button>
-              </div>
-            </div>
-          </div>
-        </section>
 
-        <section id="sessao4" class="sessao-content">
-          <div class="card">
-            <h3>4. Análise de Ambiente</h3>
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="tipoAmbiente">Tipo de Ambiente</label>
-                <select id="tipoAmbiente">
-                  <option value="Residencial">Residencial</option>
-                  <option value="Trabalho">Trabalho</option>
-                  <option value="Misto">Misto</option>
-                  <option value="Campo">Campo</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="enderecoAmbiente">Endereço do Ambiente</label>
-                <input type="text" id="enderecoAmbiente" />
-              </div>
-              <div class="form-group full">
-                <label for="queixaAmbiente">Queixa do Ambiente</label>
-                <textarea id="queixaAmbiente"></textarea>
-              </div>
-              <div class="form-group full">
-                <label for="pessoasEnvolvidas">Pessoas Envolvidas</label>
-                <textarea id="pessoasEnvolvidas"></textarea>
-              </div>
-              <div class="form-group full">
-                <label for="diagnosticoAmbiente">Diagnóstico</label>
-                <textarea id="diagnosticoAmbiente"></textarea>
-              </div>
+            <div class="step-content" id="step-3">
+                <div class="form-group">
+                    <label for="observacoes">Observações</label>
+                    <textarea id="observacoes" name="observacoes" placeholder="Registre aqui as observações da sessão..."></textarea>
+                </div>
             </div>
-            <div class="form-actions">
-              <button type="button" class="btn" onclick="irParaSessao(3)">← Anterior</button>
-              <div style="display:flex;gap:10px">
-                <button type="button" class="btn btn-success" onclick="salvarAtendimento()">💾 Salvar Dados</button>
-                <button type="button" class="btn btn-primary" onclick="irParaSessao(5)">Próximo: Busca →</button>
-              </div>
-            </div>
-          </div>
-        </section>
 
-        <section id="sessao5" class="sessao-content">
-          <div class="card">
-            <h3>5. Busca</h3>
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="tipoBusca">Tipo de Busca</label>
-                <select id="tipoBusca">
-                  <option value="Pessoa">Pessoa</option>
-                  <option value="Objeto">Objeto</option>
-                  <option value="Animal">Animal</option>
-                  <option value="Documento">Documento</option>
-                  <option value="Outro">Outro</option>
-                </select>
-              </div>
-              <div class="form-group full">
-                <label for="descricaoBusca">Descrição da Busca</label>
-                <textarea id="descricaoBusca"></textarea>
-              </div>
-              <div class="form-group full">
-                <label for="infoBusca">Informações Adicionais</label>
-                <textarea id="infoBusca"></textarea>
-              </div>
-              <div class="form-group full">
-                <label for="resultadoBusca">Resultado da Busca</label>
-                <textarea id="resultadoBusca"></textarea>
-              </div>
+            <div class="step-content" id="step-4">
+                <div class="form-group">
+                    <label for="resumo">Resumo do Atendimento</label>
+                    <textarea id="resumo" name="resumo" readonly placeholder="Confirme os dados e clique em Salvar..."></textarea>
+                </div>
             </div>
-            <div class="form-actions">
-              <button type="button" class="btn" onclick="irParaSessao(4)">← Anterior</button>
-              <div style="display:flex;gap:10px">
-                <button type="button" class="btn btn-success" onclick="salvarAtendimento()">💾 Salvar Dados</button>
-              </div>
+
+            <div class="botoes-acao">
+                <button type="button" class="btn btn-secundario" id="btnAnterior" onclick="mudarEtapa(-1)" disabled>Anterior</button>
+                <button type="button" class="btn btn-primario" id="btnProximo" onclick="mudarEtapa(1)">Próximo</button>
             </div>
-          </div>
-        </section>
-      </form>
+        </form>
+
+        <div class="mensagem" id="mensagem"></div>
     </div>
-  </main>
 
-  <script>
-    function irParaSessao(num) {
-      document.querySelectorAll('.sessao-content').forEach(s => s.classList.remove('active'));
-      document.getElementById('sessao' + num).classList.add('active');
-      document.querySelectorAll('.progress-step').forEach(s => s.classList.remove('active'));
-      document.querySelector('.progress-step[data-step="' + num + '"]').classList.add('active');
-      document.getElementById('abaForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    <div class="modal-overlay" id="modalChakra">
+        <div class="modal">
+            <h3 id="modalTitulo">Chakra</h3>
+            <div class="form-group">
+                <label for="chakraPercentual">Percentual (%)</label>
+                <input type="number" id="chakraPercentual" min="0" max="100" placeholder="0 a 100">
+            </div>
+            <div class="form-group">
+                <label>Estado</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="chakraEstado" value="Hiper"> Hiper</label>
+                    <label><input type="radio" name="chakraEstado" value="Hipo"> Hipo</label>
+                </div>
+            </div>
+            <div class="botoes-acao" style="margin-top: 0;">
+                <button type="button" class="btn btn-secundario" onclick="fecharModalChakra()">Cancelar</button>
+                <button type="button" class="btn btn-primario" onclick="confirmarChakra()">Confirmar</button>
+            </div>
+        </div>
+    </div>
 
-    function toggleChakra(el) {
-      const nome = el.querySelector('.chakra-nome');
-      const input = el.querySelector('.chakra-input');
-      const valor = el.querySelector('.chakra-valor');
-      const cor = el.getAttribute('data-cor');
-      
-      if (el.classList.contains('selected')) {
-        el.classList.remove('selected');
-        el.style.backgroundColor = cor;
-        el.style.color = '';
-        nome.style.display = 'inline';
-        input.style.display = 'none';
-        input.value = '';
-        valor.style.display = 'none';
-      } else if (input.style.display === 'inline-block' || input.style.display === 'inline') {
-        if (input.value.trim() !== '') {
-          el.classList.remove('selected');
-          el.style.backgroundColor = cor;
-          el.style.color = '';
-          nome.style.display = 'inline';
-          input.style.display = 'none';
-          input.value = '';
-          valor.style.display = 'none';
-        } else {
-          input.focus();
+    <script src="js/database.js"></script>
+    <script>
+        const chakrasState = {
+            'Coronário': null,
+            'Frontal': null,
+            'Laringeo': null,
+            'Cardíaco': null,
+            'Plexo Solar': null,
+            'Sacral': null,
+            'Básico': null
+        };
+
+        let chakraAtual = null;
+        let etapaAtual = 1;
+        const totalEtapas = 4;
+
+        function init() {
+            carregarClientes();
+            aplicarMascaraWhatsApp();
+            bindChakras();
         }
-      } else {
-        nome.style.display = 'none';
-        input.style.display = 'inline-block';
-        input.focus();
-      }
-      atualizarChakrasSelecionados();
-    }
 
-    function chakraInputKeyup(input, event) {
-      if (event.key === 'Enter') {
-        const el = input.closest('.chakra-item');
-        const valor = input.value.trim();
-        if (valor !== '' && !isNaN(valor) && parseInt(valor) >= 0 && parseInt(valor) <= 100) {
-          const cor = el.getAttribute('data-cor');
-          el.classList.add('selected');
-          el.style.backgroundColor = cor;
-          el.style.color = '#fff';
-          input.style.display = 'none';
-          el.querySelector('.chakra-nome').style.display = 'none';
-          el.querySelector('.chakra-valor').textContent = valor + '%';
-          el.querySelector('.chakra-valor').style.display = 'inline';
-        } else {
-          input.focus();
+        function carregarClientes() {
+            const select = document.getElementById('cliente');
+            select.innerHTML = '<option value="">Selecione um cliente</option>';
+
+            let clientes = [];
+            if (typeof database !== 'undefined' && typeof database.listarClientes === 'function') {
+                clientes = database.listarClientes();
+            } else if (typeof listarClientes === 'function') {
+                clientes = listarClientes();
+            }
+
+            if (!Array.isArray(clientes)) {
+                clientes = [];
+            }
+
+            clientes.forEach(cliente => {
+                const nome = typeof cliente === 'string' ? cliente : cliente.nome;
+                const id = typeof cliente === 'object' && cliente.id ? cliente.id : nome;
+                if (nome) {
+                    const option = document.createElement('option');
+                    option.value = id;
+                    option.textContent = nome;
+                    select.appendChild(option);
+                }
+            });
         }
-        atualizarChakrasSelecionados();
-      } else if (event.key === 'Escape') {
-        const el = input.closest('.chakra-item');
-        el.classList.remove('selected');
-        el.style.backgroundColor = el.getAttribute('data-cor');
-        el.style.color = '';
-        el.querySelector('.chakra-nome').style.display = 'inline';
-        input.style.display = 'none';
-        input.value = '';
-        el.querySelector('.chakra-valor').style.display = 'none';
-        atualizarChakrasSelecionados();
-      }
-    }
 
-    function atualizarChakrasSelecionados() {
-      const selecionados = [];
-      document.querySelectorAll('.chakra-item.selected').forEach(c => {
-        const nome = c.getAttribute('data-chakra');
-        const valor = c.querySelector('.chakra-valor').textContent;
-        selecionados.push(nome + ':' + valor);
-      });
-      document.getElementById('chakrasSelecionados').value = selecionados.join(', ');
-    }
+        function aplicarMascaraWhatsApp() {
+            const input = document.getElementById('whatsapp');
+            input.addEventListener('input', function () {
+                let valor = this.value.replace(/\D/g, '');
+                if (valor.length > 13) valor = valor.slice(0, 13);
 
-    function carregarClientes() {
-      const select = document.getElementById('clienteAtendimento');
-      const valorAtual = select.value;
-      select.innerHTML = '<option value="">Selecione um cliente</option>';
-      const clientes = JSON.parse(localStorage.getItem('equilibriumClientes') || '[]');
-      clientes.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c.id || c.nome;
-        opt.textContent = c.nome || c.razaoSocial || c.id;
-        select.appendChild(opt);
-      });
-      if (valorAtual) select.value = valorAtual;
-      atualizarIdCliente();
-    }
+                if (valor.length > 11) {
+                    valor = valor.replace(/^(\d{2})(\d{2})(\d{5})(\d{4})$/, '+55 ($2) $3-$4');
+                } else if (valor.length > 9) {
+                    valor = valor.replace(/^(\d{2})(\d{2})(\d{4})(\d{4})$/, '+55 ($2) $3-$4');
+                } else if (valor.length > 7) {
+                    valor = valor.replace(/^(\d{2})(\d{2})(\d{4})(\d{0,4})$/, '+55 ($2) $3-$4');
+                } else if (valor.length > 4) {
+                    valor = valor.replace(/^(\d{2})(\d{2})(\d{0,4})$/, '+55 ($2) $3');
+                } else if (valor.length > 2) {
+                    valor = valor.replace(/^(\d{2})(\d{0,2})$/, '+55 ($2');
+                } else if (valor.length > 0) {
+                    valor = '+55 (' + valor;
+                }
 
-    function atualizarIdCliente() {
-      const select = document.getElementById('clienteAtendimento');
-      const clientes = JSON.parse(localStorage.getItem('equilibriumClientes') || '[]');
-      const cliente = clientes.find(c => (c.id || c.nome) === select.value);
-      document.getElementById('idCliente').value = cliente ? cliente.id : '';
-    }
-
-    function gerarNovoId() {
-      const lista = JSON.parse(localStorage.getItem('equilibriumAtendimentos') || '[]');
-      let max = 0;
-      lista.forEach(a => {
-        const m = a.id && a.id.match(/ATD-(\d+)/);
-        if (m) {
-          const n = parseInt(m[1], 10);
-          if (n > max) max = n;
+                this.value = valor;
+            });
         }
-      });
-      return 'ATD-' + String(max + 1).padStart(4, '0');
-    }
 
-    function novoAtendimento() {
-      document.getElementById('formAtendimento').reset();
-      document.getElementById('editandoId').value = '';
-      document.querySelectorAll('.chakra-item').forEach(c => {
-        c.classList.remove('selected');
-        c.style.backgroundColor = c.getAttribute('data-cor');
-      });
-      document.getElementById('chakrasSelecionados').value = '';
-      document.getElementById('idAtendimento').value = gerarNovoId();
-      document.getElementById('dataAtendimento').value = new Date().toISOString().split('T')[0];
-      document.getElementById('statusAtendimento').value = 'Agendado';
-      document.getElementById('tipoAtendimento').value = 'Radiestesia';
-      document.getElementById('tipoAmbiente').value = 'Residencial';
-      document.getElementById('tipoBusca').value = 'Pessoa';
-      carregarClientes();
-      mostrarAba('formulario');
-      irParaSessao(1);
-    }
-
-    function mostrarAba(nome, btn) {
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      if (nome === 'lista') {
-        document.getElementById('abaLista').classList.add('active');
-        document.getElementById('btnAbaLista').classList.add('active');
-        carregarTabela();
-      } else {
-        document.getElementById('abaForm').classList.add('active');
-      }
-      if (btn) btn.classList.add('active');
-    }
-
-    function salvarAtendimento() {
-      const id = document.getElementById('idAtendimento').value.trim();
-      const data = document.getElementById('dataAtendimento').value;
-      if (!id) { alert('ID do atendimento não gerado.'); return; }
-      if (!data) { alert('Preencha a data do atendimento.'); return; }
-
-      const atendimento = {
-        id: id,
-        idCliente: document.getElementById('idCliente').value,
-        data: data,
-        status: document.getElementById('statusAtendimento').value,
-        cliente: document.getElementById('clienteAtendimento').value,
-        tipo: document.getElementById('tipoAtendimento').value,
-        queixaPrincipal: document.getElementById('queixaPrincipal').value,
-        queixaSecundaria: document.getElementById('queixaSecundaria').value,
-        bovis: document.getElementById('bovis').value,
-        tamanhoAura: document.getElementById('tamanhoAura').value,
-        protecaoAura: document.getElementById('protecaoAura').value,
-        chakras: document.getElementById('chakrasSelecionados').value,
-        coresExcesso: document.getElementById('coresExcesso').value,
-        coresFalta: document.getElementById('coresFalta').value,
-        desequilibrio: {
-          mental: document.getElementById('checkMental').checked,
-          emocional: document.getElementById('checkEmocional').checked,
-          espiritual: document.getElementById('checkEspiritual').checked,
-          fisico: document.getElementById('checkFisico').checked
-        },
-        diagnosticoInicial: document.getElementById('diagnosticoInicial').value,
-        causaRaiz: document.getElementById('causaRaiz').value,
-        crencasLimitantes: document.getElementById('crencasLimitantes').value,
-        queixaEspecifica: document.getElementById('queixaEspecifica').value,
-        diagnosticoEspecifico: document.getElementById('diagnosticoEspecifico').value,
-        tipoAmbiente: document.getElementById('tipoAmbiente').value,
-        enderecoAmbiente: document.getElementById('enderecoAmbiente').value,
-        queixaAmbiente: document.getElementById('queixaAmbiente').value,
-        pessoasEnvolvidas: document.getElementById('pessoasEnvolvidas').value,
-        diagnosticoAmbiente: document.getElementById('diagnosticoAmbiente').value,
-        tipoBusca: document.getElementById('tipoBusca').value,
-        descricaoBusca: document.getElementById('descricaoBusca').value,
-        infoBusca: document.getElementById('infoBusca').value,
-        resultadoBusca: document.getElementById('resultadoBusca').value,
-        dataCadastro: new Date().toISOString()
-      };
-
-      let lista = JSON.parse(localStorage.getItem('equilibriumAtendimentos') || '[]');
-      const idx = lista.findIndex(a => a.id === id);
-      if (idx >= 0) {
-        atendimento.dataCadastro = lista[idx].dataCadastro;
-        lista[idx] = atendimento;
-      } else {
-        lista.push(atendimento);
-      }
-      localStorage.setItem('equilibriumAtendimentos', JSON.stringify(lista));
-      alert('Atendimento salvo com sucesso!');
-      mostrarAba('lista', document.getElementById('btnAbaLista'));
-    }
-
-    function carregarTabela() {
-      const tbody = document.getElementById('tabelaAtendimentos');
-      const lista = JSON.parse(localStorage.getItem('equilibriumAtendimentos') || '[]');
-      tbody.innerHTML = '';
-      if (lista.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="empty-msg">Nenhum atendimento cadastrado.</td></tr>';
-        return;
-      }
-      lista.forEach(a => {
-        const dataFormatada = a.data ? new Date(a.data + 'T00:00:00').toLocaleDateString('pt-BR') : '-';
-        const statusClass = (a.status || '').toLowerCase().replace(/ /g, '-');
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${a.id}</td>
-          <td>${dataFormatada}</td>
-          <td>${a.cliente || '-'}</td>
-          <td>${a.tipo || '-'}</td>
-          <td><span class="status status-${statusClass}">${a.status || '-'}</span></td>
-          <td class="acoes">
-            <button class="btn" onclick="editarAtendimento('${a.id}')">Editar</button>
-            <button class="btn" onclick="excluirAtendimento('${a.id}')">Excluir</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function editarAtendimento(id) {
-      const lista = JSON.parse(localStorage.getItem('equilibriumAtendimentos') || '[]');
-      const a = lista.find(x => x.id === id);
-      if (!a) return alert('Atendimento não encontrado.');
-
-      document.getElementById('idAtendimento').value = a.id;
-      document.getElementById('editandoId').value = a.id;
-      document.getElementById('idCliente').value = a.idCliente || '';
-      document.getElementById('dataAtendimento').value = a.data || '';
-      document.getElementById('statusAtendimento').value = a.status || 'Agendado';
-      carregarClientes();
-      document.getElementById('clienteAtendimento').value = a.cliente || '';
-      document.getElementById('tipoAtendimento').value = a.tipo || 'Radiestesia';
-      document.getElementById('queixaPrincipal').value = a.queixaPrincipal || '';
-      document.getElementById('queixaSecundaria').value = a.queixaSecundaria || '';
-      document.getElementById('bovis').value = a.bovis || '';
-      document.getElementById('tamanhoAura').value = a.tamanhoAura || '';
-      document.getElementById('protecaoAura').value = a.protecaoAura || '';
-
-      document.querySelectorAll('.chakra-item').forEach(c => {
-        c.classList.remove('selected');
-        c.style.backgroundColor = c.getAttribute('data-cor');
-      });
-      if (a.chakras) {
-        const nomes = a.chakras.split(',').map(s => s.trim());
-        document.querySelectorAll('.chakra-item').forEach(c => {
-          if (nomes.includes(c.textContent.trim())) c.classList.add('selected');
-        });
-      }
-      document.getElementById('chakrasSelecionados').value = a.chakras || '';
-      document.getElementById('coresExcesso').value = a.coresExcesso || '';
-      document.getElementById('coresFalta').value = a.coresFalta || '';
-
-      const d = a.desequilibrio || {};
-      document.getElementById('checkMental').checked = d.mental || false;
-      document.getElementById('checkEmocional').checked = d.emocional || false;
-      document.getElementById('checkEspiritual').checked = d.espiritual || false;
-      document.getElementById('checkFisico').checked = d.fisico || false;
-      document.getElementById('diagnosticoInicial').value = a.diagnosticoInicial || '';
-      document.getElementById('causaRaiz').value = a.causaRaiz || '';
-      document.getElementById('crencasLimitantes').value = a.crencasLimitantes || '';
-      document.getElementById('queixaEspecifica').value = a.queixaEspecifica || '';
-      document.getElementById('diagnosticoEspecifico').value = a.diagnosticoEspecifico || '';
-      document.getElementById('tipoAmbiente').value = a.tipoAmbiente || 'Residencial';
-      document.getElementById('enderecoAmbiente').value = a.enderecoAmbiente || '';
-      document.getElementById('queixaAmbiente').value = a.queixaAmbiente || '';
-      document.getElementById('pessoasEnvolvidas').value = a.pessoasEnvolvidas || '';
-      document.getElementById('diagnosticoAmbiente').value = a.diagnosticoAmbiente || '';
-      document.getElementById('tipoBusca').value = a.tipoBusca || 'Pessoa';
-      document.getElementById('descricaoBusca').value = a.descricaoBusca || '';
-      document.getElementById('infoBusca').value = a.infoBusca || '';
-      document.getElementById('resultadoBusca').value = a.resultadoBusca || '';
-
-      mostrarAba('formulario');
-      irParaSessao(1);
-    }
-
-    function excluirAtendimento(id) {
-      if (!confirm('Deseja realmente excluir este atendimento?')) return;
-      let lista = JSON.parse(localStorage.getItem('equilibriumAtendimentos') || '[]');
-      lista = lista.filter(a => a.id !== id);
-      localStorage.setItem('equilibriumAtendimentos', JSON.stringify(lista));
-      carregarTabela();
-    }
-
-    window.addEventListener('DOMContentLoaded', function() {
-      document.querySelectorAll('.chakra-item').forEach(function(item) {
-        var cor = item.getAttribute('data-cor');
-        if (cor) {
-          item.style.backgroundColor = cor;
+        function bindChakras() {
+            const botoes = document.querySelectorAll('.chakra-btn');
+            botoes.forEach(botao => {
+                botao.addEventListener('click', function () {
+                    abrirModalChakra(this.dataset.nome, this.dataset.cor);
+                });
+            });
         }
-      });
-      carregarClientes();
-      carregarTabela();
-      mostrarAba('lista', document.getElementById('btnAbaLista'));
-    });
-  </script>
+
+        function abrirModalChakra(nome, cor) {
+            chakraAtual = nome;
+            document.getElementById('modalTitulo').textContent = nome;
+            document.getElementById('chakraPercentual').value = chakrasState[nome] ? chakrasState[nome].percentual : '';
+
+            const estadoAtual = chakrasState[nome] ? chakrasState[nome].estado : '';
+            const radios = document.getElementsByName('chakraEstado');
+            radios.forEach(radio => {
+                radio.checked = radio.value === estadoAtual;
+            });
+
+            document.getElementById('modalChakra').classList.add('active');
+        }
+
+        function fecharModalChakra() {
+            document.getElementById('modalChakra').classList.remove('active');
+            chakraAtual = null;
+        }
+
+        function confirmarChakra() {
+            const percentual = parseInt(document.getElementById('chakraPercentual').value, 10);
+            const radios = document.getElementsByName('chakraEstado');
+            let estado = '';
+            for (const radio of radios) {
+                if (radio.checked) {
+                    estado = radio.value;
+                    break;
+                }
+            }
+
+            if (isNaN(percentual) || percentual < 0 || percentual > 100) {
+                alert('Informe um percentual válido entre 0 e 100.');
+                return;
+            }
+            if (!estado) {
+                alert('Selecione o estado: Hiper ou Hipo.');
+                return;
+            }
+
+            chakrasState[chakraAtual] = { percentual, estado };
+            atualizarBotaoChakra(chakraAtual);
+            fecharModalChakra();
+        }
+
+        function atualizarBotaoChakra(nome) {
+            const dados = chakrasState[nome];
+            const botoes = document.querySelectorAll('.chakra-btn');
+            botoes.forEach(botao => {
+                if (botao.dataset.nome === nome) {
+                    botao.textContent = `${nome} - ${dados.percentual}% - ${dados.estado}`;
+                }
+            });
+        }
+
+        function mudarEtapa(direcao) {
+            if (!validarEtapa(etapaAtual)) return;
+
+            const novaEtapa = etapaAtual + direcao;
+            if (novaEtapa < 1 || novaEtapa > totalEtapas) return;
+
+            document.getElementById(`step-${etapaAtual}`).classList.remove('active');
+            document.getElementById(`step-indicador-${etapaAtual}`).classList.remove('active');
+
+            etapaAtual = novaEtapa;
+
+            document.getElementById(`step-${etapaAtual}`).classList.add('active');
+            document.getElementById(`step-indicador-${etapaAtual}`).classList.add('active');
+
+            document.getElementById('btnAnterior').disabled = etapaAtual === 1;
+            document.getElementById('btnProximo').textContent = etapaAtual === totalEtapas ? 'Salvar' : 'Próximo';
+
+            if (etapaAtual === totalEtapas) {
+                gerarResumo();
+            }
+
+            if (etapaAtual === totalEtapas && direcao === 1) {
+                salvarAtendimento();
+            }
+        }
+
+        function validarEtapa(etapa) {
+            if (etapa === 1) {
+                const cliente = document.getElementById('cliente').value.trim();
+                const whatsapp = document.getElementById('whatsapp').value.trim();
+                if (!cliente) {
+                    alert('Selecione um cliente.');
+                    return false;
+                }
+                if (whatsapp.length < 17) {
+                    alert('Informe o WhatsApp completo no formato +55 (XX) XXXXX-XXXX.');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function gerarResumo() {
+            const cliente = document.getElementById('cliente');
+            const nomeCliente = cliente.options[cliente.selectedIndex].text;
+            const whatsapp = document.getElementById('whatsapp').value;
+            const observacoes = document.getElementById('observacoes').value;
+
+            let resumo = `Cliente: ${nomeCliente}\n`;
+            resumo += `WhatsApp: ${whatsapp}\n\n`;
+            resumo += 'Chakras:\n';
+
+            for (const [nome, dados] of Object.entries(chakrasState)) {
+                if (dados) {
+                    resumo += `- ${nome}: ${dados.percentual}% (${dados.estado})\n`;
+                } else {
+                    resumo += `- ${nome}: não avaliado\n`;
+                }
+            }
+
+            if (observacoes.trim()) {
+                resumo += `\nObservações:\n${observacoes}`;
+            }
+
+            document.getElementById('resumo').value = resumo;
+        }
+
+        function salvarAtendimento() {
+            const cliente = document.getElementById('cliente');
+            const nomeCliente = cliente.options[cliente.selectedIndex].text;
+            const whatsapp = document.getElementById('whatsapp').value;
+            const observacoes = document.getElementById('observacoes').value;
+
+            const chakras = [];
+            for (const [nome, dados] of Object.entries(chakrasState)) {
+                chakras.push({
+                    nome: nome,
+                    percentual: dados ? dados.percentual : 0,
+                    estado: dados ? dados.estado : 'Não avaliado'
+                });
+            }
+
+            const atendimento = {
+                cliente: nomeCliente,
+                whatsapp: whatsapp,
+                chakras: chakras,
+                observacoes: observacoes,
+                data: new Date().toISOString()
+            };
+
+            try {
+                if (typeof database !== 'undefined' && typeof database.salvarAtendimento === 'function') {
+                    database.salvarAtendimento(atendimento);
+                } else if (typeof salvarAtendimentoDB === 'function') {
+                    salvarAtendimentoDB(atendimento);
+                } else {
+                    const atendimentos = JSON.parse(localStorage.getItem('atendimentos_equilibrium') || '[]');
+                    atendimentos.push(atendimento);
+                    localStorage.setItem('atendimentos_equilibrium', JSON.stringify(atendimentos));
+                }
+
+                exibirMensagem('Atendimento salvo com sucesso!', 'sucesso');
+                setTimeout(() => {
+                    document.getElementById('formAtendimento').reset();
+                    resetarChakras();
+                    etapaAtual = 1;
+                    atualizarInterfaceEtapa();
+                    document.getElementById('mensagem').className = 'mensagem';
+                }, 2000);
+            } catch (erro) {
+                exibirMensagem('Erro ao salvar atendimento: ' + erro.message, 'erro');
+            }
+        }
+
+        function resetarChakras() {
+            for (const nome of Object.keys(chakrasState)) {
+                chakrasState[nome] = null;
+            }
+            const botoes = document.querySelectorAll('.chakra-btn');
+            botoes.forEach(botao => {
+                botao.textContent = botao.dataset.nome;
+            });
+        }
+
+        function atualizarInterfaceEtapa() {
+            for (let i = 1; i <= totalEtapas; i++) {
+                document.getElementById(`step-${i}`).classList.toggle('active', i === etapaAtual);
+                document.getElementById(`step-indicador-${i}`).classList.toggle('active', i === etapaAtual);
+            }
+            document.getElementById('btnAnterior').disabled = true;
+            document.getElementById('btnProximo').textContent = 'Próximo';
+        }
+
+        function exibirMensagem(texto, tipo) {
+            const mensagem = document.getElementById('mensagem');
+            mensagem.textContent = texto;
+            mensagem.className = 'mensagem ' + tipo;
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
 </body>
 </html>
