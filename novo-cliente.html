@@ -3,444 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Novo Cliente - Equilibrium Radiestesia</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <title>Novo Cliente</title>
     <script src="js/database.js"></script>
     <style>
-        :root {
-            --roxo: #5B2C83;
-            --roxo-escuro: #3E1D5C;
-            --roxo-claro: #7A4DA6;
-            --dourado: #C5A059;
-            --dourado-claro: #E4C98B;
-            --branco: #FFFFFF;
-            --cinza-claro: #F8F6FA;
-            --cinza-medio: #E8E3EC;
-            --texto: #2D2136;
-            --erro: #B91C1C;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body {
-            font-family: 'Lato', sans-serif;
-            background: linear-gradient(135deg, var(--cinza-claro) 0%, #EDE8F2 100%);
-            color: var(--texto);
+            background: linear-gradient(135deg, #4a0e4e 0%, #6d1b75 50%, #9c27b0 100%);
             min-height: 100vh;
-            padding: 2rem 1rem;
-        }
-
-        .container {
-            max-width: 760px;
-            margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 2.5rem;
-        }
-
-        .header h1 {
-            font-family: 'Playfair Display', serif;
-            color: var(--roxo);
-            font-size: 2.2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .header p {
-            color: var(--dourado);
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-        }
-
-        .card {
-            background: var(--branco);
-            border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(91, 44, 131, 0.12);
-            overflow: hidden;
-            border: 1px solid var(--cinza-medio);
-        }
-
-        .card-header {
-            background: linear-gradient(90deg, var(--roxo) 0%, var(--roxo-escuro) 100%);
-            padding: 1.5rem 2rem;
             display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .card-header .icon {
-            width: 36px;
-            height: 36px;
-            background: var(--dourado);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            color: var(--roxo-escuro);
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .card-header h2 {
-            color: var(--branco);
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-        }
-
-        .form-body {
-            padding: 2rem;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.25rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group.full-width {
-            grid-column: 1 / -1;
-        }
-
-        label {
-            font-weight: 700;
-            font-size: 0.85rem;
-            color: var(--roxo);
-            margin-bottom: 0.45rem;
-            display: flex;
             align-items: center;
-            gap: 0.25rem;
+            padding: 20px;
         }
-
-        .required::after {
-            content: "*";
-            color: var(--dourado);
+        .container {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+            width: 100%;
+            max-width: 600px;
+            padding: 35px;
+            border-top: 6px solid #d4af37;
         }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="tel"],
-        input[type="date"],
-        textarea {
-            padding: 0.85rem 1rem;
-            border: 1px solid var(--cinza-medio);
+        h1 {
+            color: #6d1b75;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.9rem;
+        }
+        h1 span { color: #d4af37; }
+        .form-group { margin-bottom: 16px; }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #4a0e4e;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #d4af37;
             border-radius: 8px;
+            outline: none;
             font-size: 1rem;
-            color: var(--texto);
-            background: var(--branco);
             transition: border-color 0.2s, box-shadow 0.2s;
         }
-
-        input:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--roxo-claro);
-            box-shadow: 0 0 0 3px rgba(91, 44, 131, 0.12);
+        input:focus, select:focus {
+            border-color: #6d1b75;
+            box-shadow: 0 0 0 3px rgba(109, 27, 117, 0.15);
         }
-
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .error-message {
-            color: var(--erro);
-            font-size: 0.8rem;
-            margin-top: 0.35rem;
-            display: none;
-        }
-
-        .form-group.error input,
-        .form-group.error textarea {
-            border-color: var(--erro);
-        }
-
-        .form-group.error .error-message {
-            display: block;
-        }
-
-        .actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-            margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--cinza-medio);
-        }
-
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 480px) { .grid-2 { grid-template-columns: 1fr; } }
         .btn {
-            padding: 0.85rem 1.8rem;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: transform 0.15s, box-shadow 0.15s;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #d4af37, #b8962e);
+            color: #4a0e4e;
             border: none;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.15s, filter 0.15s;
+            margin-top: 10px;
         }
-
-        .btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: var(--branco);
-            color: var(--roxo);
-            border: 1px solid var(--cinza-medio);
-        }
-
-        .btn-secondary:hover {
-            background: var(--cinza-claro);
-            box-shadow: 0 4px 12px rgba(91, 44, 131, 0.08);
-        }
-
-        .btn-primary {
-            background: linear-gradient(90deg, var(--dourado) 0%, var(--dourado-claro) 100%);
-            color: var(--roxo-escuro);
-            box-shadow: 0 4px 16px rgba(197, 160, 89, 0.35);
-        }
-
-        .btn-primary:hover {
-            box-shadow: 0 6px 20px rgba(197, 160, 89, 0.45);
-        }
-
-        .footer {
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+        .btn:active { transform: translateY(0); }
+        .btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+        .feedback {
             text-align: center;
-            margin-top: 1.5rem;
-            font-size: 0.8rem;
-            color: var(--roxo-claro);
-        }
-
-        @media (max-width: 480px) {
-            .form-body {
-                padding: 1.5rem;
-            }
-            .header h1 {
-                font-size: 1.7rem;
-            }
-            .actions {
-                flex-direction: column-reverse;
-            }
+            margin-top: 18px;
+            font-weight: 600;
+            color: #6d1b75;
+            min-height: 24px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>Equilibrium</h1>
-            <p>Sistema de Radiestesia</p>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <div class="icon">+</div>
-                <h2>Novo Cliente</h2>
+        <h1>Novo <span>Cliente</span></h1>
+        <form id="formCliente" onsubmit="enviarFormulario(event)">
+            <div class="form-group">
+                <label for="nome">Nome</label>
+                <input type="text" id="nome" name="nome" required>
             </div>
-
-            <form id="formNovoCliente" onsubmit="event.preventDefault(); salvarCliente();" class="form-body">
-                <div class="form-row">
-                    <div class="form-group full-width">
-                        <label for="nome" class="required">Nome</label>
-                        <input type="text" id="nome" name="nome" placeholder="Nome completo do cliente">
-                        <span class="error-message">Informe o nome do cliente.</span>
-                    </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="whatsapp">WhatsApp</label>
+                    <input type="tel" id="whatsapp" name="whatsapp" required>
                 </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="whatsapp" class="required">WhatsApp</label>
-                        <input type="tel" id="whatsapp" name="whatsapp" placeholder="(00) 00000-0000" maxlength="15">
-                        <span class="error-message">Informe um WhatsApp válido.</span>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" placeholder="cliente@email.com">
-                    </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email">
                 </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="instagram">Instagram</label>
-                        <input type="text" id="instagram" name="instagram" placeholder="@usuario">
-                    </div>
-                    <div class="form-group">
-                        <label for="nascimento">Nascimento</label>
-                        <input type="date" id="nascimento" name="nascimento">
-                    </div>
+            </div>
+            <div class="form-group">
+                <label for="instagram">Instagram</label>
+                <input type="text" id="instagram" name="instagram">
+            </div>
+            <div class="form-group">
+                <label for="rua">Rua</label>
+                <input type="text" id="rua" name="rua">
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="numero">Número</label>
+                    <input type="text" id="numero" name="numero">
                 </div>
-
-                <div class="form-row">
-                    <div class="form-group full-width">
-                        <label for="rua">Rua</label>
-                        <input type="text" id="rua" name="rua" placeholder="Rua / Avenida">
-                    </div>
+                <div class="form-group">
+                    <label for="bairro">Bairro</label>
+                    <input type="text" id="bairro" name="bairro">
                 </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="numero">Número</label>
-                        <input type="text" id="numero" name="numero" placeholder="123 / S/N">
-                    </div>
-                    <div class="form-group">
-                        <label for="bairro">Bairro</label>
-                        <input type="text" id="bairro" name="bairro" placeholder="Bairro">
-                    </div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="cidade">Cidade</label>
+                    <input type="text" id="cidade" name="cidade">
                 </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="cidade">Cidade</label>
-                        <input type="text" id="cidade" name="cidade" placeholder="Cidade">
-                    </div>
-                    <div class="form-group">
-                        <label for="estado">Estado</label>
-                        <input type="text" id="estado" name="estado" placeholder="UF" maxlength="2">
-                    </div>
-                    <div class="form-group">
-                        <label for="cep">CEP</label>
-                        <input type="text" id="cep" name="cep" placeholder="00000-000" maxlength="9">
-                    </div>
+                <div class="form-group">
+                    <label for="estado">Estado</label>
+                    <input type="text" id="estado" name="estado" maxlength="2">
                 </div>
-
-                <div class="form-row">
-                    <div class="form-group full-width">
-                        <label for="indicacao">Indicação</label>
-                        <textarea id="indicacao" name="indicacao" placeholder="Quem indicou o cliente?"></textarea>
-                    </div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="cep">CEP</label>
+                    <input type="text" id="cep" name="cep">
                 </div>
-
-                <div class="actions">
-                    <a href="clientes.html" class="btn btn-secondary">Cancelar</a>
-                    <button type="submit" class="btn btn-primary">Salvar Cliente</button>
+                <div class="form-group">
+                    <label for="nascimento">Nascimento</label>
+                    <input type="date" id="nascimento" name="nascimento">
                 </div>
-            </form>
-        </div>
-
-        <div class="footer">
-            &copy; Equilibrium Radiestesia
-        </div>
+            </div>
+            <div class="form-group">
+                <label for="indicacao">Indicação</label>
+                <input type="text" id="indicacao" name="indicacao">
+            </div>
+            <button type="submit" class="btn" id="btnSalvar">Salvar Cliente</button>
+            <div class="feedback" id="feedback"></div>
+        </form>
     </div>
 
     <script>
-        function formatarWhatsApp(valor) {
-            const numeros = valor.replace(/\D/g, '');
-            if (numeros.length > 11) {
-                return numeros.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3').substring(0, 15);
-            }
-            return numeros.replace(/(\d{2})(\d{4,5})(\d{4})/, '($1) $2-$3');
-        }
+        async function enviarFormulario(event) {
+            event.preventDefault();
 
-        function validarEmail(email) {
-            if (!email) return true;
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
-        }
+            const feedback = document.getElementById('feedback');
+            const btnSalvar = document.getElementById('btnSalvar');
 
-        function limparErros() {
-            document.querySelectorAll('.form-group').forEach(grupo => grupo.classList.remove('error'));
-        }
-
-        function marcarErro(id) {
-            const grupo = document.getElementById(id).closest('.form-group');
-            if (grupo) grupo.classList.add('error');
-        }
-
-        function salvarCliente() {
-            limparErros();
-
-            const nome = document.getElementById('nome').value.trim();
-            let whatsapp = document.getElementById('whatsapp').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const instagram = document.getElementById('instagram').value.trim();
-            const rua = document.getElementById('rua').value.trim();
-            const numero = document.getElementById('numero').value.trim();
-            const bairro = document.getElementById('bairro').value.trim();
-            const cidade = document.getElementById('cidade').value.trim();
-            const estado = document.getElementById('estado').value.trim();
-            const cep = document.getElementById('cep').value.trim();
-            const nascimento = document.getElementById('nascimento').value;
-            const indicacao = document.getElementById('indicacao').value.trim();
-
-            let valido = true;
-
-            if (!nome) {
-                marcarErro('nome');
-                valido = false;
-            }
-
-            if (!whatsapp) {
-                marcarErro('whatsapp');
-                valido = false;
-            }
-
-            if (!valido) {
-                alert('Preencha os campos obrigatórios corretamente.');
-                return;
-            }
-
-            if (!validarEmail(email)) {
-                marcarErro('email');
-                alert('Informe um email válido.');
-                return;
-            }
-
-            whatsapp = formatarWhatsApp(whatsapp);
-            document.getElementById('whatsapp').value = whatsapp;
+            feedback.textContent = 'Salvando na nuvem...';
+            btnSalvar.disabled = true;
 
             const novoCliente = {
-                id: Date.now(),
-                nome: nome,
-                whatsapp: whatsapp,
-                email: email,
-                instagram: instagram,
-                endereco: {
-                    rua: rua,
-                    numero: numero,
-                    bairro: bairro,
-                    cidade: cidade,
-                    estado: estado.toUpperCase(),
-                    cep: cep
-                },
-                nascimento: nascimento,
-                indicacao: indicacao,
-                criadoEm: new Date().toISOString()
+                nome: document.getElementById('nome').value.trim(),
+                whatsapp: document.getElementById('whatsapp').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                instagram: document.getElementById('instagram').value.trim(),
+                rua: document.getElementById('rua').value.trim(),
+                numero: document.getElementById('numero').value.trim(),
+                bairro: document.getElementById('bairro').value.trim(),
+                cidade: document.getElementById('cidade').value.trim(),
+                estado: document.getElementById('estado').value.trim(),
+                cep: document.getElementById('cep').value.trim(),
+                nascimento: document.getElementById('nascimento').value,
+                indicacao: document.getElementById('indicacao').value.trim()
             };
 
             try {
-                if (typeof Database !== 'undefined' && typeof Database.salvarCliente === 'function') {
-                    Database.salvarCliente(novoCliente);
-                } else {
-                    throw new Error('Database indisponível');
-                }
+                await salvarCliente(novoCliente);
+                feedback.textContent = 'Cliente salvo com sucesso!';
+                setTimeout(() => {
+                    window.location.href = 'clientes.html';
+                }, 800);
             } catch (erro) {
-                console.warn('Falha ao salvar via API. Fallback para localStorage:', erro);
-                const clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
-                clientes.push(novoCliente);
-                localStorage.setItem('clientes', JSON.stringify(clientes));
+                feedback.textContent = 'Erro ao salvar: ' + erro.message;
+                btnSalvar.disabled = false;
             }
-
-            alert('Cliente salvo com sucesso!');
-            window.location.href = 'clientes.html';
         }
-
-        document.getElementById('whatsapp').addEventListener('input', function (e) {
-            e.target.value = formatarWhatsApp(e.target.value);
-        });
     </script>
 </body>
 </html>
