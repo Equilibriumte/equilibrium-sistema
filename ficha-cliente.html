@@ -4,148 +4,308 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ficha do Cliente - Equilibrium</title>
+    <script src="js/database.js"></script>
     <style>
+        :root {
+            --roxo-escuro: #4B0082;
+            --roxo: #6A0DAD;
+            --roxo-claro: #8A2BE2;
+            --dourado: #D4AF37;
+            --dourado-claro: #F0D878;
+            --branco: #FFFFFF;
+            --fundo: #FAF8FF;
+            --cinza: #F3F3F3;
+            --texto: #333333;
+            --texto-claro: #666666;
+            --verde: #28A745;
+            --vermelho: #DC3545;
+            --amarelo: #FFC107;
+            --azul: #17A2B8;
+        }
+
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
+            background-color: var(--fundo);
+            color: var(--texto);
             line-height: 1.6;
+            padding: 0;
+            margin: 0;
         }
 
         header {
-            background: linear-gradient(135deg, #4a148c 0%, #7b1fa2 100%);
-            color: #fff;
-            padding: 30px 20px;
+            background: linear-gradient(135deg, var(--roxo-escuro), var(--roxo), var(--roxo-claro));
+            color: var(--branco);
+            padding: 2rem 1rem;
             text-align: center;
-            border-bottom: 5px solid #d4af37;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-bottom: 5px solid var(--dourado);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         header h1 {
             font-size: 2rem;
-            margin-bottom: 5px;
-            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
 
         header p {
-            color: #d4af37;
-            font-weight: 600;
+            color: var(--dourado-claro);
             font-size: 1.1rem;
+            font-weight: 500;
         }
 
-        main {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 0 20px;
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
         }
 
-        section {
-            background-color: #fff;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            border-top: 4px solid #d4af37;
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
-        section h2 {
-            color: #4a148c;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #d4af37;
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-voltar {
+            background-color: var(--dourado);
+            color: var(--roxo-escuro);
+        }
+
+        .btn-voltar:hover {
+            background-color: var(--dourado-claro);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-editar {
+            background-color: var(--roxo);
+            color: var(--branco);
+        }
+
+        .btn-editar:hover {
+            background-color: var(--roxo-claro);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .card {
+            background: var(--branco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid var(--dourado);
+        }
+
+        .card h2 {
+            color: var(--roxo-escuro);
             font-size: 1.4rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--dourado-claro);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .dados-grid {
+        .grid-dados {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1rem;
         }
 
         .campo {
             display: flex;
             flex-direction: column;
+            gap: 0.25rem;
         }
 
         .campo label {
-            font-weight: 700;
-            color: #7b1fa2;
             font-size: 0.85rem;
+            color: var(--texto-claro);
+            font-weight: 600;
             text-transform: uppercase;
-            margin-bottom: 4px;
+            letter-spacing: 0.5px;
         }
 
         .campo span {
             font-size: 1rem;
-            color: #444;
+            color: var(--texto);
+            font-weight: 500;
             word-break: break-word;
         }
 
-        .lista-atendimentos {
-            list-style: none;
+        .campo-vazio {
+            color: var(--texto-claro);
+            font-style: italic;
         }
 
-        .atendimento-item {
-            background-color: #fafafa;
-            border-left: 4px solid #d4af37;
-            border-radius: 6px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-
-        .atendimento-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .atendimento-campo {
-            margin-bottom: 8px;
-        }
-
-        .atendimento-campo:last-child {
-            margin-bottom: 0;
-        }
-
-        .atendimento-campo label {
-            font-weight: 700;
-            color: #4a148c;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            display: block;
-            margin-bottom: 2px;
-        }
-
-        .atendimento-campo span {
-            color: #444;
-        }
-
-        .mensagem {
+        .empty-state {
             text-align: center;
-            padding: 20px;
-            border-radius: 6px;
+            padding: 2rem;
+            color: var(--texto-claro);
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .lista-historico {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .item-historico {
+            background: var(--cinza);
+            border-radius: 10px;
+            padding: 1.25rem;
+            border-left: 4px solid var(--roxo);
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .item-data {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--roxo-escuro);
+        }
+
+        .item-tipo {
+            background-color: var(--roxo);
+            color: var(--branco);
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
             font-weight: 600;
         }
 
-        .mensagem.erro {
-            background-color: #ffebee;
-            color: #c62828;
+        .item-secao {
+            margin-bottom: 0.75rem;
         }
 
-        .mensagem.info {
-            background-color: #e8eaf6;
-            color: #283593;
+        .item-secao h4 {
+            font-size: 0.9rem;
+            color: var(--texto-claro);
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
         }
 
-        .vazio {
+        .item-secao p {
+            font-size: 1rem;
+            color: var(--texto);
+            line-height: 1.5;
+        }
+
+        .chakras-lista {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .chakra-item {
+            background: var(--branco);
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid #E0E0E0;
+        }
+
+        .chakra-nome {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--roxo-escuro);
+            margin-bottom: 0.4rem;
+        }
+
+        .chakra-barra {
+            height: 10px;
+            background-color: #E0E0E0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 0.4rem;
+        }
+
+        .chakra-preenchimento {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .chakra-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--texto-claro);
+        }
+
+        .chakra-estado {
+            font-weight: 700;
+        }
+
+        .estado-equilibrado { color: var(--verde); }
+        .estado-desarmonizado { color: var(--vermelho); }
+        .estado-leve-desarmonia { color: var(--amarelo); }
+        .estado-informado { color: var(--azul); }
+
+        .loading {
             text-align: center;
-            color: #777;
-            font-style: italic;
-            padding: 20px;
+            padding: 3rem;
+            color: var(--roxo);
+        }
+
+        .erro {
+            background: #FFF3F3;
+            color: var(--vermelho);
+            padding: 1.25rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--vermelho);
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            .grid-dados {
+                grid-template-columns: 1fr;
+            }
+
+            .chakras-lista {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -155,110 +315,266 @@
         <p>Ficha do Cliente</p>
     </header>
 
-    <main>
-        <section id="secao-dados">
-            <h2>Dados do Cliente</h2>
-            <div id="dados-cliente" class="dados-grid">
-                <p class="mensagem info">Carregando dados do cliente...</p>
-            </div>
-        </section>
+    <main class="container">
+        <div class="actions">
+            <a href="clientes.html" class="btn btn-voltar">← Voltar à lista de clientes</a>
+            <a href="#" id="btnEditar" class="btn btn-editar">✎ Editar cliente</a>
+        </div>
 
-        <section id="secao-atendimentos">
-            <h2>Histórico de Atendimentos</h2>
-            <ul id="lista-atendimentos" class="lista-atendimentos">
-                <li class="vazio">Carregando atendimentos...</li>
-            </ul>
-        </section>
+        <div id="conteudo">
+            <div class="loading">Carregando ficha do cliente...</div>
+        </div>
     </main>
 
-    <script src="js/database.js"></script>
     <script>
-        function obterParametroUrl(nome) {
+        function obterParametroId() {
             const params = new URLSearchParams(window.location.search);
-            return params.get(nome);
+            return params.get('id');
         }
 
         function formatarData(dataString) {
-            if (!dataString) return '-';
+            if (!dataString) return 'Data não informada';
             const data = new Date(dataString);
             if (isNaN(data.getTime())) return dataString;
-            return data.toLocaleDateString('pt-BR');
+            return data.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function formatarDataNascimento(dataString) {
+            if (!dataString) return 'Não informado';
+            const data = new Date(dataString);
+            if (isNaN(data.getTime())) return dataString;
+            return data.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        function formatarWhatsApp(whatsapp) {
+            if (!whatsapp) return 'Não informado';
+            return whatsapp;
+        }
+
+        function obterCorPorPorcentagem(porcentagem) {
+            if (porcentagem >= 80) return '#28A745';
+            if (porcentagem >= 60) return '#D4AF37';
+            if (porcentagem >= 40) return '#FFC107';
+            return '#DC3545';
+        }
+
+        function obterClasseEstado(estado) {
+            const estadoNormalizado = (estado || '').toLowerCase().trim();
+            if (estadoNormalizado.includes('equilibrado') || estadoNormalizado.includes('equilibrada')) return 'estado-equilibrado';
+            if (estadoNormalizado.includes('leve') || estadoNormalizado.includes('desarmonia')) return 'estado-leve-desarmonia';
+            if (estadoNormalizado.includes('desarmonizado') || estadoNormalizado.includes('desarmonizada')) return 'estado-desarmonizado';
+            return 'estado-informado';
+        }
+
+        function renderizarChakras(chakras) {
+            if (!chakras || chakras.length === 0) {
+                return '<p class="campo-vazio">Nenhum chakra avaliado.</p>';
+            }
+
+            const html = chakras.map(chakra => {
+                const nome = chakra.nome || 'Chakra';
+                const porcentagem = parseInt(chakra.porcentagem || 0, 10);
+                const estado = chakra.estado || 'Não avaliado';
+                const cor = obterCorPorPorcentagem(porcentagem);
+                const classeEstado = obterClasseEstado(estado);
+
+                return `
+                    <div class="chakra-item">
+                        <div class="chakra-nome">${nome}</div>
+                        <div class="chakra-barra">
+                            <div class="chakra-preenchimento" style="width: ${porcentagem}%; background-color: ${cor};"></div>
+                        </div>
+                        <div class="chakra-info">
+                            <span>${porcentagem}%</span>
+                            <span class="chakra-estado ${classeEstado}">${estado}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            return `<div class="chakras-lista">${html}</div>`;
+        }
+
+        function renderizarHistorico(atendimentos) {
+            if (!atendimentos || atendimentos.length === 0) {
+                return `
+                    <div class="empty-state">
+                        <p>Nenhum atendimento registrado para este cliente.</p>
+                    </div>
+                `;
+            }
+
+            const html = atendimentos.map(atendimento => {
+                return `
+                    <article class="item-historico">
+                        <div class="item-header">
+                            <span class="item-data">${formatarData(atendimento.data)}</span>
+                            <span class="item-tipo">${atendimento.tipo || 'Atendimento'}</span>
+                        </div>
+
+                        <div class="item-secao">
+                            <h4>Queixas</h4>
+                            <p>${atendimento.queixas || 'Não informado'}</p>
+                        </div>
+
+                        <div class="item-secao">
+                            <h4>Chakras</h4>
+                            ${renderizarChakras(atendimento.chakras)}
+                        </div>
+
+                        <div class="item-secao">
+                            <h4>Observações</h4>
+                            <p>${atendimento.observacoes || 'Nenhuma observação registrada.'}</p>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+
+            return `<div class="lista-historico">${html}</div>`;
+        }
+
+        function renderizarFicha(cliente, atendimentos) {
+            const conteudo = document.getElementById('conteudo');
+
+            const endereco = cliente.endereco || {};
+            const rua = endereco.rua || 'Não informado';
+            const numero = endereco.numero || 'S/N';
+            const bairro = endereco.bairro || 'Não informado';
+            const cidade = endereco.cidade || 'Não informado';
+            const estado = endereco.estado || 'Não informado';
+            const cep = endereco.cep || 'Não informado';
+
+            conteudo.innerHTML = `
+                <section class="card">
+                    <h2>👤 Dados Pessoais</h2>
+                    <div class="grid-dados">
+                        <div class="campo">
+                            <label>Nome</label>
+                            <span>${cliente.nome || 'Não informado'}</span>
+                        </div>
+                        <div class="campo">
+                            <label>WhatsApp</label>
+                            <span>${formatarWhatsApp(cliente.whatsapp)}</span>
+                        </div>
+                        <div class="campo">
+                            <label>Email</label>
+                            <span>${cliente.email || 'Não informado'}</span>
+                        </div>
+                        <div class="campo">
+                            <label>Instagram</label>
+                            <span>${cliente.instagram || 'Não informado'}</span>
+                        </div>
+                        <div class="campo">
+                            <label>Nascimento</label>
+                            <span>${formatarDataNascimento(cliente.nascimento)}</span>
+                        </div>
+                        <div class="campo">
+                            <label>Indicação</label>
+                            <span>${cliente.indicacao || 'Não informado'}</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <h2>📍 Endereço</h2>
+                    <div class="grid-dados">
+                        <div class="campo">
+                            <label>Rua</label>
+                            <span>${rua}</span>
+                        </div>
+                        <div class="campo">
+                            <label>Número</label>
+                            <span>${numero}</span>
+                        </div>
+                        <div class="campo">
+                            <label>Bairro</label>
+                            <span>${bairro}</span>
+                        </div>
+                        <div class="campo">
+                            <label>Cidade</label>
+                            <span>${cidade}</span>
+                        </div>
+                        <div class="campo">
+                            <label>Estado</label>
+                            <span>${estado}</span>
+                        </div>
+                        <div class="campo">
+                            <label>CEP</label>
+                            <span>${cep}</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <h2>📋 Histórico de Atendimentos</h2>
+                    ${renderizarHistorico(atendimentos)}
+                </section>
+            `;
+        }
+
+        function mostrarErro(mensagem) {
+            const conteudo = document.getElementById('conteudo');
+            conteudo.innerHTML = `
+                <div class="erro">
+                    <p>${mensagem}</p>
+                    <a href="clientes.html" class="btn btn-voltar" style="margin-top: 1rem;">← Voltar à lista de clientes</a>
+                </div>
+            `;
         }
 
         function carregarFicha() {
-            const id = obterParametroUrl('id');
-            const containerDados = document.getElementById('dados-cliente');
-            const containerAtendimentos = document.getElementById('lista-atendimentos');
+            const id = obterParametroId();
+            const conteudo = document.getElementById('conteudo');
+            const btnEditar = document.getElementById('btnEditar');
 
             if (!id) {
-                containerDados.innerHTML = '<p class="mensagem erro">ID do cliente não informado na URL.</p>';
-                containerAtendimentos.innerHTML = '<li class="vazio">Nenhum atendimento para exibir.</li>';
+                mostrarErro('ID do cliente não foi informado na URL.');
+                if (btnEditar) btnEditar.style.display = 'none';
                 return;
             }
 
-            if (typeof window.getClienteById !== 'function') {
-                containerDados.innerHTML = '<p class="mensagem erro">Função getClienteById não encontrada. Verifique se database.js está carregado.</p>';
-                return;
+            if (btnEditar) {
+                btnEditar.href = `editar-cliente.html?id=${id}`;
             }
 
-            const cliente = window.getClienteById(id);
+            conteudo.innerHTML = '<div class="loading">Carregando ficha do cliente...</div>';
 
-            if (!cliente) {
-                containerDados.innerHTML = '<p class="mensagem erro">Cliente não encontrado.</p>';
-                containerAtendimentos.innerHTML = '<li class="vazio">Nenhum atendimento para exibir.</li>';
-                return;
+            try {
+                if (typeof window.getClienteById !== 'function') {
+                    throw new Error('Função window.getClienteById não está disponível. Verifique se js/database.js foi carregado corretamente.');
+                }
+
+                if (typeof window.getAtendimentosByClienteId !== 'function') {
+                    throw new Error('Função window.getAtendimentosByClienteId não está disponível. Verifique se js/database.js foi carregado corretamente.');
+                }
+
+                const cliente = window.getClienteById(id);
+                const atendimentos = window.getAtendimentosByClienteId(id);
+
+                if (!cliente) {
+                    mostrarErro(`Cliente com ID "${id}" não foi encontrado.`);
+                    return;
+                }
+
+                const atendimentosOrdenados = Array.isArray(atendimentos)
+                    ? atendimentos.sort((a, b) => new Date(b.data) - new Date(a.data))
+                    : [];
+
+                renderizarFicha(cliente, atendimentosOrdenados);
+            } catch (erro) {
+                mostrarErro(`Erro ao carregar a ficha: ${erro.message}`);
+                console.error('Erro em carregarFicha:', erro);
             }
-
-            const campos = [
-                { label: 'Nome', valor: cliente.nome },
-                { label: 'WhatsApp', valor: cliente.whatsapp },
-                { label: 'Email', valor: cliente.email },
-                { label: 'Instagram', valor: cliente.instagram },
-                { label: 'Rua', valor: cliente.rua },
-                { label: 'Número', valor: cliente.numero },
-                { label: 'Bairro', valor: cliente.bairro },
-                { label: 'Cidade', valor: cliente.cidade },
-                { label: 'Estado', valor: cliente.estado },
-                { label: 'CEP', valor: cliente.cep },
-                { label: 'Nascimento', valor: formatarData(cliente.nascimento) },
-                { label: 'Indicação', valor: cliente.indicacao }
-            ];
-
-            containerDados.innerHTML = campos.map(campo => `
-                <div class="campo">
-                    <label>${campo.label}</label>
-                    <span>${campo.valor || '-'}</span>
-                </div>
-            `).join('');
-
-            if (typeof window.getAtendimentosByClienteId !== 'function') {
-                containerAtendimentos.innerHTML = '<li class="vazio">Função getAtendimentosByClienteId não encontrada.</li>';
-                return;
-            }
-
-            const atendimentos = window.getAtendimentosByClienteId(id);
-
-            if (!atendimentos || atendimentos.length === 0) {
-                containerAtendimentos.innerHTML = '<li class="vazio">Nenhum atendimento encontrado para este cliente.</li>';
-                return;
-            }
-
-            containerAtendimentos.innerHTML = atendimentos.map(atendimento => `
-                <li class="atendimento-item">
-                    <div class="atendimento-campo">
-                        <label>Data</label>
-                        <span>${formatarData(atendimento.data)}</span>
-                    </div>
-                    <div class="atendimento-campo">
-                        <label>Tipo</label>
-                        <span>${atendimento.tipo || '-'}</span>
-                    </div>
-                    <div class="atendimento-campo">
-                        <label>Observações</label>
-                        <span>${atendimento.observacoes || '-'}</span>
-                    </div>
-                </li>
-            `).join('');
         }
 
         document.addEventListener('DOMContentLoaded', carregarFicha);
