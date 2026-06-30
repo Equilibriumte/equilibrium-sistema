@@ -1,166 +1,300 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clientes</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #4B0082, #2E0854);
-      color: #FFD700;
-      min-height: 100vh;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      background: #2E0854;
-      border-bottom: 3px solid #DAA520;
-    }
-    h1 {
-      margin: 0;
-      font-size: 1.5rem;
-      color: #FFD700;
-    }
-    .btn {
-      background: #FFD700;
-      color: #4B0082;
-      border: none;
-      padding: 0.6rem 1.2rem;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .btn:hover {
-      background: #DAA520;
-    }
-    .container {
-      padding: 2rem;
-      overflow-x: auto;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-      color: #333;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-    thead {
-      background: #4B0082;
-      color: #FFD700;
-    }
-    th, td {
-      padding: 0.9rem 1rem;
-      text-align: left;
-    }
-    th {
-      border-bottom: 2px solid #DAA520;
-      font-weight: bold;
-    }
-    tbody tr {
-      border-bottom: 1px solid #e0e0e0;
-    }
-    tbody tr:hover {
-      background: #f3e6ff;
-    }
-    .mensagem-vazia {
-      text-align: center;
-      padding: 1rem;
-      color: #666;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes | Equilibrium</title>
+    <script src="js/database.js"></script>
+    <style>
+        :root {
+            --roxo: #4B0082;
+            --roxo-escuro: #36005e;
+            --dourado: #D4AF37;
+            --dourado-escuro: #b5932a;
+            --cinza-claro: #f5f5f5;
+            --cinza-medio: #e0e0e0;
+            --texto: #333;
+            --branco: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--cinza-claro);
+            color: var(--texto);
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--roxo) 0%, var(--roxo-escuro) 100%);
+            color: var(--branco);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        header h1 span {
+            color: var(--dourado);
+        }
+
+        .btn-novo {
+            background-color: var(--dourado);
+            color: var(--roxo-escuro);
+            border: none;
+            padding: 0.75rem 1.25rem;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-novo:hover {
+            background-color: var(--dourado-escuro);
+            transform: translateY(-1px);
+        }
+
+        .btn-novo:active {
+            transform: translateY(0);
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .busca-container {
+            margin-bottom: 1.5rem;
+        }
+
+        #campoBusca {
+            width: 100%;
+            max-width: 400px;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--cinza-medio);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        #campoBusca:focus {
+            border-color: var(--roxo);
+            box-shadow: 0 0 0 3px rgba(75, 0, 130, 0.15);
+        }
+
+        .tabela-wrapper {
+            background-color: var(--branco);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: var(--roxo);
+            color: var(--branco);
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--cinza-medio);
+        }
+
+        th {
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background-color: rgba(212, 175, 55, 0.08);
+        }
+
+        .btn-ficha {
+            background-color: transparent;
+            color: var(--roxo);
+            border: 2px solid var(--roxo);
+            padding: 0.5rem 0.9rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .btn-ficha:hover {
+            background-color: var(--roxo);
+            color: var(--branco);
+        }
+
+        .mensagem {
+            padding: 3rem 1rem;
+            text-align: center;
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .mensagem.erro {
+            color: #b00020;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                justify-content: center;
+                text-align: center;
+            }
+
+            th, td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            .btn-ficha {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Clientes</h1>
-    <button class="btn" onclick="abrirModalCliente()">+ Novo Cliente</button>
-  </header>
+    <header>
+        <h1>Equilibrium <span>Clientes</span></h1>
+        <button class="btn-novo" onclick="novoCliente()" aria-label="Cadastrar novo cliente">
+            + Novo Cliente
+        </button>
+    </header>
 
-  <main class="container">
-    <table>
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>WhatsApp</th>
-          <th>Email</th>
-          <th>Cidade/Estado</th>
-        </tr>
-      </thead>
-      <tbody id="tabelaClientes">
-        <tr>
-          <td colspan="4" class="mensagem-vazia">Carregando clientes...</td>
-        </tr>
-      </tbody>
-    </table>
-  </main>
+    <main>
+        <div class="busca-container">
+            <input type="text" id="campoBusca" placeholder="Buscar por nome ou WhatsApp..." oninput="filtrarClientes()">
+        </div>
 
-  <script src="js/database.js"></script>
-  <script>
-    async function carregarClientes() {
-      try {
-        const clientes = await buscarClientes();
+        <div class="tabela-wrapper">
+            <table id="tabelaClientes" aria-label="Lista de clientes">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>WhatsApp</th>
+                        <th>Email</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabela">
+                    <tr>
+                        <td colspan="4" class="mensagem">Carregando clientes...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
 
-        if (!Array.isArray(clientes)) {
-          console.error('buscarClientes() não retornou um array:', clientes);
-          document.getElementById('tabelaClientes').innerHTML =
-            '<tr><td colspan="4" class="mensagem-vazia">Erro ao carregar clientes.</td></tr>';
-          return;
+    <script>
+        let clientes = [];
+
+        async function carregarClientes() {
+            const corpoTabela = document.getElementById('corpoTabela');
+            corpoTabela.innerHTML = '<tr><td colspan="4" class="mensagem">Carregando clientes...</td></tr>';
+
+            try {
+                if (typeof buscarClientes !== 'function') {
+                    throw new Error('Função buscarClientes não foi encontrada no js/database.js');
+                }
+
+                const resultado = await buscarClientes();
+                clientes = Array.isArray(resultado) ? resultado : [];
+
+                if (clientes.length === 0) {
+                    corpoTabela.innerHTML = '<tr><td colspan="4" class="mensagem">Nenhum cliente encontrado.</td></tr>';
+                    return;
+                }
+
+                renderizarTabela(clientes);
+            } catch (erro) {
+                console.error('Erro ao carregar clientes:', erro);
+                corpoTabela.innerHTML = '<tr><td colspan="4" class="mensagem erro">Não foi possível carregar os clientes. Tente novamente mais tarde.</td></tr>';
+            }
         }
 
-        const tbody = document.getElementById('tabelaClientes');
-        tbody.innerHTML = '';
+        function renderizarTabela(lista) {
+            const corpoTabela = document.getElementById('corpoTabela');
+            corpoTabela.innerHTML = '';
 
-        if (clientes.length === 0) {
-          tbody.innerHTML =
-            '<tr><td colspan="4" class="mensagem-vazia">Nenhum cliente encontrado.</td></tr>';
-          return;
+            lista.forEach(cliente => {
+                const id = cliente.id || '';
+                const nome = cliente.nome || '';
+                const whatsapp = cliente.whatsapp || '';
+                const email = cliente.email || '';
+
+                const linha = document.createElement('tr');
+                linha.innerHTML = `
+                    <td>${nome}</td>
+                    <td>${whatsapp}</td>
+                    <td>${email}</td>
+                    <td>
+                        <button class="btn-ficha" onclick="verFicha('${id}')">Ver Ficha</button>
+                    </td>
+                `;
+                corpoTabela.appendChild(linha);
+            });
         }
 
-        clientes.forEach(cliente => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${escapeHtml(cliente.nome || '')}</td>
-            <td>${escapeHtml(cliente.whatsapp || '')}</td>
-            <td>${escapeHtml(cliente.email || '')}</td>
-            <td>${escapeHtml(formatarCidadeEstado(cliente))}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-      } catch (erro) {
-        console.error('Erro ao carregar clientes:', erro);
-        document.getElementById('tabelaClientes').innerHTML =
-          '<tr><td colspan="4" class="mensagem-vazia">Erro ao carregar clientes.</td></tr>';
-      }
-    }
+        function filtrarClientes() {
+            const termo = document.getElementById('campoBusca').value.toLowerCase().trim();
+            const filtrados = clientes.filter(cliente => {
+                const nome = (cliente.nome || '').toLowerCase();
+                const whatsapp = (cliente.whatsapp || '').toLowerCase();
+                return nome.includes(termo) || whatsapp.includes(termo);
+            });
 
-    function formatarCidadeEstado(cliente) {
-      if (cliente.cidadeEstado) return cliente.cidadeEstado;
-      const cidade = cliente.cidade || '';
-      const estado = cliente.estado || '';
-      if (cidade && estado) return `${cidade}/${estado}`;
-      return cidade || estado || '-';
-    }
+            const corpoTabela = document.getElementById('corpoTabela');
+            if (filtrados.length === 0) {
+                corpoTabela.innerHTML = '<tr><td colspan="4" class="mensagem">Nenhum cliente encontrado para a busca.</td></tr>';
+                return;
+            }
 
-    function escapeHtml(texto) {
-      const div = document.createElement('div');
-      div.textContent = texto;
-      return div.innerHTML;
-    }
+            renderizarTabela(filtrados);
+        }
 
-    function abrirModalCliente() {
-      alert('Funcionalidade de novo cliente em desenvolvimento.');
-    }
+        function verFicha(id) {
+            if (!id) return;
+            window.location.href = `ficha-cliente.html?id=${encodeURIComponent(id)}`;
+        }
 
-    carregarClientes();
-  </script>
+        function novoCliente() {
+            window.location.href = 'cadastro-cliente.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', carregarClientes);
+    </script>
 </body>
 </html>
