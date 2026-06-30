@@ -61,3 +61,30 @@ function buscarClientes() {
 
 window.salvarCliente = salvarCliente;
 window.buscarClientes = buscarClientes;
+// --- NOVAS FUNÇÕES PARA A FICHA DO CLIENTE ---
+
+// Busca um cliente específico pelo ID na lista sincronizada
+async function getClienteById(id) {
+    try {
+        const clientes = await buscarClientes();
+        return clientes.find(c => String(c.id) === String(id));
+    } catch (erro) {
+        console.error("Erro ao buscar cliente por ID:", erro);
+        return null;
+    }
+}
+
+// Busca atendimentos de um cliente específico
+async function getAtendimentosByClienteId(clienteId) {
+    try {
+        const atendimentos = await buscarAtendimentos();
+        return atendimentos.filter(a => String(a.clienteId) === String(clienteId));
+    } catch (erro) {
+        console.error("Erro ao buscar atendimentos do cliente:", erro);
+        return [];
+    }
+}
+
+// Garante que as funções estejam disponíveis globalmente para o navegador
+window.getClienteById = getClienteById;
+window.getAtendimentosByClienteId = getAtendimentosByClienteId;
