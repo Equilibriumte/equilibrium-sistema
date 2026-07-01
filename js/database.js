@@ -1,28 +1,19 @@
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec";
+const DATABASE_URL = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
 
 async function salvarCliente(dados) {
-  const payload = {
-    action: "salvarCliente",
-    dados: dados
-  };
-
-  console.log("[database] Enviando salvarCliente:", payload);
-
   try {
-    const resposta = await fetch(SCRIPT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
+    console.log("Enviando dados para:", DATABASE_URL);
+    const response = await fetch(DATABASE_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'salvarCliente', ...dados })
     });
-
-    console.log("[database] salvarCliente enviado com sucesso.", resposta);
-    return resposta;
-  } catch (erro) {
-    console.error("[database] Erro ao enviar salvarCliente:", erro);
-    throw erro;
+    console.log("Dados enviados com sucesso.");
+    return { success: true };
+  } catch (error) {
+    console.error('Erro no motor de salvamento:', error);
+    throw error;
   }
 }
 
