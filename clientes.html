@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Clientes - Equilibrium</title>
+    <style>
+        body { font-family: sans-serif; background-color: #4b1a5a; color: white; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; color: #333; padding: 20px; border-radius: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .btn-back { display: inline-block; margin-bottom: 20px; text-decoration: none; color: yellow; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="btn-back">← Voltar ao Menu</a>
+    <div class="container">
+        <h1>Lista de Clientes</h1>
+        <div id="loading">Carregando clientes da planilha...</div>
+        <table id="tabela-clientes" style="display:none;">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>WhatsApp</th>
+                    <th>Cidade</th>
+                </tr>
+            </thead>
+            <tbody id="corpo-tabela"></tbody>
+        </table>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script>
+        async function carregarClientes() {
+            try {
+                // A URL do Google Script que você já configurou
+                const DATABASE_URL = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
+                
+                const response = await fetch(DATABASE_URL);
+                const clientes = await response.json();
+                
+                const corpoTabela = document.getElementById('corpo-tabela');
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('tabela-clientes').style.display = 'table';
+
+                clientes.forEach(cliente => {
+                    const row = `<tr>
+                        <td>${cliente.nome || '-'}</td>
+                        <td>${cliente.whatsapp || '-'}</td>
+                        <td>${cliente.cidade || '-'}</td>
+                    </tr>`;
+                    corpoTabela.innerHTML += row;
+                });
+            } catch (error) {
+                console.error(error);
+                document.getElementById('loading').innerText = 'Erro ao carregar dados da planilha.';
+            }
+        }
+        carregarClientes();
+    </script>
+</body>
+</html>
