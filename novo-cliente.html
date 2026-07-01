@@ -1,344 +1,128 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Novo Cliente</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-      padding: 20px;
-    }
-
-    .container {
-      background: #ffffff;
-      border-radius: 20px;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-      width: 100%;
-      max-width: 640px;
-      padding: 40px;
-      position: relative;
-    }
-
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 8px;
-    }
-
-    .header .icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #7b2ff7, #f0c419);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 24px;
-      flex-shrink: 0;
-    }
-
-    .header .titles h1 {
-      color: #6a11cb;
-      font-size: 26px;
-      font-weight: 700;
-    }
-
-    .header .titles p {
-      color: #6c757d;
-      font-size: 14px;
-      margin-top: 2px;
-    }
-
-    .clipboard-icon {
-      position: absolute;
-      top: 30px;
-      right: 30px;
-      color: #f0c419;
-      font-size: 28px;
-    }
-
-    form {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-top: 28px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .form-group.full {
-      grid-column: 1 / -1;
-    }
-
-    label {
-      font-size: 13px;
-      color: #495057;
-      margin-bottom: 6px;
-      font-weight: 600;
-    }
-
-    input {
-      padding: 12px 14px;
-      border: 1px solid #ced4da;
-      border-radius: 10px;
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    input:focus {
-      border-color: #6a11cb;
-      box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.15);
-    }
-
-    .btn-save {
-      grid-column: 1 / -1;
-      margin-top: 10px;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #f0c419, #6a11cb);
-      color: #fff;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.2s;
-    }
-
-    .btn-save:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(106, 17, 203, 0.35);
-    }
-
-    .btn-save:active {
-      transform: translateY(0);
-    }
-
-    .alert {
-      grid-column: 1 / -1;
-      padding: 12px;
-      border-radius: 10px;
-      font-size: 14px;
-      display: none;
-    }
-
-    .alert.error {
-      background: #fdecea;
-      color: #b71c1c;
-      border: 1px solid #f5c6cb;
-      display: block;
-    }
-
-    .alert.success {
-      background: #e8f5e9;
-      color: #1b5e20;
-      border: 1px solid #c8e6c9;
-      display: block;
-    }
-
-    @media (max-width: 520px) {
-      form {
-        grid-template-columns: 1fr;
-      }
-
-      .container {
-        padding: 28px 22px;
-      }
-
-      .clipboard-icon {
-        display: none;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo Cliente - Equilibrium</title>
+    <script src="js/database.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        body { background-color: #f4f4f9; display: flex; justify-content: center; padding: 40px 20px; }
+        .card { background: white; width: 100%; max-width: 600px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 30px; position: relative; }
+        .header h1 { color: #4B0082; font-size: 24px; margin-bottom: 5px; }
+        .header p { color: #888; font-size: 14px; margin-bottom: 30px; }
+        .section-title { color: #4B0082; font-size: 18px; font-weight: bold; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-size: 13px; font-weight: 600; color: #4B0082; margin-bottom: 5px; }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; outline: none; }
+        input:focus { border-color: #4B0082; }
+        .row-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; }
+        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-save { width: 100%; padding: 12px; background: #4B0082; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        .btn-save:hover { background: #36005e; }
+        .btn-save:disabled { background: #ccc; cursor: not-allowed; }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="clipboard-icon">📋</div>
-
-    <div class="header">
-      <div class="icon">👤</div>
-      <div class="titles">
-        <h1>Novo Cliente</h1>
-        <p>Preencha os dados para cadastrar</p>
-      </div>
+    <div class="card">
+        <div class="header">
+            <h1>Novo Cliente</h1>
+            <p>Preencha os dados para cadastrar</p>
+        </div>
+        
+        <div class="section-title">📋 Dados Pessoais</div>
+        
+        <form id="formCliente" onsubmit="enviarFormulario(event)">
+            <div class="form-group">
+                <label>Nome completo *</label>
+                <input type="text" id="nome" placeholder="Nome completo do cliente" required>
+            </div>
+            
+            <div class="form-group">
+                <label>WhatsApp *</label>
+                <input type="text" id="whatsapp" placeholder="Digite apenas números (ex: 5511999998888)" required>
+            </div>
+            
+            <div class="row-2">
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="email" placeholder="cliente@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Instagram</label>
+                    <input type="text" id="instagram" placeholder="@usuario">
+                </div>
+            </div>
+            
+            <label>Endereço</label>
+            <div class="row-3">
+                <input type="text" id="rua" placeholder="Rua">
+                <input type="text" id="numero" placeholder="N°">
+                <input type="text" id="bairro" placeholder="Bairro">
+            </div>
+            
+            <div class="row-2" style="margin-top: 10px;">
+                <input type="text" id="cidade" placeholder="Cidade">
+                <input type="text" id="estado" placeholder="Estado">
+            </div>
+            
+            <div class="form-group" style="margin-top: 10px;">
+                <input type="text" id="cep" placeholder="CEP">
+            </div>
+            
+            <div class="form-group">
+                <label>Data de nascimento</label>
+                <input type="date" id="nascimento">
+            </div>
+            
+            <div class="form-group">
+                <label>Indicação</label>
+                <input type="text" id="indicacao" placeholder="Quem indicou?">
+            </div>
+            
+            <button type="submit" id="btnSalvar" class="btn-save">Salvar Cliente</button>
+        </form>
     </div>
 
-    <form id="formCliente">
-      <div class="alert" id="alerta"></div>
+    <script>
+        // Máscara de WhatsApp +55 (XX) XXXXX-XXXX
+        document.getElementById('whatsapp').addEventListener('input', function (e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,2})(\d{0,5})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '+55 (' + x[2] + ') ' + x[3] + (x[4] ? '-' + x[4] : '');
+        });
 
-      <div class="form-group full">
-        <label for="nome">Nome completo</label>
-        <input type="text" id="nome" name="nome" placeholder="Ex.: João da Silva" required />
-      </div>
+        async function enviarFormulario(event) {
+            event.preventDefault();
+            const btn = document.getElementById('btnSalvar');
+            btn.disabled = true;
+            btn.innerText = "Salvando na nuvem...";
 
-      <div class="form-group">
-        <label for="whatsapp">WhatsApp</label>
-        <input type="text" id="whatsapp" name="whatsapp" placeholder="+55 (XX) XXXXX-XXXX" required />
-      </div>
+            const dados = {
+                nome: document.getElementById('nome').value,
+                whatsapp: document.getElementById('whatsapp').value,
+                email: document.getElementById('email').value,
+                instagram: document.getElementById('instagram').value,
+                rua: document.getElementById('rua').value,
+                numero: document.getElementById('numero').value,
+                bairro: document.getElementById('bairro').value,
+                cidade: document.getElementById('cidade').value,
+                estado: document.getElementById('estado').value,
+                cep: document.getElementById('cep').value,
+                nascimento: document.getElementById('nascimento').value,
+                indicacao: document.getElementById('indicacao').value,
+                dataCadastro: new Date().toISOString()
+            };
 
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="exemplo@email.com" />
-      </div>
-
-      <div class="form-group">
-        <label for="instagram">Instagram</label>
-        <input type="text" id="instagram" name="instagram" placeholder="@usuario" />
-      </div>
-
-      <div class="form-group">
-        <label for="dataNascimento">Data de nascimento</label>
-        <input type="date" id="dataNascimento" name="dataNascimento" />
-      </div>
-
-      <div class="form-group">
-        <label for="rua">Rua</label>
-        <input type="text" id="rua" name="rua" placeholder="Nome da rua" />
-      </div>
-
-      <div class="form-group">
-        <label for="numero">N°</label>
-        <input type="text" id="numero" name="numero" placeholder="123" />
-      </div>
-
-      <div class="form-group">
-        <label for="bairro">Bairro</label>
-        <input type="text" id="bairro" name="bairro" placeholder="Centro" />
-      </div>
-
-      <div class="form-group">
-        <label for="cidade">Cidade</label>
-        <input type="text" id="cidade" name="cidade" placeholder="São Paulo" />
-      </div>
-
-      <div class="form-group">
-        <label for="estado">Estado</label>
-        <input type="text" id="estado" name="estado" placeholder="SP" maxlength="2" />
-      </div>
-
-      <div class="form-group">
-        <label for="cep">CEP</label>
-        <input type="text" id="cep" name="cep" placeholder="00000-000" />
-      </div>
-
-      <div class="form-group full">
-        <label for="indicacao">Indicação</label>
-        <input type="text" id="indicacao" name="indicacao" placeholder="Quem indicou?" />
-      </div>
-
-      <button type="submit" class="btn-save">Salvar Cliente</button>
-    </form>
-  </div>
-
-  <script src="js/database.js"></script>
-  <script>
-    const form = document.getElementById('formCliente');
-    const alerta = document.getElementById('alerta');
-    const whatsappInput = document.getElementById('whatsapp');
-    const cepInput = document.getElementById('cep');
-
-    function mostrarAlerta(mensagem, tipo) {
-      alerta.textContent = mensagem;
-      alerta.className = 'alert ' + tipo;
-    }
-
-    function limparAlerta() {
-      alerta.textContent = '';
-      alerta.className = 'alert';
-    }
-
-    function mascaraWhatsApp(valor) {
-      let v = valor.replace(/\D/g, '');
-      if (v.length > 13) v = v.slice(0, 13);
-      if (v.length === 0) return '';
-
-      let resultado = '+55 ';
-      const numeros = v.length > 2 ? v.slice(2) : '';
-
-      if (numeros.length > 0) {
-        resultado += '(' + numeros.slice(0, 2);
-      }
-      if (numeros.length > 2) {
-        resultado += ') ' + numeros.slice(2, 7);
-      }
-      if (numeros.length > 7) {
-        resultado += '-' + numeros.slice(7, 11);
-      }
-      return resultado.trim();
-    }
-
-    function mascaraCEP(valor) {
-      let v = valor.replace(/\D/g, '').slice(0, 8);
-      if (v.length > 5) {
-        return v.slice(0, 5) + '-' + v.slice(5);
-      }
-      return v;
-    }
-
-    whatsappInput.addEventListener('input', function (e) {
-      e.target.value = mascaraWhatsApp(e.target.value);
-    });
-
-    cepInput.addEventListener('input', function (e) {
-      e.target.value = mascaraCEP(e.target.value);
-    });
-
-    form.addEventListener('submit', async function (e) {
-      e.preventDefault();
-      limparAlerta();
-
-      const dados = {
-        nome: document.getElementById('nome').value.trim(),
-        whatsapp: document.getElementById('whatsapp').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        instagram: document.getElementById('instagram').value.trim(),
-        rua: document.getElementById('rua').value.trim(),
-        numero: document.getElementById('numero').value.trim(),
-        bairro: document.getElementById('bairro').value.trim(),
-        cidade: document.getElementById('cidade').value.trim(),
-        estado: document.getElementById('estado').value.trim(),
-        cep: document.getElementById('cep').value.trim(),
-        dataNascimento: document.getElementById('dataNascimento').value,
-        indicacao: document.getElementById('indicacao').value.trim()
-      };
-
-      if (!dados.nome || !dados.whatsapp) {
-        mostrarAlerta('Preencha pelo menos o nome e o WhatsApp.', 'error');
-        return;
-      }
-
-      try {
-        const resultado = await salvarCliente(dados);
-        if (resultado && resultado.erro) {
-          mostrarAlerta(resultado.erro, 'error');
-          return;
+            try {
+                await window.salvarCliente(dados);
+                alert("Cliente salvo com sucesso!");
+                window.location.href = 'clientes.html';
+            } catch (error) {
+                alert("Erro ao salvar. Verifique a conexão.");
+                btn.disabled = false;
+                btn.innerText = "Salvar Cliente";
+            }
         }
-        mostrarAlerta('Cliente salvo com sucesso! Redirecionando...', 'success');
-        setTimeout(function () {
-          window.location.href = 'clientes.html';
-        }, 1200);
-      } catch (erro) {
-        console.error('Erro ao salvar cliente:', erro);
-        mostrarAlerta('Erro ao salvar cliente. Tente novamente.', 'error');
-      }
-    });
-  </script>
+    </script>
 </body>
 </html>
