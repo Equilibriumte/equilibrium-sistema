@@ -5,28 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Clientes - Equilibrium</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
         body { display: flex; background-color: #f4f0fa; min-height: 100vh; }
-        
-        /* Sidebar */
-        .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; }
-        .sidebar h2 { margin-bottom: 30px; font-size: 24px; text-align: center; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
-        .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
-        .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
-
-        /* Content */
+        .sidebar { width: 250px; background: #4b1a5a; color: white; padding: 20px; position: fixed; height: 100vh; }
+        .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; }
+        .sidebar a:hover, .sidebar a.active { background: #ffd700; color: #4b1a5a; font-weight: bold; }
         .content { margin-left: 250px; flex: 1; padding: 40px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .header h1 { color: #4b0082; }
-        
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
         th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background-color: #f8f5ff; color: #4b0082; font-weight: 600; text-transform: uppercase; font-size: 12px; }
-        tr:hover { background-color: #fafafa; }
-        
-        .loading { text-align: center; padding: 40px; color: #6a0dad; font-style: italic; }
-        .error-msg { color: #d9534f; background: #fdf7f7; padding: 15px; border-radius: 8px; text-align: center; }
+        th { background-color: #f8f5ff; color: #4b1a5a; font-size: 12px; text-transform: uppercase; }
+        .loading { text-align: center; padding: 40px; color: #6a0dad; }
     </style>
 </head>
 <body>
@@ -38,67 +27,39 @@
             <a href="clientes.html" class="active">📋 Lista de Clientes</a>
         </nav>
     </div>
-
     <div class="content">
-        <div class="header">
-            <h1>Lista de Clientes</h1>
-        </div>
-        
+        <h1>Lista de Clientes</h1>
         <div class="card">
-            <div id="status-container">
-                <div class="loading">🔍 Acessando planilha do Google...</div>
-            </div>
-            <table id="tabela-clientes" style="display:none;">
+            <div id="status">Carregando dados da planilha...</div>
+            <table id="tabela" style="display:none;">
                 <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>WhatsApp</th>
-                        <th>Cidade</th>
-                    </tr>
+                    <tr><th>Nome</th><th>WhatsApp</th><th>Cidade</th></tr>
                 </thead>
-                <tbody id="corpo-tabela"></tbody>
+                <tbody id="corpo"></tbody>
             </table>
         </div>
     </div>
-
     <script>
-        async function carregarDados() {
-            // Sua URL real do Google Script
-            const URL_GOOGLE = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
-            
+        async function carregar() {
+            const URL = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
             try {
-                const response = await fetch(URL_GOOGLE);
-                const dados = await response.json();
-                
-                const corpo = document.getElementById('corpo-tabela');
-                const loading = document.getElementById('status-container');
-                const tabela = document.getElementById('tabela-clientes');
-
-                if (dados.length === 0) {
-                    loading.innerHTML = '<div class="loading">Nenhum cliente cadastrado ainda.</div>';
-                    return;
-                }
-
-                loading.style.display = 'none';
-                tabela.style.display = 'table';
-
-                dados.forEach(cliente => {
-                    const row = `<tr>
-                        <td><strong>${cliente.nome || '-'}</strong></td>
-                        <td>${cliente.whatsapp || '-'}</td>
-                        <td>${cliente.cidade || '-'}</td>
+                const res = await fetch(URL);
+                const dados = await res.json();
+                const corpo = document.getElementById('corpo');
+                document.getElementById('status').style.display = 'none';
+                document.getElementById('tabela').style.display = 'table';
+                dados.forEach(c => {
+                    corpo.innerHTML += `<tr>
+                        <td>${c.nome || '-'}</td>
+                        <td>${c.whatsapp || '-'}</td>
+                        <td>${c.cidade || '-'}</td>
                     </tr>`;
-                    corpo.innerHTML += row;
                 });
-
-            } catch (error) {
-                console.error('Erro:', error);
-                document.getElementById('status-container').innerHTML = 
-                    '<div class="error-msg">❌ Erro ao conectar com a planilha. Verifique se o Script do Google está publicado como "Qualquer pessoa".</div>';
+            } catch (e) {
+                document.getElementById('status').innerText = 'Erro ao carregar. Verifique se o Script do Google está como "Qualquer pessoa".';
             }
         }
-
-        window.onload = carregarDados;
+        window.onload = carregar;
     </script>
 </body>
 </html>
