@@ -1,63 +1,395 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Clientes - Equilibrium</title>
-    <style>
-        body { font-family: sans-serif; background-color: #4b1a5a; color: white; padding: 20px; }
-        .container { max-width: 800px; margin: auto; background: white; color: #333; padding: 20px; border-radius: 10px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        .btn-back { display: inline-block; margin-bottom: 20px; text-decoration: none; color: yellow; font-weight: bold; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clientes - Equilibrium</title>
+  <style>
+    :root {
+      --roxo: #6a1b9a;
+      --roxo-escuro: #4a148c;
+      --roxo-claro: #9c27b0;
+      --amarelo: #ffd54f;
+      --amarelo-escuro: #ffb300;
+      --bg: #f5f0fa;
+      --card: #ffffff;
+      --texto: #2d1b3d;
+      --borda: #e0d4f0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--texto);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100vh;
+      background: linear-gradient(180deg, var(--roxo-escuro), var(--roxo));
+      color: #fff;
+      padding: 24px 0;
+      box-shadow: 4px 0 15px rgba(74, 20, 140, 0.3);
+      z-index: 1000;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar .logo {
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--amarelo);
+      margin-bottom: 32px;
+      letter-spacing: 1px;
+    }
+
+    .sidebar nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 24px;
+      color: #fff;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: background 0.2s, padding-left 0.2s;
+      border-left: 4px solid transparent;
+    }
+
+    .sidebar nav a:hover {
+      background: rgba(255, 213, 79, 0.15);
+      border-left-color: var(--amarelo);
+      padding-left: 28px;
+    }
+
+    .sidebar nav a.active {
+      background: rgba(255, 213, 79, 0.2);
+      border-left-color: var(--amarelo);
+      color: var(--amarelo);
+      font-weight: 600;
+    }
+
+    .sidebar nav a .icon {
+      width: 20px;
+      text-align: center;
+    }
+
+    /* Botão menu mobile */
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 1100;
+      background: var(--roxo);
+      color: var(--amarelo);
+      border: none;
+      border-radius: 8px;
+      width: 44px;
+      height: 44px;
+      font-size: 1.4rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    /* Conteúdo */
+    .content {
+      margin-left: 250px;
+      flex: 1;
+      padding: 32px;
+      width: calc(100% - 250px);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .header h1 {
+      color: var(--roxo-escuro);
+      font-size: 1.8rem;
+    }
+
+    .header .accent {
+      color: var(--amarelo-escuro);
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(106, 27, 154, 0.08);
+      border: 1px solid var(--borda);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+    }
+
+    thead tr {
+      background: linear-gradient(90deg, var(--roxo), var(--roxo-claro));
+    }
+
+    th {
+      color: var(--amarelo);
+      padding: 14px 16px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--borda);
+      font-size: 0.95rem;
+    }
+
+    tbody tr:hover {
+      background: rgba(255, 213, 79, 0.12);
+    }
+
+    tbody tr:nth-child(even) {
+      background: rgba(106, 27, 154, 0.03);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status-ativo {
+      background: rgba(255, 213, 79, 0.25);
+      color: var(--amarelo-escuro);
+    }
+
+    .status-inativo {
+      background: rgba(106, 27, 154, 0.15);
+      color: var(--roxo-escuro);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--roxo);
+      font-size: 1.1rem;
+    }
+
+    .error-msg {
+      text-align: center;
+      padding: 24px;
+      color: #c62828;
+      background: #ffebee;
+      border-radius: 8px;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 999;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .content {
+        margin-left: 0;
+        width: 100%;
+        padding: 70px 16px 24px;
+      }
+
+      .overlay.show {
+        display: block;
+      }
+    }
+  </style>
 </head>
 <body>
-    <a href="index.html" class="btn-back">← Voltar ao Menu</a>
-    <div class="container">
-        <h1>Lista de Clientes</h1>
-        <div id="loading">Carregando clientes da planilha...</div>
-        <table id="tabela-clientes" style="display:none;">
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>WhatsApp</th>
-                    <th>Cidade</th>
-                </tr>
-            </thead>
-            <tbody id="corpo-tabela"></tbody>
-        </table>
+  <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">☰</button>
+  <div class="overlay" id="overlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="logo">Equilibrium</div>
+    <nav>
+      <a href="index.html">
+        <span class="icon">🏠</span> Home
+      </a>
+      <a href="novo-cliente.html">
+        <span class="icon">➕</span> Novo Cliente
+      </a>
+      <a href="clientes.html" class="active">
+        <span class="icon">📋</span> Lista de Clientes
+      </a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <div class="header">
+      <h1>Lista de <span class="accent">Clientes</span></h1>
     </div>
 
-    <script src="js/database.js"></script>
-    <script>
-        async function carregarClientes() {
-            try {
-                // A URL do Google Script que você já configurou
-                const DATABASE_URL = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
-                
-                const response = await fetch(DATABASE_URL);
-                const clientes = await response.json();
-                
-                const corpoTabela = document.getElementById('corpo-tabela');
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('tabela-clientes').style.display = 'table';
+    <div class="card">
+      <div class="loading" id="loading">Carregando clientes...</div>
+      <div id="errorBox"></div>
+      <table id="clientesTable" style="display:none;">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Telefone</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="clientesBody"></tbody>
+      </table>
+    </div>
+  </main>
 
-                clientes.forEach(cliente => {
-                    const row = `<tr>
-                        <td>${cliente.nome || '-'}</td>
-                        <td>${cliente.whatsapp || '-'}</td>
-                        <td>${cliente.cidade || '-'}</td>
-                    </tr>`;
-                    corpoTabela.innerHTML += row;
-                });
-            } catch (error) {
-                console.error(error);
-                document.getElementById('loading').innerText = 'Erro ao carregar dados da planilha.';
-            }
+  <script>
+    // Controle da sidebar mobile
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const menuToggle = document.getElementById('menuToggle');
+
+    function toggleSidebar() {
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('show');
+    }
+
+    menuToggle.addEventListener('click', toggleSidebar);
+    overlay.addEventListener('click', toggleSidebar);
+
+    // Normaliza chave de objeto (minúsculo) para localizar a coluna Nome
+    function normalizarChaves(obj) {
+      const novo = {};
+      for (const chave in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, chave)) {
+          novo[chave.toLowerCase()] = obj[chave];
         }
-        carregarClientes();
-    </script>
+      }
+      return novo;
+    }
+
+    // Busca o valor de uma coluna considerando variações de nome
+    function obterCampo(cliente, candidatos) {
+      const normalizado = normalizarChaves(cliente);
+      for (const nome of candidatos) {
+        const chave = nome.toLowerCase();
+        if (normalizado[chave] !== undefined && normalizado[chave] !== null && normalizado[chave] !== '') {
+          return normalizado[chave];
+        }
+      }
+      return '-';
+    }
+
+    function renderizarClientes(clientes) {
+      const tbody = document.getElementById('clientesBody');
+      tbody.innerHTML = '';
+
+      clientes.forEach((clienteOriginal) => {
+        // Normaliza para minúsculo ao ler o JSON da planilha
+        const cliente = normalizarChaves(clienteOriginal);
+
+        const nome = cliente.nome || obterCampo(clienteOriginal, ['nome', 'name', 'nome completo', 'fullname']);
+        const email = obterCampo(clienteOriginal, ['email', 'e-mail', 'mail']);
+        const telefone = obterCampo(clienteOriginal, ['telefone', 'phone', 'celular', 'tel', 'whatsapp']);
+        const status = obterCampo(clienteOriginal, ['status', 'situacao', 'situação', 'ativo']);
+
+        const statusLower = String(status).toLowerCase();
+        const statusClass = statusLower === 'ativo' || statusLower === 'true' || statusLower === '1'
+          ? 'status-ativo'
+          : 'status-inativo';
+        const statusTexto = statusClass === 'status-ativo' ? 'Ativo' : 'Inativo';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${escapeHtml(String(nome))}</td>
+          <td>${escapeHtml(String(email))}</td>
+          <td>${escapeHtml(String(telefone))}</td>
+          <td><span class="status-badge ${statusClass}">${statusTexto}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('clientesTable').style.display = 'table';
+    }
+
+    function escapeHtml(texto) {
+      const div = document.createElement('div');
+      div.textContent = texto;
+      return div.innerHTML;
+    }
+
+    function mostrarErro(mensagem) {
+      document.getElementById('loading').style.display = 'none';
+      const box = document.getElementById('errorBox');
+      box.innerHTML = `<div class="error-msg">${mensagem}</div>`;
+    }
+
+    // Carrega os clientes a partir do JSON da planilha
+    async function carregarClientes() {
+      const url = 'clientes.json';
+      try {
+        const resposta = await fetch(url, { cache: 'no-store' });
+        if (!resposta.ok) {
+          throw new Error(`Erro ao carregar o arquivo (HTTP ${resposta.status}).`);
+        }
+        const dados = await resposta.json();
+
+        // Suporta tanto array direto quanto objeto com propriedade "clientes"
+        const lista = Array.isArray(dados) ? dados : (dados.clientes || dados.dados || []);
+
+        if (!Array.isArray(lista) || lista.length === 0) {
+          mostrarErro('Nenhum cliente encontrado no arquivo.');
+          return;
+        }
+
+        renderizarClientes(lista);
+      } catch (erro) {
+        mostrarErro('Não foi possível carregar a lista de clientes. Verifique se o arquivo clientes.json existe.');
+        console.error('Erro ao carregar clientes:', erro);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', carregarClientes);
+  </script>
 </body>
 </html>
