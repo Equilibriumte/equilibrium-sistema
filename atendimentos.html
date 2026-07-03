@@ -79,8 +79,8 @@
             <div class="tab-content active">
                 <div class="form-grid">
                     <div class="form-group full">
-                        <label>Nome do Cliente (Digite para buscar)</label>
-                        <input type="text" id="nomeCliente" list="listaClientes" placeholder="Comece a digitar o nome..." required autocomplete="off">
+                        <label id="labelNome">Nome do Cliente (Carregando lista...)</label>
+                        <input type="text" id="nomeCliente" list="listaClientes" placeholder="Digite o nome do cliente cadastrado..." required autocomplete="off">
                         <datalist id="listaClientes"></datalist>
                         <input type="hidden" id="idCliente">
                     </div>
@@ -152,7 +152,10 @@
                     <div class="form-group full"><label>Pessoas Env.</label><input type="text" id="pessoasEnv"></div>
                     <div class="form-group full"><label>Diag. Ambiente</label><textarea id="diagAmbiente"></textarea></div>
                 </div>
-                <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(4)">PRÓXIMO ➔</button></div>
+                <div class="nav-actions">
+                    <button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button>
+                    <button type="button" class="btn-action btn-next" onclick="showTab(4)">PRÓXIMO ➔</button>
+                </div>
             </div>
 
             <div class="tab-content">
@@ -191,19 +194,23 @@
 
         async function carregarTudo() {
             try {
-                // Carrega Clientes (com tratamento de erro CORS)
-                const resC = await fetch(URL_CLIENTES).then(r => r.json());
-                listaGlobalClientes = resC;
+                // Carrega Clientes (Técnica Robusta)
+                const resC = await fetch(URL_CLIENTES);
+                const textoC = await resC.text(); // Lê como texto primeiro
+                listaGlobalClientes = JSON.parse(textoC); // Converte para JSON manualmente
+                
                 const dl = document.getElementById('listaClientes');
                 dl.innerHTML = "";
                 listaGlobalClientes.forEach(c => {
                     let o = document.createElement('option');
-                    o.value = c.nome;
+                    o.value = c.nome || c.Nome || c[2]; // Tenta várias chaves possíveis
                     dl.appendChild(o);
                 });
+                document.getElementById('labelNome').innerText = "Nome do Cliente (Lista carregada ✅)";
 
                 // Carrega Configurações
-                const resA = await fetch(URL_ATEND).then(r => r.json());
+                const resA = await fetch(URL_ATEND);
+                const config = await resA.json();
                 
                 const fillS = (id, list) => {
                     const s = document.getElementById(id);
@@ -222,19 +229,23 @@
                     });
                 };
 
-                fillM('coresExcesso', resA.cores, 'exc');
-                fillM('coresFalta', resA.cores, 'fal');
-                fillS('tipoAmbiente', resA.ambientes);
-                fillS('tipoBusca', resA.buscaTipos);
-                fillS('resBusca', resA.buscaResultados);
-                fillS('statusSelect', resA.status);
+                fillM('coresExcesso', config.cores, 'exc');
+                fillM('coresFalta', config.cores, 'fal');
+                fillS('tipoAmbiente', config.ambientes);
+                fillS('tipoBusca', config.buscaTipos);
+                fillS('resBusca', config.buscaResultados);
+                fillS('statusSelect', config.status);
 
-            } catch (e) { console.error("Erro ao carregar dados:", e); }
+            } catch (e) { 
+                console.error("Erro ao carregar dados:", e); 
+                document.getElementById('labelNome').innerText = "Erro ao carregar clientes ❌";
+            }
         }
 
         document.getElementById('nomeCliente').oninput = (e) => {
-            const c = listaGlobalClientes.find(x => x.nome === e.target.value);
-            if (c) document.getElementById('idCliente').value = c.id;
+            const digitado = e.target.value;
+            const c = listaGlobalClientes.find(x => (x.nome || x.Nome || x[2]) === digitado);
+            if (c) document.getElementById('idCliente').value = c.id || c.ID || c[1];
         };
 
         async function enviarDados() {
