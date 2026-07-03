@@ -5,17 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Clientes - Equilibrium</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { display: flex; background-color: #f4f0fa; min-height: 100vh; }
         .sidebar { width: 250px; background: #4b1a5a; color: white; padding: 20px; position: fixed; height: 100vh; }
-        .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; }
-        .sidebar a:hover, .sidebar a.active { background: #ffd700; color: #4b1a5a; font-weight: bold; }
+        .sidebar h2 { text-align: center; margin-bottom: 30px; color: #ffd700; }
+        .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
         .content { margin-left: 250px; flex: 1; padding: 40px; }
         .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
         th { background-color: #f8f5ff; color: #4b1a5a; font-size: 12px; text-transform: uppercase; }
-        .loading { text-align: center; padding: 40px; color: #6a0dad; }
+        .id-text { color: #999; font-size: 11px; font-family: monospace; }
     </style>
 </head>
 <body>
@@ -33,7 +34,7 @@
             <div id="status">Carregando dados da planilha...</div>
             <table id="tabela" style="display:none;">
                 <thead>
-                    <tr><th>Nome</th><th>WhatsApp</th><th>Cidade</th></tr>
+                    <tr><th>ID</th><th>Nome</th><th>WhatsApp</th><th>Cidade</th></tr>
                 </thead>
                 <tbody id="corpo"></tbody>
             </table>
@@ -50,13 +51,14 @@
                 document.getElementById('tabela').style.display = 'table';
                 dados.forEach(c => {
                     corpo.innerHTML += `<tr>
-                        <td>${c.nome || '-'}</td>
+                        <td class="id-text">${c.id || '-'}</td>
+                        <td><strong>${c.nome || '-'}</strong></td>
                         <td>${c.whatsapp || '-'}</td>
                         <td>${c.cidade || '-'}</td>
                     </tr>`;
                 });
             } catch (e) {
-                document.getElementById('status').innerText = 'Erro ao carregar. Verifique se o Script do Google está como "Qualquer pessoa".';
+                document.getElementById('status').innerText = 'Erro ao carregar. Verifique se o Script está como "Qualquer pessoa".';
             }
         }
         window.onload = carregar;
