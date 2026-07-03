@@ -1,321 +1,934 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atendimentos - Equilibrium</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { display: flex; background-color: #f4f0fa; min-height: 100vh; }
-        
-        /* Sidebar */
-        .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
-        .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
-        .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
-        .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atendimentos — Sistema Terapêutico</title>
+<style>
+  :root {
+    --roxo-1: #6a1b9a;
+    --roxo-2: #8e24aa;
+    --roxo-3: #ab47bc;
+    --roxo-claro: #e1bee7;
+    --bg: #f5f0fa;
+    --card: #ffffff;
+    --texto: #2d1b3d;
+    --borda: #d1c4e9;
+    --verde: #2e7d32;
+    --vermelho: #c62828;
+    --amarelo: #f9a825;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: var(--bg);
+    color: var(--texto);
+    display: flex;
+    min-height: 100vh;
+  }
 
-        /* Content & Tabs */
-        .main-content { margin-left: 250px; flex: 1; padding: 40px; width: calc(100% - 250px); }
-        .tabs-header { display: flex; gap: 5px; margin-bottom: 20px; background: #e0d0f0; padding: 5px; border-radius: 12px; overflow-x: auto; }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: none; color: #4b0082; cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 12px; transition: 0.3s; }
-        .tab-btn.active { background: #4b0082; color: #ffd700; }
-        
-        .tab-content { display: none; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        .tab-content.active { display: block; }
+  /* SIDEBAR ROXA */
+  .sidebar {
+    width: 260px;
+    background: linear-gradient(180deg, var(--roxo-1), var(--roxo-2));
+    color: #fff;
+    padding: 20px 0;
+    min-height: 100vh;
+    position: sticky;
+    top: 0;
+    box-shadow: 4px 0 15px rgba(106, 27, 154, 0.3);
+  }
+  .sidebar .logo {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    padding: 10px 15px 25px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    margin-bottom: 15px;
+  }
+  .sidebar nav { display: flex; flex-direction: column; }
+  .sidebar nav button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    text-align: left;
+    padding: 14px 22px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sidebar nav button:hover {
+    background: rgba(255,255,255,0.12);
+    border-left-color: var(--roxo-claro);
+  }
+  .sidebar nav button.active {
+    background: rgba(255,255,255,0.18);
+    border-left-color: #fff;
+    font-weight: 600;
+  }
+  .sidebar .icone { font-size: 18px; }
 
-        /* Form Grid */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .full { grid-column: span 2; }
-        label { display: block; font-weight: bold; color: #4b0082; margin-bottom: 8px; font-size: 14px; }
-        input, select, textarea { width: 100%; padding: 12px; border: 2px solid #e0d0f0; border-radius: 8px; outline: none; }
+  /* CONTEÚDO */
+  .conteudo {
+    flex: 1;
+    padding: 25px 35px;
+    overflow-x: hidden;
+  }
+  .topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .topo h1 { color: var(--roxo-1); font-size: 26px; }
+  .status-badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    background: #eee;
+    color: #555;
+  }
+  .status-badge.ok { background: #c8e6c9; color: var(--verde); }
+  .status-badge.vazio { background: #fff9c4; color: #7c6f00; }
+  .status-badge.erro { background: #ffcdd2; color: var(--vermelho); }
+  .status-badge.loading { background: var(--roxo-claro); color: var(--roxo-1); }
 
-        /* Multi-select Cores */
-        .multi-select-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; padding: 10px; border: 2px solid #e0d0f0; border-radius: 8px; max-height: 150px; overflow-y: auto; }
-        .option-item { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; padding: 5px; border-radius: 5px; }
-        .option-item:hover { background: #f0ebff; }
+  /* ABAS */
+  .painel { display: none; }
+  .painel.ativo { display: block; animation: fade 0.3s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Painéis de Botões */
-        .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 15px 0; }
-        .color-btn { padding: 15px; border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; text-align: center; font-size: 11px; }
-        .color-btn span { display: block; font-size: 15px; margin-top: 5px; }
-        
-        .c-coronario { background: #8a2be2; } .c-frontal { background: #4b0082; } .c-laringeo { background: #87ceeb; color: #333; }
-        .c-cardiaco { background: #228b22; } .c-umbilical { background: #ffd700; color: #333; } .c-sacro { background: #ff8c00; } .c-basico { background: #ff0000; }
-        .d-mental { background: #5dade2; } .d-emocional { background: #ec7063; } .d-espiritual { background: #af7ac5; } .d-fisico { background: #58d68d; }
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 22px;
+    box-shadow: 0 2px 10px rgba(106,27,154,0.08);
+    margin-bottom: 20px;
+    border: 1px solid var(--borda);
+  }
+  .card h2 {
+    color: var(--roxo-1);
+    font-size: 19px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--roxo-claro);
+  }
 
-        .nav-actions { display: flex; justify-content: space-between; margin-top: 30px; gap: 15px; }
-        .btn-action { padding: 15px 25px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-save { background: #ffd700; color: #4b0082; flex: 1; }
-        .btn-next { background: #4b0082; color: white; }
+  /* FORMULÁRIOS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+  .campo { display: flex; flex-direction: column; gap: 5px; }
+  .campo label { font-size: 13px; font-weight: 600; color: var(--roxo-1); }
+  .campo input, .campo select, .campo textarea {
+    padding: 9px 12px;
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+    font-size: 14px;
+    background: #faf7fd;
+    transition: border 0.2s;
+  }
+  .campo input:focus, .campo select:focus, .campo textarea:focus {
+    outline: none;
+    border-color: var(--roxo-2);
+    background: #fff;
+  }
+  .campo textarea { resize: vertical; min-height: 70px; }
 
-        #statusNome { font-weight: normal; font-size: 12px; margin-left: 10px; }
-        .ok { color: #27ae60; } .erro { color: #e74c3c; }
-        input::-webkit-calendar-picker-indicator { display: none !important; }
-    </style>
+  .btn {
+    background: linear-gradient(135deg, var(--roxo-1), var(--roxo-2));
+    color: #fff;
+    border: none;
+    padding: 11px 22px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    margin-top: 10px;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(106,27,154,0.35); }
+  .btn:active { transform: translateY(0); }
+  .btn.secundario { background: #fff; color: var(--roxo-1); border: 2px solid var(--roxo-2); }
+
+  /* TABELAS */
+  .tabela-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead th {
+    background: var(--roxo-1);
+    color: #fff;
+    padding: 11px 14px;
+    text-align: left;
+    font-weight: 600;
+  }
+  tbody td { padding: 10px 14px; border-bottom: 1px solid var(--borda); }
+  tbody tr:hover { background: var(--roxo-claro); }
+  tbody tr:nth-child(even) { background: #faf7fd; }
+  tbody tr:nth-child(even):hover { background: var(--roxo-claro); }
+
+  /* CHAKRAS */
+  .chakras-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+  .chakra {
+    border-radius: 10px;
+    padding: 14px;
+    color: #fff;
+    cursor: pointer;
+    text-align: center;
+    font-weight: 600;
+    transition: transform 0.15s, filter 0.15s;
+    border: 3px solid transparent;
+  }
+  .chakra:hover { transform: scale(1.04); }
+  .chakra.selecionado { border-color: #fff; box-shadow: 0 0 0 3px #333; }
+  .chakra .nome { font-size: 15px; }
+  .chakra .sub { font-size: 11px; opacity: 0.9; margin-top: 4px; }
+  .c-root { background: #d32f2f; }
+  .c-sacral { background: #f57c00; }
+  .c-plexo { background: #fbc02d; color: #3e2723; }
+  .c-cardiaco { background: #388e3c; }
+  .c-garganta { background: #1976d2; }
+  .c-frontal { background: #7b1fa2; }
+  .c-coroa { background: #c2185b; }
+
+  .desequilibrios-lista { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .desequilibrio-tag {
+    background: var(--roxo-claro);
+    color: var(--roxo-1);
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    font-weight: 500;
+  }
+  .desequilibrio-tag.selecionado { background: var(--roxo-1); color: #fff; border-color: #fff; }
+
+  .busca-box { margin-bottom: 15px; }
+  .busca-box input {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 14px;
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+    font-size: 15px;
+  }
+
+  .mensagem {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 12px 0;
+    font-weight: 500;
+    display: none;
+  }
+  .mensagem.sucesso { background: #c8e6c9; color: var(--verde); display: block; }
+  .mensagem.erro { background: #ffcdd2; color: var(--vermelho); display: block; }
+  .mensagem.info { background: var(--roxo-claro); color: var(--roxo-1); display: block; }
+
+  .vazio { text-align: center; padding: 30px; color: #888; font-style: italic; }
+
+  @media (max-width: 768px) {
+    body { flex-direction: column; }
+    .sidebar { width: 100%; min-height: auto; position: relative; }
+    .sidebar nav { flex-direction: row; overflow-x: auto; }
+    .sidebar nav button { border-left: none; border-bottom: 4px solid transparent; white-space: nowrap; }
+    .sidebar nav button.active { border-left: none; border-bottom-color: #fff; }
+    .conteudo { padding: 18px; }
+  }
+</style>
 </head>
 <body>
-    <div class="sidebar">
-        <h2>Equilibrium</h2>
-        <nav>
-            <a href="novo-cliente.html">🏠 Home</a>
-            <a href="clientes.html">📋 Lista de Clientes</a>
-            <a href="atendimentos.html" class="active">✨ Atendimentos</a>
-            <a href="lista-atendimentos.html">📜 Histórico</a>
-        </nav>
-    </div>
 
-    <div class="main-content">
-        <h1 style="color: #4b0082; margin-bottom: 20px;">Ficha de Atendimento</h1>
-        
-        <div class="tabs-header">
-            <button class="tab-btn active" onclick="showTab(0)">1. Dados</button>
-            <button class="tab-btn" onclick="showTab(1)">2. Inicial</button>
-            <button class="tab-btn" onclick="showTab(2)">3. Específico</button>
-            <button class="tab-btn" onclick="showTab(3)">4. Ambiente</button>
-            <button class="tab-btn" onclick="showTab(4)">5. Busca</button>
+<!-- SIDEBAR ROXA -->
+<aside class="sidebar">
+  <div class="logo">🌙 Sistema Terapêutico</div>
+  <nav>
+    <button class="aba-btn active" data-aba="novo"><span class="icone">➕</span> Novo Atendimento</button>
+    <button class="aba-btn" data-aba="historico"><span class="icone">📋</span> Histórico</button>
+    <button class="aba-btn" data-aba="clientes"><span class="icone">👥</span> Clientes</button>
+    <button class="aba-btn" data-aba="chakras"><span class="icone">🌀</span> Chakras & Desequilíbrios</button>
+    <button class="aba-btn" data-aba="relatorios"><span class="icone">📊</span> Relatórios</button>
+  </nav>
+</aside>
+
+<!-- CONTEÚDO -->
+<main class="conteudo">
+  <div class="topo">
+    <h1 id="titulo-pagina">Novo Atendimento</h1>
+    <div id="status-badge" class="status-badge loading">⏳ Carregando lista...</div>
+  </div>
+
+  <div id="mensagem" class="mensagem"></div>
+
+  <!-- ABA 1: NOVO ATENDIMENTO -->
+  <section id="aba-novo" class="painel ativo">
+    <div class="card">
+      <h2>Registrar Atendimento</h2>
+      <div class="form-grid">
+        <div class="campo">
+          <label for="cliente-select">Cliente *</label>
+          <select id="cliente-select">
+            <option value="">Selecione...</option>
+          </select>
         </div>
-
-        <form id="formAtendimento">
-            <!-- ABA 1: Dados Iniciais -->
-            <div class="tab-content active">
-                <div class="form-grid">
-                    <div class="form-group full">
-                        <label>Nome do Cliente <span id="statusNome">Sincronizando...</span></label>
-                        <input type="text" id="nomeCliente" list="listaClientes" placeholder="Comece a digitar o nome..." required autocomplete="off">
-                        <datalist id="listaClientes"></datalist>
-                        <input type="hidden" id="idCliente">
-                    </div>
-                    <div class="form-group"><label>Data</label><input type="date" id="dataAtend" required></div>
-                    <div class="form-group"><label>Status</label><select id="statusSelect"></select></div>
-                    <div class="form-group full"><label>Queixa Principal</label><textarea id="queixaP"></textarea></div>
-                    <div class="form-group full"><label>Queixa Secundária</label><textarea id="queixaS"></textarea></div>
-                </div>
-                <div class="nav-actions">
-                    <button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button>
-                    <button type="button" class="btn-action btn-next" onclick="showTab(1)">PRÓXIMO ➔</button>
-                </div>
-            </div>
-
-            <!-- ABA 2: Análise Inicial -->
-            <div class="tab-content">
-                <div class="form-group"><label>Bovis (4 dígitos)</label><input type="number" id="bovis"></div>
-                
-                <label style="margin-top: 15px;">Chakras (%)</label>
-                <div class="btn-grid">
-                    <button type="button" class="color-btn c-coronario" onclick="setVal(this, 'v-coronario')">Coronário<span id="v-coronario">-</span></button>
-                    <button type="button" class="color-btn c-frontal" onclick="setVal(this, 'v-frontal')">Frontal<span id="v-frontal">-</span></button>
-                    <button type="button" class="color-btn c-laringeo" onclick="setVal(this, 'v-laringeo')">Laríngeo<span id="v-laringeo">-</span></button>
-                    <button type="button" class="color-btn c-cardiaco" onclick="setVal(this, 'v-cardiaco')">Cardíaco<span id="v-cardiaco">-</span></button>
-                    <button type="button" class="color-btn c-umbilical" onclick="setVal(this, 'v-umbilical')">Umbilical<span id="v-umbilical">-</span></button>
-                    <button type="button" class="color-btn c-sacro" onclick="setVal(this, 'v-sacro')">Sacro<span id="v-sacro">-</span></button>
-                    <button type="button" class="color-btn c-basico" onclick="setVal(this, 'v-basico')">Básico<span id="v-basico">-</span></button>
-                </div>
-
-                <div class="form-grid">
-                    <div class="form-group"><label>Tamanho Aura</label><input type="text" id="auraT" placeholder="Ex: 80" onblur="formatarPct(this)"></div>
-                    <div class="form-group"><label>Proteção Aura</label><input type="text" id="protecaoAura" placeholder="Ex: 100" onblur="formatarPct(this)"></div>
-                </div>
-
-                <div class="form-grid" style="margin-top:15px;">
-                    <div class="form-group"><label>Cores em Excesso</label><div id="coresExcesso" class="multi-select-container"></div></div>
-                    <div class="form-group"><label>Cores em Falta</label><div id="coresFalta" class="multi-select-container"></div></div>
-                </div>
-
-                <label style="margin-top: 15px;">Campos (%)</label>
-                <div class="btn-grid">
-                    <button type="button" class="color-btn d-mental" onclick="setVal(this, 'v-mental')">Mental<span id="v-mental">-</span></button>
-                    <button type="button" class="color-btn d-emocional" onclick="setVal(this, 'v-emocional')">Emocional<span id="v-emocional">-</span></button>
-                    <button type="button" class="color-btn d-espiritual" onclick="setVal(this, 'v-espiritual')">Espiritual<span id="v-espiritual">-</span></button>
-                    <button type="button" class="color-btn d-fisico" onclick="setVal(this, 'v-fisico')">Físico<span id="v-fisico">-</span></button>
-                </div>
-
-                <div class="form-group full"><label>Diagnóstico Inicial</label><textarea id="diagInicial"></textarea></div>
-                <div class="nav-actions">
-                    <button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button>
-                    <button type="button" class="btn-action btn-next" onclick="showTab(2)">PRÓXIMO ➔</button>
-                </div>
-            </div>
-
-            <!-- ABAS 3, 4 e 5 (Mantidas) -->
-            <div class="tab-content">
-                <label>Queixa Específica</label><textarea id="queixaEspec"></textarea>
-                <label>Causa Raiz</label><textarea id="causaRaiz"></textarea>
-                <label>Crenças</label><textarea id="crencas"></textarea>
-                <label>Diagnóstico Específico</label><textarea id="diagEspec"></textarea>
-                <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(3)">PRÓXIMO ➔</button></div>
-            </div>
-
-            <div class="tab-content">
-                <div class="form-grid">
-                    <div class="form-group"><label>Tipo Ambiente</label><select id="tipoAmbiente"></select></div>
-                    <div class="form-group"><label>Endereço</label><input type="text" id="endAmbiente"></div>
-                    <div class="form-group full"><label>Queixa Ambiente</label><textarea id="queixaAmbiente"></textarea></div>
-                    <div class="form-group full"><label>Pessoas Env.</label><input type="text" id="pessoasEnv"></div>
-                    <div class="form-group full"><label>Diag. Ambiente</label><textarea id="diagAmbiente"></textarea></div>
-                </div>
-                <div class="nav-actions">
-                    <button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button>
-                    <button type="button" class="btn-action btn-next" onclick="showTab(4)">PRÓXIMO ➔</button>
-                </div>
-            </div>
-
-            <div class="tab-content">
-                <div class="form-grid">
-                    <div class="form-group"><label>Tipo Busca</label><select id="tipoBusca"></select></div>
-                    <div class="form-group"><label>Info Busca</label><input type="text" id="infoBusca"></div>
-                    <div class="form-group full"><label>Resultado</label><select id="resBusca"></select></div>
-                    <div class="form-group full"><label>Descrição</label><textarea id="descBusca"></textarea></div>
-                </div>
-                <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">FINALIZAR E SALVAR</button></div>
-            </div>
-        </form>
+        <div class="campo">
+          <label for="data-atend">Data *</label>
+          <input type="date" id="data-atend">
+        </div>
+        <div class="campo">
+          <label for="tipo-atend">Tipo de Atendimento</label>
+          <select id="tipo-atend">
+            <option value="Presencial">Presencial</option>
+            <option value="Online">Online</option>
+            <option value="Telefonico">Telefônico</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="duracao">Duração (min)</label>
+          <input type="number" id="duracao" min="15" max="240" value="60">
+        </div>
+      </div>
+      <div class="form-grid" style="margin-top:15px;">
+        <div class="campo">
+          <label for="chakras-afetados">Chakras Afetados</label>
+          <input type="text" id="chakras-afetados" placeholder="Ex: Cardíaco, Garganta">
+        </div>
+        <div class="campo">
+          <label for="desequilibrios">Desequilíbrios</label>
+          <input type="text" id="desequilibrios" placeholder="Ex: Ansiedade, Insônia">
+        </div>
+      </div>
+      <div class="campo" style="margin-top:15px;">
+        <label for="observacoes">Observações / Notas da Sessão</label>
+        <textarea id="observacoes" placeholder="Descreva o que foi trabalhado, evolução, técnicas aplicadas..."></textarea>
+      </div>
+      <button class="btn" id="btn-salvar">💾 Salvar Atendimento</button>
     </div>
+  </section>
 
-    <script>
-        const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
-        const URL_ATEND = 'https://script.google.com/macros/s/AKfycbzBEYsubmBz6FKNY0S3ZyxBIoAQj60Ob7G73uw-TI118tAjtFXWyK_JVEmxz52y4Yn-/exec';
-        let listaGlobalClientes = [];
+  <!-- ABA 2: HISTÓRICO -->
+  <section id="aba-historico" class="painel">
+    <div class="card">
+      <h2>Histórico de Atendimentos</h2>
+      <div class="busca-box">
+        <input type="text" id="busca-historico" placeholder="🔍 Buscar por cliente ou observação...">
+      </div>
+      <div class="tabela-wrap">
+        <table id="tabela-historico">
+          <thead>
+            <tr>
+              <th>Data</th><th>Cliente</th><th>Tipo</th><th>Duração</th><th>Chakras</th><th>Desequilíbrios</th><th>Observações</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-historico"></tbody>
+        </table>
+      </div>
+      <div id="historico-vazio" class="vazio">Nenhum atendimento registrado ainda.</div>
+    </div>
+  </section>
 
-        function showTab(i) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content')[i].classList.add('active');
-            document.querySelectorAll('.tab-btn')[i].classList.add('active');
-            window.scrollTo(0,0);
+  <!-- ABA 3: CLIENTES -->
+  <section id="aba-clientes" class="painel">
+    <div class="card">
+      <h2>Lista de Clientes</h2>
+      <div class="busca-box">
+        <input type="text" id="busca-clientes" placeholder="🔍 Buscar cliente por nome...">
+      </div>
+      <div class="tabela-wrap">
+        <table id="tabela-clientes">
+          <thead>
+            <tr><th>#</th><th>Nome</th><th>Detalhes</th></tr>
+          </thead>
+          <tbody id="tbody-clientes"></tbody>
+        </table>
+      </div>
+      <div id="clientes-vazio" class="vazio">Nenhum cliente encontrado.</div>
+    </div>
+  </section>
+
+  <!-- ABA 4: CHAKRAS & DESEQUILÍBRIOS -->
+  <section id="aba-chakras" class="painel">
+    <div class="card">
+      <h2>🌀 Mapeamento de Chakras</h2>
+      <p style="margin-bottom:12px;color:#666;font-size:14px;">Clique em um chakra para ver os desequilíbrios relacionados.</p>
+      <div class="chakras-grid" id="chakras-grid"></div>
+    </div>
+    <div class="card">
+      <h2>Desequilíbrios Relacionados</h2>
+      <div class="desequilibrios-lista" id="desequilibrios-lista">
+        <span class="vazio">Selecione um chakra acima.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABA 5: RELATÓRIOS -->
+  <section id="aba-relatorios" class="painel">
+    <div class="card">
+      <h2>📊 Relatórios</h2>
+      <div class="form-grid">
+        <div class="campo">
+          <label for="rel-inicio">Data Início</label>
+          <input type="date" id="rel-inicio">
+        </div>
+        <div class="campo">
+          <label for="rel-fim">Data Fim</label>
+          <input type="date" id="rel-fim">
+        </div>
+      </div>
+      <button class="btn" id="btn-relatorio">📈 Gerar Relatório</button>
+    </div>
+    <div class="card">
+      <h2>Resumo</h2>
+      <div id="relatorio-conteudo" class="vazio">Gere um relatório para ver os dados.</div>
+    </div>
+  </section>
+</main>
+
+<script>
+// ============================================================
+// CONFIGURAÇÃO DAS URLs
+// ============================================================
+const URL_CLIENTES = "https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec";
+const URL_ATENDIMENTOS = "https://script.google.com/macros/s/AKfycbzBEYsubmBz6FKNY0S3ZyxBIoAQj60Ob7G73uw-TI118tAjtFXWyK_JVEmxz52y4Yn-/exec";
+
+// ============================================================
+// ESTADO GLOBAL
+// ============================================================
+let listaClientes = [];
+let listaAtendimentos = [];
+let chakraSelecionado = null;
+
+// ============================================================
+// DEFINIÇÃO DE CHAKRAS E DESEQUILÍBRIOS
+// ============================================================
+const CHAKRAS = [
+  { id: "root",      nome: "Básico",   classe: "c-root",      desequilibrios: ["Medo", "Insegurança", "Problemas financeiros", "Fadiga", "Desconexão"] },
+  { id: "sacral",    nome: "Sacral",   classe: "c-sacral",    desequilibrios: ["Frigidez", "Culpa", "Desequilíbrio emocional", "Falta de criatividade"] },
+  { id: "plexo",     nome: "Plexo Solar", classe: "c-plexo",  desequilibrios: ["Baixa autoestima", "Indigestão", "Raiva", "Controle excessivo"] },
+  { id: "cardiaco",  nome: "Cardíaco", classe: "c-cardiaco", desequilibrios: ["Tristeza", "Solidão", "Ressentimento", "Dificuldade de perdoar"] },
+  { id: "garganta",  nome: "Garganta", classe: "c-garganta", desequilibrios: ["Comunicação bloqueada", "Timidez", "Dor de garganta", "Mentira"] },
+  { id: "frontal",   nome: "Frontal",  classe: "c-frontal",  desequilibrios: ["Confusão mental", "Insônia", "Falta de foco", "Ansiedade"] },
+  { id: "coroa",     nome: "Coronário", classe: "c-coroa",   desequilibrios: ["Desconexão espiritual", "Apatia", "Egocentrismo", "Falta de propósito"] }
+];
+
+// ============================================================
+// NAVEGAÇÃO ENTRE ABAS
+// ============================================================
+const titulosAbas = {
+  novo: "Novo Atendimento",
+  historico: "Histórico de Atendimentos",
+  clientes: "Lista de Clientes",
+  chakras: "Chakras & Desequilíbrios",
+  relatorios: "Relatórios"
+};
+
+document.querySelectorAll(".aba-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const aba = btn.dataset.aba;
+    document.querySelectorAll(".aba-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll(".painel").forEach(p => p.classList.remove("ativo"));
+    document.getElementById("aba-" + aba).classList.add("ativo");
+    document.getElementById("titulo-pagina").textContent = titulosAbas[aba];
+  });
+});
+
+// ============================================================
+// SISTEMA DE MENSAGENS
+// ============================================================
+function mostrarMensagem(texto, tipo = "info") {
+  const el = document.getElementById("mensagem");
+  el.className = "mensagem " + tipo;
+  el.textContent = texto;
+  setTimeout(() => { el.className = "mensagem"; }, 5000);
+}
+
+// ============================================================
+// STATUS BADGE
+// ============================================================
+function setStatus(estado, texto) {
+  const badge = document.getElementById("status-badge");
+  badge.className = "status-badge " + estado;
+  badge.textContent = texto;
+}
+
+// ============================================================
+// EXTRAÇÃO ROBUSTA DE NOME DO CLIENTE
+// Tenta a chave 'nome' e variações; caso não exista, procura
+// nas 5 primeiras colunas (se for objeto) ou na primeira
+// posição (se for array simples).
+// ============================================================
+function extrairNomeCliente(item) {
+  if (item === null || item === undefined) return null;
+
+  // Se for string, retorna direto
+  if (typeof item === "string") {
+    const t = item.trim();
+    return t.length > 0 ? t : null;
+  }
+
+  // Se for array simples (Array de Arrays)
+  if (Array.isArray(item)) {
+    // Procura nas 5 primeiras posições por algo que pareça um nome
+    for (let i = 0; i < Math.min(5, item.length); i++) {
+      const v = item[i];
+      if (typeof v === "string" && v.trim().length > 0) {
+        return v.trim();
+      }
+      if (typeof v === "number" && v.toString().length > 0) {
+        // Número não é nome, mas se for a única coisa, converte
+        // (raro) — preferimos pular para achar string
+      }
+    }
+    // Se não achou string nas 5 primeiras, pega a primeira posição
+    if (item.length > 0 && item[0] != null) {
+      return String(item[0]).trim();
+    }
+    return null;
+  }
+
+  // Se for objeto
+  if (typeof item === "object") {
+    const chaves = Object.keys(item);
+    const chavesNome = ["nome", "Nome", "NOME", "cliente", "Cliente", "CLIENTE", "name", "Name", "fullName", "nomeCompleto"];
+
+    // 1) Tenta chaves conhecidas
+    for (const k of chavesNome) {
+      if (item[k] !== undefined && item[k] !== null && String(item[k]).trim() !== "") {
+        return String(item[k]).trim();
+      }
+    }
+
+    // 2) Tenta qualquer chave que contenha "nome" ou "name" (case-insensitive)
+    for (const k of chaves) {
+      const kl = k.toLowerCase();
+      if ((kl.includes("nome") || kl.includes("name") || kl.includes("cliente")) && item[k] != null && String(item[k]).trim() !== "") {
+        return String(item[k]).trim();
+      }
+    }
+
+    // 3) Mapeamento flexível: pega o valor da primeira coluna não-vazia
+    //    entre as 5 primeiras chaves do objeto
+    const primeirasChaves = chaves.slice(0, 5);
+    for (const k of primeirasChaves) {
+      const v = item[k];
+      if (v !== undefined && v !== null && String(v).trim() !== "") {
+        const s = String(v).trim();
+        // Evita pegar IDs numéricos ou datas como nome
+        if (!/^\d+$/.test(s) && !/^\d{4}-\d{2}-\d{2}/.test(s)) {
+          return s;
         }
+      }
+    }
 
-        function setVal(btn, id) {
-            const v = prompt("Digite a %:");
-            if (v) document.getElementById(id).innerText = v + "%";
+    // 4) Último recurso: primeira chave qualquer
+    for (const k of chaves) {
+      if (item[k] != null && String(item[k]).trim() !== "") {
+        return String(item[k]).trim();
+      }
+    }
+  }
+
+  return null;
+}
+
+// ============================================================
+// NORMALIZAÇÃO DE DADOS RECEBIDOS
+// Converte Array de Arrays para Array de Objetos com nome
+// ============================================================
+function normalizarClientes(dados) {
+  if (!dados) return [];
+
+  // Se vier dentro de uma propriedade (ex: { data: [...] } ou { clientes: [...] })
+  let arr = dados;
+  if (!Array.isArray(dados) && typeof dados === "object") {
+    const possiveis = ["data", "clientes", "lista", "rows", "values", "items", "result"];
+    for (const p of possiveis) {
+      if (Array.isArray(dados[p])) { arr = dados[p]; break; }
+    }
+    // Se ainda não achou, pega o primeiro array que encontrar
+    if (!Array.isArray(arr)) {
+      for (const k of Object.keys(dados)) {
+        if (Array.isArray(dados[k])) { arr = dados[k]; break; }
+      }
+    }
+  }
+
+  if (!Array.isArray(arr)) return [];
+
+  // Detecta se é array de arrays (matriz) ou array de objetos
+  const primeiroItem = arr.find(x => x !== null && x !== undefined);
+  const ehMatriz = Array.isArray(primeiroItem);
+
+  // Se for matriz, verifica se a primeira linha é cabeçalho
+  let cabecalho = null;
+  let linhas = arr;
+  if (ehMatriz && arr.length > 0) {
+    const primeiraLinha = arr[0];
+    const pareceHeader = primeiraLinha.some(c => typeof c === "string" && (c.toLowerCase().includes("nome") || c.toLowerCase().includes("name")));
+    if (pareceHeader) {
+      cabecalho = primeiraLinha.map(c => String(c).toLowerCase().trim());
+      linhas = arr.slice(1);
+    }
+  }
+
+  const resultado = [];
+  for (let i = 0; i < linhas.length; i++) {
+    const item = linhas[i];
+    if (item === null || item === undefined) continue;
+
+    let obj = item;
+    if (Array.isArray(item) && cabecalho) {
+      obj = {};
+      for (let j = 0; j < cabecalho.length; j++) {
+        obj[cabecalho[j]] = item[j];
+      }
+    }
+
+    const nome = extrairNomeCliente(item);
+    if (nome) {
+      resultado.push({
+        nome: nome,
+        original: item,
+        indice: i
+      });
+    }
+  }
+
+  return resultado;
+}
+
+// ============================================================
+// CARREGAR CLIENTES (COM DIAGNÓSTICO)
+// ============================================================
+async function carregarClientes() {
+  setStatus("loading", "⏳ Carregando lista...");
+  console.log("%c[DIAGNÓSTICO] Iniciando carregamento de clientes...", "color:#6a1b9a;font-weight:bold;");
+  console.log("[DIAGNÓSTICO] URL CLIENTES:", URL_CLIENTES);
+
+  try {
+    const resp = await fetch(URL_CLIENTES);
+    console.log("[DIAGNÓSTICO] Resposta HTTP recebida. Status:", resp.status, resp.statusText);
+
+    const texto = await resp.text();
+    console.log("[DIAGNÓSTICO] Conteúdo bruto (string):", texto.substring(0, 1000));
+
+    let dados;
+    try {
+      dados = JSON.parse(texto);
+    } catch (e) {
+      console.error("[DIAGNÓSTICO] Erro ao fazer JSON.parse:", e);
+      setStatus("erro", "❌ Erro: resposta não é JSON");
+      mostrarMensagem("A resposta da planilha não está em formato JSON válido. Verifique o console (F12).", "erro");
+      return;
+    }
+
+    console.log("[DIAGNÓSTICO] Dados após JSON.parse:", dados);
+    console.log("[DIAGNÓSTICO] Tipo dos dados:", typeof dados, "| É array?", Array.isArray(dados));
+
+    if (Array.isArray(dados)) {
+      console.log("[DIAGNÓSTICO] Quantidade de itens no array:", dados.length);
+      console.log("[DIAGNÓSTICO] Primeiros 3 itens:", dados.slice(0, 3));
+      if (dados.length > 0) {
+        console.log("[DIAGNÓSTICO] Tipo do primeiro item:", typeof dados[0], "| É array?", Array.isArray(dados[0]));
+        if (typeof dados[0] === "object" && !Array.isArray(dados[0])) {
+          console.log("[DIAGNÓSTICO] Chaves do primeiro item (objeto):", Object.keys(dados[0]));
         }
+      }
+    } else if (typeof dados === "object") {
+      console.log("[DIAGNÓSTICO] Chaves do objeto raiz:", Object.keys(dados));
+    }
 
-        function formatarPct(input) {
-            if (input.value && !input.value.includes('%')) input.value += '%';
-        }
+    // Normaliza os dados
+    const clientes = normalizarClientes(dados);
+    console.log("[DIAGNÓSTICO] Após normalização — clientes extraídos:", clientes.length);
+    console.log("[DIAGNÓSTICO] Lista normalizada (até 10):", clientes.slice(0, 10));
 
-        // FUNÇÃO DE BUSCA ROBUSTA DE NOMES
-        function extrairNome(obj) {
-            // Tenta encontrar a propriedade que contém o nome, independente da caixa
-            const chaves = Object.keys(obj);
-            const chaveNome = chaves.find(k => k.toLowerCase() === 'nome' || k.toLowerCase() === 'cliente');
-            return chaveNome ? obj[chaveNome] : (obj[2] || ""); // Se não achar por chave, tenta a 3ª coluna
-        }
+    listaClientes = clientes;
 
-        function extrairID(obj) {
-            const chaves = Object.keys(obj);
-            const chaveID = chaves.find(k => k.toLowerCase() === 'id' || k.toLowerCase() === 'identificador');
-            return chaveID ? obj[chaveID] : (obj[1] || ""); // Se não achar por chave, tenta a 2ª coluna
-        }
+    // FEEDBACK VISUAL baseado em nomes identificados
+    if (clientes.length > 0) {
+      setStatus("ok", "✅ Lista Carregada (" + clientes.length + ")");
+      console.log("%c[DIAGNÓSTICO] ✅ Sucesso! " + clientes.length + " clientes identificados.", "color:#2e7d32;font-weight:bold;");
+    } else {
+      setStatus("vazio", "⚠️ Lista Vazia");
+      console.warn("[DIAGNÓSTICO] ⚠️ Nenhum nome de cliente pôde ser identificado nos dados recebidos.");
+      mostrarMensagem("A lista foi carregada mas nenhum nome foi identificado. Verifique o console (F12) para diagnóstico.", "erro");
+    }
 
-        async function carregarTudo() {
-            try {
-                // Carrega Clientes com limpeza de cache
-                const resC = await fetch(URL_CLIENTES + "?_=" + new Date().getTime());
-                const dadosC = await resC.json();
-                listaGlobalClientes = Array.isArray(dadosC) ? dadosC : (dadosC.data || []);
-                
-                const dl = document.getElementById('listaClientes');
-                dl.innerHTML = "";
-                listaGlobalClientes.forEach(c => {
-                    const nome = extrairNome(c);
-                    if (nome) {
-                        let o = document.createElement('option');
-                        o.value = nome;
-                        dl.appendChild(o);
-                    }
-                });
-                document.getElementById('statusNome').innerHTML = "<span class='ok'>✅ Lista Carregada</span>";
+    popularSelectClientes();
+    renderTabelaClientes();
 
-                // Carrega Configurações da planilha de Atendimentos
-                const resA = await fetch(URL_ATEND);
-                const config = await resA.json();
-                
-                const fillS = (id, list) => {
-                    const s = document.getElementById(id);
-                    if(!s) return;
-                    s.innerHTML = "";
-                    list.forEach(v => { let o = document.createElement('option'); o.value = v; o.text = v; s.appendChild(o); });
-                };
+  } catch (err) {
+    console.error("[DIAGNÓSTICO] ❌ Erro na requisição:", err);
+    setStatus("erro", "❌ Erro de conexão");
+    mostrarMensagem("Falha ao carregar clientes: " + err.message, "erro");
+  }
+}
 
-                const fillM = (id, list, pref) => {
-                    const c = document.getElementById(id);
-                    if(!c) return;
-                    c.innerHTML = "";
-                    list.forEach(v => {
-                        const l = document.createElement('label');
-                        l.className = 'option-item';
-                        l.innerHTML = `<input type="checkbox" name="${pref}" value="${v}"> ${v}`;
-                        c.appendChild(l);
-                    });
-                };
+// ============================================================
+// POPULAR SELECT DE CLIENTES
+// ============================================================
+function popularSelectClientes() {
+  const select = document.getElementById("cliente-select");
+  select.innerHTML = "<option value=''>Selecione...</option>";
+  listaClientes.forEach((c, i) => {
+    const opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = c.nome;
+    select.appendChild(opt);
+  });
+}
 
-                fillM('coresExcesso', config.cores, 'exc');
-                fillM('coresFalta', config.cores, 'fal');
-                fillS('tipoAmbiente', config.ambientes);
-                fillS('tipoBusca', config.buscaTipos);
-                fillS('resBusca', config.buscaResultados);
-                fillS('statusSelect', config.status);
+// ============================================================
+// RENDER TABELA DE CLIENTES
+// ============================================================
+function renderTabelaClientes(filtro = "") {
+  const tbody = document.getElementById("tbody-clientes");
+  const vazio = document.getElementById("clientes-vazio");
+  tbody.innerHTML = "";
 
-            } catch (e) { 
-                console.error("Erro detalhado:", e);
-                document.getElementById('statusNome').innerHTML = "<span class='erro'>❌ Erro de Conexão</span>";
-            }
-        }
+  const f = filtro.toLowerCase().trim();
+  const filtrados = f === ""
+    ? listaClientes
+    : listaClientes.filter(c => c.nome.toLowerCase().includes(f));
 
-        document.getElementById('nomeCliente').oninput = (e) => {
-            const digitado = e.target.value;
-            const c = listaGlobalClientes.find(x => extrairNome(x) === digitado);
-            if (c) document.getElementById('idCliente').value = extrairID(c);
-        };
+  if (filtrados.length === 0) {
+    vazio.style.display = "block";
+    vazio.textContent = f === "" ? "Nenhum cliente encontrado." : "Nenhum cliente corresponde à busca.";
+    return;
+  }
+  vazio.style.display = "none";
 
-        async function enviarDados() {
-            const getC = (n) => Array.from(document.querySelectorAll(`input[name="${n}"]:checked`)).map(cb => cb.value).join(", ");
-            const p = {
-                idCliente: document.getElementById('idCliente').value,
-                nomeCliente: document.getElementById('nomeCliente').value,
-                status: document.getElementById('statusSelect').value,
-                dataAtend: document.getElementById('dataAtend').value,
-                queixaPrincipal: document.getElementById('queixaP').value,
-                queixaSecundaria: document.getElementById('queixaS').value,
-                bovis: document.getElementById('bovis').value,
-                vCoronario: document.getElementById('v-coronario').innerText,
-                vFrontal: document.getElementById('v-frontal').innerText,
-                vLaringeo: document.getElementById('v-laringeo').innerText,
-                vCardiaco: document.getElementById('v-cardiaco').innerText,
-                vUmbilical: document.getElementById('v-umbilical').innerText,
-                vSacro: document.getElementById('v-sacro').innerText,
-                vBasico: document.getElementById('v-basico').innerText,
-                tamanhoAura: document.getElementById('auraT').value,
-                protecaoAura: document.getElementById('protecaoAura').value,
-                coresExcesso: getC('exc'),
-                coresFalta: getC('fal'),
-                vMental: document.getElementById('v-mental').innerText,
-                vEmocional: document.getElementById('v-emocional').innerText,
-                vEspiritual: document.getElementById('v-espiritual').innerText,
-                vFisico: document.getElementById('v-fisico').innerText,
-                diagInicial: document.getElementById('diagInicial').value,
-                queixaEspec: document.getElementById('queixaEspec').value,
-                causaRaiz: document.getElementById('causaRaiz').value,
-                crencas: document.getElementById('crencas').value,
-                diagEspec: document.getElementById('diagEspec').value,
-                tipoAmbiente: document.getElementById('tipoAmbiente').value,
-                endAmbiente: document.getElementById('endAmbiente').value,
-                queixaAmbiente: document.getElementById('queixaAmbiente').value,
-                pessoasEnv: document.getElementById('pessoasEnv').value,
-                diagAmbiente: document.getElementById('diagAmbiente').value,
-                tipoBusca: document.getElementById('tipoBusca').value,
-                descBusca: document.getElementById('descBusca').value,
-                infoBusca: document.getElementById('infoBusca').value,
-                resBusca: document.getElementById('resBusca').value
-            };
+  filtrados.forEach((c, i) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = "<td>" + (i + 1) + "</td><td>" + escapeHtml(c.nome) + "</td><td>" + escapeHtml(JSON.stringify(c.original).substring(0, 80)) + "</td>";
+    tbody.appendChild(tr);
+  });
+}
 
-            try {
-                const r = await fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(p) }).then(res => res.json());
-                if (r.status === "sucesso") alert("✅ Atendimento salvo com sucesso!");
-            } catch (e) { alert("❌ Erro ao salvar."); }
-        }
+// ============================================================
+// CARREGAR ATENDIMENTOS
+// ============================================================
+async function carregarAtendimentos() {
+  try {
+    const resp = await fetch(URL_ATENDIMENTOS);
+    const texto = await resp.text();
+    let dados;
+    try { dados = JSON.parse(texto); }
+    catch (e) { console.warn("[Atendimentos] Resposta não é JSON válido."); return; }
 
-        window.onload = carregarTudo;
-    </script>
+    let arr = dados;
+    if (!Array.isArray(dados) && typeof dados === "object") {
+      for (const p of ["data", "atendimentos", "lista", "rows", "items", "result"]) {
+        if (Array.isArray(dados[p])) { arr = dados[p]; break; }
+      }
+    }
+    if (!Array.isArray(arr)) arr = [];
+
+    listaAtendimentos = arr;
+    renderTabelaHistorico();
+    console.log("[DIAGNÓSTICO] Atendimentos carregados:", arr.length);
+  } catch (err) {
+    console.error("[DIAGNÓSTICO] Erro ao carregar atendimentos:", err);
+  }
+}
+
+// ============================================================
+// RENDER TABELA HISTÓRICO
+// ============================================================
+function renderTabelaHistorico(filtro = "") {
+  const tbody = document.getElementById("tbody-historico");
+  const vazio = document.getElementById("historico-vazio");
+  tbody.innerHTML = "";
+
+  const f = filtro.toLowerCase().trim();
+  const filtrados = f === ""
+    ? listaAtendimentos
+    : listaAtendimentos.filter(a => {
+        const txt = JSON.stringify(a).toLowerCase();
+        return txt.includes(f);
+      });
+
+  if (filtrados.length === 0) {
+    vazio.style.display = "block";
+    vazio.textContent = f === "" ? "Nenhum atendimento registrado ainda." : "Nenhum atendimento corresponde à busca.";
+    return;
+  }
+  vazio.style.display = "none";
+
+  filtrados.forEach(a => {
+    const tr = document.createElement("tr");
+    const data = a.data || a.Data || a[0] || "—";
+    const cliente = a.cliente || a.Cliente || a.nome || a.Nome || a[1] || "—";
+    const tipo = a.tipo || a.Tipo || a[2] || "—";
+    const duracao = a.duracao || a.Duracao || a[3] || "—";
+    const chakras = a.chakras || a.Chakras || a[4] || "—";
+    const deseq = a.desequilibrios || a.Desequilibrios || a[5] || "—";
+    const obs = a.observacoes || a.Observacoes || a[6] || "—";
+    tr.innerHTML = "<td>" + escapeHtml(String(data)) + "</td><td>" + escapeHtml(String(cliente)) +
+      "</td><td>" + escapeHtml(String(tipo)) + "</td><td>" + escapeHtml(String(duracao)) +
+      "</td><td>" + escapeHtml(String(chakras)) + "</td><td>" + escapeHtml(String(deseq)) +
+      "</td><td>" + escapeHtml(String(obs)) + "</td>";
+    tbody.appendChild(tr);
+  });
+}
+
+// ============================================================
+// RENDER CHAKRAS
+// ============================================================
+function renderChakras() {
+  const grid = document.getElementById("chakras-grid");
+  grid.innerHTML = "";
+  CHAKRAS.forEach(ch => {
+    const div = document.createElement("div");
+    div.className = "chakra " + ch.classe;
+    div.dataset.id = ch.id;
+    div.innerHTML = "<div class='nome'>" + ch.nome + "</div><div class='sub'>Chakra</div>";
+    div.addEventListener("click", () => selecionarChakra(ch.id));
+    grid.appendChild(div);
+  });
+}
+
+function selecionarChakra(id) {
+  chakraSelecionado = id;
+  document.querySelectorAll(".chakra").forEach(el => {
+    el.classList.toggle("selecionado", el.dataset.id === id);
+  });
+  const ch = CHAKRAS.find(c => c.id === id);
+  const lista = document.getElementById("desequilibrios-lista");
+  lista.innerHTML = "";
+  ch.desequilibrios.forEach(d => {
+    const tag = document.createElement("span");
+    tag.className = "desequilibrio-tag";
+    tag.textContent = d;
+    tag.addEventListener("click", () => {
+      tag.classList.toggle("selecionado");
+      const input = document.getElementById("desequilibrios");
+      const atuais = input.value.split(",").map(s => s.trim()).filter(s => s !== "");
+      if (tag.classList.contains("selecionado")) {
+        if (!atuais.includes(d)) atuais.push(d);
+      } else {
+        const idx = atuais.indexOf(d);
+        if (idx > -1) atuais.splice(idx, 1);
+      }
+      input.value = atuais.join(", ");
+    });
+    lista.appendChild(tag);
+  });
+}
+
+// ============================================================
+// SALVAR ATENDIMENTO
+// ============================================================
+document.getElementById("btn-salvar").addEventListener("click", async () => {
+  const select = document.getElementById("cliente-select");
+  const idx = select.value;
+  if (idx === "") { mostrarMensagem("Selecione um cliente.", "erro"); return; }
+  const cliente = listaClientes[parseInt(idx)];
+  if (!cliente) { mostrarMensagem("Cliente inválido.", "erro"); return; }
+
+  const dados = {
+    cliente: cliente.nome,
+    data: document.getElementById("data-atend").value,
+    tipo: document.getElementById("tipo-atend").value,
+    duracao: document.getElementById("duracao").value,
+    chakras: document.getElementById("chakras-afetados").value,
+    desequilibrios: document.getElementById("desequilibrios").value,
+    observacoes: document.getElementById("observacoes").value
+  };
+
+  if (!dados.data) { mostrarMensagem("Preencha a data.", "erro"); return; }
+
+  try {
+    mostrarMensagem("Salvando atendimento...", "info");
+    const resp = await fetch(URL_ATENDIMENTOS, {
+      method: "POST",
+      body: JSON.stringify(dados)
+    });
+    const txt = await resp.text();
+    console.log("[Salvar] Resposta:", txt);
+    mostrarMensagem("✅ Atendimento salvo com sucesso!", "sucesso");
+    document.getElementById("observacoes").value = "";
+    document.getElementById("chakras-afetados").value = "";
+    document.getElementById("desequilibrios").value = "";
+    setTimeout(() => carregarAtendimentos(), 1500);
+  } catch (err) {
+    console.error("[Salvar] Erro:", err);
+    mostrarMensagem("Erro ao salvar: " + err.message, "erro");
+  }
+});
+
+// ============================================================
+// BUSCAS
+// ============================================================
+document.getElementById("busca-clientes").addEventListener("input", e => {
+  renderTabelaClientes(e.target.value);
+});
+document.getElementById("busca-historico").addEventListener("input", e => {
+  renderTabelaHistorico(e.target.value);
+});
+
+// ============================================================
+// RELATÓRIO
+// ============================================================
+document.getElementById("btn-relatorio").addEventListener("click", () => {
+  const inicio = document.getElementById("rel-inicio").value;
+  const fim = document.getElementById("rel-fim").value;
+  const cont = document.getElementById("relatorio-conteudo");
+
+  if (listaAtendimentos.length === 0) {
+    cont.className = "vazio";
+    cont.textContent = "Nenhum atendimento carregado para gerar relatório.";
+    return;
+  }
+
+  let filtrados = listaAtendimentos;
+  if (inicio) filtrados = filtrados.filter(a => (a.data || "") >= inicio);
+  if (fim) filtrados = filtrados.filter(a => (a.data || "") <= fim);
+
+  const total = filtrados.length;
+  const tipos = {};
+  filtrados.forEach(a => {
+    const t = a.tipo || a.Tipo || "Indefinido";
+    tipos[t] = (tipos[t] || 0) + 1;
+  });
+
+  let html = "<p><strong>Total de atendimentos:</strong> " + total + "</p>";
+  html += "<p style='margin-top:10px;'><strong>Por tipo:</strong></p><ul>";
+  for (const t in tipos) html += "<li>" + escapeHtml(t) + ": " + tipos[t] + "</li>";
+  html += "</ul>";
+  cont.className = "";
+  cont.innerHTML = html;
+});
+
+// ============================================================
+// UTILITÁRIO: ESCAPE HTML
+// ============================================================
+function escapeHtml(str) {
+  if (str === null || str === undefined) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
+(function init() {
+  const hoje = new Date().toISOString().split("T")[0];
+  document.getElementById("data-atend").value = hoje;
+  renderChakras();
+  carregarClientes();
+  carregarAtendimentos();
+})();
+</script>
 </body>
 </html>
