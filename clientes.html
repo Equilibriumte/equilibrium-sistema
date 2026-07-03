@@ -1,28 +1,87 @@
-<script>
-    async function carregar() {
-        const URL = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
-        try {
-            // O segredo para evitar erro de conexão é o fetch simples
-            const res = await fetch(URL);
-            const dados = await res.json();
-            
-            const corpo = document.getElementById('corpo');
-            document.getElementById('status').style.display = 'none';
-            document.getElementById('tabela').style.display = 'table';
-            corpo.innerHTML = ""; // Limpa a tabela antes de carregar
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Clientes - Equilibrium</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { display: flex; background-color: #f4f0fa; min-height: 100vh; }
+        
+        /* Sidebar */
+        .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; }
+        .sidebar h2 { margin-bottom: 30px; text-align: center; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
+        .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
 
-            dados.forEach(c => {
-                corpo.innerHTML += `<tr>
-                    <td style="font-family: monospace; color: #666;">${c.id || '-'}</td>
-                    <td><strong>${c.nome || '-'}</strong></td>
-                    <td>${c.whatsapp || '-'}</td>
-                    <td>${c.cidade || '-'}</td>
-                </tr>`;
-            });
-        } catch (e) {
-            document.getElementById('status').innerHTML = 
-                '<div style="color: red; padding: 20px;">❌ Erro ao carregar dados. Verifique se a Implantação do Google está como "Qualquer pessoa".</div>';
+        /* Content */
+        .content { margin-left: 250px; flex: 1; padding: 40px; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow-x: auto; }
+        h1 { color: #4b0082; margin-bottom: 20px; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background-color: #f8f5ff; color: #4b0082; font-size: 12px; text-transform: uppercase; }
+        .id-cell { font-family: monospace; color: #888; font-size: 11px; }
+        .loading { text-align: center; padding: 40px; color: #6a0dad; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Equilibrium</h2>
+        <nav>
+            <a href="index.html">🏠 Home</a>
+            <a href="novo-cliente.html">➕ Novo Cliente</a>
+            <a href="clientes.html" class="active">📋 Lista de Clientes</a>
+        </nav>
+    </div>
+
+    <div class="content">
+        <h1>Lista de Clientes</h1>
+        <div class="card">
+            <div id="status">
+                <div class="loading">Buscando dados na planilha...</div>
+            </div>
+            <table id="tabela" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>WhatsApp</th>
+                        <th>Cidade</th>
+                    </tr>
+                </thead>
+                <tbody id="corpo"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        async function carregar() {
+            const URL = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
+            try {
+                const res = await fetch(URL);
+                const dados = await res.json();
+                const corpo = document.getElementById('corpo');
+                
+                document.getElementById('status').style.display = 'none';
+                document.getElementById('tabela').style.display = 'table';
+
+                dados.forEach(c => {
+                    // Normalizamos os nomes das colunas para evitar erros
+                    const row = `<tr>
+                        <td class="id-cell">${c.id || '-'}</td>
+                        <td><strong>${c.nome || '-'}</strong></td>
+                        <td>${c.whatsapp || '-'}</td>
+                        <td>${c.cidade || '-'}</td>
+                    </tr>`;
+                    corpo.innerHTML += row;
+                });
+            } catch (e) {
+                document.getElementById('status').innerHTML = '<div style="color:red; padding:20px;">❌ Erro ao carregar. Verifique se o Script está como "Qualquer pessoa".</div>';
+            }
         }
-    }
-    window.onload = carregar;
-</script>
+        window.onload = carregar;
+    </script>
+</body>
+</html>
