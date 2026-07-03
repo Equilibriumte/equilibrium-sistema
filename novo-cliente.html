@@ -1,477 +1,143 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Novo Cliente</title>
-  <link rel="stylesheet" href="css/styles.css" />
-  <style>
-    :root {
-      --purple-900: #2d0b4e;
-      --purple-800: #3b0f63;
-      --purple-700: #4a1276;
-      --purple-600: #5b1a91;
-      --purple-500: #6d28d9;
-      --purple-400: #8b5cf6;
-      --yellow-500: #facc15;
-      --yellow-400: #fbbf24;
-      --yellow-300: #fcd34d;
-      --gray-50: #f9fafb;
-      --gray-100: #f3f4f6;
-      --gray-200: #e5e7eb;
-      --gray-500: #6b7280;
-      --gray-700: #374151;
-      --white: #ffffff;
-      --shadow: 0 10px 25px rgba(45, 11, 78, 0.15);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo Cliente - Equilibrium</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { display: flex; background-color: #f4f0fa; min-height: 100vh; }
+        
+        /* Sidebar */
+        .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; }
+        .sidebar h2 { margin-bottom: 30px; text-align: center; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
+        .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-
-    body {
-      display: flex;
-      min-height: 100vh;
-      background: linear-gradient(135deg, var(--gray-50), var(--gray-100));
-      color: var(--gray-700);
-    }
-
-    .sidebar {
-      width: 260px;
-      background: linear-gradient(180deg, var(--purple-800), var(--purple-900));
-      color: var(--white);
-      display: flex;
-      flex-direction: column;
-      padding: 24px 18px;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      box-shadow: 4px 0 20px rgba(45, 11, 78, 0.25);
-    }
-
-    .sidebar .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px 22px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-      margin-bottom: 18px;
-    }
-
-    .sidebar .logo .badge {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--yellow-400), var(--yellow-500));
-      display: grid;
-      place-items: center;
-      color: var(--purple-900);
-      font-weight: 800;
-      font-size: 18px;
-    }
-
-    .sidebar .logo h1 {
-      font-size: 18px;
-      font-weight: 700;
-      line-height: 1.1;
-    }
-
-    .sidebar .logo span {
-      font-size: 11px;
-      color: var(--yellow-300);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .sidebar nav {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .sidebar nav a {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      border-radius: 10px;
-      color: rgba(255, 255, 255, 0.85);
-      text-decoration: none;
-      font-weight: 500;
-      transition: all 0.2s ease;
-    }
-
-    .sidebar nav a:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--white);
-    }
-
-    .sidebar nav a.active {
-      background: linear-gradient(135deg, var(--purple-500), var(--purple-600));
-      color: var(--white);
-      box-shadow: 0 6px 14px rgba(109, 40, 217, 0.45);
-    }
-
-    .sidebar nav a .icon {
-      width: 20px;
-      text-align: center;
-      font-size: 16px;
-    }
-
-    .main {
-      flex: 1;
-      padding: 32px 40px;
-      overflow-y: auto;
-    }
-
-    .page-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-    }
-
-    .page-header h2 {
-      font-size: 26px;
-      color: var(--purple-900);
-      font-weight: 700;
-    }
-
-    .page-header p {
-      color: var(--gray-500);
-      margin-top: 4px;
-      font-size: 14px;
-    }
-
-    .page-header .accent {
-      width: 60px;
-      height: 6px;
-      border-radius: 6px;
-      background: linear-gradient(90deg, var(--yellow-400), var(--purple-500));
-      margin-top: 10px;
-    }
-
-    .card {
-      background: var(--white);
-      border-radius: 16px;
-      padding: 28px;
-      box-shadow: var(--shadow);
-      max-width: 880px;
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 22px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--gray-200);
-    }
-
-    .card-header .dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: var(--yellow-400);
-      box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.25);
-    }
-
-    .card-header h3 {
-      font-size: 18px;
-      color: var(--purple-800);
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px 22px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .form-group.full {
-      grid-column: 1 / -1;
-    }
-
-    .form-group label {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--purple-800);
-    }
-
-    .form-group label .req {
-      color: #e11d48;
-      margin-left: 2px;
-    }
-
-    .form-group input {
-      padding: 11px 14px;
-      border: 1.5px solid var(--gray-200);
-      border-radius: 10px;
-      font-size: 14px;
-      color: var(--gray-700);
-      background: var(--gray-50);
-      transition: all 0.2s ease;
-    }
-
-    .form-group input:focus {
-      outline: none;
-      border-color: var(--purple-500);
-      background: var(--white);
-      box-shadow: 0 0 0 4px rgba(109, 40, 217, 0.12);
-    }
-
-    .form-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-      margin-top: 26px;
-      padding-top: 18px;
-      border-top: 1px solid var(--gray-200);
-    }
-
-    .btn {
-      padding: 12px 22px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      border: none;
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-secondary {
-      background: var(--gray-100);
-      color: var(--gray-700);
-    }
-
-    .btn-secondary:hover {
-      background: var(--gray-200);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--purple-500), var(--purple-700));
-      color: var(--white);
-      box-shadow: 0 8px 18px rgba(109, 40, 217, 0.35);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 10px 22px rgba(109, 40, 217, 0.45);
-    }
-
-    .btn-accent {
-      background: linear-gradient(135deg, var(--yellow-400), var(--yellow-500));
-      color: var(--purple-900);
-      box-shadow: 0 8px 18px rgba(250, 204, 21, 0.35);
-    }
-
-    .btn-accent:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 10px 22px rgba(250, 204, 21, 0.45);
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      padding: 14px 20px;
-      border-radius: 10px;
-      color: var(--white);
-      font-weight: 600;
-      font-size: 14px;
-      box-shadow: var(--shadow);
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.25s ease;
-      z-index: 999;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .toast.success {
-      background: linear-gradient(135deg, var(--purple-500), var(--purple-700));
-    }
-
-    .toast.error {
-      background: linear-gradient(135deg, #e11d48, #be123c);
-    }
-
-    @media (max-width: 768px) {
-      body { flex-direction: column; }
-      .sidebar { width: 100%; height: auto; position: relative; }
-      .main { padding: 22px; }
-      .form-grid { grid-template-columns: 1fr; }
-    }
-  </style>
+        /* Content */
+        .main-content { margin-left: 250px; flex: 1; padding: 40px; }
+        .form-card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
+        h1 { color: #4b0082; margin-bottom: 25px; }
+        
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .full-width { grid-column: span 2; }
+        
+        .form-group { display: flex; flex-direction: column; }
+        label { font-weight: bold; color: #4b0082; margin-bottom: 5px; font-size: 14px; }
+        input { padding: 12px; border: 2px solid #e0d0f0; border-radius: 8px; outline: none; transition: 0.3s; }
+        input:focus { border-color: #ffd700; }
+        
+        .btn-save { grid-column: span 2; padding: 15px; background: #ffd700; border: none; border-radius: 10px; color: #4b0082; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        .btn-save:hover { background: #ffb300; transform: translateY(-2px); }
+        .btn-save:disabled { background: #ccc; cursor: not-allowed; }
+    </style>
 </head>
 <body>
-  <aside class="sidebar">
-    <div class="logo">
-      <div class="badge">C</div>
-      <div>
-        <h1>Clientes</h1>
-        <span>Gestão</span>
-      </div>
+    <div class="sidebar">
+        <h2>Equilibrium</h2>
+        <nav>
+            <a href="index.html">🏠 Home</a>
+            <a href="novo-cliente.html" class="active">➕ Novo Cliente</a>
+            <a href="clientes.html">📋 Lista de Clientes</a>
+        </nav>
     </div>
-    <nav>
-      <a href="index.html"><span class="icon">🏠</span> Home</a>
-      <a href="novo-cliente.html" class="active"><span class="icon">➕</span> Novo Cliente</a>
-      <a href="lista-clientes.html"><span class="icon">📋</span> Lista de Clientes</a>
-    </nav>
-  </aside>
 
-  <main class="main">
-    <header class="page-header">
-      <div>
-        <h2>Novo Cliente</h2>
-        <p>Cadastre um novo cliente no sistema.</p>
-        <div class="accent"></div>
-      </div>
-    </header>
-
-    <section class="card">
-      <div class="card-header">
-        <span class="dot"></span>
-        <h3>Dados do Cliente</h3>
-      </div>
-
-      <form id="form-cliente" novalidate>
-        <div class="form-grid">
-          <div class="form-group full">
-            <label for="nome">Nome<span class="req">*</span></label>
-            <input type="text" id="nome" name="nome" placeholder="Nome completo" required />
-          </div>
-
-          <div class="form-group">
-            <label for="nascimento">Nascimento<span class="req">*</span></label>
-            <input type="date" id="nascimento" name="nascimento" required />
-          </div>
-
-          <div class="form-group">
-            <label for="whatsapp">WhatsApp<span class="req">*</span></label>
-            <input type="tel" id="whatsapp" name="whatsapp" placeholder="(00) 00000-0000" required />
-          </div>
-
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="cliente@email.com" />
-          </div>
-
-          <div class="form-group">
-            <label for="instagram">Instagram</label>
-            <input type="text" id="instagram" name="instagram" placeholder="@usuario" />
-          </div>
-
-          <div class="form-group">
-            <label for="rua">Rua</label>
-            <input type="text" id="rua" name="rua" placeholder="Nome da rua" />
-          </div>
-
-          <div class="form-group">
-            <label for="numero">Número</label>
-            <input type="text" id="numero" name="numero" placeholder="Nº" />
-          </div>
-
-          <div class="form-group">
-            <label for="bairro">Bairro</label>
-            <input type="text" id="bairro" name="bairro" placeholder="Bairro" />
-          </div>
-
-          <div class="form-group">
-            <label for="cidade">Cidade</label>
-            <input type="text" id="cidade" name="cidade" placeholder="Cidade" />
-          </div>
-
-          <div class="form-group">
-            <label for="estado">Estado</label>
-            <input type="text" id="estado" name="estado" placeholder="UF" maxlength="2" />
-          </div>
-
-          <div class="form-group">
-            <label for="cep">CEP</label>
-            <input type="text" id="cep" name="cep" placeholder="00000-000" />
-          </div>
-
-          <div class="form-group full">
-            <label for="indicacao">Indicação</label>
-            <input type="text" id="indicacao" name="indicacao" placeholder="Quem indicou?" />
-          </div>
+    <div class="main-content">
+        <div class="form-card">
+            <h1>Cadastrar Novo Cliente</h1>
+            <form id="formCliente">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Nome Completo</label>
+                        <input type="text" id="nome" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nascimento</label>
+                        <input type="date" id="nascimento">
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp</label>
+                        <input type="text" id="whatsapp" required placeholder="(00) 00000-0000">
+                    </div>
+                    <div class="form-group">
+                        <label>E-mail</label>
+                        <input type="email" id="email">
+                    </div>
+                    <div class="form-group">
+                        <label>Instagram</label>
+                        <input type="text" id="instagram" placeholder="@usuario">
+                    </div>
+                    <div class="form-group">
+                        <label>Rua</label>
+                        <input type="text" id="rua">
+                    </div>
+                    <div class="form-group">
+                        <label>Número</label>
+                        <input type="text" id="numero">
+                    </div>
+                    <div class="form-group">
+                        <label>Bairro</label>
+                        <input type="text" id="bairro">
+                    </div>
+                    <div class="form-group">
+                        <label>Cidade</label>
+                        <input type="text" id="cidade">
+                    </div>
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <input type="text" id="estado" maxlength="2" placeholder="UF">
+                    </div>
+                    <div class="form-group">
+                        <label>CEP</label>
+                        <input type="text" id="cep">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Indicação</label>
+                        <input type="text" id="indicacao">
+                    </div>
+                    <button type="submit" id="btnSalvar" class="btn-save">SALVAR CLIENTE</button>
+                </div>
+            </form>
         </div>
+    </div>
 
-        <div class="form-actions">
-          <button type="reset" class="btn btn-secondary">Limpar</button>
-          <button type="submit" class="btn btn-accent">Salvar Cliente</button>
-        </div>
-      </form>
-    </section>
-  </main>
+    <script src="js/database.js"></script>
+    <script>
+        document.getElementById('formCliente').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnSalvar');
+            btn.disabled = true;
+            btn.innerText = "Salvando na nuvem...";
 
-  <div id="toast" class="toast"></div>
+            const dados = {
+                nome: document.getElementById('nome').value,
+                nascimento: document.getElementById('nascimento').value,
+                whatsapp: document.getElementById('whatsapp').value,
+                email: document.getElementById('email').value,
+                instagram: document.getElementById('instagram').value,
+                rua: document.getElementById('rua').value,
+                numero: document.getElementById('numero').value,
+                bairro: document.getElementById('bairro').value,
+                cidade: document.getElementById('cidade').value,
+                estado: document.getElementById('estado').value,
+                cep: document.getElementById('cep').value,
+                indicacao: document.getElementById('indicacao').value
+            };
 
-  <script src="js/database.js"></script>
-  <script>
-    const form = document.getElementById("form-cliente");
-    const toast = document.getElementById("toast");
-
-    function showToast(message, type = "success") {
-      toast.textContent = message;
-      toast.className = "toast " + type + " show";
-      setTimeout(() => {
-        toast.className = "toast " + type;
-      }, 3000);
-    }
-
-    form.addEventListener("submit", function (event) {
-      event.preventDefault();
-
-      const cliente = {
-        nome: document.getElementById("nome").value.trim(),
-        nascimento: document.getElementById("nascimento").value.trim(),
-        whatsapp: document.getElementById("whatsapp").value.trim(),
-        email: document.getElementById("email").value.trim(),
-        instagram: document.getElementById("instagram").value.trim(),
-        rua: document.getElementById("rua").value.trim(),
-        numero: document.getElementById("numero").value.trim(),
-        bairro: document.getElementById("bairro").value.trim(),
-        cidade: document.getElementById("cidade").value.trim(),
-        estado: document.getElementById("estado").value.trim(),
-        cep: document.getElementById("cep").value.trim(),
-        indicacao: document.getElementById("indicacao").value.trim()
-      };
-
-      if (!cliente.nome || !cliente.nascimento || !cliente.whatsapp) {
-        showToast("Preencha os campos obrigatórios.", "error");
-        return;
-      }
-
-      if (typeof salvarCliente === "function") {
-        try {
-          salvarCliente(cliente);
-          showToast("Cliente cadastrado com sucesso!", "success");
-          form.reset();
-        } catch (err) {
-          console.error(err);
-          showToast("Erro ao salvar cliente.", "error");
-        }
-      } else {
-        console.error("js/database.js não carregado ou função salvarCliente ausente.");
-        showToast("Erro: banco de dados indisponível.", "error");
-      }
-    });
-  </script>
+            try {
+                if (typeof window.salvarCliente === 'function') {
+                    await window.salvarCliente(dados);
+                    alert("✅ Sucesso! Cliente cadastrado com ID automático.");
+                    window.location.href = 'clientes.html';
+                } else {
+                    throw new Error("Motor de banco de dados não carregado.");
+                }
+            } catch (err) {
+                alert("❌ Erro ao salvar: " + err.message);
+                btn.disabled = false;
+                btn.innerText = "SALVAR CLIENTE";
+            }
+        });
+    </script>
 </body>
 </html>
