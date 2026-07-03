@@ -20,7 +20,7 @@
         .header h1 { color: #4b0082; font-size: 28px; }
         
         .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 1200px; } /* Tabela larga para todos os campos */
+        table { width: 100%; border-collapse: collapse; min-width: 1500px; }
         th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 13px; white-space: nowrap; }
         th { background-color: #f8f5ff; color: #4b0082; font-weight: 600; text-transform: uppercase; font-size: 11px; position: sticky; top: 0; }
         .id-cell { font-family: monospace; color: #888; font-weight: bold; }
@@ -44,7 +44,7 @@
         
         <div class="card">
             <div id="status-container">
-                <div class="loading">🔍 Carregando todos os dados da planilha...</div>
+                <div class="loading">🔍 Sincronizando dados com a planilha...</div>
             </div>
             <table id="tabela-clientes" style="display:none;">
                 <thead>
@@ -55,7 +55,7 @@
                         <th>WhatsApp</th>
                         <th>Email</th>
                         <th>Instagram</th>
-                        <th>Endereço (Rua, Nº, Bairro)</th>
+                        <th>Endereço</th>
                         <th>Cidade/UF</th>
                         <th>CEP</th>
                         <th>Indicação</th>
@@ -67,58 +67,62 @@
     </div>
 
     <script>
+        // Função para encontrar o valor na planilha ignorando maiúsculas/minúsculas
         function getVal(obj, campo) {
             const keys = Object.keys(obj);
             const keyEncontrada = keys.find(k => k.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === campo.toLowerCase());
             return keyEncontrada ? obj[keyEncontrada] : "-";
         }
 
+        // Função para deixar a data bonita (DD-MM-YYYY) e remover o "T03:00:00"
+        function formatarData(valor) {
+            if (!valor || valor === "-") return "-";
+            let d = String(valor);
+            if (d.includes("T")) {
+                let date = new Date(d);
+                let dia = String(date.getUTCDate()).padStart(2, '0');
+                let mes = String(date.getUTCMonth() + 1).padStart(2, '0');
+                let ano = date.getUTCFullYear();
+                return `${dia}-${mes}-${ano}`;
+            }
+            return d;
+        }
+
+        // Função para formatar o WhatsApp com máscara (00) 00000-0000
+        function formatarWhats(valor) {
+            if (!valor || valor === "-") return "-";
+            let tel = String(valor).replace(/\D/g, "");
+            if (tel.startsWith("55")) tel = tel.substring(2);
+            if (tel.length === 11) {
+                return "(" + tel.substring(0, 2) + ") " + tel.substring(2, 7) + "-" + tel.substring(7);
+            }
+            return valor;
+        }
+
         async function carregarDados() {
-            const URL_GOOGLE = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
+            const URL = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
             
             try {
-                const response = await fetch(URL_GOOGLE);
+                const response = await fetch(URL);
                 const dados = await response.json();
                 
                 const corpo = document.getElementById('corpo-tabela');
-                const status = document.getElementById('status-container');
-                const tabela = document.getElementById('tabela-clientes');
-
-                if (!dados || dados.length === 0) {
-                    status.innerHTML = '<div class="loading">Nenhum cliente encontrado na planilha.</div>';
-                    return;
-                }
-
-                status.style.display = 'none';
-                tabela.style.display = 'table';
+                document.getElementById('status-container').style.display = 'none';
+                document.getElementById('tabela-clientes').style.display = 'table';
                 corpo.innerHTML = "";
 
                 dados.forEach(c => {
-                    const id = getVal(c, 'id');
-                    const nome = getVal(c, 'nome');
-                    const nasc = getVal(c, 'nascimento');
-                    const whats = getVal(c, 'whatsapp');
-                    const email = getVal(c, 'email');
-                    const insta = getVal(c, 'instagram');
-                    const rua = getVal(c, 'rua');
-                    const num = getVal(c, 'numero');
-                    const bairro = getVal(c, 'bairro');
-                    const cidade = getVal(c, 'cidade');
-                    const estado = getVal(c, 'estado');
-                    const cep = getVal(c, 'cep');
-                    const indicacao = getVal(c, 'indicacao');
-
                     const row = `<tr>
-                        <td class="id-cell">${id}</td>
-                        <td><strong>${nome}</strong></td>
-                        <td>${nasc}</td>
-                        <td>${whats}</td>
-                        <td>${email}</td>
-                        <td>${insta}</td>
-                        <td>${rua}, ${num} - ${bairro}</td>
-                        <td>${cidade}/${estado}</td>
-                        <td>${cep}</td>
-                        <td>${indicacao}</td>
+                        <td class="id-cell">${getVal(c, 'id')}</td>
+                        <td><strong>${getVal(c, 'nome')}</strong></td>
+                        <td>${formatarData(getVal(c, 'nascimento'))}</td>
+                        <td>${formatarWhats(getVal(c, 'whatsapp'))}</td>
+                        <td>${getVal(c, 'email')}</td>
+                        <td>${getVal(c, 'instagram')}</td>
+                        <td>${getVal(c, 'rua')}, ${getVal(c, 'numero')} - ${getVal(c, 'bairro')}</td>
+                        <td>${getVal(c, 'cidade')}/${getVal(c, 'estado')}</td>
+                        <td>${getVal(c, 'cep')}</td>
+                        <td>${getVal(c, 'indicacao')}</td>
                     </tr>`;
                     corpo.innerHTML += row;
                 });
@@ -126,7 +130,7 @@
             } catch (error) {
                 console.error('Erro:', error);
                 document.getElementById('status-container').innerHTML = 
-                    '<div style="color:red; padding:20px; text-align:center;">❌ Erro ao carregar. Verifique se o Script está como "Qualquer pessoa".</div>';
+                    '<div style="color:red; text-align:center; padding:20px;">❌ Erro ao carregar dados. Verifique a conexão.</div>';
             }
         }
 
