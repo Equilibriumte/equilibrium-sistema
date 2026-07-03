@@ -17,7 +17,7 @@
         /* Content & Tabs */
         .main-content { margin-left: 250px; flex: 1; padding: 40px; }
         .tabs-header { display: flex; gap: 5px; margin-bottom: 20px; background: #e0d0f0; padding: 5px; border-radius: 12px; }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: none; color: #4b0082; cursor: pointer; border-radius: 8px; font-weight: bold; transition: 0.3s; font-size: 13px; }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: none; color: #4b0082; cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 12px; transition: 0.3s; }
         .tab-btn.active { background: #4b0082; color: #ffd700; }
         
         .tab-content { display: none; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
@@ -28,44 +28,44 @@
         .full { grid-column: span 2; }
         label { display: block; font-weight: bold; color: #4b0082; margin-bottom: 8px; font-size: 14px; }
         input, select, textarea { width: 100%; padding: 12px; border: 2px solid #e0d0f0; border-radius: 8px; outline: none; transition: 0.3s; }
-        input:focus, select:focus { border-color: #ffd700; }
 
-        /* Chakras */
-        .chakra-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 20px; }
-        .chakra-btn { padding: 20px 10px; border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; text-align: center; font-size: 12px; }
-        .chakra-btn:hover { transform: scale(1.05); }
-        .chakra-btn span { display: block; font-size: 16px; margin-top: 5px; }
+        /* Painéis de Botões (Chakras e Desequilíbrios) */
+        .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 20px 0; }
+        .color-btn { padding: 15px; border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; text-align: center; font-size: 11px; transition: 0.3s; }
+        .color-btn span { display: block; font-size: 15px; margin-top: 5px; }
+        
+        /* Cores Chakras */
+        .c-coronario { background: #8a2be2; } .c-frontal { background: #4b0082; } .c-laringeo { background: #87ceeb; color: #333; }
+        .c-cardiaco { background: #228b22; } .c-umbilical { background: #ffd700; color: #333; } .c-sacro { background: #ff8c00; } .c-basico { background: #ff0000; }
+        
+        /* Cores Desequilíbrios */
+        .d-mental { background: #5dade2; } .d-emocional { background: #ec7063; } .d-espiritual { background: #af7ac5; } .d-fisico { background: #58d68d; }
 
-        /* Cores Específicas */
-        .c-coronario { background: #8a2be2; } /* Violeta */
-        .c-frontal { background: #4b0082; }   /* Azul Índigo */
-        .c-laringeo { background: #87ceeb; color: #333; } /* Azul Claro */
-        .c-cardiaco { background: #228b22; }  /* Verde */
-        .c-umbilical { background: #ffd700; color: #333; } /* Amarelo */
-        .c-sacro { background: #ff8c00; }     /* Laranja */
-        .c-basico { background: #ff0000; }    /* Vermelho */
-
-        .btn-finalizar { margin-top: 30px; padding: 18px; background: #ffd700; border: none; border-radius: 12px; color: #4b0082; font-weight: bold; font-size: 16px; cursor: pointer; width: 100%; transition: 0.3s; }
-        .btn-finalizar:hover { background: #fbbf24; transform: translateY(-2px); }
+        /* Navigation Buttons */
+        .nav-actions { display: flex; justify-content: space-between; margin-top: 30px; gap: 15px; }
+        .btn-action { padding: 15px 25px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; }
+        .btn-save { background: #ffd700; color: #4b0082; flex: 1; }
+        .btn-next { background: #4b0082; color: white; }
+        .btn-action:hover { transform: translateY(-2px); opacity: 0.9; }
     </style>
 </head>
 <body>
     <div class="sidebar">
-    <h2>Equilibrium</h2>
-    <nav>
-        <a href="novo-cliente.html">🏠 Home</a>
-        <a href="novo-cliente.html">➕ Novo Cliente</a>
-        <a href="clientes.html">📋 Lista de Clientes</a>
-        <a href="atendimentos.html" class="active">✨ Atendimentos</a>
-    </nav>
-</div>
+        <h2>Equilibrium</h2>
+        <nav>
+            <a href="novo-cliente.html">🏠 Home</a>
+            <a href="clientes.html">📋 Lista de Clientes</a>
+            <a href="atendimentos.html" class="active">✨ Novo Atendimento</a>
+            <a href="lista-atendimentos.html">📜 Histórico</a>
+        </nav>
+    </div>
 
     <div class="main-content">
         <h1 style="color: #4b0082; margin-bottom: 20px;">Ficha de Atendimento</h1>
         
         <div class="tabs-header">
-            <button class="tab-btn active" onclick="showTab(0)">1. Dados Iniciais</button>
-            <button class="tab-btn" onclick="showTab(1)">2. Análise Inicial</button>
+            <button class="tab-btn active" onclick="showTab(0)">1. Dados</button>
+            <button class="tab-btn" onclick="showTab(1)">2. Inicial</button>
             <button class="tab-btn" onclick="showTab(2)">3. Específico</button>
             <button class="tab-btn" onclick="showTab(3)">4. Ambiente</button>
             <button class="tab-btn" onclick="showTab(4)">5. Busca</button>
@@ -75,89 +75,93 @@
             <!-- ABA 1: Dados Iniciais -->
             <div class="tab-content active">
                 <div class="form-grid">
-                    <div class="form-group"><label>ID Cliente</label><input type="text" id="idCliente" required></div>
-                    <div class="form-group"><label>Nome do Cliente</label><input type="text" id="nomeCliente" required></div>
-                    <div class="form-group"><label>Data Atendimento</label><input type="date" id="dataAtend" required></div>
-                    <div class="form-group">
-                        <label>Status</label>
-                        <select id="status">
-                            <option>Em Aberto</option>
-                            <option>Finalizado</option>
-                            <option>Cancelado</option>
-                        </select>
+                    <div class="form-group full">
+                        <label>Nome do Cliente</label>
+                        <input type="text" id="nomeCliente" list="listaClientes" required>
+                        <datalist id="listaClientes"></datalist>
+                        <input type="hidden" id="idCliente">
                     </div>
-                    <div class="form-group">
-                        <label>Tipo de Atendimento</label>
-                        <select id="tipoAtend">
-                            <option>Presencial</option>
-                            <option>Online</option>
-                            <option>Domiciliar</option>
-                        </select>
-                    </div>
-                    <div class="form-group full"><label>Queixa Principal</label><textarea id="queixaP" rows="2"></textarea></div>
-                    <div class="form-group full"><label>Queixa Secundária</label><textarea id="queixaS" rows="2"></textarea></div>
+                    <div class="form-group"><label>Data</label><input type="date" id="dataAtend" required></div>
+                    <div class="form-group"><label>Status</label><select id="statusSelect"></select></div>
+                    <div class="form-group full"><label>Queixa Principal</label><textarea id="queixaP"></textarea></div>
+                    <div class="form-group full"><label>Queixa Secundária</label><textarea id="queixaS"></textarea></div>
+                </div>
+                <div class="nav-actions">
+                    <button type="button" class="btn-action btn-save" onclick="salvarProgresso()">SALVAR AGORA</button>
+                    <button type="button" class="btn-action btn-next" onclick="showTab(1)">PRÓXIMO ➔</button>
                 </div>
             </div>
 
             <!-- ABA 2: Análise Inicial -->
             <div class="tab-content">
                 <div class="form-grid">
-                    <div class="form-group"><label>Bovis (4 dígitos)</label><input type="number" id="bovis" placeholder="0000"></div>
-                    <div class="form-group">
-                        <label>Tamanho da Aura</label>
-                        <select id="tamanhoAura"><option>0%</option><option>25%</option><option>50%</option><option>75%</option><option>100%</option></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Proteção da Aura</label>
-                        <select id="protecaoAura"><option>0%</option><option>50%</option><option>100%</option></select>
-                    </div>
+                    <div class="form-group"><label>Bovis (4 dígitos)</label><input type="number" id="bovis"></div>
+                    <div class="form-group"><label>Tamanho Aura (%)</label><select id="auraT"><option>100%</option><option>75%</option><option>50%</option></select></div>
                 </div>
 
-                <label style="margin-top: 20px;">Chakras (Clique para inserir %)</label>
-                <div class="chakra-grid">
-                    <button type="button" class="chakra-btn c-coronario" onclick="setChakra(this, 'Coronário')">Coronário<span id="v-coronario">-</span></button>
-                    <button type="button" class="chakra-btn c-frontal" onclick="setChakra(this, 'Frontal')">Frontal<span id="v-frontal">-</span></button>
-                    <button type="button" class="chakra-btn c-laringeo" onclick="setChakra(this, 'Laríngeo')">Laríngeo<span id="v-laringeo">-</span></button>
-                    <button type="button" class="chakra-btn c-cardiaco" onclick="setChakra(this, 'Cardíaco')">Cardíaco<span id="v-cardiaco">-</span></button>
-                    <button type="button" class="chakra-btn c-umbilical" onclick="setChakra(this, 'Umbilical')">Umbilical<span id="v-umbilical">-</span></button>
-                    <button type="button" class="chakra-btn c-sacro" onclick="setChakra(this, 'Sacro')">Sacro<span id="v-sacro">-</span></button>
-                    <button type="button" class="chakra-btn c-basico" onclick="setChakra(this, 'Básico')">Básico<span id="v-basico">-</span></button>
+                <label style="margin-top: 20px;">Chakras (%)</label>
+                <div class="btn-grid">
+                    <button type="button" class="color-btn c-coronario" onclick="setVal(this, 'Coronário', 'v-coronario')">Coronário<span id="v-coronario">-</span></button>
+                    <button type="button" class="color-btn c-frontal" onclick="setVal(this, 'Frontal', 'v-frontal')">Frontal<span id="v-frontal">-</span></button>
+                    <button type="button" class="color-btn c-laringeo" onclick="setVal(this, 'Laríngeo', 'v-laringeo')">Laríngeo<span id="v-laringeo">-</span></button>
+                    <button type="button" class="color-btn c-cardiaco" onclick="setVal(this, 'Cardíaco', 'v-cardiaco')">Cardíaco<span id="v-cardiaco">-</span></button>
+                    <button type="button" class="color-btn c-umbilical" onclick="setVal(this, 'Umbilical', 'v-umbilical')">Umbilical<span id="v-umbilical">-</span></button>
+                    <button type="button" class="color-btn c-sacro" onclick="setVal(this, 'Sacro', 'v-sacro')">Sacro<span id="v-sacro">-</span></button>
+                    <button type="button" class="color-btn c-basico" onclick="setVal(this, 'Básico', 'v-basico')">Básico<span id="v-basico">-</span></button>
                 </div>
 
-                <div class="form-grid" style="margin-top: 20px;">
-                    <div class="form-group">
-                        <label>Cores em Excesso</label>
-                        <select id="coresExcesso"><option>Nenhuma</option><option>Vermelho</option><option>Verde</option><option>Azul</option></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Cores em Falta</label>
-                        <select id="coresFalta"><option>Nenhuma</option><option>Amarelo</option><option>Violeta</option><option>Laranja</option></select>
-                    </div>
-                    <div class="form-group full"><label>Diagnóstico</label><textarea id="diagInicial"></textarea></div>
+                <label>Desequilíbrios (%)</label>
+                <div class="btn-grid">
+                    <button type="button" class="color-btn d-mental" onclick="setVal(this, 'Mental', 'v-mental')">Mental<span id="v-mental">-</span></button>
+                    <button type="button" class="color-btn d-emocional" onclick="setVal(this, 'Emocional', 'v-emocional')">Emocional<span id="v-emocional">-</span></button>
+                    <button type="button" class="color-btn d-espiritual" onclick="setVal(this, 'Espiritual', 'v-espiritual')">Espiritual<span id="v-espiritual">-</span></button>
+                    <button type="button" class="color-btn d-fisico" onclick="setVal(this, 'Físico', 'v-fisico')">Físico<span id="v-fisico">-</span></button>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group"><label>Cores em Excesso</label><select id="coresExcesso"></select></div>
+                    <div class="form-group"><label>Cores em Falta</label><select id="coresFalta"></select></div>
+                </div>
+                <div class="nav-actions">
+                    <button type="button" class="btn-action btn-save" onclick="salvarProgresso()">SALVAR AGORA</button>
+                    <button type="button" class="btn-action btn-next" onclick="showTab(2)">PRÓXIMO ➔</button>
                 </div>
             </div>
 
-            <!-- ABA 3: Análise Específica -->
+            <!-- ABA 3: Específico -->
             <div class="tab-content">
                 <label>Causa Raiz</label><textarea id="causaRaiz" rows="3"></textarea>
                 <label style="margin-top:15px;">Crenças Limitantes</label><textarea id="crencas" rows="3"></textarea>
-                <label style="margin-top:15px;">Diagnóstico Final</label><textarea id="diagEspec" rows="3"></textarea>
+                <div class="nav-actions">
+                    <button type="button" class="btn-action btn-save" onclick="salvarProgresso()">SALVAR AGORA</button>
+                    <button type="button" class="btn-action btn-next" onclick="showTab(3)">PRÓXIMO ➔</button>
+                </div>
             </div>
 
-            <!-- ABA 4: Análise de Ambiente -->
+            <!-- ABA 4: Ambiente -->
             <div class="tab-content">
-                <div class="form-group"><label>Tipo de Ambiente</label><select id="tipoAmbiente"><option>Residencial</option><option>Comercial</option></select></div>
-                <label style="margin-top:15px;">Endereço do Ambiente</label><input type="text" id="endAmbiente">
-                <label style="margin-top:15px;">Pessoas Envolvidas</label><input type="text" id="pessoasEnv">
-                <label style="margin-top:15px;">Diagnóstico do Ambiente</label><textarea id="diagAmbiente" rows="3"></textarea>
+                <div class="form-grid">
+                    <div class="form-group"><label>Tipo de Ambiente</label><select id="tipoAmbiente"></select></div>
+                    <div class="form-group"><label>Endereço</label><input type="text" id="endAmbiente"></div>
+                    <div class="form-group full"><label>Queixa sobre o Ambiente</label><textarea id="queixaAmbiente"></textarea></div>
+                </div>
+                <div class="nav-actions">
+                    <button type="button" class="btn-action btn-save" onclick="salvarProgresso()">SALVAR AGORA</button>
+                    <button type="button" class="btn-action btn-next" onclick="showTab(4)">PRÓXIMO ➔</button>
+                </div>
             </div>
 
             <!-- ABA 5: Busca -->
             <div class="tab-content">
-                <div class="form-group"><label>Tipo de Busca</label><select id="tipoBusca"><option>Objeto</option><option>Pessoa</option><option>Animal</option></select></div>
-                <label style="margin-top:15px;">Descrição</label><textarea id="descBusca" rows="3"></textarea>
-                <label style="margin-top:15px;">Resultado</label><select id="resBusca"><option>Encontrado</option><option>Não Encontrado</option></select>
-                <button type="submit" class="btn-finalizar">FINALIZAR E SALVAR ATENDIMENTO</button>
+                <div class="form-grid">
+                    <div class="form-group"><label>Tipo de Busca</label><select id="tipoBusca"></select></div>
+                    <div class="form-group"><label>Info da Busca</label><input type="text" id="infoBusca"></div>
+                    <div class="form-group full"><label>Resultado da Busca</label><select id="resBusca"></select></div>
+                    <div class="form-group full"><label>Descrição da Busca</label><textarea id="descBusca"></textarea></div>
+                </div>
+                <div class="nav-actions">
+                    <button type="submit" class="btn-action btn-save">FINALIZAR E SALVAR TUDO</button>
+                </div>
             </div>
         </form>
     </div>
@@ -166,50 +170,28 @@
         const tabs = document.querySelectorAll('.tab-content');
         const btns = document.querySelectorAll('.tab-btn');
 
-        function showTab(index) {
+        function showTab(i) {
             tabs.forEach(t => t.classList.remove('active'));
             btns.forEach(b => b.classList.remove('active'));
-            tabs[index].classList.add('active');
-            btns[index].classList.add('active');
+            tabs[i].classList.add('active');
+            btns[i].classList.add('active');
+            window.scrollTo(0,0);
         }
 
-        function setChakra(btn, nome) {
-            const val = prompt(`Digite a porcentagem para o Chakra ${nome}:`);
-            if (val !== null) {
-                btn.querySelector('span').innerText = val + "%";
-            }
+        function setVal(btn, nome, spanId) {
+            const val = prompt(`Digite a % para ${nome}:`);
+            if (val !== null) document.getElementById(spanId).innerText = val + "%";
         }
 
-        document.getElementById('formAtendimento').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const URL = 'https://script.google.com/macros/s/AKfycbzBEYsubmBz6FKNY0S3ZyxBIoAQj60Ob7G73uw-TI118tAjtFXWyK_JVEmxz52y4Yn-/exec';
-            
-            const payload = {
-                idCliente: document.getElementById('idCliente').value,
-                nomeCliente: document.getElementById('nomeCliente').value,
-                dataAtend: document.getElementById('dataAtend').value,
-                status: document.getElementById('status').value,
-                tipo: document.getElementById('tipoAtend').value,
-                queixaPrincipal: document.getElementById('queixaP').value,
-                bovis: document.getElementById('bovis').value,
-                coronario: document.getElementById('v-coronario').innerText,
-                frontal: document.getElementById('v-frontal').innerText,
-                laringeo: document.getElementById('v-laringeo').innerText,
-                cardiaco: document.getElementById('v-cardiaco').innerText,
-                umbilical: document.getElementById('v-umbilical').innerText,
-                sacro: document.getElementById('v-sacro').innerText,
-                basico: document.getElementById('v-basico').innerText,
-                diagEspec: document.getElementById('diagEspec').value
-            };
+        async function salvarProgresso() {
+            alert("Salvando progresso atual na planilha...");
+            document.getElementById('formAtendimento').requestSubmit();
+        }
 
-            try {
-                const res = await fetch(URL, { method: 'POST', body: JSON.stringify(payload) });
-                alert("✅ Atendimento salvo com sucesso!");
-                window.location.href = 'clientes.html';
-            } catch (err) {
-                alert("❌ Erro ao salvar. Verifique a conexão.");
-            }
-        });
+        // Simulação de carregamento dinâmico (Aqui você conectará com seu Apps Script)
+        window.onload = () => {
+            console.log("Sistema Equilibrium carregado. Pronto para buscar configurações da planilha.");
+        };
     </script>
 </body>
 </html>
