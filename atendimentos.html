@@ -28,21 +28,24 @@
         .full { grid-column: span 2; }
         label { display: block; font-weight: bold; color: #4b0082; margin-bottom: 8px; font-size: 14px; }
         input, select, textarea { width: 100%; padding: 12px; border: 2px solid #e0d0f0; border-radius: 8px; outline: none; transition: 0.3s; }
-        select[multiple] { height: 100px; }
+
+        /* Multi-select Cores */
+        .multi-select-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; padding: 10px; border: 2px solid #e0d0f0; border-radius: 8px; max-height: 150px; overflow-y: auto; }
+        .option-item { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; padding: 5px; border-radius: 5px; transition: 0.2s; }
+        .option-item:hover { background: #f0ebff; }
+        .option-item input { width: auto; cursor: pointer; }
 
         /* Painéis de Botões */
         .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 20px 0; }
-        .color-btn { padding: 15px; border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; text-align: center; font-size: 11px; transition: 0.3s; }
+        .color-btn { padding: 15px; border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; text-align: center; font-size: 11px; }
         .color-btn span { display: block; font-size: 15px; margin-top: 5px; }
         
-        /* Cores Chakras e Desequilíbrios */
         .c-coronario { background: #8a2be2; } .c-frontal { background: #4b0082; } .c-laringeo { background: #87ceeb; color: #333; }
         .c-cardiaco { background: #228b22; } .c-umbilical { background: #ffd700; color: #333; } .c-sacro { background: #ff8c00; } .c-basico { background: #ff0000; }
         .d-mental { background: #5dade2; } .d-emocional { background: #ec7063; } .d-espiritual { background: #af7ac5; } .d-fisico { background: #58d68d; }
 
-        /* Navigation Buttons */
         .nav-actions { display: flex; justify-content: space-between; margin-top: 30px; gap: 15px; }
-        .btn-action { padding: 15px 25px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; }
+        .btn-action { padding: 15px 25px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .btn-save { background: #ffd700; color: #4b0082; flex: 1; }
         .btn-next { background: #4b0082; color: white; }
     </style>
@@ -70,7 +73,7 @@
         </div>
 
         <form id="formAtendimento">
-            <!-- ABA 1: Dados Iniciais -->
+            <!-- ABA 1 -->
             <div class="tab-content active">
                 <div class="form-grid">
                     <div class="form-group full"><label>Nome do Cliente</label><input type="text" id="nomeCliente" list="listaClientes" required><datalist id="listaClientes"></datalist><input type="hidden" id="idCliente"></div>
@@ -82,15 +85,13 @@
                 <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(1)">PRÓXIMO ➔</button></div>
             </div>
 
-            <!-- ABA 2: Análise Inicial -->
+            <!-- ABA 2 -->
             <div class="tab-content">
                 <div class="form-grid">
-                    <div class="form-group"><label>Bovis (4 dígitos)</label><input type="number" id="bovis"></div>
-                    <div class="form-group"><label>Tamanho Aura</label><input type="text" id="auraT" placeholder="Digite o tamanho..."></div>
-                    <div class="form-group"><label>Proteção da Aura</label><input type="text" id="protecaoAura" placeholder="Digite a proteção..."></div>
+                    <div class="form-group"><label>Bovis</label><input type="number" id="bovis"></div>
+                    <div class="form-group"><label>Tamanho Aura</label><input type="text" id="auraT" placeholder="Ex: 80" onblur="if(this.value && !this.value.includes('%')) this.value += '%'"></div>
+                    <div class="form-group"><label>Proteção Aura</label><input type="text" id="protecaoAura" placeholder="Ex: 100" onblur="if(this.value && !this.value.includes('%')) this.value += '%'"></div>
                 </div>
-
-                <label style="margin-top: 20px;">Chakras (%)</label>
                 <div class="btn-grid">
                     <button type="button" class="color-btn c-coronario" onclick="setVal(this, 'v-coronario')">Coronário<span id="v-coronario">-</span></button>
                     <button type="button" class="color-btn c-frontal" onclick="setVal(this, 'v-frontal')">Frontal<span id="v-frontal">-</span></button>
@@ -100,53 +101,50 @@
                     <button type="button" class="color-btn c-sacro" onclick="setVal(this, 'v-sacro')">Sacro<span id="v-sacro">-</span></button>
                     <button type="button" class="color-btn c-basico" onclick="setVal(this, 'v-basico')">Básico<span id="v-basico">-</span></button>
                 </div>
-
-                <label>Desequilíbrios (%)</label>
                 <div class="btn-grid">
                     <button type="button" class="color-btn d-mental" onclick="setVal(this, 'v-mental')">Mental<span id="v-mental">-</span></button>
                     <button type="button" class="color-btn d-emocional" onclick="setVal(this, 'v-emocional')">Emocional<span id="v-emocional">-</span></button>
                     <button type="button" class="color-btn d-espiritual" onclick="setVal(this, 'v-espiritual')">Espiritual<span id="v-espiritual">-</span></button>
                     <button type="button" class="color-btn d-fisico" onclick="setVal(this, 'v-fisico')">Físico<span id="v-fisico">-</span></button>
                 </div>
-
                 <div class="form-grid">
-                    <div class="form-group"><label>Cores em Excesso (Segure Ctrl para selecionar várias)</label><select id="coresExcesso" multiple></select></div>
-                    <div class="form-group"><label>Cores em Falta (Segure Ctrl para selecionar várias)</label><select id="coresFalta" multiple></select></div>
+                    <div class="form-group"><label>Cores em Excesso</label><div id="coresExcesso" class="multi-select-container"></div></div>
+                    <div class="form-group"><label>Cores em Falta</label><div id="coresFalta" class="multi-select-container"></div></div>
                     <div class="form-group full"><label>Diagnóstico Inicial</label><textarea id="diagInicial"></textarea></div>
                 </div>
                 <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(2)">PRÓXIMO ➔</button></div>
             </div>
 
-            <!-- ABA 3: Análise Específica -->
+            <!-- ABA 3 -->
             <div class="tab-content">
-                <label>Queixa Específica</label><textarea id="queixaEspec" rows="3"></textarea>
-                <label style="margin-top:15px;">Causa Raiz</label><textarea id="causaRaiz" rows="3"></textarea>
-                <label style="margin-top:15px;">Crenças Limitantes</label><textarea id="crencas" rows="3"></textarea>
-                <label style="margin-top:15px;">Diagnóstico Específico</label><textarea id="diagEspec" rows="3"></textarea>
+                <label>Queixa Específica</label><textarea id="queixaEspec"></textarea>
+                <label>Causa Raiz</label><textarea id="causaRaiz"></textarea>
+                <label>Crenças</label><textarea id="crencas"></textarea>
+                <label>Diagnóstico Específico</label><textarea id="diagEspec"></textarea>
                 <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(3)">PRÓXIMO ➔</button></div>
             </div>
 
-            <!-- ABA 4: Análise de Ambiente -->
+            <!-- ABA 4 -->
             <div class="tab-content">
                 <div class="form-grid">
-                    <div class="form-group"><label>Tipo de Ambiente</label><select id="tipoAmbiente"></select></div>
+                    <div class="form-group"><label>Tipo Ambiente</label><select id="tipoAmbiente"></select></div>
                     <div class="form-group"><label>Endereço</label><input type="text" id="endAmbiente"></div>
-                    <div class="form-group full"><label>Queixa sobre o Ambiente</label><textarea id="queixaAmbiente"></textarea></div>
-                    <div class="form-group full"><label>Pessoas Envolvidas</label><input type="text" id="pessoasEnv"></div>
-                    <div class="form-group full"><label>Diagnóstico do Ambiente</label><textarea id="diagAmbiente" rows="3"></textarea></div>
+                    <div class="form-group full"><label>Queixa Ambiente</label><textarea id="queixaAmbiente"></textarea></div>
+                    <div class="form-group full"><label>Pessoas Env.</label><input type="text" id="pessoasEnv"></div>
+                    <div class="form-group full"><label>Diag. Ambiente</label><textarea id="diagAmbiente"></textarea></div>
                 </div>
                 <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(4)">PRÓXIMO ➔</button></div>
             </div>
 
-            <!-- ABA 5: Busca -->
+            <!-- ABA 5 -->
             <div class="tab-content">
                 <div class="form-grid">
-                    <div class="form-group"><label>Tipo de Busca</label><select id="tipoBusca"></select></div>
-                    <div class="form-group"><label>Info da Busca</label><input type="text" id="infoBusca"></div>
-                    <div class="form-group full"><label>Resultado da Busca</label><select id="resBusca"></select></div>
-                    <div class="form-group full"><label>Descrição da Busca</label><textarea id="descBusca" rows="3"></textarea></div>
+                    <div class="form-group"><label>Tipo Busca</label><select id="tipoBusca"></select></div>
+                    <div class="form-group"><label>Info Busca</label><input type="text" id="infoBusca"></div>
+                    <div class="form-group full"><label>Resultado</label><select id="resBusca"></select></div>
+                    <div class="form-group full"><label>Descrição</label><textarea id="descBusca"></textarea></div>
                 </div>
-                <div class="nav-actions"><button type="submit" class="btn-action btn-save">FINALIZAR E SALVAR TUDO</button></div>
+                <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">FINALIZAR E SALVAR</button></div>
             </div>
         </form>
     </div>
@@ -178,22 +176,32 @@
                 const dl = document.getElementById('listaClientes');
                 listaClientes.forEach(c => { let o = document.createElement('option'); o.value = c.nome; dl.appendChild(o); });
 
-                const fill = (id, list) => {
+                const fillSelect = (id, list) => {
                     const s = document.getElementById(id);
                     list.forEach(v => { let o = document.createElement('option'); o.value = v; o.text = v; s.appendChild(o); });
                 };
 
-                fill('coresExcesso', config.cores);
-                fill('coresFalta', config.cores);
-                fill('tipoAmbiente', config.ambientes);
-                fill('tipoBusca', config.buscaTipos);
-                fill('resBusca', config.buscaResultados);
-                fill('statusSelect', config.status);
+                const fillMulti = (containerId, list, namePrefix) => {
+                    const container = document.getElementById(containerId);
+                    list.forEach((v, i) => {
+                        const label = document.createElement('label');
+                        label.className = 'option-item';
+                        label.innerHTML = `<input type="checkbox" name="${namePrefix}" value="${v}"> ${v}`;
+                        container.appendChild(label);
+                    });
+                };
+
+                fillMulti('coresExcesso', config.cores, 'exc');
+                fillMulti('coresFalta', config.cores, 'fal');
+                fillSelect('tipoAmbiente', config.ambientes);
+                fillSelect('tipoBusca', config.buscaTipos);
+                fillSelect('resBusca', config.buscaResultados);
+                fillSelect('statusSelect', config.status);
             } catch (e) { console.error(e); }
         }
 
         async function enviarDados() {
-            const getMultiple = (id) => Array.from(document.getElementById(id).selectedOptions).map(o => o.value).join(", ");
+            const getChecked = (name) => Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(cb => cb.value).join(", ");
             
             const payload = {
                 idCliente: document.getElementById('idCliente').value,
@@ -201,15 +209,50 @@
                 status: document.getElementById('statusSelect').value,
                 dataAtend: document.getElementById('dataAtend').value,
                 queixaPrincipal: document.getElementById('queixaP').value,
-                auraT: document.getElementById('auraT').value,
+                queixaSecundaria: document.getElementById('queixaS').value,
+                bovis: document.getElementById('bovis').value,
+                tamanhoAura: document.getElementById('auraT').value,
                 protecaoAura: document.getElementById('protecaoAura').value,
-                coresExcesso: getMultiple('coresExcesso'),
-                coresFalta: getMultiple('coresFalta'),
-                // ... outros campos seguem a mesma lógica de ID
+                vCoronario: document.getElementById('v-coronario').innerText,
+                vFrontal: document.getElementById('v-frontal').innerText,
+                vLaringeo: document.getElementById('v-laringeo').innerText,
+                vCardiaco: document.getElementById('v-cardiaco').innerText,
+                vUmbilical: document.getElementById('v-umbilical').innerText,
+                vSacro: document.getElementById('v-sacro').innerText,
+                vBasico: document.getElementById('v-basico').innerText,
+                vMental: document.getElementById('v-mental').innerText,
+                vEmocional: document.getElementById('v-emocional').innerText,
+                vEspiritual: document.getElementById('v-espiritual').innerText,
+                vFisico: document.getElementById('v-fisico').innerText,
+                coresExcesso: getChecked('exc'),
+                coresFalta: getChecked('fal'),
+                diagInicial: document.getElementById('diagInicial').value,
+                queixaEspec: document.getElementById('queixaEspec').value,
+                causaRaiz: document.getElementById('causaRaiz').value,
+                crencas: document.getElementById('crencas').value,
+                diagEspec: document.getElementById('diagEspec').value,
+                tipoAmbiente: document.getElementById('tipoAmbiente').value,
+                endAmbiente: document.getElementById('endAmbiente').value,
+                queixaAmbiente: document.getElementById('queixaAmbiente').value,
+                pessoasEnv: document.getElementById('pessoasEnv').value,
+                diagAmbiente: document.getElementById('diagAmbiente').value,
+                tipoBusca: document.getElementById('tipoBusca').value,
+                descBusca: document.getElementById('descBusca').value,
+                infoBusca: document.getElementById('infoBusca').value,
+                resBusca: document.getElementById('resBusca').value
             };
-            // Lógica de envio fetch...
-            alert("✅ Salvando dados na planilha...");
+
+            try {
+                const r = await fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(payload) });
+                const res = await r.json();
+                if (res.status === "sucesso") alert("✅ Atendimento salvo com sucesso!");
+            } catch (e) { alert("❌ Erro ao salvar."); }
         }
+
+        document.getElementById('nomeCliente').oninput = (e) => {
+            const c = listaClientes.find(x => x.nome === e.target.value);
+            if (c) document.getElementById('idCliente').value = c.id;
+        };
 
         window.onload = carregarConfigs;
     </script>
