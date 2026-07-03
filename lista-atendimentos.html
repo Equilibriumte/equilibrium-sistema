@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Atendimentos - Equilibrium</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { display: flex; background-color: #f4f0fa; min-height: 100vh; }
+        .sidebar { width: 250px; background: #4b0082; color: white; padding: 20px; position: fixed; height: 100vh; }
+        .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; }
+        .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
+        .content { margin-left: 250px; flex: 1; padding: 40px; }
+        .search-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+        .search-bar input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #ddd; }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8f5ff; color: #4b0082; font-size: 12px; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Equilibrium</h2>
+        <nav>
+            <a href="novo-cliente.html">🏠 Home</a>
+            <a href="clientes.html">📋 Lista de Clientes</a>
+            <a href="atendimentos.html">✨ Novo Atendimento</a>
+            <a href="lista-atendimentos.html" class="active">📜 Histórico</a>
+        </nav>
+    </div>
+    <div class="content">
+        <h1>Histórico de Atendimentos</h1>
+        <div class="search-bar">
+            <input type="text" id="buscaNome" placeholder="Buscar por nome do cliente...">
+            <input type="date" id="buscaData">
+        </div>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr><th>Data</th><th>Cliente</th><th>Tipo</th><th>Status</th></tr>
+                </thead>
+                <tbody id="corpoHistorico">
+                    <!-- Dados virão da planilha -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
