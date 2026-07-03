@@ -3,81 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Equilibrium - Sistema Interno</title>
+    <title>Login - Equilibrium</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: #2B0A3D;
-            background-image: radial-gradient(circle at top, #4A1259 0%, #2B0A3D 60%);
-            color: #FFD700;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .container {
-            text-align: center;
-            width: 90%;
-            max-width: 800px;
-            padding: 40px;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 50px;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-            letter-spacing: 1px;
-        }
-
-        .menu-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            align-items: center;
-        }
-
-        .btn {
-            display: inline-block;
-            width: 100%;
-            max-width: 400px;
-            padding: 20px 30px;
-            font-size: 1.25rem;
-            font-weight: bold;
-            text-decoration: none;
-            color: #2B0A3D;
-            background: linear-gradient(135deg, #FFD700, #FFC400);
-            border: 2px solid #FFD700;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-        }
-
-        .btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
-            background: linear-gradient(135deg, #FFE55C, #FFD700);
-        }
-
-        .btn:active {
-            transform: translateY(-2px);
-        }
+        body { margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center; background: #2d0b4e; font-family: 'Segoe UI', sans-serif; }
+        .login-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; width: 100%; max-width: 350px; }
+        .logo { max-width: 150px; margin-bottom: 20px; }
+        h1 { color: #4a1276; font-size: 22px; margin-bottom: 5px; }
+        p { color: #666; font-size: 14px; margin-bottom: 30px; }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #eee; border-radius: 10px; box-sizing: border-box; outline: none; transition: 0.3s; }
+        input:focus { border-color: #facc15; }
+        .btn-login { width: 100%; padding: 15px; background: #facc15; border: none; border-radius: 10px; color: #2d0b4e; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        .btn-login:hover { background: #fbbf24; transform: translateY(-2px); }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Equilibrium - Sistema Interno</h1>
-        <div class="menu-buttons">
-            <a href="novo-cliente.html" class="btn">Cadastrar Novo Cliente</a>
-            <a href="clientes.html" class="btn">Lista de Clientes</a>
-        </div>
+    <div class="login-card">
+        <img src="Equilibrium.logo.png" alt="Logo Equilibrium" class="logo">
+        <h1>Sistema Interno</h1>
+        <p>Acesso Restrito</p>
+        <form onsubmit="event.preventDefault(); window.location.href='novo-cliente.html';">
+            <input type="text" placeholder="Usuário" required>
+            <input type="password" placeholder="Senha" required>
+            <button type="submit" class="btn-login">ENTRAR</button>
+        </form>
     </div>
 </body>
 </html>
