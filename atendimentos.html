@@ -76,12 +76,12 @@
         </div>
 
         <form id="formAtendimento">
-            <!-- ABA 1 -->
+            <!-- ABA 1: Dados Iniciais -->
             <div class="tab-content active">
                 <div class="form-grid">
                     <div class="form-group full">
                         <label>Nome do Cliente <span id="statusNome">Sincronizando...</span></label>
-                        <input type="text" id="nomeCliente" list="listaClientes" placeholder="Digite o nome..." required autocomplete="off">
+                        <input type="text" id="nomeCliente" list="listaClientes" placeholder="Comece a digitar o nome..." required autocomplete="off">
                         <datalist id="listaClientes"></datalist>
                         <input type="hidden" id="idCliente">
                     </div>
@@ -90,12 +90,16 @@
                     <div class="form-group full"><label>Queixa Principal</label><textarea id="queixaP"></textarea></div>
                     <div class="form-group full"><label>Queixa Secundária</label><textarea id="queixaS"></textarea></div>
                 </div>
-                <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(1)">PRÓXIMO ➔</button></div>
+                <div class="nav-actions">
+                    <button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button>
+                    <button type="button" class="btn-action btn-next" onclick="showTab(1)">PRÓXIMO ➔</button>
+                </div>
             </div>
 
-            <!-- ABA 2 -->
+            <!-- ABA 2: Análise Inicial -->
             <div class="tab-content">
                 <div class="form-group"><label>Bovis (4 dígitos)</label><input type="number" id="bovis"></div>
+                
                 <label style="margin-top: 15px;">Chakras (%)</label>
                 <div class="btn-grid">
                     <button type="button" class="color-btn c-coronario" onclick="setVal(this, 'v-coronario')">Coronário<span id="v-coronario">-</span></button>
@@ -106,14 +110,17 @@
                     <button type="button" class="color-btn c-sacro" onclick="setVal(this, 'v-sacro')">Sacro<span id="v-sacro">-</span></button>
                     <button type="button" class="color-btn c-basico" onclick="setVal(this, 'v-basico')">Básico<span id="v-basico">-</span></button>
                 </div>
+
                 <div class="form-grid">
-                    <div class="form-group"><label>Tamanho Aura</label><input type="text" id="auraT" onblur="if(this.value && !this.value.includes('%')) this.value+='%'"></div>
-                    <div class="form-group"><label>Proteção Aura</label><input type="text" id="protecaoAura" onblur="if(this.value && !this.value.includes('%')) this.value+='%'"></div>
+                    <div class="form-group"><label>Tamanho Aura</label><input type="text" id="auraT" placeholder="Ex: 80" onblur="formatarPct(this)"></div>
+                    <div class="form-group"><label>Proteção Aura</label><input type="text" id="protecaoAura" placeholder="Ex: 100" onblur="formatarPct(this)"></div>
                 </div>
+
                 <div class="form-grid" style="margin-top:15px;">
                     <div class="form-group"><label>Cores em Excesso</label><div id="coresExcesso" class="multi-select-container"></div></div>
                     <div class="form-group"><label>Cores em Falta</label><div id="coresFalta" class="multi-select-container"></div></div>
                 </div>
+
                 <label style="margin-top: 15px;">Campos (%)</label>
                 <div class="btn-grid">
                     <button type="button" class="color-btn d-mental" onclick="setVal(this, 'v-mental')">Mental<span id="v-mental">-</span></button>
@@ -121,11 +128,15 @@
                     <button type="button" class="color-btn d-espiritual" onclick="setVal(this, 'v-espiritual')">Espiritual<span id="v-espiritual">-</span></button>
                     <button type="button" class="color-btn d-fisico" onclick="setVal(this, 'v-fisico')">Físico<span id="v-fisico">-</span></button>
                 </div>
+
                 <div class="form-group full"><label>Diagnóstico Inicial</label><textarea id="diagInicial"></textarea></div>
-                <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(2)">PRÓXIMO ➔</button></div>
+                <div class="nav-actions">
+                    <button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button>
+                    <button type="button" class="btn-action btn-next" onclick="showTab(2)">PRÓXIMO ➔</button>
+                </div>
             </div>
 
-            <!-- ABA 3 -->
+            <!-- ABAS 3, 4 e 5 (Mantidas) -->
             <div class="tab-content">
                 <label>Queixa Específica</label><textarea id="queixaEspec"></textarea>
                 <label>Causa Raiz</label><textarea id="causaRaiz"></textarea>
@@ -134,7 +145,6 @@
                 <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(3)">PRÓXIMO ➔</button></div>
             </div>
 
-            <!-- ABA 4 -->
             <div class="tab-content">
                 <div class="form-grid">
                     <div class="form-group"><label>Tipo Ambiente</label><select id="tipoAmbiente"></select></div>
@@ -143,10 +153,12 @@
                     <div class="form-group full"><label>Pessoas Env.</label><input type="text" id="pessoasEnv"></div>
                     <div class="form-group full"><label>Diag. Ambiente</label><textarea id="diagAmbiente"></textarea></div>
                 </div>
-                <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(4)">PRÓXIMO ➔</button></div>
+                <div class="nav-actions">
+                    <button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button>
+                    <button type="button" class="btn-action btn-next" onclick="showTab(4)">PRÓXIMO ➔</button>
+                </div>
             </div>
 
-            <!-- ABA 5 -->
             <div class="tab-content">
                 <div class="form-grid">
                     <div class="form-group"><label>Tipo Busca</label><select id="tipoBusca"></select></div>
@@ -177,32 +189,57 @@
             if (v) document.getElementById(id).innerText = v + "%";
         }
 
+        function formatarPct(input) {
+            if (input.value && !input.value.includes('%')) input.value += '%';
+        }
+
+        // FUNÇÃO DE BUSCA ROBUSTA DE NOMES
+        function extrairNome(obj) {
+            // Tenta encontrar a propriedade que contém o nome, independente da caixa
+            const chaves = Object.keys(obj);
+            const chaveNome = chaves.find(k => k.toLowerCase() === 'nome' || k.toLowerCase() === 'cliente');
+            return chaveNome ? obj[chaveNome] : (obj[2] || ""); // Se não achar por chave, tenta a 3ª coluna
+        }
+
+        function extrairID(obj) {
+            const chaves = Object.keys(obj);
+            const chaveID = chaves.find(k => k.toLowerCase() === 'id' || k.toLowerCase() === 'identificador');
+            return chaveID ? obj[chaveID] : (obj[1] || ""); // Se não achar por chave, tenta a 2ª coluna
+        }
+
         async function carregarTudo() {
             try {
-                // Carrega Clientes (Forçando busca limpa)
+                // Carrega Clientes com limpeza de cache
                 const resC = await fetch(URL_CLIENTES + "?_=" + new Date().getTime());
-                listaGlobalClientes = await resC.json();
+                const dadosC = await resC.json();
+                listaGlobalClientes = Array.isArray(dadosC) ? dadosC : (dadosC.data || []);
+                
                 const dl = document.getElementById('listaClientes');
                 dl.innerHTML = "";
                 listaGlobalClientes.forEach(c => {
-                    let o = document.createElement('option');
-                    o.value = c.nome || c.Nome || c[2];
-                    dl.appendChild(o);
+                    const nome = extrairNome(c);
+                    if (nome) {
+                        let o = document.createElement('option');
+                        o.value = nome;
+                        dl.appendChild(o);
+                    }
                 });
                 document.getElementById('statusNome').innerHTML = "<span class='ok'>✅ Lista Carregada</span>";
 
-                // Carrega Configurações
+                // Carrega Configurações da planilha de Atendimentos
                 const resA = await fetch(URL_ATEND);
                 const config = await resA.json();
                 
                 const fillS = (id, list) => {
                     const s = document.getElementById(id);
+                    if(!s) return;
                     s.innerHTML = "";
                     list.forEach(v => { let o = document.createElement('option'); o.value = v; o.text = v; s.appendChild(o); });
                 };
 
                 const fillM = (id, list, pref) => {
                     const c = document.getElementById(id);
+                    if(!c) return;
                     c.innerHTML = "";
                     list.forEach(v => {
                         const l = document.createElement('label');
@@ -220,15 +257,15 @@
                 fillS('statusSelect', config.status);
 
             } catch (e) { 
-                console.error(e);
+                console.error("Erro detalhado:", e);
                 document.getElementById('statusNome').innerHTML = "<span class='erro'>❌ Erro de Conexão</span>";
             }
         }
 
         document.getElementById('nomeCliente').oninput = (e) => {
             const digitado = e.target.value;
-            const c = listaGlobalClientes.find(x => (x.nome || x.Nome || x[2]) === digitado);
-            if (c) document.getElementById('idCliente').value = c.id || c.ID || c[1];
+            const c = listaGlobalClientes.find(x => extrairNome(x) === digitado);
+            if (c) document.getElementById('idCliente').value = extrairID(c);
         };
 
         async function enviarDados() {
