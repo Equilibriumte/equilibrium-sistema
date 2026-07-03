@@ -9,20 +9,21 @@
         body { display: flex; background-color: #f4f0fa; min-height: 100vh; }
         
         /* Sidebar */
-        .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; }
-        .sidebar h2 { margin-bottom: 30px; text-align: center; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
+        .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
+        .sidebar h2 { margin-bottom: 30px; text-align: center; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; font-size: 22px; }
         .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
         .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
 
         /* Content */
-        .content { margin-left: 250px; flex: 1; padding: 40px; }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow-x: auto; }
-        h1 { color: #4b0082; margin-bottom: 20px; }
+        .content { margin-left: 250px; flex: 1; padding: 40px; width: calc(100% - 250px); }
+        .header { margin-bottom: 30px; }
+        .header h1 { color: #4b0082; font-size: 28px; }
         
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background-color: #f8f5ff; color: #4b0082; font-size: 12px; text-transform: uppercase; }
-        .id-cell { font-family: monospace; color: #888; font-size: 11px; }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 1200px; } /* Tabela larga para todos os campos */
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 13px; white-space: nowrap; }
+        th { background-color: #f8f5ff; color: #4b0082; font-weight: 600; text-transform: uppercase; font-size: 11px; position: sticky; top: 0; }
+        .id-cell { font-family: monospace; color: #888; font-weight: bold; }
         .loading { text-align: center; padding: 40px; color: #6a0dad; font-style: italic; }
     </style>
 </head>
@@ -37,51 +38,99 @@
     </div>
 
     <div class="content">
-        <h1>Lista de Clientes</h1>
+        <div class="header">
+            <h1>Lista Completa de Clientes</h1>
+        </div>
+        
         <div class="card">
-            <div id="status">
-                <div class="loading">Buscando dados na planilha...</div>
+            <div id="status-container">
+                <div class="loading">🔍 Carregando todos os dados da planilha...</div>
             </div>
-            <table id="tabela" style="display:none;">
+            <table id="tabela-clientes" style="display:none;">
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Nome</th>
+                        <th>Nascimento</th>
                         <th>WhatsApp</th>
-                        <th>Cidade</th>
+                        <th>Email</th>
+                        <th>Instagram</th>
+                        <th>Endereço (Rua, Nº, Bairro)</th>
+                        <th>Cidade/UF</th>
+                        <th>CEP</th>
+                        <th>Indicação</th>
                     </tr>
                 </thead>
-                <tbody id="corpo"></tbody>
+                <tbody id="corpo-tabela"></tbody>
             </table>
         </div>
     </div>
 
     <script>
-        async function carregar() {
-            const URL = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
+        function getVal(obj, campo) {
+            const keys = Object.keys(obj);
+            const keyEncontrada = keys.find(k => k.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === campo.toLowerCase());
+            return keyEncontrada ? obj[keyEncontrada] : "-";
+        }
+
+        async function carregarDados() {
+            const URL_GOOGLE = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
+            
             try {
-                const res = await fetch(URL);
-                const dados = await res.json();
-                const corpo = document.getElementById('corpo');
+                const response = await fetch(URL_GOOGLE);
+                const dados = await response.json();
                 
-                document.getElementById('status').style.display = 'none';
-                document.getElementById('tabela').style.display = 'table';
+                const corpo = document.getElementById('corpo-tabela');
+                const status = document.getElementById('status-container');
+                const tabela = document.getElementById('tabela-clientes');
+
+                if (!dados || dados.length === 0) {
+                    status.innerHTML = '<div class="loading">Nenhum cliente encontrado na planilha.</div>';
+                    return;
+                }
+
+                status.style.display = 'none';
+                tabela.style.display = 'table';
+                corpo.innerHTML = "";
 
                 dados.forEach(c => {
-                    // Normalizamos os nomes das colunas para evitar erros
+                    const id = getVal(c, 'id');
+                    const nome = getVal(c, 'nome');
+                    const nasc = getVal(c, 'nascimento');
+                    const whats = getVal(c, 'whatsapp');
+                    const email = getVal(c, 'email');
+                    const insta = getVal(c, 'instagram');
+                    const rua = getVal(c, 'rua');
+                    const num = getVal(c, 'numero');
+                    const bairro = getVal(c, 'bairro');
+                    const cidade = getVal(c, 'cidade');
+                    const estado = getVal(c, 'estado');
+                    const cep = getVal(c, 'cep');
+                    const indicacao = getVal(c, 'indicacao');
+
                     const row = `<tr>
-                        <td class="id-cell">${c.id || '-'}</td>
-                        <td><strong>${c.nome || '-'}</strong></td>
-                        <td>${c.whatsapp || '-'}</td>
-                        <td>${c.cidade || '-'}</td>
+                        <td class="id-cell">${id}</td>
+                        <td><strong>${nome}</strong></td>
+                        <td>${nasc}</td>
+                        <td>${whats}</td>
+                        <td>${email}</td>
+                        <td>${insta}</td>
+                        <td>${rua}, ${num} - ${bairro}</td>
+                        <td>${cidade}/${estado}</td>
+                        <td>${cep}</td>
+                        <td>${indicacao}</td>
                     </tr>`;
                     corpo.innerHTML += row;
                 });
-            } catch (e) {
-                document.getElementById('status').innerHTML = '<div style="color:red; padding:20px;">❌ Erro ao carregar. Verifique se o Script está como "Qualquer pessoa".</div>';
+
+            } catch (error) {
+                console.error('Erro:', error);
+                document.getElementById('status-container').innerHTML = 
+                    '<div style="color:red; padding:20px; text-align:center;">❌ Erro ao carregar. Verifique se o Script está como "Qualquer pessoa".</div>';
             }
         }
-        window.onload = carregar;
+
+        window.onload = carregarDados;
     </script>
 </body>
 </html>
