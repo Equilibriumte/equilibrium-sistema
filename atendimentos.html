@@ -8,7 +8,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { display: flex; background-color: #f4f0fa; min-height: 100vh; }
         
-        /* Sidebar */
+        /* Sidebar Original */
         .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
         .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
         .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
@@ -35,7 +35,7 @@
         .option-item:hover { background: #f0ebff; }
 
         /* Painéis de Botões */
-        .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 15px 0; }
+        .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 20px 0; }
         .color-btn { padding: 15px; border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; text-align: center; font-size: 11px; }
         .color-btn span { display: block; font-size: 15px; margin-top: 5px; }
         
@@ -47,10 +47,6 @@
         .btn-action { padding: 15px 25px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .btn-save { background: #ffd700; color: #4b0082; flex: 1; }
         .btn-next { background: #4b0082; color: white; }
-
-        #statusNome { font-weight: normal; font-size: 12px; margin-left: 10px; }
-        .ok { color: #27ae60; } .erro { color: #e74c3c; }
-        input::-webkit-calendar-picker-indicator { display: none !important; }
     </style>
 </head>
 <body>
@@ -80,7 +76,7 @@
             <div class="tab-content active">
                 <div class="form-grid">
                     <div class="form-group full">
-                        <label>Nome do Cliente <span id="statusNome">Sincronizando...</span></label>
+                        <label>Nome do Cliente</label>
                         <input type="text" id="nomeCliente" list="listaClientes" placeholder="Comece a digitar o nome..." required autocomplete="off">
                         <datalist id="listaClientes"></datalist>
                         <input type="hidden" id="idCliente">
@@ -136,7 +132,7 @@
                 </div>
             </div>
 
-            <!-- ABAS 3, 4 e 5 (Mantidas) -->
+            <!-- ABAS 3, 4 e 5 originais mantidas -->
             <div class="tab-content">
                 <label>Queixa Específica</label><textarea id="queixaEspec"></textarea>
                 <label>Causa Raiz</label><textarea id="causaRaiz"></textarea>
@@ -153,10 +149,7 @@
                     <div class="form-group full"><label>Pessoas Env.</label><input type="text" id="pessoasEnv"></div>
                     <div class="form-group full"><label>Diag. Ambiente</label><textarea id="diagAmbiente"></textarea></div>
                 </div>
-                <div class="nav-actions">
-                    <button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button>
-                    <button type="button" class="btn-action btn-next" onclick="showTab(4)">PRÓXIMO ➔</button>
-                </div>
+                <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(4)">PRÓXIMO ➔</button></div>
             </div>
 
             <div class="tab-content">
@@ -193,23 +186,9 @@
             if (input.value && !input.value.includes('%')) input.value += '%';
         }
 
-        // FUNÇÃO DE BUSCA ROBUSTA DE NOMES
-        function extrairNome(obj) {
-            // Tenta encontrar a propriedade que contém o nome, independente da caixa
-            const chaves = Object.keys(obj);
-            const chaveNome = chaves.find(k => k.toLowerCase() === 'nome' || k.toLowerCase() === 'cliente');
-            return chaveNome ? obj[chaveNome] : (obj[2] || ""); // Se não achar por chave, tenta a 3ª coluna
-        }
-
-        function extrairID(obj) {
-            const chaves = Object.keys(obj);
-            const chaveID = chaves.find(k => k.toLowerCase() === 'id' || k.toLowerCase() === 'identificador');
-            return chaveID ? obj[chaveID] : (obj[1] || ""); // Se não achar por chave, tenta a 2ª coluna
-        }
-
         async function carregarTudo() {
             try {
-                // Carrega Clientes com limpeza de cache
+                // CARREGAMENTO ROBUSTO DE CLIENTES
                 const resC = await fetch(URL_CLIENTES + "?_=" + new Date().getTime());
                 const dadosC = await resC.json();
                 listaGlobalClientes = Array.isArray(dadosC) ? dadosC : (dadosC.data || []);
@@ -217,16 +196,15 @@
                 const dl = document.getElementById('listaClientes');
                 dl.innerHTML = "";
                 listaGlobalClientes.forEach(c => {
-                    const nome = extrairNome(c);
+                    const nome = c.nome || c.Nome || c[2]; // Tenta várias colunas
                     if (nome) {
                         let o = document.createElement('option');
                         o.value = nome;
                         dl.appendChild(o);
                     }
                 });
-                document.getElementById('statusNome').innerHTML = "<span class='ok'>✅ Lista Carregada</span>";
 
-                // Carrega Configurações da planilha de Atendimentos
+                // CARREGAMENTO DE CONFIGURAÇÕES
                 const resA = await fetch(URL_ATEND);
                 const config = await resA.json();
                 
@@ -256,16 +234,13 @@
                 fillS('resBusca', config.buscaResultados);
                 fillS('statusSelect', config.status);
 
-            } catch (e) { 
-                console.error("Erro detalhado:", e);
-                document.getElementById('statusNome').innerHTML = "<span class='erro'>❌ Erro de Conexão</span>";
-            }
+            } catch (e) { console.error("Erro carregamento:", e); }
         }
 
         document.getElementById('nomeCliente').oninput = (e) => {
             const digitado = e.target.value;
-            const c = listaGlobalClientes.find(x => extrairNome(x) === digitado);
-            if (c) document.getElementById('idCliente').value = extrairID(c);
+            const c = listaGlobalClientes.find(x => (x.nome || x.Nome || x[2]) === digitado);
+            if (c) document.getElementById('idCliente').value = c.id || c.ID || c[1];
         };
 
         async function enviarDados() {
