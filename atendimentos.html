@@ -29,7 +29,7 @@
         label { display: block; font-weight: bold; color: #4b0082; margin-bottom: 8px; font-size: 14px; }
         input, select, textarea { width: 100%; padding: 12px; border: 2px solid #e0d0f0; border-radius: 8px; outline: none; transition: 0.3s; }
 
-        /* Painéis de Botões (Chakras e Desequilíbrios) */
+        /* Painéis de Botões */
         .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 20px 0; }
         .color-btn { padding: 15px; border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; text-align: center; font-size: 11px; transition: 0.3s; }
         .color-btn span { display: block; font-size: 15px; margin-top: 5px; }
@@ -46,7 +46,6 @@
         .btn-action { padding: 15px 25px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; }
         .btn-save { background: #ffd700; color: #4b0082; flex: 1; }
         .btn-next { background: #4b0082; color: white; }
-        .btn-action:hover { transform: translateY(-2px); opacity: 0.9; }
     </style>
 </head>
 <body>
@@ -82,7 +81,7 @@
                         <input type="hidden" id="idCliente">
                     </div>
                     <div class="form-group"><label>Data</label><input type="date" id="dataAtend" required></div>
-                    <div class="form-group"><label>Status</label><select id="statusSelect"></select></div>
+                    <div class="form-group"><label>Status</label><select id="statusSelect"><option>Em Aberto</option><option>Finalizado</option></select></div>
                     <div class="form-group full"><label>Queixa Principal</label><textarea id="queixaP"></textarea></div>
                     <div class="form-group full"><label>Queixa Secundária</label><textarea id="queixaS"></textarea></div>
                 </div>
@@ -97,6 +96,7 @@
                 <div class="form-grid">
                     <div class="form-group"><label>Bovis (4 dígitos)</label><input type="number" id="bovis"></div>
                     <div class="form-group"><label>Tamanho Aura (%)</label><select id="auraT"><option>100%</option><option>75%</option><option>50%</option></select></div>
+                    <div class="form-group"><label>Proteção da Aura (%)</label><select id="protecaoAura"><option>100%</option><option>50%</option><option>0%</option></select></div>
                 </div>
 
                 <label style="margin-top: 20px;">Chakras (%)</label>
@@ -121,6 +121,7 @@
                 <div class="form-grid">
                     <div class="form-group"><label>Cores em Excesso</label><select id="coresExcesso"></select></div>
                     <div class="form-group"><label>Cores em Falta</label><select id="coresFalta"></select></div>
+                    <div class="form-group full"><label>Diagnóstico Inicial</label><textarea id="diagInicial"></textarea></div>
                 </div>
                 <div class="nav-actions">
                     <button type="button" class="btn-action btn-save" onclick="salvarProgresso()">SALVAR AGORA</button>
@@ -128,22 +129,26 @@
                 </div>
             </div>
 
-            <!-- ABA 3: Específico -->
+            <!-- ABA 3: Análise Específica -->
             <div class="tab-content">
-                <label>Causa Raiz</label><textarea id="causaRaiz" rows="3"></textarea>
+                <label>Queixa Específica</label><textarea id="queixaEspec" rows="3"></textarea>
+                <label style="margin-top:15px;">Causa Raiz</label><textarea id="causaRaiz" rows="3"></textarea>
                 <label style="margin-top:15px;">Crenças Limitantes</label><textarea id="crencas" rows="3"></textarea>
+                <label style="margin-top:15px;">Diagnóstico Específico</label><textarea id="diagEspec" rows="3"></textarea>
                 <div class="nav-actions">
                     <button type="button" class="btn-action btn-save" onclick="salvarProgresso()">SALVAR AGORA</button>
                     <button type="button" class="btn-action btn-next" onclick="showTab(3)">PRÓXIMO ➔</button>
                 </div>
             </div>
 
-            <!-- ABA 4: Ambiente -->
+            <!-- ABA 4: Análise de Ambiente -->
             <div class="tab-content">
                 <div class="form-grid">
                     <div class="form-group"><label>Tipo de Ambiente</label><select id="tipoAmbiente"></select></div>
                     <div class="form-group"><label>Endereço</label><input type="text" id="endAmbiente"></div>
                     <div class="form-group full"><label>Queixa sobre o Ambiente</label><textarea id="queixaAmbiente"></textarea></div>
+                    <div class="form-group full"><label>Pessoas Envolvidas</label><input type="text" id="pessoasEnv"></div>
+                    <div class="form-group full"><label>Diagnóstico do Ambiente</label><textarea id="diagAmbiente"></textarea></div>
                 </div>
                 <div class="nav-actions">
                     <button type="button" class="btn-action btn-save" onclick="salvarProgresso()">SALVAR AGORA</button>
@@ -188,9 +193,8 @@
             document.getElementById('formAtendimento').requestSubmit();
         }
 
-        // Simulação de carregamento dinâmico (Aqui você conectará com seu Apps Script)
         window.onload = () => {
-            console.log("Sistema Equilibrium carregado. Pronto para buscar configurações da planilha.");
+            console.log("Sistema Equilibrium carregado com todos os campos.");
         };
     </script>
 </body>
