@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Histórico de Atendimentos - Equilibrium</title>
+    <title>Histórico - Equilibrium</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { display: flex; background-color: #f4f0fa; min-height: 100vh; }
@@ -46,12 +46,22 @@
         </div>
     </div>
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzBEYsubmBz6FKNY0S3ZyxBIoAQj60Ob7G73uw-TI118tAjtFXWyK_JVEmxz52y4Yn-/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzMD3-mGNcbmgDIhjqL-Gkp7Me1Ge8fT7BEYckzVjXcVIzwXxekfRq4j61IUrbkfI52/exec';
         async function carregarHistorico() {
             try {
-                const res = await fetch(SCRIPT_URL + "?tipo=historico");
-                const dados = await res.json();
-                // Lógica de renderização aqui
+                const res = await fetch(SCRIPT_URL + "?read=true");
+                const json = await res.json();
+                const dados = json.data.data || [];
+                const corpo = document.getElementById('corpoHistorico');
+                corpo.innerHTML = dados.map(linha => `
+                    <tr>
+                        <td>${linha['Data do Atendimento'] || '-'}</td>
+                        <td style="font-family:monospace; font-size:11px;">${linha['ID Atendimento'] || '-'}</td>
+                        <td><strong>${linha['Nome Cliente'] || '-'}</strong></td>
+                        <td>${linha['Status'] || '-'}</td>
+                        <td>${(linha['Queixa Principal'] || '-').substring(0, 50)}...</td>
+                    </tr>
+                `).join('');
             } catch (e) { console.error(e); }
         }
         window.onload = carregarHistorico;
