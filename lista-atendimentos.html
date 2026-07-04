@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lista de Atendimentos | Equilibrium</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <title>Equilibrium - Lista de Atendimentos</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     * {
       margin: 0;
@@ -16,162 +15,197 @@
     }
 
     :root {
-      --purple-900: #2d1b4e;
-      --purple-800: #3d2466;
-      --purple-700: #4a2f80;
-      --purple-600: #5b3a9e;
-      --purple-500: #6b46c1;
-      --purple-400: #8b5cf6;
-      --purple-300: #a78bfa;
-      --purple-100: #ede9fe;
-      --gray-100: #f5f5f7;
-      --gray-200: #e5e7eb;
-      --gray-300: #d1d5db;
-      --gray-500: #6b7280;
-      --gray-700: #374151;
-      --gray-900: #111827;
-      --white: #ffffff;
-      --green: #10b981;
-      --red: #ef4444;
-      --yellow: #f59e0b;
-      --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --roxo-principal: #6a1b9a;
+      --roxo-escuro: #4a148c;
+      --roxo-claro: #9c27b0;
+      --roxo-suave: #f3e5f5;
+      --branco: #ffffff;
+      --cinza-claro: #f5f5f5;
+      --cinza-medio: #e0e0e0;
+      --cinza-escuro: #616161;
+      --verde: #2e7d32;
+      --vermelho: #c62828;
+      --amarelo: #f9a825;
     }
 
     body {
-      background: var(--gray-100);
-      color: var(--gray-900);
-      min-height: 100vh;
       display: flex;
+      min-height: 100vh;
+      background-color: var(--cinza-claro);
     }
 
     /* Sidebar */
     .sidebar {
       width: 260px;
-      background: linear-gradient(180deg, var(--purple-900) 0%, var(--purple-700) 100%);
-      color: var(--white);
-      min-height: 100vh;
-      position: fixed;
-      top: 0;
-      left: 0;
+      background: linear-gradient(180deg, var(--roxo-principal) 0%, var(--roxo-escuro) 100%);
+      color: var(--branco);
       display: flex;
       flex-direction: column;
-      box-shadow: 4px 0 16px rgba(45, 27, 78, 0.25);
+      padding: 20px 0;
+      position: fixed;
+      height: 100vh;
+      left: 0;
+      top: 0;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
       z-index: 100;
     }
 
-    .sidebar-header {
-      padding: 28px 24px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
     .sidebar-logo {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      background: var(--purple-400);
+      padding: 0 24px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      margin-bottom: 20px;
+    }
+
+    .sidebar-logo h1 {
+      font-size: 22px;
+      font-weight: 600;
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 20px;
-      color: var(--white);
-      flex-shrink: 0;
+      gap: 10px;
     }
 
-    .sidebar-title {
-      font-size: 18px;
-      font-weight: 600;
-      line-height: 1.2;
+    .sidebar-logo h1 i {
+      font-size: 24px;
+      color: var(--roxo-claro);
     }
 
-    .sidebar-subtitle {
+    .sidebar-logo span {
       font-size: 12px;
-      opacity: 0.7;
-      font-weight: 300;
+      color: rgba(255, 255, 255, 0.7);
+      display: block;
+      margin-top: 4px;
     }
 
-    .sidebar-nav {
+    .sidebar-menu {
+      list-style: none;
       flex: 1;
-      padding: 20px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
     }
 
-    .nav-item {
+    .sidebar-menu li {
+      margin: 4px 12px;
+    }
+
+    .sidebar-menu a {
       display: flex;
       align-items: center;
       gap: 12px;
       padding: 12px 16px;
-      border-radius: 10px;
-      color: rgba(255, 255, 255, 0.8);
+      color: rgba(255, 255, 255, 0.85);
       text-decoration: none;
+      border-radius: 8px;
       font-size: 14px;
       font-weight: 400;
       transition: all 0.2s ease;
-      cursor: pointer;
     }
 
-    .nav-item:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--white);
+    .sidebar-menu a:hover {
+      background-color: rgba(255, 255, 255, 0.12);
+      color: var(--branco);
     }
 
-    .nav-item.active {
-      background: var(--purple-400);
-      color: var(--white);
+    .sidebar-menu a.active {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: var(--branco);
       font-weight: 500;
     }
 
-    .nav-icon {
+    .sidebar-menu a i {
       width: 20px;
-      height: 20px;
-      flex-shrink: 0;
+      text-align: center;
+      font-size: 16px;
     }
 
     .sidebar-footer {
-      padding: 20px 24px;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 16px 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
       font-size: 12px;
-      opacity: 0.6;
+      color: rgba(255, 255, 255, 0.6);
     }
 
-    /* Main content */
-    .main {
+    /* Main Content */
+    .main-content {
       margin-left: 260px;
       flex: 1;
-      padding: 32px 40px;
-      min-width: 0;
+      padding: 30px;
+      width: calc(100% - 260px);
     }
 
     .page-header {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 28px;
-      flex-wrap: wrap;
-      gap: 16px;
+      align-items: center;
+      margin-bottom: 24px;
     }
 
-    .page-title {
+    .page-header h2 {
       font-size: 26px;
+      color: var(--roxo-escuro);
       font-weight: 600;
-      color: var(--purple-900);
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    .page-subtitle {
+    .page-header h2 i {
+      color: var(--roxo-principal);
+    }
+
+    .page-header p {
+      color: var(--cinza-escuro);
       font-size: 14px;
-      color: var(--gray-500);
       margin-top: 4px;
+    }
+
+    /* Filters */
+    .filters-card {
+      background: var(--branco);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      margin-bottom: 24px;
+    }
+
+    .filters-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+
+    .filter-group {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .filter-group label {
+      display: block;
+      font-size: 13px;
+      color: var(--cinza-escuro);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .filter-group input,
+    .filter-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--cinza-medio);
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    .filter-group input:focus,
+    .filter-group select:focus {
+      border-color: var(--roxo-principal);
+      box-shadow: 0 0 0 3px rgba(106, 27, 154, 0.1);
     }
 
     .btn {
       padding: 10px 20px;
-      border-radius: 10px;
       border: none;
+      border-radius: 8px;
       font-size: 14px;
       font-weight: 500;
       cursor: pointer;
@@ -182,77 +216,29 @@
     }
 
     .btn-primary {
-      background: var(--purple-500);
-      color: var(--white);
+      background-color: var(--roxo-principal);
+      color: var(--branco);
     }
 
     .btn-primary:hover {
-      background: var(--purple-600);
+      background-color: var(--roxo-escuro);
     }
 
     .btn-secondary {
-      background: var(--white);
-      color: var(--purple-700);
-      border: 1px solid var(--gray-200);
+      background-color: var(--cinza-medio);
+      color: var(--cinza-escuro);
     }
 
     .btn-secondary:hover {
-      background: var(--purple-100);
-    }
-
-    /* Filters */
-    .filters {
-      background: var(--white);
-      border-radius: 14px;
-      padding: 20px 24px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow);
-      display: grid;
-      grid-template-columns: 1fr 1fr auto;
-      gap: 16px;
-      align-items: end;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .field label {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--gray-700);
-    }
-
-    .field input,
-    .field select {
-      padding: 10px 14px;
-      border: 1px solid var(--gray-200);
-      border-radius: 8px;
-      font-size: 14px;
-      color: var(--gray-900);
-      background: var(--white);
-      transition: border-color 0.2s ease;
-    }
-
-    .field input:focus,
-    .field select:focus {
-      outline: none;
-      border-color: var(--purple-400);
-      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
-    }
-
-    .filters-actions {
-      display: flex;
-      gap: 10px;
+      background-color: var(--cinza-escuro);
+      color: var(--branco);
     }
 
     /* Table */
     .table-card {
-      background: var(--white);
-      border-radius: 14px;
-      box-shadow: var(--shadow);
+      background: var(--branco);
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
       overflow: hidden;
     }
 
@@ -263,32 +249,32 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 14px;
     }
 
     thead {
-      background: var(--purple-100);
+      background-color: var(--roxo-suave);
     }
 
     th {
+      padding: 14px 16px;
       text-align: left;
-      padding: 14px 18px;
-      font-weight: 600;
-      color: var(--purple-900);
       font-size: 13px;
+      font-weight: 600;
+      color: var(--roxo-escuro);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
       white-space: nowrap;
-      border-bottom: 2px solid var(--purple-100);
     }
 
     td {
-      padding: 14px 18px;
-      color: var(--gray-700);
-      border-bottom: 1px solid var(--gray-200);
-      white-space: nowrap;
+      padding: 14px 16px;
+      font-size: 14px;
+      color: #333;
+      border-bottom: 1px solid var(--cinza-medio);
     }
 
     tbody tr:hover {
-      background: var(--purple-100);
+      background-color: var(--roxo-suave);
     }
 
     tbody tr:last-child td {
@@ -301,69 +287,82 @@
       border-radius: 20px;
       font-size: 12px;
       font-weight: 500;
+      white-space: nowrap;
     }
 
     .status-concluido {
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--green);
+      background-color: #e8f5e9;
+      color: var(--verde);
     }
 
     .status-andamento {
-      background: rgba(245, 158, 11, 0.15);
-      color: var(--yellow);
+      background-color: #fff8e1;
+      color: var(--amarelo);
     }
 
     .status-cancelado {
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--red);
+      background-color: #ffebee;
+      color: var(--vermelho);
     }
 
     .status-default {
-      background: var(--gray-200);
-      color: var(--gray-700);
+      background-color: var(--cinza-claro);
+      color: var(--cinza-escuro);
     }
 
-    /* Loading & empty states */
-    .state {
-      padding: 60px 20px;
+    .id-cell {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: var(--roxo-principal);
+      font-weight: 500;
+    }
+
+    /* Loading & Empty */
+    .loading-row td,
+    .empty-row td {
       text-align: center;
-      color: var(--gray-500);
+      padding: 40px;
+      color: var(--cinza-escuro);
+      font-size: 15px;
     }
 
-    .spinner {
-      width: 36px;
-      height: 36px;
-      border: 3px solid var(--gray-200);
-      border-top-color: var(--purple-500);
+    .loading-spinner {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid var(--roxo-suave);
+      border-top-color: var(--roxo-principal);
       border-radius: 50%;
-      margin: 0 auto 16px;
       animation: spin 0.8s linear infinite;
+      margin-right: 10px;
+      vertical-align: middle;
     }
 
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
 
-    .state-icon {
-      font-size: 40px;
-      margin-bottom: 12px;
-      opacity: 0.4;
+    .empty-row i {
+      font-size: 32px;
+      color: var(--cinza-medio);
+      display: block;
+      margin-bottom: 10px;
     }
 
+    /* Toast */
     .toast {
       position: fixed;
       bottom: 24px;
       right: 24px;
       padding: 14px 20px;
-      border-radius: 10px;
-      background: var(--gray-900);
-      color: var(--white);
+      border-radius: 8px;
+      color: var(--branco);
       font-size: 14px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
       opacity: 0;
       transform: translateY(20px);
       transition: all 0.3s ease;
-      z-index: 1000;
     }
 
     .toast.show {
@@ -371,283 +370,387 @@
       transform: translateY(0);
     }
 
-    .toast.error {
-      background: var(--red);
+    .toast-error {
+      background-color: var(--vermelho);
     }
 
-    @media (max-width: 900px) {
-      .sidebar { width: 72px; }
-      .sidebar-title, .sidebar-subtitle, .nav-item span, .sidebar-footer { display: none; }
-      .main { margin-left: 72px; padding: 24px 20px; }
-      .filters { grid-template-columns: 1fr; }
+    .toast-success {
+      background-color: var(--verde);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 70px;
+      }
+      .sidebar-logo h1,
+      .sidebar-logo span,
+      .sidebar-menu a span,
+      .sidebar-footer {
+        display: none;
+      }
+      .sidebar-menu a {
+        justify-content: center;
+      }
+      .main-content {
+        margin-left: 70px;
+        width: calc(100% - 70px);
+        padding: 20px;
+      }
     }
   </style>
 </head>
 <body>
+
   <!-- Sidebar -->
   <aside class="sidebar">
-    <div class="sidebar-header">
-      <div class="sidebar-logo">E</div>
-      <div>
-        <div class="sidebar-title">Equilibrium</div>
-        <div class="sidebar-subtitle">Gestão de Atendimentos</div>
-      </div>
+    <div class="sidebar-logo">
+      <h1><i class="fas fa-spa"></i> Equilibrium</h1>
+      <span>Sistema de Gestão</span>
     </div>
-    <nav class="sidebar-nav">
-      <a class="nav-item" href="dashboard.html">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        <span>Dashboard</span>
-      </a>
-      <a class="nav-item active" href="lista-atendimentos.html">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        <span>Atendimentos</span>
-      </a>
-      <a class="nav-item" href="clientes.html">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <span>Clientes</span>
-      </a>
-      <a class="nav-item" href="relatorios.html">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-        <span>Relatórios</span>
-      </a>
-      <a class="nav-item" href="configuracoes.html">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        <span>Configurações</span>
-      </a>
-    </nav>
+    <ul class="sidebar-menu">
+      <li><a href="dashboard.html"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
+      <li><a href="lista-clientes.html"><i class="fas fa-users"></i><span>Clientes</span></a></li>
+      <li><a href="lista-atendimentos.html" class="active"><i class="fas fa-clipboard-list"></i><span>Atendimentos</span></a></li>
+      <li><a href="lista-profissionais.html"><i class="fas fa-user-md"></i><span>Profissionais</span></a></li>
+      <li><a href="relatorios.html"><i class="fas fa-chart-bar"></i><span>Relatórios</span></a></li>
+      <li><a href="configuracoes.html"><i class="fas fa-cog"></i><span>Configurações</span></a></li>
+    </ul>
     <div class="sidebar-footer">
-      Equilibrium © 2025
+      &copy; 2025 Equilibrium
     </div>
   </aside>
 
-  <!-- Main -->
-  <main class="main">
+  <!-- Main Content -->
+  <main class="main-content">
     <div class="page-header">
       <div>
-        <h1 class="page-title">Lista de Atendimentos</h1>
-        <p class="page-subtitle">Histórico completo de atendimentos cadastrados na planilha Equilibrium - Atendimentos.</p>
+        <h2><i class="fas fa-clipboard-list"></i> Lista de Atendimentos</h2>
+        <p>Visualize e filtre todos os atendimentos registrados na planilha Equilibrium.</p>
       </div>
       <button class="btn btn-primary" onclick="carregarAtendimentos()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
-        Atualizar
+        <i class="fas fa-sync-alt"></i> Atualizar
       </button>
     </div>
 
     <!-- Filters -->
-    <div class="filters">
-      <div class="field">
-        <label for="filtroCliente">Nome do Cliente</label>
-        <input type="text" id="filtroCliente" placeholder="Buscar por cliente..." oninput="aplicarFiltros()" />
-      </div>
-      <div class="field">
-        <label for="filtroData">Data</label>
-        <input type="date" id="filtroData" onchange="aplicarFiltros()" />
-      </div>
-      <div class="filters-actions">
-        <button class="btn btn-secondary" onclick="limparFiltros()">Limpar</button>
+    <div class="filters-card">
+      <div class="filters-row">
+        <div class="filter-group">
+          <label for="filtroNome">Nome do Cliente</label>
+          <input type="text" id="filtroNome" placeholder="Buscar por nome..." oninput="aplicarFiltros()" />
+        </div>
+        <div class="filter-group">
+          <label for="filtroDataInicio">Data Início</label>
+          <input type="date" id="filtroDataInicio" onchange="aplicarFiltros()" />
+        </div>
+        <div class="filter-group">
+          <label for="filtroDataFim">Data Fim</label>
+          <input type="date" id="filtroDataFim" onchange="aplicarFiltros()" />
+        </div>
+        <div class="filter-group" style="flex: 0 0 auto;">
+          <label>&nbsp;</label>
+          <button class="btn btn-secondary" onclick="limparFiltros()">
+            <i class="fas fa-eraser"></i> Limpar
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- Table -->
     <div class="table-card">
       <div class="table-wrapper">
-        <table>
+        <table id="tabelaAtendimentos">
           <thead>
             <tr>
+              <th>ID Atendimento</th>
               <th>Data</th>
-              <th>Cliente</th>
+              <th>Nome Cliente</th>
+              <th>ID Cliente</th>
               <th>Status</th>
-              <th>Tipo</th>
-              <th>Profissional</th>
-              <th>Valor</th>
-              <th>Observações</th>
+              <th>Queixa Principal</th>
             </tr>
           </thead>
           <tbody id="corpoTabela">
-            <!-- Linhas carregadas dinamicamente -->
+            <tr class="loading-row">
+              <td colspan="6">
+                <span class="loading-spinner"></span>
+                Carregando atendimentos...
+              </td>
+            </tr>
           </tbody>
         </table>
-      </div>
-      <div id="estadoTabela" class="state">
-        <div class="spinner"></div>
-        <p>Carregando atendimentos...</p>
       </div>
     </div>
   </main>
 
+  <!-- Toast -->
   <div id="toast" class="toast"></div>
 
   <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzBEYsubmBz6FKNY0S3ZyxBIoAQj60Ob7G73uw-TI118tAjtFXWyK_JVEmxz52y4Yn-/exec';
+    // URL do Script de Atendimentos
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzBEYsubmBz6FKNY0S3ZyxBIoAQj60Ob7G73uw-TI118tAjtFXWyK_JVEmxz52y4Yn-/exec";
 
-    // Mapeamento de colunas baseado na sequência da planilha Equilibrium - Atendimentos
-    // Ordem: Data, Cliente, Status, Tipo, Profissional, Valor, Observações
-    const COLUNAS = ['data', 'cliente', 'status', 'tipo', 'profissional', 'valor', 'observacoes'];
-
+    // Armazena todos os atendimentos carregados
     let todosAtendimentos = [];
 
-    function mostrarToast(mensagem, tipo = 'sucesso') {
-      const toast = document.getElementById('toast');
-      toast.textContent = mensagem;
-      toast.className = 'toast ' + (tipo === 'error' ? 'error' : '');
-      setTimeout(() => toast.classList.add('show'), 10);
-      setTimeout(() => toast.classList.remove('show'), 3000);
-    }
+    /**
+     * Mapeamento de colunas conforme a planilha Equilibrium - Atendimentos:
+     * Coluna A [0]: Data Atendimento
+     * Coluna B [1]: ID Atendimento
+     * Coluna C [2]: ID Cliente
+     * Coluna D [3]: Nome Cliente
+     * Coluna E [4]: Status
+     * Coluna F [5]: Queixa Principal
+     */
+    const COL = {
+      DATA_ATENDIMENTO: 0,
+      ID_ATENDIMENTO: 1,
+      ID_CLIENTE: 2,
+      NOME_CLIENTE: 3,
+      STATUS: 4,
+      QUEIXA_PRINCIPAL: 5
+    };
 
-    function mostrarEstado(estado) {
-      const el = document.getElementById('estadoTabela');
-      const corpo = document.getElementById('corpoTabela');
-      corpo.innerHTML = '';
+    /**
+     * Carrega os atendimentos a partir do Google Apps Script.
+     */
+    async function carregarAtendimentos() {
+      const corpoTabela = document.getElementById("corpoTabela");
+      corpoTabela.innerHTML = `
+        <tr class="loading-row">
+          <td colspan="6">
+            <span class="loading-spinner"></span>
+            Carregando atendimentos...
+          </td>
+        </tr>
+      `;
 
-      if (estado === 'loading') {
-        el.innerHTML = '<div class="spinner"></div><p>Carregando atendimentos...</p>';
-        el.style.display = 'block';
-      } else if (estado === 'empty') {
-        el.innerHTML = '<div class="state-icon">📋</div><p>Nenhum atendimento encontrado.</p>';
-        el.style.display = 'block';
-      } else if (estado === 'error') {
-        el.innerHTML = '<div class="state-icon">⚠️</div><p>Erro ao carregar os dados. Tente novamente.</p>';
-        el.style.display = 'block';
-      } else {
-        el.style.display = 'none';
+      try {
+        const response = await fetch(SCRIPT_URL);
+        const data = await response.json();
+
+        // Suporta diferentes formatos de retorno
+        let registros = [];
+        if (Array.isArray(data)) {
+          registros = data;
+        } else if (data && Array.isArray(data.data)) {
+          registros = data.data;
+        } else if (data && Array.isArray(data.registros)) {
+          registros = data.registros;
+        } else if (data && Array.isArray(data.atendimentos)) {
+          registros = data.atendimentos;
+        }
+
+        // Remove cabeçalho caso venha incluído na primeira linha
+        if (registros.length > 0 && ehCabecalho(registros[0])) {
+          registros = registros.slice(1);
+        }
+
+        todosAtendimentos = registros.map(linha => ({
+          dataAtendimento: obterValor(linha, COL.DATA_ATENDIMENTO),
+          idAtendimento: obterValor(linha, COL.ID_ATENDIMENTO),
+          idCliente: obterValor(linha, COL.ID_CLIENTE),
+          nomeCliente: obterValor(linha, COL.NOME_CLIENTE),
+          status: obterValor(linha, COL.STATUS),
+          queixaPrincipal: obterValor(linha, COL.QUEIXA_PRINCIPAL)
+        }));
+
+        aplicarFiltros();
+        mostrarToast("Atendimentos carregados com sucesso!", "success");
+      } catch (error) {
+        console.error("Erro ao carregar atendimentos:", error);
+        corpoTabela.innerHTML = `
+          <tr class="empty-row">
+            <td colspan="6">
+              <i class="fas fa-exclamation-triangle"></i>
+              Erro ao carregar atendimentos. Verifique a conexão e tente novamente.
+            </td>
+          </tr>
+        `;
+        mostrarToast("Erro ao carregar atendimentos.", "error");
       }
     }
 
-    function normalizarLinha(linha) {
-      const obj = {};
-      COLUNAS.forEach((chave, i) => {
-        obj[chave] = linha[i] !== undefined && linha[i] !== null ? String(linha[i]).trim() : '';
+    /**
+     * Verifica se a linha é um cabeçalho.
+     */
+    function ehCabecalho(linha) {
+      if (!linha || !linha[COL.DATA_ATENDIMENTO]) return false;
+      const valor = String(linha[COL.DATA_ATENDIMENTO]).toLowerCase();
+      return valor.includes("data") && valor.includes("atendimento");
+    }
+
+    /**
+     * Obtém valor de uma célula com segurança.
+     */
+    function obterValor(linha, indice) {
+      if (!linha || indice >= linha.length) return "";
+      const valor = linha[indice];
+      return valor === null || valor === undefined ? "" : String(valor).trim();
+    }
+
+    /**
+     * Aplica os filtros de nome e data e renderiza a tabela.
+     */
+    function aplicarFiltros() {
+      const filtroNome = document.getElementById("filtroNome").value.toLowerCase().trim();
+      const filtroDataInicio = document.getElementById("filtroDataInicio").value;
+      const filtroDataFim = document.getElementById("filtroDataFim").value;
+
+      let resultados = todosAtendimentos.filter(atendimento => {
+        // Filtro por nome
+        if (filtroNome && !atendimento.nomeCliente.toLowerCase().includes(filtroNome)) {
+          return false;
+        }
+
+        // Filtro por data
+        const dataAtendimento = normalizarData(atendimento.dataAtendimento);
+        if (filtroDataInicio) {
+          const dataInicio = normalizarData(filtroDataInicio);
+          if (dataAtendimento && dataAtendimento < dataInicio) return false;
+        }
+        if (filtroDataFim) {
+          const dataFim = normalizarData(filtroDataFim);
+          if (dataAtendimento && dataAtendimento > dataFim) return false;
+        }
+
+        return true;
       });
-      return obj;
+
+      renderizarTabela(resultados);
     }
 
-    function formatarData(valor) {
-      if (!valor) return '-';
-      // Tenta interpretar como Date do Google Sheets
-      const d = new Date(valor);
-      if (!isNaN(d.getTime())) {
-        return d.toLocaleDateString('pt-BR');
+    /**
+     * Normaliza uma data para o formato YYYY-MM-DD.
+     */
+    function normalizarData(valor) {
+      if (!valor) return "";
+
+      // Tenta formato DD/MM/YYYY ou DD/MM/YY
+      const partesBR = valor.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+      if (partesBR) {
+        const dia = partesBR[1].padStart(2, "0");
+        const mes = partesBR[2].padStart(2, "0");
+        let ano = partesBR[3];
+        if (ano.length === 2) ano = "20" + ano;
+        return `${ano}-${mes}-${dia}`;
       }
-      return valor;
+
+      // Tenta formato YYYY-MM-DD (ISO)
+      const partesISO = valor.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+      if (partesISO) {
+        const ano = partesISO[1];
+        const mes = partesISO[2].padStart(2, "0");
+        const dia = partesISO[3].padStart(2, "0");
+        return `${ano}-${mes}-${dia}`;
+      }
+
+      // Tenta Date object
+      const dateObj = new Date(valor);
+      if (!isNaN(dateObj.getTime())) {
+        const ano = dateObj.getFullYear();
+        const mes = String(dateObj.getMonth() + 1).padStart(2, "0");
+        const dia = String(dateObj.getDate()).padStart(2, "0");
+        return `${ano}-${mes}-${dia}`;
+      }
+
+      return "";
     }
 
-    function formatarValor(valor) {
-      if (!valor) return '-';
-      const n = parseFloat(String(valor).replace(/[^0-9,-]/g, '').replace(',', '.'));
-      if (isNaN(n)) return valor;
-      return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    /**
+     * Formata data para exibição no padrão brasileiro.
+     */
+    function formatarDataExibicao(valor) {
+      const normalizada = normalizarData(valor);
+      if (!normalizada) return valor || "-";
+      const partes = normalizada.split("-");
+      if (partes.length === 3) {
+        return `${partes[2]}/${partes[1]}/${partes[0]}`;
+      }
+      return valor || "-";
     }
 
+    /**
+     * Retorna a classe CSS do badge de status.
+     */
     function classeStatus(status) {
-      const s = (status || '').toLowerCase();
-      if (s.includes('conclu')) return 'status-concluido';
-      if (s.includes('andamento') || s.includes('progresso') || s.includes('aberto')) return 'status-andamento';
-      if (s.includes('cancel')) return 'status-cancelado';
-      return 'status-default';
+      if (!status) return "status-default";
+      const s = status.toLowerCase().trim();
+      if (s.includes("conclu") || s.includes("finalizado") || s.includes("encerrado")) return "status-concluido";
+      if (s.includes("andamento") || s.includes("progresso") || s.includes("aberto") || s.includes("pendente")) return "status-andamento";
+      if (s.includes("cancel") || s.includes("inativo")) return "status-cancelado";
+      return "status-default";
     }
 
+    /**
+     * Renderiza a tabela com os resultados filtrados.
+     */
     function renderizarTabela(atendimentos) {
-      const corpo = document.getElementById('corpoTabela');
-      corpo.innerHTML = '';
+      const corpoTabela = document.getElementById("corpoTabela");
 
-      if (!atendimentos || atendimentos.length === 0) {
-        mostrarEstado('empty');
+      if (atendimentos.length === 0) {
+        corpoTabela.innerHTML = `
+          <tr class="empty-row">
+            <td colspan="6">
+              <i class="fas fa-inbox"></i>
+              Nenhum atendimento encontrado com os filtros aplicados.
+            </td>
+          </tr>
+        `;
         return;
       }
 
-      mostrarEstado('none');
-
-      atendimentos.forEach((item) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${formatarData(item.data)}</td>
-          <td>${item.cliente || '-'}</td>
-          <td><span class="status-badge ${classeStatus(item.status)}">${item.status || '-'}</span></td>
-          <td>${item.tipo || '-'}</td>
-          <td>${item.profissional || '-'}</td>
-          <td>${formatarValor(item.valor)}</td>
-          <td>${item.observacoes || '-'}</td>
-        `;
-        corpo.appendChild(tr);
-      });
+      corpoTabela.innerHTML = atendimentos.map(atendimento => `
+        <tr>
+          <td class="id-cell">${escapeHtml(atendimento.idAtendimento) || "-"}</td>
+          <td>${formatarDataExibicao(atendimento.dataAtendimento)}</td>
+          <td>${escapeHtml(atendimento.nomeCliente) || "-"}</td>
+          <td class="id-cell">${escapeHtml(atendimento.idCliente) || "-"}</td>
+          <td>
+            <span class="status-badge ${classeStatus(atendimento.status)}">
+              ${escapeHtml(atendimento.status) || "-"}
+            </span>
+          </td>
+          <td>${escapeHtml(atendimento.queixaPrincipal) || "-"}</td>
+        </tr>
+      `).join("");
     }
 
-    function aplicarFiltros() {
-      const filtroCliente = document.getElementById('filtroCliente').value.toLowerCase().trim();
-      const filtroData = document.getElementById('filtroData').value;
-
-      let filtrados = todosAtendimentos.filter((item) => {
-        const matchCliente = !filtroCliente || (item.cliente || '').toLowerCase().includes(filtroCliente);
-
-        let matchData = true;
-        if (filtroData) {
-          const d = new Date(item.data);
-          if (!isNaN(d.getTime())) {
-            const dataItem = d.toISOString().split('T')[0];
-            matchData = dataItem === filtroData;
-          } else {
-            matchData = (item.data || '') === filtroData;
-          }
-        }
-
-        return matchCliente && matchData;
-      });
-
-      renderizarTabela(filtrados);
+    /**
+     * Escapa caracteres HTML para evitar injeção.
+     */
+    function escapeHtml(texto) {
+      if (!texto) return "";
+      const div = document.createElement("div");
+      div.textContent = texto;
+      return div.innerHTML;
     }
 
+    /**
+     * Limpa todos os filtros.
+     */
     function limparFiltros() {
-      document.getElementById('filtroCliente').value = '';
-      document.getElementById('filtroData').value = '';
-      renderizarTabela(todosAtendimentos);
+      document.getElementById("filtroNome").value = "";
+      document.getElementById("filtroDataInicio").value = "";
+      document.getElementById("filtroDataFim").value = "";
+      aplicarFiltros();
     }
 
-    async function carregarAtendimentos() {
-      mostrarEstado('loading');
-      try {
-        const resposta = await fetch(SCRIPT_URL);
-        if (!resposta.ok) throw new Error('Falha na requisição: ' + resposta.status);
-
-        const dados = await resposta.json();
-
-        // O script pode retornar { dados: [...] } ou um array direto
-        let linhas = [];
-        if (Array.isArray(dados)) {
-          linhas = dados;
-        } else if (dados && Array.isArray(dados.dados)) {
-          linhas = dados.dados;
-        } else if (dados && Array.isArray(dados.atendimentos)) {
-          linhas = dados.atendimentos;
-        } else if (dados && Array.isArray(dados.rows)) {
-          linhas = dados.rows;
-        }
-
-        // Remove cabeçalho se a primeira linha parecer um cabeçalho
-        if (linhas.length > 0) {
-          const primeira = linhas[0];
-          if (Array.isArray(primeira)) {
-            const primeiraLower = primeira.map((c) => String(c || '').toLowerCase());
-            if (primeiraLower.includes('data') && primeiraLower.includes('cliente')) {
-              linhas = linhas.slice(1);
-            }
-          }
-        }
-
-        todosAtendimentos = linhas
-          .filter((l) => Array.isArray(l) && l.some((c) => c !== '' && c !== null && c !== undefined))
-          .map(normalizarLinha);
-
-        renderizarTabela(todosAtendimentos);
-        mostrarToast(`${todosAtendimentos.length} atendimento(s) carregado(s).`);
-      } catch (erro) {
-        console.error('Erro ao carregar atendimentos:', erro);
-        mostrarEstado('error');
-        mostrarToast('Erro ao carregar atendimentos.', 'error');
-      }
+    /**
+     * Exibe uma notificação toast.
+     */
+    function mostrarToast(mensagem, tipo) {
+      const toast = document.getElementById("toast");
+      toast.textContent = mensagem;
+      toast.className = `toast toast-${tipo} show`;
+      setTimeout(() => {
+        toast.className = "toast";
+      }, 3000);
     }
 
-    // Carrega automaticamente ao abrir a página
-    document.addEventListener('DOMContentLoaded', carregarAtendimentos);
+    // Carrega os atendimentos ao iniciar a página
+    document.addEventListener("DOMContentLoaded", carregarAtendimentos);
   </script>
 </body>
 </html>
