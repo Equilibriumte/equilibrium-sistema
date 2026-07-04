@@ -7,27 +7,43 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { display: flex; background-color: #f4f0fa; min-height: 100vh; }
+        
+        /* Sidebar Roxa */
         .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
         .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
         .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
         .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
+
+        /* Conteúdo e Abas */
         .main-content { margin-left: 250px; flex: 1; padding: 40px; width: calc(100% - 250px); }
         .tabs-header { display: flex; gap: 5px; margin-bottom: 20px; background: #e0d0f0; padding: 5px; border-radius: 12px; overflow-x: auto; }
         .tab-btn { flex: 1; padding: 12px; border: none; background: none; color: #4b0082; cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 12px; transition: 0.3s; }
         .tab-btn.active { background: #4b0082; color: #ffd700; }
+        
         .tab-content { display: none; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
         .tab-content.active { display: block; }
+
+        /* Formulário */
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .full { grid-column: span 2; }
         label { display: block; font-weight: bold; color: #4b0082; margin-bottom: 8px; font-size: 14px; }
         input, select, textarea { width: 100%; padding: 12px; border: 2px solid #e0d0f0; border-radius: 8px; outline: none; }
+        textarea { min-height: 80px; resize: vertical; }
+
+        /* Multi-select Cores */
         .multi-select-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; padding: 10px; border: 2px solid #e0d0f0; border-radius: 8px; max-height: 150px; overflow-y: auto; }
         .option-item { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; padding: 5px; border-radius: 5px; }
+        .option-item:hover { background: #f0ebff; }
+
+        /* Botões Coloridos (Chakras e Campos) */
         .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 15px 0; }
         .color-btn { padding: 15px; border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; text-align: center; font-size: 11px; }
+        .color-btn span { display: block; font-size: 15px; margin-top: 5px; }
+        
         .c-coronario { background: #8a2be2; } .c-frontal { background: #4b0082; } .c-laringeo { background: #87ceeb; color: #333; }
         .c-cardiaco { background: #228b22; } .c-umbilical { background: #ffd700; color: #333; } .c-sacro { background: #ff8c00; } .c-basico { background: #ff0000; }
         .d-mental { background: #5dade2; } .d-emocional { background: #ec7063; } .d-espiritual { background: #af7ac5; } .d-fisico { background: #58d68d; }
+
         .nav-actions { display: flex; justify-content: space-between; margin-top: 30px; gap: 15px; }
         .btn-action { padding: 15px 25px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .btn-save { background: #ffd700; color: #4b0082; flex: 1; }
@@ -47,6 +63,7 @@
 
     <div class="main-content">
         <h1 style="color: #4b0082; margin-bottom: 20px;">Ficha de Atendimento</h1>
+        
         <div class="tabs-header">
             <button class="tab-btn active" onclick="showTab(0)">1. Dados</button>
             <button class="tab-btn" onclick="showTab(1)">2. Inicial</button>
@@ -56,6 +73,7 @@
         </div>
 
         <form id="formAtendimento">
+            <!-- ABA 1: DADOS -->
             <div class="tab-content active">
                 <div class="form-grid">
                     <div class="form-group full">
@@ -69,11 +87,16 @@
                     <div class="form-group full"><label>Queixa Principal</label><textarea id="queixaP"></textarea></div>
                     <div class="form-group full"><label>Queixa Secundária</label><textarea id="queixaS"></textarea></div>
                 </div>
-                <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(1)">PRÓXIMO ➔</button></div>
+                <div class="nav-actions">
+                    <button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button>
+                    <button type="button" class="btn-action btn-next" onclick="showTab(1)">PRÓXIMO ➔</button>
+                </div>
             </div>
 
+            <!-- ABA 2: INICIAL -->
             <div class="tab-content">
                 <div class="form-group"><label>Bovis (4 dígitos)</label><input type="number" id="bovis"></div>
+                
                 <label style="margin-top: 15px;">Chakras (%)</label>
                 <div class="btn-grid">
                     <button type="button" class="color-btn c-coronario" onclick="setVal(this, 'v-coronario')">Coronário<span id="v-coronario">-</span></button>
@@ -84,14 +107,17 @@
                     <button type="button" class="color-btn c-sacro" onclick="setVal(this, 'v-sacro')">Sacro<span id="v-sacro">-</span></button>
                     <button type="button" class="color-btn c-basico" onclick="setVal(this, 'v-basico')">Básico<span id="v-basico">-</span></button>
                 </div>
+
                 <div class="form-grid">
-                    <div class="form-group"><label>Tamanho Aura</label><input type="text" id="auraT" onblur="if(this.value && !this.value.includes('%')) this.value+='%'"></div>
-                    <div class="form-group"><label>Proteção Aura</label><input type="text" id="protecaoAura" onblur="if(this.value && !this.value.includes('%')) this.value+='%'"></div>
+                    <div class="form-group"><label>Tamanho Aura</label><input type="text" id="auraT" placeholder="Ex: 80" onblur="formatarPct(this)"></div>
+                    <div class="form-group"><label>Proteção Aura</label><input type="text" id="protecaoAura" placeholder="Ex: 100" onblur="formatarPct(this)"></div>
                 </div>
+
                 <div class="form-grid" style="margin-top:15px;">
                     <div class="form-group"><label>Cores em Excesso</label><div id="coresExcesso" class="multi-select-container"></div></div>
                     <div class="form-group"><label>Cores em Falta</label><div id="coresFalta" class="multi-select-container"></div></div>
                 </div>
+
                 <label style="margin-top: 15px;">Campos (%)</label>
                 <div class="btn-grid">
                     <button type="button" class="color-btn d-mental" onclick="setVal(this, 'v-mental')">Mental<span id="v-mental">-</span></button>
@@ -99,19 +125,60 @@
                     <button type="button" class="color-btn d-espiritual" onclick="setVal(this, 'v-espiritual')">Espiritual<span id="v-espiritual">-</span></button>
                     <button type="button" class="color-btn d-fisico" onclick="setVal(this, 'v-fisico')">Físico<span id="v-fisico">-</span></button>
                 </div>
+
                 <div class="form-group full"><label>Diagnóstico Inicial</label><textarea id="diagInicial"></textarea></div>
-                <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(2)">PRÓXIMO ➔</button></div>
+                <div class="nav-actions">
+                    <button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button>
+                    <button type="button" class="btn-action btn-next" onclick="showTab(2)">PRÓXIMO ➔</button>
+                </div>
             </div>
 
-            <div class="tab-content"><label>Queixa Específica</label><textarea id="queixaEspec"></textarea><label>Causa Raiz</label><textarea id="causaRaiz"></textarea><label>Crenças</label><textarea id="crencas"></textarea><label>Diagnóstico Específico</label><textarea id="diagEspec"></textarea><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(3)">PRÓXIMO ➔</button></div></div>
-            <div class="tab-content"><div class="form-grid"><div class="form-group"><label>Tipo Ambiente</label><select id="tipoAmbiente"></select></div><div class="form-group"><label>Endereço</label><input type="text" id="endAmbiente"></div><div class="form-group full"><label>Queixa Ambiente</label><textarea id="queixaAmbiente"></textarea></div><div class="form-group full"><label>Pessoas Env.</label><input type="text" id="pessoasEnv"></div><div class="form-group full"><label>Diag. Ambiente</label><textarea id="diagAmbiente"></textarea></div></div><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(4)">PRÓXIMO ➔</button></div></div>
-            <div class="tab-content"><div class="form-grid"><div class="form-group"><label>Tipo Busca</label><select id="tipoBusca"></select></div><div class="form-group"><label>Info Busca</label><input type="text" id="infoBusca"></div><div class="form-group full"><label>Resultado</label><select id="resBusca"></select></div><div class="form-group full"><label>Descrição</label><textarea id="descBusca"></textarea></div></div><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">FINALIZAR E SALVAR</button></div></div>
+            <!-- ABA 3: ESPECÍFICO -->
+            <div class="tab-content">
+                <label>Queixa Específica</label><textarea id="queixaEspec"></textarea>
+                <label>Causa Raiz</label><textarea id="causaRaiz"></textarea>
+                <label>Crenças</label><textarea id="crencas"></textarea>
+                <label>Diagnóstico Específico</label><textarea id="diagEspec"></textarea>
+                <div class="nav-actions">
+                    <button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button>
+                    <button type="button" class="btn-action btn-next" onclick="showTab(3)">PRÓXIMO ➔</button>
+                </div>
+            </div>
+
+            <!-- ABA 4: AMBIENTE -->
+            <div class="tab-content">
+                <div class="form-grid">
+                    <div class="form-group"><label>Tipo Ambiente</label><select id="tipoAmbiente"></select></div>
+                    <div class="form-group"><label>Endereço</label><input type="text" id="endAmbiente"></div>
+                    <div class="form-group full"><label>Queixa Ambiente</label><textarea id="queixaAmbiente"></textarea></div>
+                    <div class="form-group full"><label>Pessoas Env.</label><input type="text" id="pessoasEnv"></div>
+                    <div class="form-group full"><label>Diag. Ambiente</label><textarea id="diagAmbiente"></textarea></div>
+                </div>
+                <div class="nav-actions">
+                    <button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button>
+                    <button type="button" class="btn-action btn-next" onclick="showTab(4)">PRÓXIMO ➔</button>
+                </div>
+            </div>
+
+            <!-- ABA 5: BUSCA -->
+            <div class="tab-content">
+                <div class="form-grid">
+                    <div class="form-group"><label>Tipo Busca</label><select id="tipoBusca"></select></div>
+                    <div class="form-group"><label>Info Busca</label><input type="text" id="infoBusca"></div>
+                    <div class="form-group full"><label>Resultado</label><select id="resBusca"></select></div>
+                    <div class="form-group full"><label>Descrição</label><textarea id="descBusca"></textarea></div>
+                </div>
+                <div class="nav-actions">
+                    <button type="button" class="btn-action btn-save" onclick="enviarDados()">FINALIZAR E SALVAR</button>
+                </div>
+            </div>
         </form>
     </div>
 
     <script>
         const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
         const URL_ATEND = 'https://script.google.com/macros/s/AKfycbzBEYsubmBz6FKNY0S3ZyxBIoAQj60Ob7G73uw-TI118tAjtFXWyK_JVEmxz52y4Yn-/exec';
+        
         let listaGlobalClientes = [];
 
         function showTab(i) {
@@ -119,6 +186,7 @@
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-content')[i].classList.add('active');
             document.querySelectorAll('.tab-btn')[i].classList.add('active');
+            window.scrollTo(0,0);
         }
 
         function setVal(btn, id) {
@@ -126,8 +194,13 @@
             if (v) document.getElementById(id).innerText = v + "%";
         }
 
+        function formatarPct(input) {
+            if (input.value && !input.value.includes('%')) input.value += '%';
+        }
+
         async function carregarTudo() {
             try {
+                // 1. Carrega Clientes para Autocomplete
                 const resC = await fetch(URL_CLIENTES + "?_=" + new Date().getTime());
                 listaGlobalClientes = await resC.json();
                 const dl = document.getElementById('listaClientes');
@@ -138,19 +211,21 @@
                     dl.appendChild(o);
                 });
 
+                // 2. Carrega Configurações (Cores, Status, etc.)
                 const resA = await fetch(URL_ATEND);
-                const config = await resA.json();
+                const jsonA = await resA.json();
+                const config = jsonA.configuracoes || {};
                 
                 const fillS = (id, list) => {
                     const s = document.getElementById(id);
-                    if(!s) return;
-                    s.innerHTML = "";
+                    if(!s || !list) return;
+                    s.innerHTML = "<option value=''>Selecione...</option>";
                     list.forEach(v => { let o = document.createElement('option'); o.value = v; o.text = v; s.appendChild(o); });
                 };
 
                 const fillM = (id, list, pref) => {
                     const c = document.getElementById(id);
-                    if(!c) return;
+                    if(!c || !list) return;
                     c.innerHTML = "";
                     list.forEach(v => {
                         const l = document.createElement('label');
@@ -167,21 +242,23 @@
                 fillS('resBusca', config.buscaResultados);
                 fillS('statusSelect', config.status);
 
-            } catch (e) { console.error(e); }
+            } catch (e) { console.error("Erro no carregamento:", e); }
         }
 
+        // Vincula ID ao selecionar nome
         document.getElementById('nomeCliente').oninput = (e) => {
-            const c = listaGlobalClientes.find(x => (x.nome || x.Nome || x[2]) === e.target.value);
+            const digitado = e.target.value;
+            const c = listaGlobalClientes.find(x => (x.nome || x.Nome || x[2]) === digitado);
             if (c) document.getElementById('idCliente').value = c.id || c.ID || c[1];
         };
 
         async function enviarDados() {
             const getC = (n) => Array.from(document.querySelectorAll(`input[name="${n}"]:checked`)).map(cb => cb.value).join(", ");
             const p = {
+                dataAtend: document.getElementById('dataAtend').value,
                 idCliente: document.getElementById('idCliente').value,
                 nomeCliente: document.getElementById('nomeCliente').value,
                 status: document.getElementById('statusSelect').value,
-                dataAtend: document.getElementById('dataAtend').value,
                 queixaPrincipal: document.getElementById('queixaP').value,
                 queixaSecundaria: document.getElementById('queixaS').value,
                 bovis: document.getElementById('bovis').value,
@@ -218,8 +295,13 @@
 
             try {
                 const r = await fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(p) }).then(res => res.json());
-                if (r.sucesso) alert("✅ Atendimento salvo com sucesso!");
-            } catch (e) { alert("❌ Erro ao salvar."); }
+                if (r.success) {
+                    alert("✅ Atendimento salvo com sucesso!\nID: " + r.idAtend);
+                    location.reload();
+                } else {
+                    alert("❌ Erro ao salvar: " + r.message);
+                }
+            } catch (e) { alert("❌ Erro de conexão ao salvar."); }
         }
 
         window.onload = carregarTudo;
