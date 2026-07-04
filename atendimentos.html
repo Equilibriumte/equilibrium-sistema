@@ -26,7 +26,7 @@
         .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 15px 0; }
         .color-btn { padding: 15px; border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; text-align: center; font-size: 11px; }
         .color-btn span { display: block; font-size: 15px; margin-top: 5px; }
-        .c-coronario { background: #8a2be2; } .c-frontal { background: #4b0082; } .c-laringeo { background: #87ceeb; }
+        .c-coronario { background: #8a2be2; } .c-frontal { background: #4b0082; } .c-laringeo { background: #87ceeb; color: #333; }
         .c-cardiaco { background: #228b22; } .c-umbilical { background: #ffd700; color: #333; } .c-sacro { background: #ff8c00; } .c-basico { background: #ff0000; }
         .d-mental { background: #5dade2; } .d-emocional { background: #ec7063; } .d-espiritual { background: #af7ac5; } .d-fisico { background: #58d68d; }
         .nav-actions { display: flex; justify-content: space-between; margin-top: 30px; gap: 15px; }
@@ -66,7 +66,7 @@
                         <input type="hidden" id="idCliente">
                     </div>
                     <div class="form-group"><label>Data</label><input type="date" id="dataAtend" required></div>
-                    <div class="form-group"><label>Status</label><select id="statusSelect"><option>Carregando...</option></select></div>
+                    <div class="form-group"><label>Status</label><select id="statusSelect"><option value="">Carregando...</option></select></div>
                     <div class="form-group full"><label>Queixa Principal</label><textarea id="queixaP"></textarea></div>
                     <div class="form-group full"><label>Queixa Secundária</label><textarea id="queixaS"></textarea></div>
                 </div>
@@ -104,15 +104,15 @@
                 <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(2)">PRÓXIMO ➔</button></div>
             </div>
 
-            <div class="tab-content"><label>Queixa Específica</label><textarea id="queixaEspec"></textarea><label>Causa Raiz</label><textarea id="causaRaiz"></textarea><label>Crenças</label><textarea id="crencas"></textarea><label>Diagnóstico Específico</label><textarea id="diagEspec"></textarea><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(3)">PRÓXIMO ➔</button></div></div>
-            <div class="tab-content"><div class="form-grid"><div class="form-group"><label>Tipo Ambiente</label><select id="tipoAmbiente"></select></div><div class="form-group"><label>Endereço</label><input type="text" id="endAmbiente"></div><div class="form-group full"><label>Queixa Ambiente</label><textarea id="queixaAmbiente"></textarea></div><div class="form-group full"><label>Pessoas Env.</label><input type="text" id="pessoasEnv"></div><div class="form-group full"><label>Diag. Ambiente</label><textarea id="diagAmbiente"></textarea></div></div><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(4)">PRÓXIMO ➔</button></div></div>
+            <div class="tab-content"><label>Queixa Específica</label><textarea id="queixaE"></textarea><label>Causa Raiz</label><textarea id="causaR"></textarea><label>Crenças</label><textarea id="crencas"></textarea><label>Diagnóstico Específico</label><textarea id="diagE"></textarea><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(3)">PRÓXIMO ➔</button></div></div>
+            <div class="tab-content"><div class="form-grid"><div class="form-group"><label>Tipo Ambiente</label><select id="tipoAmb"></select></div><div class="form-group"><label>Endereço</label><input type="text" id="endAmb"></div><div class="form-group full"><label>Queixa Ambiente</label><textarea id="queixaAmb"></textarea></div><div class="form-group full"><label>Pessoas Env.</label><input type="text" id="pessoasEnv"></div><div class="form-group full"><label>Diag. Ambiente</label><textarea id="diagAmb"></textarea></div></div><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(4)">PRÓXIMO ➔</button></div></div>
             <div class="tab-content"><div class="form-grid"><div class="form-group"><label>Tipo Busca</label><select id="tipoBusca"></select></div><div class="form-group"><label>Info Busca</label><input type="text" id="infoBusca"></div><div class="form-group full"><label>Resultado</label><select id="resBusca"></select></div><div class="form-group full"><label>Descrição</label><textarea id="descBusca"></textarea></div></div><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">FINALIZAR E SALVAR</button></div></div>
         </form>
     </div>
 
     <script>
         const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
-        const URL_ATEND = 'https://script.google.com/macros/s/AKfycbwmzEVgldJk9Ha7ly-BMGCxUcE8PAibw8BrP3icQi1hzxjWSzHEZygSPzgV_ZwNeVbX/exec';
+        const URL_ATEND = 'https://script.google.com/macros/s/AKfycbzMD3-mGNcbmgDIhjqL-Gkp7Me1Ge8fT7BEYckzVjXcVIzwXxekfRq4j61IUrbkfI52/exec';
         let listaGlobalClientes = [];
 
         function showTab(i) {
@@ -130,33 +130,35 @@
 
         async function carregarTudo() {
             try {
-                const resC = await fetch(URL_CLIENTES + "?_=" + new Date().getTime());
-                const dadosC = await resC.json();
-                listaGlobalClientes = Array.isArray(dadosC) ? dadosC : (dadosC.dados || []);
+                // 1. Carrega Clientes (Autocomplete)
+                const resC = await fetch(URL_CLIENTES);
+                const jsonC = await resC.json();
+                listaGlobalClientes = Array.isArray(jsonC) ? jsonC : (jsonC.dados || []);
                 const dl = document.getElementById('listaClientes');
                 dl.innerHTML = "";
                 listaGlobalClientes.forEach(c => {
                     let o = document.createElement('option');
-                    o.value = c.nome || c.Nome || c[2];
+                    o.value = c.nome || c.Nome || c['Nome Cliente'] || c[2];
                     dl.appendChild(o);
                 });
 
+                // 2. Carrega Configurações (Cores, Status, etc.)
                 const resA = await fetch(URL_ATEND);
                 const jsonA = await resA.json();
-                const config = jsonA.dados || {};
+                const config = jsonA.data || jsonA.configuracoes || {};
                 
                 const fillS = (id, list) => {
                     const s = document.getElementById(id);
-                    if(!s || !list) return;
+                    if(!s) return;
                     s.innerHTML = "<option value=''>Selecione...</option>";
-                    list.forEach(v => { let o = document.createElement('option'); o.value = v; o.text = v; s.appendChild(o); });
+                    if(list) list.forEach(v => { let o = document.createElement('option'); o.value = v; o.text = v; s.appendChild(o); });
                 };
 
                 const fillM = (id, list, pref) => {
                     const c = document.getElementById(id);
-                    if(!c || !list) return;
+                    if(!c) return;
                     c.innerHTML = "";
-                    list.forEach(v => {
+                    if(list) list.forEach(v => {
                         const l = document.createElement('label');
                         l.className = 'option-item';
                         l.innerHTML = `<input type="checkbox" name="${pref}" value="${v}"> ${v}`;
@@ -164,76 +166,71 @@
                     });
                 };
 
-                fillM('coresExcesso', config.cores, 'exc');
-                fillM('coresFalta', config.cores, 'fal');
-                fillS('tipoAmbiente', config.ambientes);
-                fillS('tipoBusca', config.buscaTipos);
-                fillS('resBusca', config.buscaResultados);
-                fillS('statusSelect', config.status);
+                // Mapeamento dinâmico ignorando maiúsculas
+                const findKey = (obj, target) => Object.keys(obj).find(k => k.toLowerCase() === target.toLowerCase());
+
+                fillM('coresExcesso', config[findKey(config, 'cores')], 'exc');
+                fillM('coresFalta', config[findKey(config, 'cores')], 'fal');
+                fillS('statusSelect', config[findKey(config, 'status')]);
+                fillS('tipoAmb', config[findKey(config, 'ambientes')]);
+                fillS('tipoBusca', config[findKey(config, 'buscaTipos')]);
+                fillS('resBusca', config[findKey(config, 'buscaResultados')]);
 
             } catch (e) { console.error("Erro no carregamento:", e); }
         }
 
         document.getElementById('nomeCliente').oninput = (e) => {
             const digitado = e.target.value;
-            const c = listaGlobalClientes.find(x => (x.nome || x.Nome || x[2]) === digitado);
-            if (c) document.getElementById('idCliente').value = c.id || c.ID || c[1];
+            const c = listaGlobalClientes.find(x => (x.nome || x.Nome || x['Nome Cliente'] || x[2]) === digitado);
+            if (c) document.getElementById('idCliente').value = c.id || c.ID || c['ID Cliente'] || c[1];
         };
 
         async function enviarDados() {
             const getC = (n) => Array.from(document.querySelectorAll(`input[name="${n}"]:checked`)).map(cb => cb.value).join(", ");
             const p = {
-                dataAtend: document.getElementById('dataAtend').value,
-                idCliente: document.getElementById('idCliente').value,
-                nomeCliente: document.getElementById('nomeCliente').value,
-                status: document.getElementById('statusSelect').value,
-                queixaP: document.getElementById('queixaP').value,
-                queixaS: document.getElementById('queixaS').value,
-                bovis: document.getElementById('bovis').value,
-                chakras: [
-                    document.getElementById('v-coronario').innerText,
-                    document.getElementById('v-frontal').innerText,
-                    document.getElementById('v-laringeo').innerText,
-                    document.getElementById('v-cardiaco').innerText,
-                    document.getElementById('v-umbilical').innerText,
-                    document.getElementById('v-sacro').innerText,
-                    document.getElementById('v-basico').innerText
-                ],
-                auraT: document.getElementById('auraT').value,
-                auraP: document.getElementById('protecaoAura').value,
-                coresExc: getC('exc'),
-                coresFal: getC('fal'),
-                campos: [
-                    document.getElementById('v-mental').innerText,
-                    document.getElementById('v-emocional').innerText,
-                    document.getElementById('v-espiritual').innerText,
-                    document.getElementById('v-fisico').innerText
-                ],
-                diagI: document.getElementById('diagInicial').value,
-                queixaE: document.getElementById('queixaEspec').value,
-                causaR: document.getElementById('causaRaiz').value,
-                crencas: document.getElementById('crencas').value,
-                diagE: document.getElementById('diagEspec').value,
-                tipoAmb: document.getElementById('tipoAmbiente').value,
-                endAmb: document.getElementById('endAmbiente').value,
-                queixaAmb: document.getElementById('queixaAmbiente').value,
-                pessoasEnv: document.getElementById('pessoasEnv').value,
-                diagAmb: document.getElementById('diagAmbiente').value,
-                tipoBusca: document.getElementById('tipoBusca').value,
-                descBusca: document.getElementById('descBusca').value,
-                infoBusca: document.getElementById('infoBusca').value,
-                resBusca: document.getElementById('resBusca').value
+                'Data do Atendimento': document.getElementById('dataAtend').value,
+                'ID Cliente': document.getElementById('idCliente').value,
+                'Nome Cliente': document.getElementById('nomeCliente').value,
+                'Status': document.getElementById('statusSelect').value,
+                'Queixa Principal': document.getElementById('queixaP').value,
+                'Queixa Secundária': document.getElementById('queixaS').value,
+                'Bovis': document.getElementById('bovis').value,
+                'Coronário': document.getElementById('v-coronario').innerText,
+                'Frontal': document.getElementById('v-frontal').innerText,
+                'Laríngeo': document.getElementById('v-laringeo').innerText,
+                'Cardíaco': document.getElementById('v-cardiaco').innerText,
+                'Umbilical': document.getElementById('v-umbilical').innerText,
+                'Sacro': document.getElementById('v-sacro').innerText,
+                'Básico': document.getElementById('v-basico').innerText,
+                'Tamanho Aura': document.getElementById('auraT').value,
+                'Proteção Aura': document.getElementById('protecaoAura').value,
+                'Cores Excesso': getC('exc'),
+                'Cores Falta': getC('fal'),
+                'Mental': document.getElementById('v-mental').innerText,
+                'Emocional': document.getElementById('v-emocional').innerText,
+                'Espiritual': document.getElementById('v-espiritual').innerText,
+                'Físico': document.getElementById('v-fisico').innerText,
+                'Diagnóstico Inicial': document.getElementById('diagInicial').value,
+                'Queixa Espec.': document.getElementById('queixaE').value,
+                'Causa Raiz': document.getElementById('causaR').value,
+                'Crenças': document.getElementById('crencas').value,
+                'Diagnóstico Específico': document.getElementById('diagE').value,
+                'Tipo Ambiente': document.getElementById('tipoAmb').value,
+                'Endereço Ambiente': document.getElementById('endAmb').value,
+                'Queixa Ambiente': document.getElementById('queixaAmb').value,
+                'Pessoas Envolvidas': document.getElementById('pessoasEnv').value,
+                'Diagnóstico Ambiente': document.getElementById('diagAmb').value,
+                'Tipo Busca': document.getElementById('tipoBusca').value,
+                'Descrição Busca': document.getElementById('descBusca').value,
+                'Info Busca': document.getElementById('infoBusca').value,
+                'Resultado Busca': document.getElementById('resBusca').value
             };
 
             try {
                 const r = await fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(p) }).then(res => res.json());
-                if (r.sucesso) {
-                    alert("✅ Atendimento salvo com sucesso!");
-                    location.reload();
-                } else {
-                    alert("❌ Erro ao salvar: " + r.erro);
-                }
-            } catch (e) { alert("❌ Erro de conexão ao salvar."); }
+                if (r.success) { alert("✅ Atendimento salvo com sucesso!"); location.reload(); }
+                else { alert("❌ Erro ao salvar: " + r.error); }
+            } catch (e) { alert("❌ Erro de conexão."); }
         }
 
         window.onload = carregarTudo;
