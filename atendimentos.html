@@ -104,15 +104,15 @@
                 <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(2)">PRÓXIMO ➔</button></div>
             </div>
 
-            <div class="tab-content"><label>Queixa Específica</label><textarea id="queixaE"></textarea><label>Causa Raiz</label><textarea id="causaR"></textarea><label>Crenças</label><textarea id="crencas"></textarea><label>Diagnóstico Específico</label><textarea id="diagE"></textarea><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(3)">PRÓXIMO ➔</button></div></div>
-            <div class="tab-content"><div class="form-grid"><div class="form-group"><label>Tipo Ambiente</label><select id="tipoAmb"></select></div><div class="form-group"><label>Endereço</label><input type="text" id="endAmb"></div><div class="form-group full"><label>Queixa Ambiente</label><textarea id="queixaAmb"></textarea></div><div class="form-group full"><label>Pessoas Env.</label><input type="text" id="pessoasEnv"></div><div class="form-group full"><label>Diag. Ambiente</label><textarea id="diagAmb"></textarea></div></div><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(4)">PRÓXIMO ➔</button></div></div>
+            <div class="tab-content"><label>Queixa Específica</label><textarea id="queixaE"></textarea><label>Causa Raiz</label><textarea id="causaRaiz"></textarea><label>Crenças</label><textarea id="crencas"></textarea><label>Diagnóstico Específico</label><textarea id="diagEspec"></textarea><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(3)">PRÓXIMO ➔</button></div></div>
+            <div class="tab-content"><div class="form-grid"><div class="form-group"><label>Tipo Ambiente</label><select id="tipoAmbiente"></select></div><div class="form-group"><label>Endereço</label><input type="text" id="endAmbiente"></div><div class="form-group full"><label>Queixa Ambiente</label><textarea id="queixaAmbiente"></textarea></div><div class="form-group full"><label>Pessoas Env.</label><input type="text" id="pessoasEnv"></div><div class="form-group full"><label>Diag. Ambiente</label><textarea id="diagAmbiente"></textarea></div></div><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(4)">PRÓXIMO ➔</button></div></div>
             <div class="tab-content"><div class="form-grid"><div class="form-group"><label>Tipo Busca</label><select id="tipoBusca"></select></div><div class="form-group"><label>Info Busca</label><input type="text" id="infoBusca"></div><div class="form-group full"><label>Resultado</label><select id="resBusca"></select></div><div class="form-group full"><label>Descrição</label><textarea id="descBusca"></textarea></div></div><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">FINALIZAR E SALVAR</button></div></div>
         </form>
     </div>
 
     <script>
         const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
-        const URL_ATEND = 'https://script.google.com/macros/s/AKfycbzMD3-mGNcbmgDIhjqL-Gkp7Me1Ge8fT7BEYckzVjXcVIzwXxekfRq4j61IUrbkfI52/exec';
+        const URL_ATEND = 'https://script.google.com/macros/s/AKfycbxdiShi7tnGpm_JoDoddDsiaLswyfPZcH69-ZXjT8JnQV4yN2zEhyOnG0cBfa-iOWG_/exec';
         let listaGlobalClientes = [];
 
         function showTab(i) {
@@ -130,10 +130,9 @@
 
         async function carregarTudo() {
             try {
-                // 1. Carrega Clientes (Autocomplete)
-                const resC = await fetch(URL_CLIENTES);
+                const resC = await fetch(URL_CLIENTES + "?_=" + new Date().getTime());
                 const jsonC = await resC.json();
-                listaGlobalClientes = Array.isArray(jsonC) ? jsonC : (jsonC.dados || []);
+                listaGlobalClientes = Array.isArray(jsonC) ? jsonC : (jsonC.data || jsonC.dados || []);
                 const dl = document.getElementById('listaClientes');
                 dl.innerHTML = "";
                 listaGlobalClientes.forEach(c => {
@@ -142,10 +141,9 @@
                     dl.appendChild(o);
                 });
 
-                // 2. Carrega Configurações (Cores, Status, etc.)
                 const resA = await fetch(URL_ATEND);
                 const jsonA = await resA.json();
-                const config = jsonA.data || jsonA.configuracoes || {};
+                const config = jsonA.configuracoes || {};
                 
                 const fillS = (id, list) => {
                     const s = document.getElementById(id);
@@ -166,13 +164,12 @@
                     });
                 };
 
-                // Mapeamento dinâmico ignorando maiúsculas
                 const findKey = (obj, target) => Object.keys(obj).find(k => k.toLowerCase() === target.toLowerCase());
 
                 fillM('coresExcesso', config[findKey(config, 'cores')], 'exc');
                 fillM('coresFalta', config[findKey(config, 'cores')], 'fal');
                 fillS('statusSelect', config[findKey(config, 'status')]);
-                fillS('tipoAmb', config[findKey(config, 'ambientes')]);
+                fillS('tipoAmbiente', config[findKey(config, 'ambientes')]);
                 fillS('tipoBusca', config[findKey(config, 'buscaTipos')]);
                 fillS('resBusca', config[findKey(config, 'buscaResultados')]);
 
@@ -212,14 +209,14 @@
                 'Físico': document.getElementById('v-fisico').innerText,
                 'Diagnóstico Inicial': document.getElementById('diagInicial').value,
                 'Queixa Espec.': document.getElementById('queixaE').value,
-                'Causa Raiz': document.getElementById('causaR').value,
+                'Causa Raiz': document.getElementById('causaRaiz').value,
                 'Crenças': document.getElementById('crencas').value,
-                'Diagnóstico Específico': document.getElementById('diagE').value,
-                'Tipo Ambiente': document.getElementById('tipoAmb').value,
-                'Endereço Ambiente': document.getElementById('endAmb').value,
-                'Queixa Ambiente': document.getElementById('queixaAmb').value,
+                'Diagnóstico Específico': document.getElementById('diagEspec').value,
+                'Tipo Ambiente': document.getElementById('tipoAmbiente').value,
+                'Endereço Ambiente': document.getElementById('endAmbiente').value,
+                'Queixa Ambiente': document.getElementById('queixaAmbiente').value,
                 'Pessoas Envolvidas': document.getElementById('pessoasEnv').value,
-                'Diagnóstico Ambiente': document.getElementById('diagAmb').value,
+                'Diagnóstico Ambiente': document.getElementById('diagAmbiente').value,
                 'Tipo Busca': document.getElementById('tipoBusca').value,
                 'Descrição Busca': document.getElementById('descBusca').value,
                 'Info Busca': document.getElementById('infoBusca').value,
@@ -229,7 +226,7 @@
             try {
                 const r = await fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(p) }).then(res => res.json());
                 if (r.success) { alert("✅ Atendimento salvo com sucesso!"); location.reload(); }
-                else { alert("❌ Erro ao salvar: " + r.error); }
+                else { alert("❌ Erro ao salvar: " + (r.error || r.message)); }
             } catch (e) { alert("❌ Erro de conexão."); }
         }
 
