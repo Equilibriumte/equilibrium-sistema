@@ -3,147 +3,430 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Histórico - Equilibrium</title>
+  <title>Equilibrium - Histórico de Atendimentos</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    body { background: #f4f0fa; display: flex; min-height: 100vh; }
-    .sidebar { width: 240px; background: linear-gradient(180deg, #4b0082, #6a0dad); color: #fff; padding: 20px 0; min-height: 100vh; position: fixed; top: 0; left: 0; }
-    .sidebar h2 { text-align: center; font-size: 22px; margin-bottom: 30px; letter-spacing: 1px; }
-    .sidebar a { display: block; color: #fff; text-decoration: none; padding: 14px 24px; font-size: 15px; transition: background 0.2s; }
-    .sidebar a:hover { background: rgba(255,255,255,0.15); }
-    .sidebar a.active { background: rgba(255,255,255,0.25); font-weight: bold; border-left: 4px solid #ffd700; }
-    .content { margin-left: 240px; flex: 1; padding: 30px; }
-    .header h1 { color: #4b0082; font-size: 26px; }
-    .header p { color: #666; font-size: 14px; margin-top: 4px; }
-    .card { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(75,0,130,0.08); margin-top: 20px; }
-    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .card-header h3 { color: #4b0082; }
-    .btn { background: #6a0dad; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
-    .btn:hover { background: #4b0082; }
-    table { width: 100%; border-collapse: collapse; }
-    th { text-align: left; padding: 12px 14px; color: #4b0082; border-bottom: 2px solid #ede2f7; font-size: 13px; }
-    td { padding: 12px 14px; border-bottom: 1px solid #f0e8f7; color: #333; font-size: 14px; }
-    .loading { text-align: center; padding: 40px; color: #6a0dad; }
-    .empty { text-align: center; padding: 40px; color: #999; }
-    .search { margin-bottom: 16px; }
-    .search input { padding: 8px 12px; border: 1px solid #ccc; border-radius: 8px; width: 250px; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #f4f0fa;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%);
+      color: #fff;
+      padding: 24px 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      flex-shrink: 0;
+      box-shadow: 2px 0 12px rgba(75, 0, 130, 0.25);
+    }
+
+    .sidebar .logo {
+      padding: 0 24px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      margin-bottom: 16px;
+    }
+
+    .sidebar .logo h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar .logo span {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .sidebar nav a {
+      display: block;
+      padding: 14px 24px;
+      color: #fff;
+      text-decoration: none;
+      font-size: 15px;
+      transition: background 0.2s ease, padding-left 0.2s ease;
+      border-left: 4px solid transparent;
+    }
+
+    .sidebar nav a:hover {
+      background: rgba(255, 255, 255, 0.08);
+      padding-left: 30px;
+    }
+
+    .sidebar nav a.active {
+      background: rgba(255, 255, 255, 0.12);
+      border-left-color: #fff;
+      font-weight: 600;
+    }
+
+    .main {
+      flex: 1;
+      padding: 32px;
+      overflow-x: hidden;
+    }
+
+    .header {
+      margin-bottom: 24px;
+    }
+
+    .header h2 {
+      font-size: 26px;
+      color: #4b0082;
+      font-weight: 700;
+    }
+
+    .header p {
+      color: #6a0dad;
+      margin-top: 4px;
+      font-size: 14px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(75, 0, 130, 0.08);
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .toolbar input {
+      padding: 10px 14px;
+      border: 1px solid #d9c9e8;
+      border-radius: 8px;
+      font-size: 14px;
+      width: 280px;
+      max-width: 100%;
+      outline: none;
+      transition: border 0.2s ease;
+    }
+
+    .toolbar input:focus {
+      border-color: #6a0dad;
+    }
+
+    .status {
+      font-size: 13px;
+      color: #6a0dad;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid #ece3f5;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: max-content;
+      min-width: 100%;
+      table-layout: fixed;
+    }
+
+    thead th {
+      background: #4b0082;
+      color: #fff;
+      text-align: left;
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    thead th.col-fixed {
+      position: sticky;
+      left: 0;
+      z-index: 4;
+      background: #4b0082;
+    }
+
+    thead th.col-fixed-2 {
+      position: sticky;
+      left: 150px;
+      z-index: 4;
+      background: #4b0082;
+    }
+
+    tbody td {
+      padding: 12px 14px;
+      font-size: 13px;
+      border-bottom: 1px solid #f0e9f7;
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      background: #fff;
+    }
+
+    tbody td.col-fixed {
+      position: sticky;
+      left: 0;
+      z-index: 3;
+      background: #fff;
+      box-shadow: 2px 0 4px rgba(75, 0, 130, 0.06);
+    }
+
+    tbody td.col-fixed-2 {
+      position: sticky;
+      left: 150px;
+      z-index: 3;
+      background: #fff;
+      box-shadow: 2px 0 4px rgba(75, 0, 130, 0.06);
+    }
+
+    tbody tr:hover td {
+      background: #f7f2fc;
+    }
+
+    tbody tr:hover td.col-fixed,
+    tbody tr:hover td.col-fixed-2 {
+      background: #f0e6fa;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+      font-size: 14px;
+    }
+
+    .loader {
+      text-align: center;
+      padding: 40px;
+      color: #6a0dad;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 70px;
+      }
+      .sidebar .logo h1,
+      .sidebar .logo span,
+      .sidebar nav a span {
+        display: none;
+      }
+      .main {
+        padding: 20px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="sidebar">
-    <h2>Equilibrium</h2>
-    <a href="novo-cliente.html">Home</a>
-    <a href="clientes.html">Lista de Clientes</a>
-    <a href="atendimentos.html">Atendimentos</a>
-    <a href="lista-atendimentos.html" class="active">Histórico</a>
-  </div>
-  <div class="content">
-    <div class="header">
-      <h1>Histórico de Atendimentos</h1>
-      <p>Visualize todos os atendimentos registrados</p>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        <h3>Atendimentos Registrados</h3>
-        <div style="display:flex; gap:10px; align-items:center;">
-          <input type="text" id="busca" placeholder="Buscar por cliente..." oninput="filtrar()" style="padding:8px 12px;border:1px solid #ccc;border-radius:8px;">
-          <button class="btn" onclick="carregar()">Atualizar</button>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo">
+        <h1>Equilibrium</h1>
+        <span>Sistema de Atendimentos</span>
+      </div>
+      <nav>
+        <a href="novo-cliente.html">Home</a>
+        <a href="clientes.html">Lista de Clientes</a>
+        <a href="atendimentos.html">Atendimentos</a>
+        <a href="lista-atendimentos.html" class="active">Histórico</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <div class="header">
+        <h2>Histórico de Atendimentos</h2>
+        <p>Visualização completa de todos os atendimentos registrados.</p>
+      </div>
+
+      <div class="card">
+        <div class="toolbar">
+          <input type="text" id="busca" placeholder="Buscar por cliente, ID ou queixa...">
+          <div class="status" id="status">Carregando...</div>
+        </div>
+
+        <div class="table-wrapper">
+          <table id="tabela">
+            <thead>
+              <tr id="thead-row"></tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
         </div>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>ID Atend.</th>
-            <th>Cliente</th>
-            <th>Status</th>
-            <th>Queixa Principal</th>
-          </tr>
-        </thead>
-        <tbody id="corpo">
-          <tr><td colspan="5" class="loading">Carregando...</td></tr>
-        </tbody>
-      </table>
-    </div>
+    </main>
   </div>
+
   <script>
-    const URL = 'https://script.google.com/macros/s/AKfycbwcInOPirRB7TOWbWFgpQtyFyhYZRHZsB37pB8PavrHxE0PZZpuwasuU_qallBiYlZm/exec';
-    let dadosBrutos = [];
+    const COLUNAS = [
+      "Data do Atendimento",
+      "ID Atendimento",
+      "ID Cliente",
+      "Nome Cliente",
+      "Status",
+      "Queixa Principal",
+      "Queixa Secundária",
+      "Bovis",
+      "Coronário",
+      "Frontal",
+      "Laríngeo",
+      "Cardíaco",
+      "Umbilical",
+      "Sacro",
+      "Básico",
+      "Tamanho Aura",
+      "Proteção Aura",
+      "Cores Excesso",
+      "Cores Falta",
+      "Mental",
+      "Emocional",
+      "Espiritual",
+      "Físico",
+      "Diagnóstico Inicial",
+      "Queixa Espec.",
+      "Causa Raiz",
+      "Crenças",
+      "Diagnóstico Específico",
+      "Tipo Ambiente",
+      "Endereço Ambiente",
+      "Queixa Ambiente",
+      "Pessoas Envolvidas",
+      "Diagnóstico Ambiente",
+      "Tipo Busca",
+      "Descrição Busca",
+      "Info Busca",
+      "Resultado Busca"
+    ];
 
-    function pegar(item, alternativas) {
-      if (!item || typeof item !== 'object') return '-';
-      for (let alt of alternativas) {
-        // Procura exato
-        if (item[alt] !== undefined && item[alt] !== null && String(item[alt]).trim() !== '') {
-          return item[alt];
-        }
-        // Procura ignorando maiúscula
-        for (let chave in item) {
-          if (chave.toLowerCase() === alt.toLowerCase()) {
-            let v = item[chave];
-            if (v !== undefined && v !== null && String(v).trim() !== '') return v;
-          }
-        }
-      }
-      return '-';
+    const URL = "https://script.google.com/macros/s/AKfycbwcInOPirRB7TOWbWFgpQtyFyhYZRHZsB37pB8PavrHxE0PZZpuwasuU_qallBiYlZm/exec";
+    let dadosOriginais = [];
+
+    function normalizarChave(chave) {
+      return String(chave || "")
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
     }
 
-    function formatarData(valor) {
-      if (!valor || valor === '-') return '-';
-      try {
-        let d = new Date(valor);
-        if (!isNaN(d.getTime())) {
-          return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
-        }
-      } catch(e) {}
-      return String(valor).substring(0, 16);
+    function construirMapa(obj) {
+      const mapa = {};
+      if (!obj || typeof obj !== "object") return mapa;
+      Object.keys(obj).forEach(function (k) {
+        mapa[normalizarChave(k)] = obj[k];
+      });
+      return mapa;
     }
 
-    function montar(linha) {
-      let data = pegar(linha, ['Data do Atendimento', 'data', 'dataAtendimento']);
-      let id = pegar(linha, ['ID Atendimento', 'idAtendimento', 'id']);
-      let cliente = pegar(linha, ['Nome Cliente', 'nomeCliente', 'nome', 'cliente']);
-      let status = pegar(linha, ['Status', 'status']);
-      let queixa = pegar(linha, ['Queixa Principal', 'queixaPrincipal', 'queixa']);
-      return `<tr><td>${formatarData(data)}</td><td>${id}</td><td>${cliente}</td><td>${status}</td><td>${String(queixa).substring(0,60)}</td></tr>`;
+    function valorDe(mapa, nomeColuna) {
+      const chave = normalizarChave(nomeColuna);
+      if (chave in mapa) return mapa[chave];
+      const semEspacos = chave.replace(/\s+/g, "");
+      if (semEspacos in mapa) return mapa[semEspacos];
+      const semPontos = chave.replace(/[.]/g, "");
+      if (semPontos in mapa) return mapa[semPontos];
+      return "";
     }
 
-    function renderizar(lista) {
-      const corpo = document.getElementById('corpo');
-      if (!lista || lista.length === 0) {
-        corpo.innerHTML = '<tr><td colspan="5" class="empty">Nenhum atendimento encontrado.</td></tr>';
+    function formatarValor(v) {
+      if (v === null || v === undefined) return "";
+      if (typeof v === "number") return String(v);
+      if (typeof v === "object") return JSON.stringify(v);
+      return String(v);
+    }
+
+    function renderizarTabela(dados) {
+      const theadRow = document.getElementById("thead-row");
+      const tbody = document.getElementById("tbody");
+      theadRow.innerHTML = "";
+      tbody.innerHTML = "";
+
+      COLUNAS.forEach(function (col, idx) {
+        const th = document.createElement("th");
+        th.textContent = col;
+        if (idx === 0) th.classList.add("col-fixed");
+        if (idx === 3) th.classList.add("col-fixed-2");
+        theadRow.appendChild(th);
+      });
+
+      if (!dados || dados.length === 0) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = COLUNAS.length;
+        td.className = "empty";
+        td.textContent = "Nenhum atendimento encontrado.";
+        tr.appendChild(td);
+        tbody.appendChild(tr);
         return;
       }
-      corpo.innerHTML = lista.map(montar).join('');
+
+      dados.forEach(function (linha) {
+        const mapa = construirMapa(linha);
+        const tr = document.createElement("tr");
+        COLUNAS.forEach(function (col, idx) {
+          const td = document.createElement("td");
+          const valor = formatarValor(valorDe(mapa, col));
+          td.textContent = valor;
+          td.title = valor;
+          if (idx === 0) td.classList.add("col-fixed");
+          if (idx === 3) td.classList.add("col-fixed-2");
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
     }
 
-    function filtrar() {
-      const termo = document.getElementById('busca').value.toLowerCase();
-      if (!termo) { renderizar(dadosBrutos); return; }
-      const filtrados = dadosBrutos.filter(item => {
-        const texto = JSON.stringify(item).toLowerCase();
-        return texto.includes(termo);
+    function filtrarDados(termo) {
+      const t = normalizarChave(termo);
+      if (!t) return dadosOriginais;
+      return dadosOriginais.filter(function (linha) {
+        const mapa = construirMapa(linha);
+        return COLUNAS.some(function (col) {
+          return normalizarChave(formatarValor(valorDe(mapa, col))).indexOf(t) !== -1;
+        });
       });
-      renderizar(filtrados);
     }
 
     async function carregar() {
-      const corpo = document.getElementById('corpo');
-      corpo.innerHTML = '<tr><td colspan="5" class="loading">Carregando...</td></tr>';
+      const status = document.getElementById("status");
+      status.textContent = "Carregando...";
       try {
-        const res = await fetch(URL + '?read=true');
-        const json = await res.json();
-        // Tenta extrair o array de dados
-        let lista = json.data || json.dados || json.registros || json.atendimentos || json;
-        if (!Array.isArray(lista)) lista = [];
-        dadosBrutos = lista;
-        renderizar(lista);
-      } catch(e) {
-        corpo.innerHTML = '<tr><td colspan="5" class="empty">Erro ao carregar: ' + e.message + '</td></tr>';
+        const resp = await fetch(URL + "?read=true");
+        const json = await resp.json();
+        const data = json && Array.isArray(json.data) ? json.data : [];
+        dadosOriginais = data;
+        renderizarTabela(data);
+        status.textContent = data.length + " registro(s) carregado(s).";
+      } catch (err) {
+        console.error(err);
+        status.textContent = "Erro ao carregar dados.";
+        renderizarTabela([]);
       }
     }
 
-    window.onload = carregar;
+    document.getElementById("busca").addEventListener("input", function (e) {
+      renderizarTabela(filtrarDados(e.target.value));
+    });
+
+    carregar();
   </script>
 </body>
 </html>
