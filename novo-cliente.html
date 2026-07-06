@@ -13,7 +13,6 @@
         .sidebar h2 { margin-bottom: 30px; text-align: center; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
         .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
         .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
-
         /* Content */
         .main-content { margin-left: 250px; flex: 1; padding: 40px; }
         .form-card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
@@ -33,16 +32,21 @@
     </style>
 </head>
 <body>
-  <div class="sidebar">
-    <h2>Equilibrium</h2>
-    <nav>
-        <a href="novo-cliente.html" class="active">🏠 Home</a>
-        <a href="novo-cliente.html">➕ Novo Cliente</a>
-        <a href="clientes.html">📋 Lista de Clientes</a>
-        <a href="atendimentos.html">✨ Atendimentos</a>
-    </nav>
-</div>
-
+    <div class="sidebar">
+        <h2>Equilibrium</h2>
+        <nav>
+            <a href="index.html">🏠 Home</a>
+            <a href="novo-cliente.html" class="active">👤 Novo Cliente</a>
+            <a href="clientes.html">📋 Lista de Clientes</a>
+            <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
+            <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
+            <a href="atendimentos.html">✨ Novo Atendimento</a>
+            <a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
+            <a href="agenda.html">📅 Agenda</a>
+            <a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
+            <a href="financeiro.html">💰 Financeiro</a>
+        </nav>
+    </div>
     <div class="main-content">
         <div class="form-card">
             <h1>Cadastrar Novo Cliente</h1>
@@ -101,7 +105,6 @@
             </form>
         </div>
     </div>
-
     <script src="js/database.js"></script>
     <script>
         document.getElementById('formCliente').addEventListener('submit', async (e) => {
@@ -109,7 +112,6 @@
             const btn = document.getElementById('btnSalvar');
             btn.disabled = true;
             btn.innerText = "Salvando na nuvem...";
-
             const dados = {
                 nome: document.getElementById('nome').value,
                 nascimento: document.getElementById('nascimento').value,
@@ -124,7 +126,6 @@
                 cep: document.getElementById('cep').value,
                 indicacao: document.getElementById('indicacao').value
             };
-
             try {
                 if (typeof window.salvarCliente === 'function') {
                     await window.salvarCliente(dados);
