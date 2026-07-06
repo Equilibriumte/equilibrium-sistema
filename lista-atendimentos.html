@@ -1,469 +1,71 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Equilibrium - Histórico de Atendimentos</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background-color: #f4f0fa;
-      display: flex;
-      min-height: 100vh;
-    }
-
-    .sidebar {
-      width: 260px;
-      background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      padding: 24px 0;
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      box-shadow: 2px 0 12px rgba(75, 0, 130, 0.25);
-    }
-
-    .sidebar .logo {
-      padding: 0 24px 28px 24px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-      margin-bottom: 20px;
-    }
-
-    .sidebar .logo h1 {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
-
-    .sidebar .logo span {
-      font-size: 12px;
-      opacity: 0.8;
-    }
-
-    .sidebar nav {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      padding: 0 16px;
-    }
-
-    .sidebar nav a {
-      color: #fff;
-      text-decoration: none;
-      padding: 12px 16px;
-      border-radius: 10px;
-      font-size: 15px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      transition: background 0.2s ease, transform 0.2s ease;
-    }
-
-    .sidebar nav a:hover {
-      background: rgba(255, 255, 255, 0.12);
-      transform: translateX(4px);
-    }
-
-    .sidebar nav a.active {
-      background: rgba(255, 255, 255, 0.2);
-      font-weight: 600;
-    }
-
-    .sidebar nav a .icon {
-      width: 20px;
-      text-align: center;
-      font-size: 16px;
-    }
-
-    .main {
-      margin-left: 260px;
-      flex: 1;
-      padding: 32px 40px;
-      width: calc(100% - 260px);
-    }
-
-    .page-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-    }
-
-    .page-header h2 {
-      color: #4b0082;
-      font-size: 26px;
-    }
-
-    .page-header p {
-      color: #6a0dad;
-      opacity: 0.8;
-      font-size: 14px;
-      margin-top: 4px;
-    }
-
-    .card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 4px 16px rgba(75, 0, 130, 0.08);
-      border: 1px solid rgba(106, 13, 173, 0.08);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 18px;
-    }
-
-    .card-header h3 {
-      color: #4b0082;
-      font-size: 18px;
-    }
-
-    .search-box {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .search-box input {
-      padding: 8px 14px;
-      border: 1px solid #d9c9e8;
-      border-radius: 8px;
-      font-size: 14px;
-      outline: none;
-      width: 240px;
-      transition: border 0.2s ease;
-    }
-
-    .search-box input:focus {
-      border-color: #6a0dad;
-    }
-
-    .table-wrapper {
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-
-    thead th {
-      text-align: left;
-      padding: 12px 14px;
-      color: #4b0082;
-      font-weight: 600;
-      border-bottom: 2px solid #ede2f7;
-      white-space: nowrap;
-    }
-
-    tbody td {
-      padding: 12px 14px;
-      border-bottom: 1px solid #f0e8f7;
-      color: #333;
-    }
-
-    tbody tr:hover {
-      background: #faf6fd;
-    }
-
-    .status-badge {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .status-concluido {
-      background: #e3f7ec;
-      color: #1b7a3d;
-    }
-
-    .status-andamento {
-      background: #fff4d6;
-      color: #8a6300;
-    }
-
-    .status-agendado {
-      background: #e6ecff;
-      color: #2a4ba8;
-    }
-
-    .status-cancelado {
-      background: #ffe3e3;
-      color: #a32020;
-    }
-
-    .status-default {
-      background: #ede2f7;
-      color: #6a0dad;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 40px;
-      color: #6a0dad;
-      font-size: 15px;
-    }
-
-    .empty {
-      text-align: center;
-      padding: 40px;
-      color: #888;
-      font-size: 15px;
-    }
-
-    .error {
-      text-align: center;
-      padding: 24px;
-      color: #a32020;
-      background: #ffe3e3;
-      border-radius: 10px;
-      margin-bottom: 16px;
-      font-size: 14px;
-    }
-
-    .btn-refresh {
-      background: #6a0dad;
-      color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: background 0.2s ease;
-    }
-
-    .btn-refresh:hover {
-      background: #4b0082;
-    }
-
-    @media (max-width: 768px) {
-      .sidebar {
-        width: 70px;
-      }
-      .sidebar .logo h1,
-      .sidebar .logo span,
-      .sidebar nav a span {
-        display: none;
-      }
-      .main {
-        margin-left: 70px;
-        width: calc(100% - 70px);
-        padding: 20px;
-      }
-      .search-box input {
-        width: 160px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico - Equilibrium</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { display: flex; background-color: #f4f0fa; min-height: 100vh; }
+        .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: white; padding: 20px; position: fixed; height: 100vh; }
+        .sidebar h2 { text-align: center; color: #ffd700; margin-bottom: 30px; }
+        .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
+        .content { margin-left: 250px; flex: 1; padding: 40px; }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
+        th { background: #f8f5ff; color: #4b0082; font-size: 12px; text-transform: uppercase; }
+    </style>
 </head>
 <body>
-  <aside class="sidebar">
-    <div class="logo">
-      <h1>Equilibrium</h1>
-      <span>Sistema de Atendimento</span>
+    <div class="sidebar">
+        <h2>Equilibrium</h2>
+        <nav>
+            <a href="novo-cliente.html">🏠 Home</a>
+            <a href="clientes.html">📋 Lista de Clientes</a>
+            <a href="atendimentos.html">✨ Novo Atendimento</a>
+            <a href="lista-atendimentos.html" class="active">📜 Histórico</a>
+        </nav>
     </div>
-    <nav>
-      <a href="novo-cliente.html">
-        <span class="icon">🏠</span><span>Home</span>
-      </a>
-      <a href="clientes.html">
-        <span class="icon">👥</span><span>Lista de Clientes</span>
-      </a>
-      <a href="atendimentos.html">
-        <span class="icon">📅</span><span>Atendimentos</span>
-      </a>
-      <a href="lista-atendimentos.html" class="active">
-        <span class="icon">📋</span><span>Histórico</span>
-      </a>
-    </nav>
-  </aside>
-
-  <main class="main">
-    <div class="page-header">
-      <div>
-        <h2>Histórico de Atendimentos</h2>
-        <p>Visualize todos os atendimentos registrados no sistema.</p>
-      </div>
-      <button class="btn-refresh" onclick="carregarAtendimentos()">Atualizar</button>
-    </div>
-
-    <div id="alerta-erro"></div>
-
-    <div class="card">
-      <div class="card-header">
-        <h3>Atendimentos Registrados</h3>
-        <div class="search-box">
-          <input type="text" id="busca" placeholder="Buscar por cliente ou queixa..." oninput="filtrarTabela()">
+    <div class="content">
+        <h1 style="color: #4b0082; margin-bottom: 20px;">Histórico de Atendimentos</h1>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>ID Atend.</th>
+                        <th>Cliente</th>
+                        <th>Status</th>
+                        <th>Queixa Principal</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoHistorico"></tbody>
+            </table>
         </div>
-      </div>
-
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>ID Atend.</th>
-              <th>Cliente</th>
-              <th>Status</th>
-              <th>Queixa Principal</th>
-            </tr>
-          </thead>
-          <tbody id="corpo-tabela">
-            <tr>
-              <td colspan="5" class="loading">Carregando atendimentos...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
-  </main>
-
-  <script>
-    const URL_ATENDIMENTOS = 'https://script.google.com/macros/s/AKfycbwcInOPirRB7TOWbWFgpQtyFyhYZRHZsB37pB8PavrHxE0PZZpuwasuU_qallBiYlZm/exec';
-    let atendimentosCache = [];
-
-    function formatarData(valor) {
-      if (!valor) return '-';
-      const data = new Date(valor);
-      if (isNaN(data.getTime())) return valor;
-      const dia = String(data.getDate()).padStart(2, '0');
-      const mes = String(data.getMonth() + 1).padStart(2, '0');
-      const ano = data.getFullYear();
-      const hora = String(data.getHours()).padStart(2, '0');
-      const min = String(data.getMinutes()).padStart(2, '0');
-      return `${dia}/${mes}/${ano} ${hora}:${min}`;
-    }
-
-    function classeStatus(status) {
-      if (!status) return 'status-default';
-      const s = status.toLowerCase();
-      if (s.includes('conclu')) return 'status-concluido';
-      if (s.includes('andamento') || s.includes('progress')) return 'status-andamento';
-      if (s.includes('agendad')) return 'status-agendado';
-      if (s.includes('cancel')) return 'status-cancelado';
-      return 'status-default';
-    }
-
-    function obterCampo(item, chaves) {
-      for (const chave of chaves) {
-        if (item[chave] !== undefined && item[chave] !== null && String(item[chave]).trim() !== '') {
-          return item[chave];
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwcInOPirRB7TOWbWFgpQtyFyhYZRHZsB37pB8PavrHxE0PZZpuwasuU_qallBiYlZm/exec';
+        async function carregarHistorico() {
+            try {
+                const res = await fetch(SCRIPT_URL + "?read=true");
+                const json = await res.json();
+                // O script retorna: { success: true, data: [...] }
+                const dados = json.data || [];
+                const corpo = document.getElementById('corpoHistorico');
+                corpo.innerHTML = dados.map(linha => `
+                    <tr>
+                        <td>${linha['Data do Atendimento'] || '-'}</td>
+                        <td style="font-family:monospace; font-size:11px;">${linha['ID Atendimento'] || '-'}</td>
+                        <td><strong>${linha['Nome Cliente'] || '-'}</strong></td>
+                        <td>${linha['Status'] || '-'}</td>
+                        <td>${(linha['Queixa Principal'] || '-').substring(0, 50)}...</td>
+                    </tr>
+                `).join('');
+            } catch (e) { console.error(e); }
         }
-      }
-      return '-';
-    }
-
-    function normalizarAtendimento(item) {
-      return {
-        data: obterCampo(item, ['data', 'dataAtendimento', 'data_atendimento', 'dataHora', 'timestamp']),
-        id: obterCampo(item, ['id', 'idAtendimento', 'id_atendimento', 'protocolo']),
-        cliente: obterCampo(item, ['cliente', 'nomeCliente', 'nome', 'clienteNome']),
-        status: obterCampo(item, ['status', 'situacao', 'situação']),
-        queixa: obterCampo(item, ['queixaPrincipal', 'queixa', 'queixa_principal', 'motivo', 'descricao'])
-      };
-    }
-
-    function renderizarTabela(lista) {
-      const corpo = document.getElementById('corpo-tabela');
-
-      if (!lista || lista.length === 0) {
-        corpo.innerHTML = '<tr><td colspan="5" class="empty">Nenhum atendimento encontrado.</td></tr>';
-        return;
-      }
-
-      corpo.innerHTML = lista.map(item => {
-        const dataFormatada = formatarData(item.data);
-        const statusTexto = item.status === '-' ? 'Pendente' : item.status;
-        return `
-          <tr>
-            <td>${dataFormatada}</td>
-            <td>${item.id}</td>
-            <td>${item.cliente}</td>
-            <td><span class="status-badge ${classeStatus(String(statusTexto))}">${statusTexto}</span></td>
-            <td>${item.queixa}</td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function filtrarTabela() {
-      const termo = document.getElementById('busca').value.toLowerCase().trim();
-      if (!termo) {
-        renderizarTabela(atendimentosCache);
-        return;
-      }
-      const filtrados = atendimentosCache.filter(item =>
-        String(item.cliente).toLowerCase().includes(termo) ||
-        String(item.queixa).toLowerCase().includes(termo) ||
-        String(item.id).toLowerCase().includes(termo) ||
-        String(item.status).toLowerCase().includes(termo)
-      );
-      renderizarTabela(filtrados);
-    }
-
-    function mostrarErro(mensagem) {
-      const alerta = document.getElementById('alerta-erro');
-      alerta.innerHTML = `<div class="error">${mensagem}</div>`;
-    }
-
-    function limparErro() {
-      document.getElementById('alerta-erro').innerHTML = '';
-    }
-
-    async function carregarAtendimentos() {
-      limparErro();
-      const corpo = document.getElementById('corpo-tabela');
-      corpo.innerHTML = '<tr><td colspan="5" class="loading">Carregando atendimentos...</td></tr>';
-
-      try {
-        const url = `${URL_ATENDIMENTOS}?read=true`;
-        const resposta = await fetch(url, { method: 'GET' });
-
-        if (!resposta.ok) {
-          throw new Error(`Erro na requisição: ${resposta.status}`);
-        }
-
-        const dados = await resposta.json();
-        let lista = [];
-
-        if (Array.isArray(dados)) {
-          lista = dados;
-        } else if (dados && Array.isArray(dados.dados)) {
-          lista = dados.dados;
-        } else if (dados && Array.isArray(dados.atendimentos)) {
-          lista = dados.atendimentos;
-        } else if (dados && Array.isArray(dados.registros)) {
-          lista = dados.registros;
-        } else if (dados && Array.isArray(dados.data)) {
-          lista = dados.data;
-        }
-
-        atendimentosCache = lista.map(normalizarAtendimento);
-        renderizarTabela(atendimentosCache);
-      } catch (erro) {
-        console.error('Erro ao carregar atendimentos:', erro);
-        atendimentosCache = [];
-        mostrarErro('Não foi possível carregar os atendimentos. Verifique sua conexão e tente novamente.');
-        corpo.innerHTML = '<tr><td colspan="5" class="empty">Falha ao carregar os dados.</td></tr>';
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', carregarAtendimentos);
-  </script>
+        window.onload = carregarHistorico;
+    </script>
 </body>
 </html>
