@@ -1,514 +1,236 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Equilibrium - Atendimentos</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
-  body { display: flex; min-height: 100vh; background: #f4f1f8; color: #2d2342; }
-
-  /* Sidebar */
-  .sidebar {
-    width: 260px; background: linear-gradient(180deg, #5b2a86, #3d1a5b);
-    color: #fff; padding: 20px 0; min-height: 100vh; position: sticky; top: 0;
-  }
-  .sidebar .logo { text-align: center; font-size: 22px; font-weight: bold; padding: 10px 0 30px; letter-spacing: 1px; }
-  .sidebar nav { display: flex; flex-direction: column; }
-  .sidebar nav button {
-    background: transparent; border: none; color: #e6d9f5; text-align: left;
-    padding: 14px 24px; cursor: pointer; font-size: 15px; transition: all .2s; border-left: 4px solid transparent;
-  }
-  .sidebar nav button:hover { background: rgba(255,255,255,.08); color: #fff; }
-  .sidebar nav button.active { background: rgba(255,255,255,.15); color: #fff; border-left-color: #b388ff; }
-
-  /* Main */
-  .main { flex: 1; padding: 30px; overflow-x: auto; }
-  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .header h1 { color: #5b2a86; font-size: 24px; }
-  .header .status-global { font-size: 13px; color: #6b5b8a; }
-
-  /* Tabs */
-  .tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
-  .tabs button {
-    padding: 10px 18px; border: none; background: #ddd6ee; color: #4b2a78;
-    border-radius: 8px 8px 0 0; cursor: pointer; font-weight: 600; transition: all .2s;
-  }
-  .tabs button.active { background: #5b2a86; color: #fff; }
-
-  /* Panels */
-  .panel { display: none; background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 2px 10px rgba(91,42,134,.08); }
-  .panel.active { display: block; }
-
-  .form-group { margin-bottom: 16px; }
-  .form-group label { display: block; font-weight: 600; margin-bottom: 6px; color: #4b2a78; font-size: 14px; }
-  .form-group input, .form-group select, .form-group textarea {
-    width: 100%; padding: 10px 12px; border: 1px solid #cfc2e6; border-radius: 8px; font-size: 14px; background: #fff;
-  }
-  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #8a4fd4; box-shadow: 0 0 0 3px rgba(138,79,212,.15); }
-  .form-group textarea { resize: vertical; min-height: 70px; }
-
-  .row { display: flex; gap: 16px; flex-wrap: wrap; }
-  .row .form-group { flex: 1; min-width: 200px; }
-
-  /* Buttons groups */
-  .btn-group { display: flex; flex-wrap: wrap; gap: 10px; }
-  .btn-group .pill {
-    padding: 8px 16px; border-radius: 20px; border: 2px solid #cfc2e6; background: #fff;
-    cursor: pointer; font-size: 13px; font-weight: 600; color: #4b2a78; transition: all .2s;
-  }
-  .btn-group .pill.active { background: #5b2a86; color: #fff; border-color: #5b2a86; }
-
-  .chakra-coronario.active { background: #9b59b6; border-color: #9b59b6; color: #fff; }
-  .chakra-frontal.active { background: #3498db; border-color: #3498db; color: #fff; }
-  .chakra-laringeo.active { background: #1abc9c; border-color: #1abc9c; color: #fff; }
-  .chakra-cardiaco.active { background: #2ecc71; border-color: #2ecc71; color: #fff; }
-  .chakra-umbilical.active { background: #f1c40f; border-color: #f1c40f; color: #fff; }
-  .chakra-sacro.active { background: #e67e22; border-color: #e67e22; color: #fff; }
-  .chakra-basico.active { background: #e74c3c; border-color: #e74c3c; color: #fff; }
-
-  .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
-  .checkbox-grid label { display: flex; align-items: center; gap: 6px; font-weight: 500; font-size: 13px; cursor: pointer; }
-
-  /* Actions */
-  .actions { display: flex; justify-content: space-between; margin-top: 24px; gap: 12px; flex-wrap: wrap; }
-  .btn { padding: 12px 22px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 14px; transition: all .2s; }
-  .btn-save { background: #27ae60; color: #fff; }
-  .btn-save:hover { background: #219150; }
-  .btn-next { background: #5b2a86; color: #fff; }
-  .btn-next:hover { background: #4b2a78; }
-  .btn-prev { background: #bdc3c7; color: #2d2342; }
-  .btn-prev:hover { background: #aeb6bf; }
-
-  .msg { margin-top: 12px; padding: 10px; border-radius: 8px; font-size: 13px; display: none; }
-  .msg.ok { background: #d4edda; color: #155724; display: block; }
-  .msg.err { background: #f8d7da; color: #721c24; display: block; }
-  .msg.info { background: #d1ecf1; color: #0c5460; display: block; }
-
-  @media (max-width: 768px) {
-    body { flex-direction: column; }
-    .sidebar { width: 100%; min-height: auto; position: relative; }
-    .sidebar nav { flex-direction: row; overflow-x: auto; }
-    .sidebar nav button { border-left: none; border-bottom: 4px solid transparent; white-space: nowrap; }
-    .sidebar nav button.active { border-bottom-color: #b388ff; }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atendimentos - Equilibrium</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { display: flex; background-color: #f4f0fa; min-height: 100vh; }
+        .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
+        .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
+        .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
+        .main-content { margin-left: 250px; flex: 1; padding: 40px; width: calc(100% - 250px); }
+        .tabs-header { display: flex; gap: 5px; margin-bottom: 20px; background: #e0d0f0; padding: 5px; border-radius: 12px; overflow-x: auto; }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: none; color: #4b0082; cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 12px; transition: 0.3s; }
+        .tab-btn.active { background: #4b0082; color: #ffd700; }
+        .tab-content { display: none; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .tab-content.active { display: block; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .full { grid-column: span 2; }
+        label { display: block; font-weight: bold; color: #4b0082; margin-bottom: 8px; font-size: 14px; }
+        input, select, textarea { width: 100%; padding: 12px; border: 2px solid #e0d0f0; border-radius: 8px; outline: none; }
+        .multi-select-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; padding: 10px; border: 2px solid #e0d0f0; border-radius: 8px; max-height: 150px; overflow-y: auto; }
+        .option-item { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; padding: 5px; border-radius: 5px; }
+        .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 15px 0; }
+        .color-btn { padding: 15px; border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; text-align: center; font-size: 11px; }
+        .color-btn span { display: block; font-size: 15px; margin-top: 5px; }
+        .c-coronario { background: #8a2be2; } .c-frontal { background: #4b0082; } .c-laringeo { background: #87ceeb; color: #333; }
+        .c-cardiaco { background: #228b22; } .c-umbilical { background: #ffd700; color: #333; } .c-sacro { background: #ff8c00; } .c-basico { background: #ff0000; }
+        .d-mental { background: #5dade2; } .d-emocional { background: #ec7063; } .d-espiritual { background: #af7ac5; } .d-fisico { background: #58d68d; }
+        .nav-actions { display: flex; justify-content: space-between; margin-top: 30px; gap: 15px; }
+        .btn-action { padding: 15px 25px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-save { background: #ffd700; color: #4b0082; flex: 1; }
+        .btn-next { background: #4b0082; color: white; }
+    </style>
 </head>
 <body>
+    <div class="sidebar">
+        <h2>Equilibrium</h2>
+        <nav>
+            <a href="novo-cliente.html">🏠 Home</a>
+            <a href="clientes.html">📋 Lista de Clientes</a>
+            <a href="atendimentos.html" class="active">✨ Atendimentos</a>
+            <a href="lista-atendimentos.html">📜 Histórico</a>
+        </nav>
+    </div>
 
-<aside class="sidebar">
-  <div class="logo">Equilibrium</div>
-  <nav>
-    <button class="nav-btn active" data-tab="tab1">1. Dados</button>
-    <button class="nav-btn" data-tab="tab2">2. Inicial</button>
-    <button class="nav-btn" data-tab="tab3">3. Específico</button>
-    <button class="nav-btn" data-tab="tab4">4. Ambiente</button>
-    <button class="nav-btn" data-tab="tab5">5. Busca</button>
-  </nav>
-</aside>
+    <div class="main-content">
+        <h1 style="color: #4b0082; margin-bottom: 20px;">Ficha de Atendimento</h1>
+        <div class="tabs-header">
+            <button class="tab-btn active" onclick="showTab(0)">1. Dados</button>
+            <button class="tab-btn" onclick="showTab(1)">2. Inicial</button>
+            <button class="tab-btn" onclick="showTab(2)">3. Específico</button>
+            <button class="tab-btn" onclick="showTab(3)">4. Ambiente</button>
+            <button class="tab-btn" onclick="showTab(4)">5. Busca</button>
+        </div>
 
-<main class="main">
-  <div class="header">
-    <h1>Atendimentos</h1>
-    <div class="status-global" id="statusGlobal">Carregando configurações...</div>
-  </div>
+        <form id="formAtendimento">
+            <div class="tab-content active">
+                <div class="form-grid">
+                    <div class="form-group full">
+                        <label>Nome do Cliente</label>
+                        <input type="text" id="nomeCliente" list="listaClientes" placeholder="Digite para buscar..." required autocomplete="off">
+                        <datalist id="listaClientes"></datalist>
+                        <input type="hidden" id="idCliente">
+                    </div>
+                    <div class="form-group"><label>Data</label><input type="date" id="dataAtend" required></div>
+                    <div class="form-group"><label>Status</label><select id="statusSelect"><option value="">Carregando...</option></select></div>
+                    <div class="form-group full"><label>Queixa Principal</label><textarea id="queixaP"></textarea></div>
+                    <div class="form-group full"><label>Queixa Secundária</label><textarea id="queixaS"></textarea></div>
+                </div>
+                <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(1)">PRÓXIMO ➔</button></div>
+            </div>
 
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="tab1">1. Dados</button>
-    <button class="tab-btn" data-tab="tab2">2. Inicial</button>
-    <button class="tab-btn" data-tab="tab3">3. Específico</button>
-    <button class="tab-btn" data-tab="tab4">4. Ambiente</button>
-    <button class="tab-btn" data-tab="tab5">5. Busca</button>
-  </div>
+            <div class="tab-content">
+                <div class="form-group"><label>Bovis (4 dígitos)</label><input type="number" id="bovis"></div>
+                <label style="margin-top: 15px;">Chakras (%)</label>
+                <div class="btn-grid">
+                    <button type="button" class="color-btn c-coronario" onclick="setVal(this, 'v-coronario')">Coronário<span id="v-coronario">-</span></button>
+                    <button type="button" class="color-btn c-frontal" onclick="setVal(this, 'v-frontal')">Frontal<span id="v-frontal">-</span></button>
+                    <button type="button" class="color-btn c-laringeo" onclick="setVal(this, 'v-laringeo')">Laríngeo<span id="v-laringeo">-</span></button>
+                    <button type="button" class="color-btn c-cardiaco" onclick="setVal(this, 'v-cardiaco')">Cardíaco<span id="v-cardiaco">-</span></button>
+                    <button type="button" class="color-btn c-umbilical" onclick="setVal(this, 'v-umbilical')">Umbilical<span id="v-umbilical">-</span></button>
+                    <button type="button" class="color-btn c-sacro" onclick="setVal(this, 'v-sacro')">Sacro<span id="v-sacro">-</span></button>
+                    <button type="button" class="color-btn c-basico" onclick="setVal(this, 'v-basico')">Básico<span id="v-basico">-</span></button>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Tamanho Aura</label><input type="text" id="auraT" placeholder="Ex: 80%"></div>
+                    <div class="form-group"><label>Proteção Aura</label><input type="text" id="protecaoAura" placeholder="Ex: 100%"></div>
+                </div>
+                <div class="form-grid" style="margin-top:15px;">
+                    <div class="form-group"><label>Cores em Excesso</label><div id="coresExcesso" class="multi-select-container"></div></div>
+                    <div class="form-group"><label>Cores em Falta</label><div id="coresFalta" class="multi-select-container"></div></div>
+                </div>
+                <label style="margin-top: 15px;">Campos (%)</label>
+                <div class="btn-grid">
+                    <button type="button" class="color-btn d-mental" onclick="setVal(this, 'v-mental')">Mental<span id="v-mental">-</span></button>
+                    <button type="button" class="color-btn d-emocional" onclick="setVal(this, 'v-emocional')">Emocional<span id="v-emocional">-</span></button>
+                    <button type="button" class="color-btn d-espiritual" onclick="setVal(this, 'v-espiritual')">Espiritual<span id="v-espiritual">-</span></button>
+                    <button type="button" class="color-btn d-fisico" onclick="setVal(this, 'v-fisico')">Físico<span id="v-fisico">-</span></button>
+                </div>
+                <div class="form-group full"><label>Diagnóstico Inicial</label><textarea id="diagInicial"></textarea></div>
+                <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(2)">PRÓXIMO ➔</button></div>
+            </div>
 
-  <!-- ABA 1: DADOS -->
-  <section id="tab1" class="panel active">
-    <div class="row">
-      <div class="form-group">
-        <label for="nomeCliente">Nome do Cliente</label>
-        <input type="text" id="nomeCliente" list="listaClientes" autocomplete="off" placeholder="Digite ou selecione o cliente">
-        <datalist id="listaClientes"></datalist>
-        <input type="hidden" id="idCliente">
-      </div>
-      <div class="form-group">
-        <label for="dataAtendimento">Data</label>
-        <input type="date" id="dataAtendimento">
-      </div>
-      <div class="form-group">
-        <label for="status">Status</label>
-        <select id="status"><option value="">Carregando...</option></select>
-      </div>
+            <div class="tab-content"><label>Queixa Específica</label><textarea id="queixaE"></textarea><label>Causa Raiz</label><textarea id="causaRaiz"></textarea><label>Crenças</label><textarea id="crencas"></textarea><label>Diagnóstico Específico</label><textarea id="diagEspec"></textarea><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(3)">PRÓXIMO ➔</button></div></div>
+            <div class="tab-content"><div class="form-grid"><div class="form-group"><label>Tipo Ambiente</label><select id="tipoAmbiente"></select></div><div class="form-group"><label>Endereço</label><input type="text" id="endAmbiente"></div><div class="form-group full"><label>Queixa Ambiente</label><textarea id="queixaAmbiente"></textarea></div><div class="form-group full"><label>Pessoas Env.</label><input type="text" id="pessoasEnv"></div><div class="form-group full"><label>Diag. Ambiente</label><textarea id="diagAmbiente"></textarea></div></div><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(4)">PRÓXIMO ➔</button></div></div>
+            <div class="tab-content"><div class="form-grid"><div class="form-group"><label>Tipo Busca</label><select id="tipoBusca"></select></div><div class="form-group"><label>Info Busca</label><input type="text" id="infoBusca"></div><div class="form-group full"><label>Resultado</label><select id="resBusca"></select></div><div class="form-group full"><label>Descrição</label><textarea id="descBusca"></textarea></div></div><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">FINALIZAR E SALVAR</button></div></div>
+        </form>
     </div>
-    <div class="form-group">
-      <label for="queixaPrincipal">Queixa Principal</label>
-      <textarea id="queixaPrincipal" placeholder="Descreva a queixa principal"></textarea>
-    </div>
-    <div class="form-group">
-      <label for="queixaSecundaria">Queixa Secundária</label>
-      <textarea id="queixaSecundaria" placeholder="Descreva a queixa secundária"></textarea>
-    </div>
-    <div class="msg" id="msg1"></div>
-    <div class="actions">
-      <button class="btn btn-save" onclick="enviarDados(1)">SALVAR AGORA</button>
-      <button class="btn btn-next" onclick="irPara('tab2')">PRÓXIMO →</button>
-    </div>
-  </section>
 
-  <!-- ABA 2: INICIAL -->
-  <section id="tab2" class="panel">
-    <div class="row">
-      <div class="form-group">
-        <label for="bovis">Bovis</label>
-        <input type="number" id="bovis" placeholder="Valor Bovis">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Chakras</label>
-      <div class="btn-group" id="chakrasGroup">
-        <button type="button" class="pill chakra-coronario" data-chakra="Coronário">Coronário</button>
-        <button type="button" class="pill chakra-frontal" data-chakra="Frontal">Frontal</button>
-        <button type="button" class="pill chakra-laringeo" data-chakra="Laríngeo">Laríngeo</button>
-        <button type="button" class="pill chakra-cardiaco" data-chakra="Cardíaco">Cardíaco</button>
-        <button type="button" class="pill chakra-umbilical" data-chakra="Umbilical">Umbilical</button>
-        <button type="button" class="pill chakra-sacro" data-chakra="Sacro">Sacro</button>
-        <button type="button" class="pill chakra-basico" data-chakra="Básico">Básico</button>
-      </div>
-    </div>
-    <div class="row">
-      <div class="form-group">
-        <label for="tamanhoAura">Tamanho Aura</label>
-        <input type="text" id="tamanhoAura" placeholder="Tamanho da aura">
-      </div>
-      <div class="form-group">
-        <label for="protecaoAura">Proteção Aura</label>
-        <input type="text" id="protecaoAura" placeholder="Proteção da aura">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Cores Excesso</label>
-      <div class="checkbox-grid" id="coresExcessoGroup"></div>
-    </div>
-    <div class="form-group">
-      <label>Cores Falta</label>
-      <div class="checkbox-grid" id="coresFaltaGroup"></div>
-    </div>
-    <div class="form-group">
-      <label>Campos</label>
-      <div class="btn-group" id="camposGroup">
-        <button type="button" class="pill" data-campo="Mental">Mental</button>
-        <button type="button" class="pill" data-campo="Emocional">Emocional</button>
-        <button type="button" class="pill" data-campo="Espiritual">Espiritual</button>
-        <button type="button" class="pill" data-campo="Físico">Físico</button>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="diagnosticoInicial">Diagnóstico Inicial</label>
-      <textarea id="diagnosticoInicial" placeholder="Diagnóstico inicial"></textarea>
-    </div>
-    <div class="msg" id="msg2"></div>
-    <div class="actions">
-      <button class="btn btn-prev" onclick="irPara('tab1')">← ANTERIOR</button>
-      <button class="btn btn-save" onclick="enviarDados(2)">SALVAR AGORA</button>
-      <button class="btn btn-next" onclick="irPara('tab3')">PRÓXIMO →</button>
-    </div>
-  </section>
+    <script>
+        const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
+        const URL_ATEND = 'https://script.google.com/macros/s/AKfycbxdiShi7tnGpm_JoDoddDsiaLswyfPZcH69-ZXjT8JnQV4yN2zEhyOnG0cBfa-iOWG_/exec';
+        let listaGlobalClientes = [];
 
-  <!-- ABA 3: ESPECÍFICO -->
-  <section id="tab3" class="panel">
-    <div class="form-group">
-      <label for="queixaEspecifica">Queixa Específica</label>
-      <textarea id="queixaEspecifica" placeholder="Queixa específica"></textarea>
-    </div>
-    <div class="form-group">
-      <label for="causaRaiz">Causa Raiz</label>
-      <textarea id="causaRaiz" placeholder="Causa raiz"></textarea>
-    </div>
-    <div class="form-group">
-      <label for="crencas">Crenças</label>
-      <textarea id="crencas" placeholder="Crenças"></textarea>
-    </div>
-    <div class="form-group">
-      <label for="diagnosticoEspecifico">Diagnóstico Específico</label>
-      <textarea id="diagnosticoEspecifico" placeholder="Diagnóstico específico"></textarea>
-    </div>
-    <div class="msg" id="msg3"></div>
-    <div class="actions">
-      <button class="btn btn-prev" onclick="irPara('tab2')">← ANTERIOR</button>
-      <button class="btn btn-save" onclick="enviarDados(3)">SALVAR AGORA</button>
-      <button class="btn btn-next" onclick="irPara('tab4')">PRÓXIMO →</button>
-    </div>
-  </section>
-
-  <!-- ABA 4: AMBIENTE -->
-  <section id="tab4" class="panel">
-    <div class="row">
-      <div class="form-group">
-        <label for="tipoAmbiente">Tipo Ambiente</label>
-        <select id="tipoAmbiente"><option value="">Carregando...</option></select>
-      </div>
-      <div class="form-group">
-        <label for="enderecoAmbiente">Endereço</label>
-        <input type="text" id="enderecoAmbiente" placeholder="Endereço do ambiente">
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="queixaAmbiente">Queixa Ambiente</label>
-      <textarea id="queixaAmbiente" placeholder="Queixa do ambiente"></textarea>
-    </div>
-    <div class="form-group">
-      <label for="pessoasEnvolvidas">Pessoas Envolvidas</label>
-      <textarea id="pessoasEnvolvidas" placeholder="Pessoas envolvidas"></textarea>
-    </div>
-    <div class="form-group">
-      <label for="diagnosticoAmbiente">Diagnóstico Ambiente</label>
-      <textarea id="diagnosticoAmbiente" placeholder="Diagnóstico do ambiente"></textarea>
-    </div>
-    <div class="msg" id="msg4"></div>
-    <div class="actions">
-      <button class="btn btn-prev" onclick="irPara('tab3')">← ANTERIOR</button>
-      <button class="btn btn-save" onclick="enviarDados(4)">SALVAR AGORA</button>
-      <button class="btn btn-next" onclick="irPara('tab5')">PRÓXIMO →</button>
-    </div>
-  </section>
-
-  <!-- ABA 5: BUSCA -->
-  <section id="tab5" class="panel">
-    <div class="row">
-      <div class="form-group">
-        <label for="tipoBusca">Tipo Busca</label>
-        <select id="tipoBusca"><option value="">Carregando...</option></select>
-      </div>
-      <div class="form-group">
-        <label for="resultadoBusca">Resultado</label>
-        <select id="resultadoBusca"><option value="">Carregando...</option></select>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="infoBusca">Info Busca</label>
-      <textarea id="infoBusca" placeholder="Informações da busca"></textarea>
-    </div>
-    <div class="form-group">
-      <label for="descricaoBusca">Descrição Busca</label>
-      <textarea id="descricaoBusca" placeholder="Descrição da busca"></textarea>
-    </div>
-    <div class="msg" id="msg5"></div>
-    <div class="actions">
-      <button class="btn btn-prev" onclick="irPara('tab4')">← ANTERIOR</button>
-      <button class="btn btn-save" onclick="enviarDados(5)">SALVAR AGORA</button>
-      <button class="btn btn-next" onclick="irPara('tab1')">↺ VOLTAR AO INÍCIO</button>
-    </div>
-  </section>
-</main>
-
-<script>
-  const URL_ATEND = "https://script.google.com/macros/s/AKfycbwcInOPirRB7TOWbWFgpQtyFyhYZRHZsB37pB8PavrHxE0PZZpuwasuU_qallBiYlZm/exec";
-  const URL_CLIENTES = "https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec";
-
-  let listaClientes = [];
-  let config = { cores: [], status: [], ambientes: [], buscaTipos: [], buscaResultados: [] };
-
-  /* ---------- Navegação ---------- */
-  function irPara(tabId) {
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    document.querySelectorAll('.tab-btn[data-tab="' + tabId + '"]').forEach(b => b.classList.add('active'));
-    document.querySelectorAll('.nav-btn[data-tab="' + tabId + '"]').forEach(b => b.classList.add('active'));
-  }
-
-  document.querySelectorAll('.tab-btn, .nav-btn').forEach(btn => {
-    btn.addEventListener('click', () => irPara(btn.dataset.tab));
-  });
-
-  /* ---------- Botões tipo toggle ---------- */
-  document.querySelectorAll('#chakrasGroup .pill, #camposGroup .pill').forEach(btn => {
-    btn.addEventListener('click', () => btn.classList.toggle('active'));
-  });
-
-  /* ---------- Mensagens ---------- */
-  function mostrarMsg(num, texto, tipo) {
-    const el = document.getElementById('msg' + num);
-    el.textContent = texto;
-    el.className = 'msg ' + tipo;
-    setTimeout(() => { el.className = 'msg'; el.textContent = ''; }, 5000);
-  }
-
-  /* ---------- Carregar Clientes ---------- */
-  async function carregarClientes() {
-    try {
-      const res = await fetch(URL_CLIENTES);
-      const data = await res.json();
-      const lista = Array.isArray(data) ? data : (data.clientes || data.dados || data.values || []);
-      listaClientes = lista;
-      const dl = document.getElementById('listaClientes');
-      dl.innerHTML = '';
-      lista.forEach(c => {
-        const id = c.id || c.ID || c[0] || '';
-        const nome = c.nome || c.Nome || c.name || c[1] || '';
-        if (nome) {
-          const opt = document.createElement('option');
-          opt.value = nome;
-          opt.dataset.id = id;
-          dl.appendChild(opt);
+        function showTab(i) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content')[i].classList.add('active');
+            document.querySelectorAll('.tab-btn')[i].classList.add('active');
+            window.scrollTo(0,0);
         }
-      });
-    } catch (e) {
-      console.error('Erro ao carregar clientes:', e);
-    }
-  }
 
-  /* ---------- Autocomplete ID ---------- */
-  document.getElementById('nomeCliente').addEventListener('input', function () {
-    const nome = this.value.trim().toLowerCase();
-    const match = listaClientes.find(c => {
-      const n = (c.nome || c.Nome || c.name || c[1] || '').toString().toLowerCase();
-      return n === nome;
-    });
-    document.getElementById('idCliente').value = match ? (match.id || match.ID || match[0] || '') : '';
-  });
+        function setVal(btn, id) {
+            const v = prompt("Digite a %:");
+            if (v) document.getElementById(id).innerText = v + "%";
+        }
 
-  /* ---------- Carregar Configurações ---------- */
-  async function carregarConfig() {
-    try {
-      const res = await fetch(URL_ATEND + '?acao=config');
-      const data = await res.json();
-      config = {
-        cores: data.cores || data.Cores || [],
-        status: data.status || data.Status || [],
-        ambientes: data.ambientes || data.Ambientes || data.tipoAmbientes || [],
-        buscaTipos: data.buscaTipos || data.BuscaTipos || [],
-        buscaResultados: data.buscaResultados || data.BuscaResultados || []
-      };
-      preencherSelect('status', config.status);
-      preencherSelect('tipoAmbiente', config.ambientes);
-      preencherSelect('tipoBusca', config.buscaTipos);
-      preencherSelect('resultadoBusca', config.buscaResultados);
-      preencherCoresCheckboxes(config.cores);
-      document.getElementById('statusGlobal').textContent = 'Configurações carregadas com sucesso.';
-    } catch (e) {
-      console.error('Erro ao carregar configurações:', e);
-      document.getElementById('statusGlobal').textContent = 'Erro ao carregar configurações.';
-    }
-  }
+        async function carregarTudo() {
+            try {
+                const resC = await fetch(URL_CLIENTES + "?_=" + new Date().getTime());
+                const jsonC = await resC.json();
+                listaGlobalClientes = Array.isArray(jsonC) ? jsonC : (jsonC.data || jsonC.dados || []);
+                const dl = document.getElementById('listaClientes');
+                dl.innerHTML = "";
+                listaGlobalClientes.forEach(c => {
+                    let o = document.createElement('option');
+                    o.value = c.nome || c.Nome || c['Nome Cliente'] || c[2];
+                    dl.appendChild(o);
+                });
 
-  function preencherSelect(id, itens) {
-    const sel = document.getElementById(id);
-    sel.innerHTML = '<option value="">Selecione...</option>';
-    itens.forEach(item => {
-      const v = typeof item === 'object' ? (item.valor || item.value || item.nome || '') : item;
-      const t = typeof item === 'object' ? (item.nome || item.label || item.texto || v) : item;
-      const opt = document.createElement('option');
-      opt.value = v; opt.textContent = t;
-      sel.appendChild(opt);
-    });
-  }
+                const resA = await fetch(URL_ATEND);
+                const jsonA = await resA.json();
+                const config = jsonA.configuracoes || {};
+                
+                const fillS = (id, list) => {
+                    const s = document.getElementById(id);
+                    if(!s) return;
+                    s.innerHTML = "<option value=''>Selecione...</option>";
+                    if(list) list.forEach(v => { let o = document.createElement('option'); o.value = v; o.text = v; s.appendChild(o); });
+                };
 
-  function preencherCoresCheckboxes(cores) {
-    const ex = document.getElementById('coresExcessoGroup');
-    const fa = document.getElementById('coresFaltaGroup');
-    ex.innerHTML = ''; fa.innerHTML = '';
-    cores.forEach(cor => {
-      const v = typeof cor === 'object' ? (cor.valor || cor.value || cor.nome || '') : cor;
-      const t = typeof cor === 'object' ? (cor.nome || cor.label || v) : cor;
-      ex.appendChild(criarCheckbox('coresExcesso', v, t));
-      fa.appendChild(criarCheckbox('coresFalta', v, t));
-    });
-  }
+                const fillM = (id, list, pref) => {
+                    const c = document.getElementById(id);
+                    if(!c) return;
+                    c.innerHTML = "";
+                    if(list) list.forEach(v => {
+                        const l = document.createElement('label');
+                        l.className = 'option-item';
+                        l.innerHTML = `<input type="checkbox" name="${pref}" value="${v}"> ${v}`;
+                        c.appendChild(l);
+                    });
+                };
 
-  function criarCheckbox(grupo, valor, texto) {
-    const lbl = document.createElement('label');
-    const inp = document.createElement('input');
-    inp.type = 'checkbox';
-    inp.value = valor;
-    inp.dataset.grupo = grupo;
-    lbl.appendChild(inp);
-    lbl.appendChild(document.createTextNode(' ' + texto));
-    return lbl;
-  }
+                const findKey = (obj, target) => Object.keys(obj).find(k => k.toLowerCase() === target.toLowerCase());
 
-  /* ---------- Coletar valores ---------- */
-  function getChakras() {
-    return Array.from(document.querySelectorAll('#chakrasGroup .pill.active')).map(b => b.dataset.chakra).join(', ');
-  }
-  function getCampos() {
-    return Array.from(document.querySelectorAll('#camposGroup .pill.active')).map(b => b.dataset.campo).join(', ');
-  }
-  function getCheckboxes(grupo) {
-    return Array.from(document.querySelectorAll('input[data-grupo="' + grupo + '"]:checked')).map(c => c.value).join(', ');
-  }
+                fillM('coresExcesso', config[findKey(config, 'cores')], 'exc');
+                fillM('coresFalta', config[findKey(config, 'cores')], 'fal');
+                fillS('statusSelect', config[findKey(config, 'status')]);
+                fillS('tipoAmbiente', config[findKey(config, 'ambientes')]);
+                fillS('tipoBusca', config[findKey(config, 'buscaTipos')]);
+                fillS('resBusca', config[findKey(config, 'buscaResultados')]);
 
-  /* ---------- Enviar Dados ---------- */
-  function coletarDados() {
-    return {
-      "Data do Atendimento": document.getElementById('dataAtendimento').value,
-      "ID Cliente": document.getElementById('idCliente').value,
-      "Nome Cliente": document.getElementById('nomeCliente').value,
-      "Status": document.getElementById('status').value,
-      "Queixa Principal": document.getElementById('queixaPrincipal').value,
-      "Queixa Secundária": document.getElementById('queixaSecundaria').value,
-      "Bovis": document.getElementById('bovis').value,
-      "Coronário": getChakras().includes('Coronário') ? 'Sim' : '',
-      "Frontal": getChakras().includes('Frontal') ? 'Sim' : '',
-      "Laríngeo": getChakras().includes('Laríngeo') ? 'Sim' : '',
-      "Cardíaco": getChakras().includes('Cardíaco') ? 'Sim' : '',
-      "Umbilical": getChakras().includes('Umbilical') ? 'Sim' : '',
-      "Sacro": getChakras().includes('Sacro') ? 'Sim' : '',
-      "Básico": getChakras().includes('Básico') ? 'Sim' : '',
-      "Tamanho Aura": document.getElementById('tamanhoAura').value,
-      "Proteção Aura": document.getElementById('protecaoAura').value,
-      "Cores Excesso": getCheckboxes('coresExcesso'),
-      "Cores Falta": getCheckboxes('coresFalta'),
-      "Mental": getCampos().includes('Mental') ? 'Sim' : '',
-      "Emocional": getCampos().includes('Emocional') ? 'Sim' : '',
-      "Espiritual": getCampos().includes('Espiritual') ? 'Sim' : '',
-      "Físico": getCampos().includes('Físico') ? 'Sim' : '',
-      "Diagnóstico Inicial": document.getElementById('diagnosticoInicial').value,
-      "Queixa Espec.": document.getElementById('queixaEspecifica').value,
-      "Causa Raiz": document.getElementById('causaRaiz').value,
-      "Crenças": document.getElementById('crencas').value,
-      "Diagnóstico Específico": document.getElementById('diagnosticoEspecifico').value,
-      "Tipo Ambiente": document.getElementById('tipoAmbiente').value,
-      "Endereço Ambiente": document.getElementById('enderecoAmbiente').value,
-      "Queixa Ambiente": document.getElementById('queixaAmbiente').value,
-      "Pessoas Envolvidas": document.getElementById('pessoasEnvolvidas').value,
-      "Diagnóstico Ambiente": document.getElementById('diagnosticoAmbiente').value,
-      "Tipo Busca": document.getElementById('tipoBusca').value,
-      "Descrição Busca": document.getElementById('descricaoBusca').value,
-      "Info Busca": document.getElementById('infoBusca').value,
-      "Resultado Busca": document.getElementById('resultadoBusca').value
-    };
-  }
+            } catch (e) { console.error("Erro no carregamento:", e); }
+        }
 
-  async function enviarDados(num) {
-    num = num || 1;
-    mostrarMsg(num, 'Enviando dados...', 'info');
-    try {
-      const dados = coletarDados();
-      const body = new URLSearchParams();
-      body.append('acao', 'salvar');
-      body.append('dados', JSON.stringify(dados));
-      const res = await fetch(URL_ATEND, {
-        method: 'POST',
-        body: body
-      });
-      const txt = await res.text();
-      let ok = true;
-      try { const j = JSON.parse(txt); ok = !(j.erro || j.error); } catch (_) {}
-      if (ok) mostrarMsg(num, 'Dados salvos com sucesso!', 'ok');
-      else mostrarMsg(num, 'Resposta do servidor: ' + txt, 'err');
-    } catch (e) {
-      mostrarMsg(num, 'Erro ao enviar: ' + e.message, 'err');
-    }
-  }
+        document.getElementById('nomeCliente').oninput = (e) => {
+            const digitado = e.target.value;
+            const c = listaGlobalClientes.find(x => (x.nome || x.Nome || x['Nome Cliente'] || x[2]) === digitado);
+            if (c) document.getElementById('idCliente').value = c.id || c.ID || c['ID Cliente'] || c[1];
+        };
 
-  /* ---------- Inicialização ---------- */
-  (function init() {
-    const hoje = new Date().toISOString().split('T')[0];
-    document.getElementById('dataAtendimento').value = hoje;
-    carregarClientes();
-    carregarConfig();
-  })();
-</script>
+        async function enviarDados() {
+            const getC = (n) => Array.from(document.querySelectorAll(`input[name="${n}"]:checked`)).map(cb => cb.value).join(", ");
+            const p = {
+                'Data do Atendimento': document.getElementById('dataAtend').value,
+                'ID Cliente': document.getElementById('idCliente').value,
+                'Nome Cliente': document.getElementById('nomeCliente').value,
+                'Status': document.getElementById('statusSelect').value,
+                'Queixa Principal': document.getElementById('queixaP').value,
+                'Queixa Secundária': document.getElementById('queixaS').value,
+                'Bovis': document.getElementById('bovis').value,
+                'Coronário': document.getElementById('v-coronario').innerText,
+                'Frontal': document.getElementById('v-frontal').innerText,
+                'Laríngeo': document.getElementById('v-laringeo').innerText,
+                'Cardíaco': document.getElementById('v-cardiaco').innerText,
+                'Umbilical': document.getElementById('v-umbilical').innerText,
+                'Sacro': document.getElementById('v-sacro').innerText,
+                'Básico': document.getElementById('v-basico').innerText,
+                'Tamanho Aura': document.getElementById('auraT').value,
+                'Proteção Aura': document.getElementById('protecaoAura').value,
+                'Cores Excesso': getC('exc'),
+                'Cores Falta': getC('fal'),
+                'Mental': document.getElementById('v-mental').innerText,
+                'Emocional': document.getElementById('v-emocional').innerText,
+                'Espiritual': document.getElementById('v-espiritual').innerText,
+                'Físico': document.getElementById('v-fisico').innerText,
+                'Diagnóstico Inicial': document.getElementById('diagInicial').value,
+                'Queixa Espec.': document.getElementById('queixaE').value,
+                'Causa Raiz': document.getElementById('causaRaiz').value,
+                'Crenças': document.getElementById('crencas').value,
+                'Diagnóstico Específico': document.getElementById('diagEspec').value,
+                'Tipo Ambiente': document.getElementById('tipoAmbiente').value,
+                'Endereço Ambiente': document.getElementById('endAmbiente').value,
+                'Queixa Ambiente': document.getElementById('queixaAmbiente').value,
+                'Pessoas Envolvidas': document.getElementById('pessoasEnv').value,
+                'Diagnóstico Ambiente': document.getElementById('diagAmbiente').value,
+                'Tipo Busca': document.getElementById('tipoBusca').value,
+                'Descrição Busca': document.getElementById('descBusca').value,
+                'Info Busca': document.getElementById('infoBusca').value,
+                'Resultado Busca': document.getElementById('resBusca').value
+            };
+
+            try {
+                const r = await fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(p) }).then(res => res.json());
+                if (r.success) { alert("✅ Atendimento salvo com sucesso!"); location.reload(); }
+                else { alert("❌ Erro ao salvar: " + (r.error || r.message)); }
+            } catch (e) { alert("❌ Erro de conexão."); }
+        }
+
+        window.onload = carregarTudo;
+    </script>
 </body>
 </html>
