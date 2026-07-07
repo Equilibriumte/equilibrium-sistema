@@ -33,7 +33,6 @@
         .btn-action { padding: 15px 25px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .btn-save { background: #ffd700; color: #4b0082; flex: 1; }
         .btn-next { background: #4b0082; color: white; }
-        /* Estilos para o autocomplete */
         .autocomplete-wrapper { position: relative; width: 100%; }
         .autocomplete-list {
             position: absolute; top: 100%; left: 0; right: 0;
@@ -48,12 +47,8 @@
         .autocomplete-list .item:hover, .autocomplete-list .item.selected {
             background: #f0e6fa; color: #4b0082;
         }
-        .autocomplete-list .item .info {
-            font-size: 11px; color: #888; margin-top: 2px;
-        }
-        .autocomplete-list .item .highlight {
-            background: #ffd700; font-weight: bold;
-        }
+        .autocomplete-list .item .info { font-size: 11px; color: #888; margin-top: 2px; }
+        .autocomplete-list .item .highlight { background: #ffd700; font-weight: bold; }
         .cliente-selecionado {
             margin-top: 8px; padding: 10px 14px; background: #f0e6fa;
             border-radius: 8px; font-size: 13px; color: #4b0082; display: none;
@@ -76,10 +71,8 @@
             <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
             <a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
             <a href="financeiro.html">💰 Financeiro</a>
-
         </nav>
     </div>
-
     <div class="main-content">
         <h1 style="color: #4b0082; margin-bottom: 20px;">Ficha de Atendimento</h1>
         <div class="tabs-header">
@@ -89,7 +82,6 @@
             <button class="tab-btn" onclick="showTab(3)">4. Ambiente</button>
             <button class="tab-btn" onclick="showTab(4)">5. Busca</button>
         </div>
-
         <form id="formAtendimento">
             <div class="tab-content active">
                 <div class="form-grid">
@@ -105,14 +97,14 @@
                             <span id="clienteDetalhes"></span>
                         </div>
                     </div>
-                    <div class="form-group"><label>Data</label><input type="date" id="dataAtend" required></div>
+                    <div class="form-group"><label>ID Atendimento</label><input type="text" id="idAtendimento" readonly style="font-weight: bold; color: #4b0082; background: #f0e6fa;"></div>
+                    <div class="form-group"><label>Data do Atendimento</label><input type="date" id="dataAtend" required></div>
                     <div class="form-group"><label>Status</label><select id="statusSelect"><option value="">Carregando...</option></select></div>
                     <div class="form-group full"><label>Queixa Principal</label><textarea id="queixaP"></textarea></div>
                     <div class="form-group full"><label>Queixa Secundária</label><textarea id="queixaS"></textarea></div>
                 </div>
                 <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(1)">PRÓXIMO ➔</button></div>
             </div>
-
             <div class="tab-content">
                 <div class="form-group"><label>Bovis (4 dígitos)</label><input type="number" id="bovis"></div>
                 <label style="margin-top: 15px;">Chakras (%)</label>
@@ -143,19 +135,15 @@
                 <div class="form-group full"><label>Diagnóstico Inicial</label><textarea id="diagInicial"></textarea></div>
                 <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(2)">PRÓXIMO ➔</button></div>
             </div>
-
             <div class="tab-content"><label>Queixa Específica</label><textarea id="queixaE"></textarea><label>Causa Raiz</label><textarea id="causaRaiz"></textarea><label>Crenças</label><textarea id="crencas"></textarea><label>Diagnóstico Específico</label><textarea id="diagEspec"></textarea><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(3)">PRÓXIMO ➔</button></div></div>
             <div class="tab-content"><div class="form-grid"><div class="form-group"><label>Tipo Ambiente</label><select id="tipoAmbiente"></select></div><div class="form-group"><label>Endereço</label><input type="text" id="endAmbiente"></div><div class="form-group full"><label>Queixa Ambiente</label><textarea id="queixaAmbiente"></textarea></div><div class="form-group full"><label>Pessoas Env.</label><input type="text" id="pessoasEnv"></div><div class="form-group full"><label>Diag. Ambiente</label><textarea id="diagAmbiente"></textarea></div></div><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(4)">PRÓXIMO ➔</button></div></div>
             <div class="tab-content"><div class="form-grid"><div class="form-group"><label>Tipo Busca</label><select id="tipoBusca"></select></div><div class="form-group"><label>Info Busca</label><input type="text" id="infoBusca"></div><div class="form-group full"><label>Resultado</label><select id="resBusca"></select></div><div class="form-group full"><label>Descrição</label><textarea id="descBusca"></textarea></div></div><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">FINALIZAR E SALVAR</button></div></div>
         </form>
     </div>
-
     <script>
         const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
         const URL_ATEND = 'https://script.google.com/macros/s/AKfycbwcInOPirRB7TOWbWFgpQtyFyhYZRHZsB37pB8PavrHxE0PZZpuwasuU_qallBiYlZm/exec';
         let listaGlobalClientes = [];
-
-        // --- Função para extrair valor de qualquer objeto de cliente ---
         function extrairValor(obj, ...nomes) {
             if (!obj || typeof obj !== 'object') return '';
             const chaves = Object.keys(obj);
@@ -163,7 +151,6 @@
                 const encontrada = chaves.find(k => k.toLowerCase().trim() === nome.toLowerCase().trim());
                 if (encontrada && obj[encontrada] !== null && obj[encontrada] !== undefined) return String(obj[encontrada]);
             }
-            // Fallback: busca parcial
             for (let nome of nomes) {
                 const alvo = nome.toLowerCase().replace(/[^a-z0-9]/g, '');
                 const encontrada = chaves.find(k => k.toLowerCase().replace(/[^a-z0-9]/g, '') === alvo);
@@ -171,36 +158,25 @@
             }
             return '';
         }
-
         function extrairId(obj) {
             return extrairValor(obj, 'id', 'ID', 'Id', 'codigo', 'Codigo', 'código', 'Código', 'ClienteID', 'cliente_id');
         }
-
         function extrairNome(obj) {
             return extrairValor(obj, 'nome', 'Nome', 'nomeCliente', 'NomeCliente', 'Nome Cliente', 'nome_cliente', 'name', 'Name', 'nome_completo');
         }
-
         function extrairWhats(obj) {
             return extrairValor(obj, 'whatsapp', 'WhatsApp', 'whats', 'Whats', 'telefone', 'Telefone', 'celular', 'Celular', 'tel', 'Tel');
         }
-
-        // --- Autocomplete melhorado ---
         const inputCliente = document.getElementById('nomeCliente');
         const autoList = document.getElementById('autoList');
         const hiddenId = document.getElementById('idCliente');
         const infoDiv = document.getElementById('clienteInfo');
         const infoNome = document.getElementById('clienteNome');
         const infoDetalhes = document.getElementById('clienteDetalhes');
-
         let clienteSelecionado = null;
         let selectedIndex = -1;
         let resultadosAtuais = [];
-
-        function fecharAutoList() {
-            autoList.style.display = 'none';
-            selectedIndex = -1;
-        }
-
+        function fecharAutoList() { autoList.style.display = 'none'; selectedIndex = -1; }
         function selecionarCliente(cliente) {
             clienteSelecionado = cliente;
             const nome = extrairNome(cliente);
@@ -213,13 +189,7 @@
             infoDiv.style.display = 'block';
             fecharAutoList();
         }
-
-        function limparCliente() {
-            clienteSelecionado = null;
-            hiddenId.value = '';
-            infoDiv.style.display = 'none';
-        }
-
+        function limparCliente() { clienteSelecionado = null; hiddenId.value = ''; infoDiv.style.display = 'none'; }
         function buscarClientes(termo) {
             if (!termo || termo.length < 1) { fecharAutoList(); return []; }
             const t = termo.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -230,7 +200,6 @@
                 return nome.includes(t) || whats.includes(t) || id.toLowerCase().includes(t);
             });
         }
-
         function renderizarAutoList(resultados) {
             resultadosAtuais = resultados;
             autoList.innerHTML = '';
@@ -243,53 +212,33 @@
                 const detalhes = id ? id : extrairWhats(c);
                 div.innerHTML = '<strong>' + nome + '</strong>' + (detalhes ? '<div class="info">' + detalhes + '</div>' : '');
                 div.onclick = () => selecionarCliente(c);
-                div.onmouseenter = () => { selectedIndex = i; document.querySelectorAll('.autocomplete-list .item').forEach((el, j) => el.classList.toggle('selected', j === i)); };
                 autoList.appendChild(div);
             });
             autoList.style.display = 'block';
         }
-
         inputCliente.addEventListener('input', function() {
-            if (clienteSelecionado && this.value !== extrairNome(clienteSelecionado)) {
-                limparCliente();
-            }
+            if (clienteSelecionado && this.value !== extrairNome(clienteSelecionado)) { limparCliente(); }
             const termo = this.value.trim();
             const resultados = buscarClientes(termo);
             renderizarAutoList(resultados);
         });
-
         inputCliente.addEventListener('keydown', function(e) {
             const items = autoList.querySelectorAll('.item');
             if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+                e.preventDefault(); selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
                 items.forEach((el, i) => el.classList.toggle('selected', i === selectedIndex));
                 if (items[selectedIndex]) items[selectedIndex].scrollIntoView({ block: 'nearest' });
             } else if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                selectedIndex = Math.max(selectedIndex - 1, -1);
+                e.preventDefault(); selectedIndex = Math.max(selectedIndex - 1, -1);
                 items.forEach((el, i) => el.classList.toggle('selected', i === selectedIndex));
-                if (items[selectedIndex]) items[selectedIndex].scrollIntoView({ block: 'nearest' });
             } else if (e.key === 'Enter' && selectedIndex >= 0 && resultadosAtuais[selectedIndex]) {
-                e.preventDefault();
-                selecionarCliente(resultadosAtuais[selectedIndex]);
-            } else if (e.key === 'Escape') {
-                fecharAutoList();
-            }
+                e.preventDefault(); selecionarCliente(resultadosAtuais[selectedIndex]);
+            } else if (e.key === 'Escape') { fecharAutoList(); }
         });
-
-        inputCliente.addEventListener('blur', function() {
-            setTimeout(fecharAutoList, 200);
-        });
-
+        inputCliente.addEventListener('blur', function() { setTimeout(fecharAutoList, 200); });
         inputCliente.addEventListener('focus', function() {
-            if (this.value.trim().length > 0) {
-                const resultados = buscarClientes(this.value.trim());
-                renderizarAutoList(resultados);
-            }
+            if (this.value.trim().length > 0) { renderizarAutoList(buscarClientes(this.value.trim())); }
         });
-
-        // --- Funções originais mantidas ---
         function showTab(i) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -297,70 +246,50 @@
             document.querySelectorAll('.tab-btn')[i].classList.add('active');
             window.scrollTo(0,0);
         }
-
-        function setVal(btn, id) {
-            const v = prompt("Digite a %:");
-            if (v) document.getElementById(id).innerText = v + "%";
-        }
-
+        function setVal(btn, id) { const v = prompt("Digite a %:"); if (v) document.getElementById(id).innerText = v + "%"; }
         async function carregarTudo() {
             try {
                 const resC = await fetch(URL_CLIENTES + "?_=" + new Date().getTime());
                 const jsonC = await resC.json();
-                // Aceita array ou objeto com array dentro
                 listaGlobalClientes = [];
-                if (Array.isArray(jsonC)) {
-                    listaGlobalClientes = jsonC;
-                } else if (jsonC && Array.isArray(jsonC.data)) {
-                    listaGlobalClientes = jsonC.data;
-                } else if (jsonC && Array.isArray(jsonC.dados)) {
-                    listaGlobalClientes = jsonC.dados;
-                } else if (jsonC && Array.isArray(jsonC.clientes)) {
-                    listaGlobalClientes = jsonC.clientes;
-                } else if (jsonC && Array.isArray(jsonC.rows)) {
-                    listaGlobalClientes = jsonC.rows;
-                } else if (jsonC && Array.isArray(jsonC.records)) {
-                    listaGlobalClientes = jsonC.records;
-                }
-
+                if (Array.isArray(jsonC)) { listaGlobalClientes = jsonC; }
+                else if (jsonC && Array.isArray(jsonC.data)) { listaGlobalClientes = jsonC.data; }
+                else if (jsonC && Array.isArray(jsonC.dados)) { listaGlobalClientes = jsonC.dados; }
+                else if (jsonC && Array.isArray(jsonC.clientes)) { listaGlobalClientes = jsonC.clientes; }
+                else if (jsonC && Array.isArray(jsonC.rows)) { listaGlobalClientes = jsonC.rows; }
+                else if (jsonC && Array.isArray(jsonC.records)) { listaGlobalClientes = jsonC.records; }
                 const resA = await fetch(URL_ATEND);
                 const jsonA = await resA.json();
                 const config = jsonA.configuracoes || {};
-                
                 const fillS = (id, list) => {
                     const s = document.getElementById(id);
                     if(!s) return;
                     s.innerHTML = "<option value=''>Selecione...</option>";
                     if(list) list.forEach(v => { let o = document.createElement('option'); o.value = v; o.text = v; s.appendChild(o); });
                 };
-
                 const fillM = (id, list, pref) => {
                     const c = document.getElementById(id);
                     if(!c) return;
                     c.innerHTML = "";
                     if(list) list.forEach(v => {
-                        const l = document.createElement('label');
-                        l.className = 'option-item';
-                        l.innerHTML = `<input type="checkbox" name="${pref}" value="${v}"> ${v}`;
+                        const l = document.createElement('label'); l.className = 'option-item';
+                        l.innerHTML = '<input type="checkbox" name="' + pref + '" value="' + v + '"> ' + v;
                         c.appendChild(l);
                     });
                 };
-
                 const findKey = (obj, target) => Object.keys(obj).find(k => k.toLowerCase() === target.toLowerCase());
-
                 fillM('coresExcesso', config[findKey(config, 'cores')], 'exc');
                 fillM('coresFalta', config[findKey(config, 'cores')], 'fal');
                 fillS('statusSelect', config[findKey(config, 'status')]);
                 fillS('tipoAmbiente', config[findKey(config, 'ambientes')]);
                 fillS('tipoBusca', config[findKey(config, 'buscaTipos')]);
                 fillS('resBusca', config[findKey(config, 'buscaResultados')]);
-
             } catch (e) { console.error("Erro no carregamento:", e); }
         }
-
         async function enviarDados() {
-            const getC = (n) => Array.from(document.querySelectorAll(`input[name="${n}"]:checked`)).map(cb => cb.value).join(", ");
+            const getC = (n) => Array.from(document.querySelectorAll('input[name="' + n + '"]:checked')).map(cb => cb.value).join(", ");
             const p = {
+                'ID Atendimento': document.getElementById('idAtendimento').value,
                 'Data do Atendimento': document.getElementById('dataAtend').value,
                 'ID Cliente': document.getElementById('idCliente').value,
                 'Nome Cliente': document.getElementById('nomeCliente').value,
@@ -398,15 +327,22 @@
                 'Info Busca': document.getElementById('infoBusca').value,
                 'Resultado Busca': document.getElementById('resBusca').value
             };
-
             try {
                 const r = await fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(p) }).then(res => res.json());
                 if (r.success) { alert("✅ Atendimento salvo com sucesso!"); location.reload(); }
                 else { alert("❌ Erro ao salvar: " + (r.error || r.message)); }
             } catch (e) { alert("❌ Erro de conexão."); }
         }
-
-        window.onload = carregarTudo;
+        function gerarIdAtendimento() {
+            const num = Math.floor(10000 + Math.random() * 90000);
+            return 'ATEND-' + num;
+        }
+        window.onload = function() {
+            document.getElementById('idAtendimento').value = gerarIdAtendimento();
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('dataAtend').value = hoje;
+            carregarTudo();
+        };
     </script>
 </body>
 </html>
