@@ -195,9 +195,7 @@
             const t = termo.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
             return listaGlobalClientes.filter(c => {
                 const nome = extrairNome(c).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                const whats = extrairWhats(c);
-                const id = extrairId(c);
-                return nome.includes(t) || whats.includes(t) || id.toLowerCase().includes(t);
+                return nome.includes(t);
             });
         }
         function renderizarAutoList(resultados) {
@@ -334,8 +332,11 @@
             } catch (e) { alert("❌ Erro de conexão."); }
         }
         function gerarIdAtendimento() {
-            const num = Math.floor(10000 + Math.random() * 90000);
-            return 'ATEND-' + num;
+            let ultimoId = parseInt(localStorage.getItem('ultimoIdAtendimento') || '0');
+            ultimoId++;
+            const novoId = String(ultimoId).padStart(6, '0');
+            localStorage.setItem('ultimoIdAtendimento', ultimoId.toString());
+            return 'ATEND-' + novoId;
         }
         window.onload = function() {
             document.getElementById('idAtendimento').value = gerarIdAtendimento();
