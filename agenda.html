@@ -13,86 +13,96 @@
     }
 
     body {
-      background-color: #f4f0fa;
+      background: #f4f0fa;
       min-height: 100vh;
     }
 
+    /* SIDEBAR */
     .sidebar {
-      width: 250px;
-      height: 100vh;
       position: fixed;
       top: 0;
       left: 0;
+      width: 250px;
+      height: 100vh;
       background: linear-gradient(180deg, #4b0082, #6a0dad);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 20px;
-      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+      padding: 20px 0;
       overflow-y: auto;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
     }
 
-    .sidebar h1 {
-      color: #ffffff;
+    .sidebar .logo {
       text-align: center;
+      color: #ffffff;
       font-size: 24px;
-      margin-bottom: 30px;
-      padding: 0 10px;
-    }
-
-    .sidebar nav {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
+      font-weight: bold;
+      padding: 15px 20px 25px;
+      letter-spacing: 1px;
     }
 
     .sidebar a {
       display: block;
-      width: 100%;
-      padding: 14px 20px;
       color: #ffffff;
       text-decoration: none;
+      padding: 14px 24px;
       font-size: 15px;
-      transition: background-color 0.3s ease, color 0.3s ease;
+      transition: all 0.25s ease;
+      border-left: 4px solid transparent;
     }
 
     .sidebar a:hover {
-      background-color: #ffd700;
-      color: #4b0082;
+      background: rgba(255, 215, 0, 0.15);
+      color: #ffd700;
+      border-left-color: #ffd700;
     }
 
     .sidebar a.active {
-      background-color: #ffd700;
+      background: #ffd700;
       color: #4b0082;
-      font-weight: bold;
+      border-left-color: #ffd700;
+      font-weight: 600;
     }
 
-    .main-content {
+    /* CONTEÚDO PRINCIPAL */
+    .main {
       margin-left: 250px;
       padding: 40px;
-      background-color: #f4f0fa;
       min-height: 100vh;
     }
 
-    .main-content h2 {
+    .header h1 {
       color: #4b0082;
       font-size: 32px;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
 
-    .main-content .subtitle {
-      color: #555;
+    .header p {
+      color: #6a0dad;
       font-size: 16px;
       margin-bottom: 30px;
-      max-width: 800px;
+      opacity: 0.85;
+    }
+
+    /* CARDS */
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
     }
 
     .card {
-      background-color: #ffffff;
+      background: #ffffff;
       border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(75, 0, 130, 0.15);
+      box-shadow: 0 4px 15px rgba(75, 0, 130, 0.12);
       padding: 25px;
-      margin-bottom: 30px;
+    }
+
+    .card h2 {
+      color: #4b0082;
+      font-size: 20px;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #f4f0fa;
     }
 
     .calendar-wrapper {
@@ -100,44 +110,114 @@
       border-radius: 12px;
     }
 
-    .calendar-wrapper iframe {
+    #calendarFrame {
       width: 100%;
-      height: 600px;
+      height: 500px;
       border: 0;
       border-radius: 12px;
       display: block;
     }
 
-    .instructions {
-      background-color: #ffffff;
-      border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(75, 0, 130, 0.15);
-      padding: 25px;
+    /* FORMULÁRIO */
+    .form-group {
+      margin-bottom: 16px;
     }
 
-    .instructions h3 {
+    .form-group label {
+      display: block;
       color: #4b0082;
-      font-size: 20px;
-      margin-bottom: 15px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
     }
 
-    .instructions p {
-      color: #444;
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d9c9e8;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #333;
+      background: #faf8fd;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #6a0dad;
+      box-shadow: 0 0 0 3px rgba(106, 13, 173, 0.15);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .btn {
+      width: 100%;
+      background: linear-gradient(180deg, #4b0082, #6a0dad);
+      color: #ffffff;
+      border: none;
+      padding: 13px;
+      border-radius: 8px;
       font-size: 15px;
-      line-height: 1.6;
-      margin-bottom: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+      margin-top: 8px;
     }
 
-    .instructions ul {
-      list-style: disc;
-      padding-left: 25px;
-      color: #444;
-      font-size: 15px;
-      line-height: 1.6;
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 15px rgba(75, 0, 130, 0.3);
     }
 
-    .instructions ul li {
-      margin-bottom: 8px;
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .message {
+      padding: 12px 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .message.success {
+      background: #e6f9ec;
+      color: #1e7e34;
+      border: 1px solid #b7e2c4;
+      display: block;
+    }
+
+    .message.error {
+      background: #fdecea;
+      color: #a8281c;
+      border: 1px solid #f5c6cb;
+      display: block;
+    }
+
+    /* RESPONSIVO */
+    @media (max-width: 992px) {
+      .cards {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 768px) {
@@ -147,59 +227,244 @@
         position: relative;
       }
 
-      .main-content {
+      .main {
         margin-left: 0;
-        padding: 20px;
+        padding: 25px 18px;
       }
 
-      .calendar-wrapper iframe {
-        height: 450px;
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      #calendarFrame {
+        height: 400px;
       }
     }
   </style>
 </head>
 <body>
-  <aside class="sidebar">
-    <h1>Equilibrium</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="agenda.html" class="active">Agenda</a>
-      <a href="novo-cliente.html">Novo Cliente</a>
-      <a href="clientes.html">Lista de Clientes</a>
-      <a href="atendimentos.html">Novo Atendimento</a>
-      <a href="lista-atendimentos.html">Lista de Atendimento</a>
-      <a href="novo-tratamento.html">Novo Tratamento</a>
-      <a href="lista-tratamentos.html">Lista de Tratamentos</a>
-      <a href="agenda-graficos.html">Agenda de Gráficos</a>
-      <a href="financeiro.html">Financeiro</a>
-    </nav>
-  </aside>
 
-  <main class="main-content">
-    <h2>Agenda</h2>
-    <p class="subtitle">Visualize e organize seus atendimentos e compromissos diretamente no Google Calendar.</p>
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="logo">Equilibrium</div>
+    <a href="index.html">Home</a>
+    <a href="agenda.html" class="active">Agenda</a>
+    <a href="novo-cliente.html">Novo Cliente</a>
+    <a href="clientes.html">Lista de Clientes</a>
+    <a href="atendimentos.html">Novo Atendimento</a>
+    <a href="lista-atendimentos.html">Lista de Atendimento</a>
+    <a href="novo-tratamento.html">Novo Tratamento</a>
+    <a href="lista-tratamentos.html">Lista de Tratamentos</a>
+    <a href="agenda-graficos.html">Agenda de Gráficos</a>
+    <a href="financeiro.html">Financeiro</a>
+  </nav>
 
-    <div class="card">
-      <div class="calendar-wrapper">
-        <iframe
-          src="https://calendar.google.com/calendar/embed?src=equilibriumterapiasenergeticas%40gmail.com&ctz=America%2FSao_Paulo"
-          title="Google Agenda - Equilibrium"
-          loading="lazy"
-          allowfullscreen></iframe>
-      </div>
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="main">
+    <div class="header">
+      <h1>Agenda</h1>
+      <p>Visualize seus compromissos no Google Calendar e crie novos eventos diretamente pelo formulário abaixo.</p>
     </div>
 
-    <div class="instructions">
-      <h3>Como funciona a integração</h3>
-      <p>O Google Calendar já está configurado e integrado a esta página. Abaixo algumas informações úteis:</p>
-      <ul>
-        <li>A agenda exibida pertence à conta <strong>equilibriumterapiasenergeticas@gmail.com</strong>.</li>
-        <li>Os eventos criados no Google Calendar aparecem automaticamente aqui.</li>
-        <li>O fuso horário está definido como <strong>America/Sao_Paulo</strong>.</li>
-        <li>Para tornar a agenda pública, acesse as configurações do Google Calendar e ative a opção de compartilhamento público.</li>
-        <li>Para alterar a conta exibida, substitua o e-mail no parâmetro <code>src</code> do iframe.</li>
-      </ul>
+    <div class="cards">
+
+      <!-- CARD 1: Google Calendar -->
+      <section class="card">
+        <h2>Calendário Google</h2>
+        <div class="calendar-wrapper">
+          <iframe
+            id="calendarFrame"
+            src="https://calendar.google.com/calendar/embed?src=equilibriumterapiasenergeticas%40gmail.com&ctz=America%2FSao_Paulo"
+            loading="lazy"
+            title="Agenda Google Calendar">
+          </iframe>
+        </div>
+      </section>
+
+      <!-- CARD 2: Formulário Novo Evento -->
+      <section class="card">
+        <h2>Novo Evento</h2>
+        <form id="eventoForm">
+          <div class="form-group">
+            <label for="titulo">Título do Evento *</label>
+            <input type="text" id="titulo" name="titulo" required placeholder="Ex.: Sessão de Reiki">
+          </div>
+
+          <div class="form-group">
+            <label for="cliente">Cliente</label>
+            <input type="text" id="cliente" name="cliente" placeholder="Nome do cliente (opcional)">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="data_inicio">Data Início *</label>
+              <input type="date" id="data_inicio" name="data_inicio" required>
+            </div>
+            <div class="form-group">
+              <label for="hora_inicio">Hora Início</label>
+              <input type="time" id="hora_inicio" name="hora_inicio" value="09:00">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="data_fim">Data Fim *</label>
+              <input type="date" id="data_fim" name="data_fim" required>
+            </div>
+            <div class="form-group">
+              <label for="hora_fim">Hora Fim</label>
+              <input type="time" id="hora_fim" name="hora_fim" value="10:00">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" name="status">
+              <option value="agendado">Agendado</option>
+              <option value="em_andamento">Em Andamento</option>
+              <option value="concluido">Concluído</option>
+              <option value="adiado">Adiado</option>
+              <option value="cancelado">Cancelado</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="descricao">Descrição</label>
+            <textarea id="descricao" name="descricao" placeholder="Observações sobre o evento (opcional)"></textarea>
+          </div>
+
+          <button type="submit" class="btn" id="btnCriar">Criar Evento</button>
+
+          <div class="message" id="messageBox"></div>
+        </form>
+      </section>
+
     </div>
   </main>
+
+  <script>
+    (function () {
+      const form = document.getElementById('eventoForm');
+      const dataInicio = document.getElementById('data_inicio');
+      const dataFim = document.getElementById('data_fim');
+      const messageBox = document.getElementById('messageBox');
+      const btnCriar = document.getElementById('btnCriar');
+      const calendarFrame = document.getElementById('calendarFrame');
+
+      const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec';
+
+      const COR_MAP = {
+        agendado: 5,
+        em_andamento: 1,
+        concluido: 2,
+        adiado: 4,
+        cancelado: 8
+      };
+
+      // Preencher data início e fim com a data atual por padrão
+      function todayISO() {
+        const d = new Date();
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      }
+
+      const today = todayISO();
+      dataInicio.value = today;
+      dataFim.value = today;
+
+      // Quando a data início muda, preencher a data fim igual por padrão
+      dataInicio.addEventListener('change', function () {
+        if (!dataFim.value || dataFim.value < dataInicio.value) {
+          dataFim.value = dataInicio.value;
+        }
+      });
+
+      function showMessage(text, type) {
+        messageBox.textContent = text;
+        messageBox.className = 'message ' + type;
+      }
+
+      function clearMessage() {
+        messageBox.textContent = '';
+        messageBox.className = 'message';
+      }
+
+      function reloadCalendar() {
+        const currentSrc = calendarFrame.src;
+        calendarFrame.src = '';
+        setTimeout(function () {
+          calendarFrame.src = currentSrc + (currentSrc.indexOf('?') !== -1 ? '&' : '?') + 't=' + new Date().getTime();
+        }, 300);
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        clearMessage();
+
+        const titulo = document.getElementById('titulo').value.trim();
+        const cliente = document.getElementById('cliente').value.trim();
+        const dtInicio = dataInicio.value;
+        const hrInicio = document.getElementById('hora_inicio').value;
+        const dtFim = dataFim.value;
+        const hrFim = document.getElementById('hora_fim').value;
+        const status = document.getElementById('status').value;
+        const descricao = document.getElementById('descricao').value.trim();
+
+        if (!titulo || !dtInicio || !dtFim) {
+          showMessage('Preencha todos os campos obrigatórios.', 'error');
+          return;
+        }
+
+        const cor = COR_MAP[status] !== undefined ? COR_MAP[status] : 5;
+
+        const params = new URLSearchParams();
+        params.append('action', 'criar');
+        params.append('calendario', 'agenda');
+        params.append('titulo', titulo);
+        params.append('cliente', cliente);
+        params.append('data_inicio', dtInicio);
+        params.append('hora_inicio', hrInicio);
+        params.append('data_fim', dtFim);
+        params.append('hora_fim', hrFim);
+        params.append('status', status);
+        params.append('cor', cor);
+        params.append('tipo', 'compromisso');
+        params.append('descricao', descricao);
+
+        btnCriar.disabled = true;
+        btnCriar.textContent = 'Criando...';
+
+        fetch(WEBHOOK_URL, {
+          method: 'POST',
+          body: params
+        })
+          .then(function (response) {
+            if (!response.ok) {
+              throw new Error('Erro na resposta do servidor: ' + response.status);
+            }
+            return response.text().catch(function () { return ''; });
+          })
+          .then(function () {
+            showMessage('Evento criado com sucesso! O calendário será recarregado.', 'success');
+            form.reset();
+            dataInicio.value = today;
+            dataFim.value = today;
+            document.getElementById('hora_inicio').value = '09:00';
+            document.getElementById('hora_fim').value = '10:00';
+            reloadCalendar();
+          })
+          .catch(function (err) {
+            console.error(err);
+            showMessage('Erro ao criar evento. Tente novamente.', 'error');
+          })
+          .finally(function () {
+            btnCriar.disabled = false;
+            btnCriar.textContent = 'Criar Evento';
+          });
+      });
+    })();
+  </script>
 </body>
 </html>
