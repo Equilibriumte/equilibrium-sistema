@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novo Tratamento - Equilibrium</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+
+  body { background: #f4f0fa; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    position: fixed; top: 0; left: 0; width: 250px; height: 100vh;
+    background: linear-gradient(180deg, #4b0082, #6a0dad);
+    padding: 20px 15px; overflow-y: auto; z-index: 1000;
+  }
+  .sidebar h2 { color: #ffd700; text-align: center; margin-bottom: 25px; font-size: 20px; letter-spacing: 1px; }
+  .sidebar a { display: block; color: #fff; text-decoration: none; padding: 12px 15px; border-radius: 8px; margin-bottom: 8px; transition: all 0.25s ease; font-size: 15px; }
+  .sidebar a:hover { background: #ffd700; color: #4b0082; }
+  .sidebar a.active { background: #ffd700; color: #4b0082; font-weight: bold; }
+
+  .content { margin-left: 250px; padding: 40px; min-height: 100vh; }
+  .content h1 { color: #4b0082; margin-bottom: 30px; font-size: 28px; }
+
+  .card { background: #fff; border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(75, 0, 130, 0.12); margin-bottom: 30px; }
+  .card h3 { color: #4b0082; margin-bottom: 20px; font-size: 20px; border-bottom: 2px solid #e6d9f2; padding-bottom: 10px; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .form-group { display: flex; flex-direction: column; position: relative; }
+  .form-group.full { grid-column: 1 / -1; }
+  label { font-weight: 600; color: #4b0082; margin-bottom: 6px; font-size: 14px; }
+  input, select, textarea { padding: 10px 12px; border: 1px solid #d9c9e8; border-radius: 8px; font-size: 14px; outline: none; transition: border 0.2s, box-shadow 0.2s; background: #fff; }
+  input:focus, select:focus { border-color: #6a0dad; box-shadow: 0 0 0 3px rgba(106, 13, 173, 0.15); }
+  input[readonly] { background: #f0e9f7; color: #555; }
+
+  .autocomplete-list { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #d9c9e8; border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 999; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+  .autocomplete-item { padding: 10px 12px; cursor: pointer; border-bottom: 1px solid #f0e9f7; font-size: 14px; }
+  .autocomplete-item:hover, .autocomplete-item.active { background: #f4f0fa; }
+
+  .cliente-box { background: #f4f0fa; border: 1px dashed #b39ddb; border-radius: 8px; padding: 12px; margin-top: 10px; display: none; }
+  .cliente-box strong { color: #4b0082; }
+
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+  thead th { background: #4b0082; color: #fff; padding: 12px 10px; text-align: left; font-size: 14px; }
+  tbody td { padding: 10px; border-bottom: 1px solid #e6d9f2; font-size: 14px; }
+  tbody tr:hover { background: #faf8fd; }
+  table input, table select { width: 100%; padding: 8px; }
+  .col-num { width: 40px; text-align: center; }
+  .col-acoes { width: 90px; text-align: center; }
+  .custom-graph { margin-top: 6px; }
+
+  .btn { border: none; border-radius: 8px; padding: 12px 22px; font-size: 15px; cursor: pointer; transition: transform 0.15s, opacity 0.2s; color: #fff; font-weight: 600; }
+  .btn:hover { transform: translateY(-1px); opacity: 0.92; }
+  .btn-add { background: #28a745; margin-bottom: 20px; }
+  .btn-save { background: linear-gradient(135deg, #4b0082, #6a0dad); margin-top: 10px; }
+  .btn-remove { background: #dc3545; padding: 8px 14px; font-size: 13px; }
+  .actions-bar { display: flex; gap: 15px; flex-wrap: wrap; }
+
+  @media (max-width: 768px) {
+    .sidebar { width: 100%; height: auto; position: relative; }
+    .content { margin-left: 0; padding: 20px; }
+    .form-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>Equilibrium</h2>
+  <a href="index.html">Home</a>
+  <a href="agenda.html">Agenda</a>
+  <a href="novo-cliente.html">Novo Cliente</a>
+  <a href="clientes.html">Lista de Clientes</a>
+  <a href="atendimentos.html">Novo Atendimento</a>
+  <a href="lista-atendimentos.html">Lista de Atendimento</a>
+  <a href="novo-tratamento.html" class="active">Novo Tratamento</a>
+  <a href="lista-tratamentos.html">Lista de Tratamentos</a>
+  <a href="agenda-graficos.html">Agenda de Gráficos</a>
+  <a href="financeiro.html">Financeiro</a>
+</div>
+
+<div class="content">
+  <h1>Novo Tratamento</h1>
+
+  <div class="card">
+    <h3>Dados do Tratamento</h3>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="idTratamento">ID Tratamento</label>
+        <input type="text" id="idTratamento" readonly>
+      </div>
+      <div class="form-group">
+        <label for="dataInicio">Data de Início *</label>
+        <input type="date" id="dataInicio" required>
+      </div>
+      <div class="form-group">
+        <label for="clienteBusca">Cliente</label>
+        <input type="text" id="clienteBusca" placeholder="Digite o nome para buscar..." autocomplete="off">
+        <div id="autocompleteList" class="autocomplete-list"></div>
+      </div>
+      <div class="form-group">
+        <input type="hidden" id="idCliente">
+        <div id="clienteBox" class="cliente-box">
+          <div>Cliente selecionado:</div>
+          <div><strong id="clienteNomeSel">-</strong> (ID: <span id="clienteIdSel">-</span>)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Gráficos do Tratamento</h3>
+    <div class="table-wrap">
+      <table id="tabelaGraficos">
+        <thead>
+          <tr>
+            <th class="col-num">#</th>
+            <th>Gráfico</th>
+            <th>Data Início</th>
+            <th>Data Finalização</th>
+            <th>Status</th>
+            <th class="col-acoes">Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyGraficos"></tbody>
+      </table>
+    </div>
+    <button class="btn btn-add" onclick="adicionarLinhaGrafico()">+ Adicionar Gráfico</button>
+    <div class="actions-bar">
+      <button class="btn btn-save" onclick="salvarTratamento()">Salvar Tratamento Completo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
+  const URL_ATEND = 'https://script.google.com/macros/s/AKfycbwcInOPirRB7TOWbWFgpQtyFyhYZRHZsB37pB8PavrHxE0PZZpuwasuU_qallBiYlZm/exec';
+  const URL_WEBHOOK = 'https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec';
+
+  // Lista de gráficos - será carregada da planilha
+  let GRAFICOS_PREDEF = [
+    'Gráfico Scap', 'Decágono', 'Decágono Duplo', 'Ioshua', 'Tetragrammaton',
+    'Cruz Ansata', 'Nove Círculos', 'Nome Místico de Jesus', 'Desimpregnador',
+    'Diafragma Horário', 'Cura Quântica', 'Equilíbrio Energético',
+    'Limpeza Energética', 'Proteção Espiritual', 'Prosperidade'
+  ];
+
+  const STATUS_OPCOES = ['Agendado', 'Em Andamento', 'Concluído', 'Adiado', 'Cancelado'];
+  const STATUS_COR_MAP = { 'agendado': 5, 'em_andamento': 1, 'concluido': 2, 'adiado': 4, 'cancelado': 8 };
+
+  let listaClientes = [];
+
+  function extrairNome(c) {
+    return c.nome || c.Nome || c.name || c.Name || c['Nome Cliente'] || '';
+  }
+  function extrairId(c) {
+    return c.id || c.Id || c.ID || c.codigo || c.Codigo || '';
+  }
+
+  function normalizarStatus(status) {
+    if (!status) return 'agendado';
+    const s = status.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (s.includes('andamento')) return 'em_andamento';
+    if (s.includes('conclu')) return 'concluido';
+    if (s.includes('adiad')) return 'adiado';
+    if (s.includes('cancel')) return 'cancelado';
+    return 'agendado';
+  }
+
+  async function carregarClientes() {
+    try {
+      const resC = await fetch(URL_CLIENTES + '?_=' + Date.now());
+      const jsonC = await resC.json();
+      if (Array.isArray(jsonC)) listaClientes = jsonC;
+      else if (jsonC && Array.isArray(jsonC.dados)) listaClientes = jsonC.dados;
+      else if (jsonC && Array.isArray(jsonC.clientes)) listaClientes = jsonC.clientes;
+      else if (jsonC && Array.isArray(jsonC.data)) listaClientes = jsonC.data;
+      else listaClientes = [];
+
+      // TAMBÉM carregar configurações da planilha de atendimentos para pegar os gráficos
+      try {
+        const resA = await fetch(URL_ATEND + '?_=' + Date.now());
+        const jsonA = await resA.json();
+        const config = jsonA.configuracoes || jsonA.config || {};
+        // Procurar chave que contenha 'grafico' ou 'graficos'
+        let graficosRaw = null;
+        if (typeof config === 'object') {
+          for (const key in config) {
+            if (key.toLowerCase().includes('grafico')) {
+              graficosRaw = config[key];
+              break;
+            }
+          }
+        }
+        if (graficosRaw) {
+          if (typeof graficosRaw === 'string' && graficosRaw.trim()) {
+            const arr = graficosRaw.split(',').map(g => g.trim()).filter(g => g);
+            if (arr.length > 0) GRAFICOS_PREDEF = arr;
+          } else if (Array.isArray(graficosRaw) && graficosRaw.length > 0) {
+            GRAFICOS_PREDEF = graficosRaw.map(g => String(g).trim()).filter(g => g);
+          }
+        }
+      } catch(e) {
+        console.warn('Não foi possível carregar gráficos da planilha, usando lista padrão.');
+      }
+
+    } catch(e) {
+      console.error('Erro ao carregar clientes:', e);
+    }
+  }
+
+  // --- Autocomplete ---
+  const inputBusca = document.getElementById('clienteBusca');
+  const autoList = document.getElementById('autocompleteList');
+  const hiddenId = document.getElementById('idCliente');
+  const clienteBox = document.getElementById('clienteBox');
+  const clienteNomeSel = document.getElementById('clienteNomeSel');
+  const clienteIdSel = document.getElementById('clienteIdSel');
+  let clientesFiltrados = [];
+  let activeIdx = -1;
+
+  inputBusca.addEventListener('input', function() {
+    const termo = this.value.toLowerCase().trim();
+    hiddenId.value = ''; clienteBox.style.display = 'none';
+    if (termo.length < 1) { autoList.style.display = 'none'; return; }
+    clientesFiltrados = listaClientes.filter(c => extrairNome(c).toLowerCase().includes(termo)).slice(0, 10);
+    if (clientesFiltrados.length === 0) { autoList.innerHTML = '<div class="autocomplete-item">Nenhum cliente</div>'; autoList.style.display = 'block'; return; }
+    autoList.innerHTML = clientesFiltrados.map((c, i) => `<div class="autocomplete-item" data-idx="${i}">${extrairNome(c)} ${extrairId(c) ? '(' + extrairId(c) + ')' : ''}</div>`).join('');
+    autoList.style.display = 'block'; activeIdx = -1;
+  });
+
+  inputBusca.addEventListener('keydown', function(e) {
+    const items = autoList.querySelectorAll('.autocomplete-item');
+    if (e.key === 'ArrowDown') { e.preventDefault(); activeIdx = Math.min(activeIdx + 1, items.length - 1); items.forEach((el, i) => el.classList.toggle('active', i === activeIdx)); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); activeIdx = Math.max(activeIdx - 1, 0); items.forEach((el, i) => el.classList.toggle('active', i === activeIdx)); }
+    else if (e.key === 'Enter') { e.preventDefault(); if (activeIdx >= 0 && clientesFiltrados[activeIdx]) selecionarCliente(clientesFiltrados[activeIdx]); }
+    else if (e.key === 'Escape') { autoList.style.display = 'none'; }
+  });
+
+  autoList.addEventListener('click', function(e) { const item = e.target.closest('.autocomplete-item'); if (item) { const idx = parseInt(item.dataset.idx); if (!isNaN(idx) && clientesFiltrados[idx]) selecionarCliente(clientesFiltrados[idx]); } });
+
+  inputBusca.addEventListener('blur', function() { setTimeout(() => autoList.style.display = 'none', 200); });
+
+  function selecionarCliente(c) {
+    inputBusca.value = extrairNome(c); hiddenId.value = extrairId(c);
+    clienteNomeSel.textContent = extrairNome(c); clienteIdSel.textContent = extrairId(c) || '-';
+    clienteBox.style.display = 'block'; autoList.style.display = 'none'; activeIdx = -1;
+  }
+
+  // --- ID automático ---
+  function gerarIdTratamento() { return 'TRAT-' + Math.floor(10000 + Math.random() * 90000); }
+
+  // --- Tabela de gráficos ---
+  function adicionarLinhaGrafico() {
+    const tbody = document.getElementById('tbodyGraficos');
+    const tr = document.createElement('tr');
+    const num = tbody.children.length + 1;
+    const opcoesGraf = GRAFICOS_PREDEF.map(g => `<option value="${g}">${g}</option>`).join('') + '<option value="__outro__">Outro...</option>';
+    const opcoesStatus = STATUS_OPCOES.map(s => `<option value="${s}">${s}</option>`).join('');
+    tr.innerHTML = `
+      <td class="col-num"><span class="num-linha">${num}</span></td>
+      <td>
+        <select class="sel-grafico">${opcoesGraf}</select>
+        <input type="text" class="custom-graph" placeholder="Digite o nome..." style="display:none;">
+      </td>
+      <td><input type="date" class="data-inicio-graf"></td>
+      <td><input type="date" class="data-fim-graf"></td>
+      <td><select class="status-graf">${opcoesStatus}</select></td>
+      <td class="col-acoes"><button class="btn btn-remove" onclick="removerLinhaGrafico(this)">Remover</button></td>
+    `;
+    tbody.appendChild(tr);
+    const sel = tr.querySelector('.sel-grafico');
+    const custom = tr.querySelector('.custom-graph');
+    sel.addEventListener('change', function() { custom.style.display = this.value === '__outro__' ? 'block' : 'none'; if (this.value !== '__outro__') custom.value = ''; });
+    renumerarLinhas();
+  }
+
+  function removerLinhaGrafico(btn) { btn.closest('tr').remove(); renumerarLinhas(); }
+  function renumerarLinhas() { document.querySelectorAll('#tbodyGraficos tr').forEach((l, i) => { const s = l.querySelector('.num-linha'); if (s) s.textContent = i + 1; }); }
+
+  function obterNomeGrafico(linha) {
+    const sel = linha.querySelector('.sel-grafico');
+    const custom = linha.querySelector('.custom-graph');
+    return sel.value === '__outro__' ? custom.value.trim() : sel.value;
+  }
+
+  // --- Salvar ---
+  async function salvarTratamento() {
+    const idTratamento = document.getElementById('idTratamento').value;
+    const dataInicio = document.getElementById('dataInicio').value;
+    const clienteNome = inputBusca.value.trim();
+    const clienteId = hiddenId.value;
+    if (!dataInicio) { alert('Informe a Data de Início.'); return; }
+    if (!clienteNome || !clienteId) { alert('Selecione um cliente.'); return; }
+
+    const linhas = document.querySelectorAll('#tbodyGraficos tr');
+    if (linhas.length === 0) { alert('Adicione ao menos um gráfico.'); return; }
+
+    const graficos = [];
+    for (let i = 0; i < linhas.length; i++) {
+      const l = linhas[i]; const nomeGraf = obterNomeGrafico(l);
+      if (!nomeGraf) { alert('Informe o nome do gráfico na linha ' + (i + 1)); return; }
+      graficos.push({ ordem: i + 1, grafico: nomeGraf, data_inicio: l.querySelector('.data-inicio-graf').value || '', data_fim: l.querySelector('.data-fim-graf').value || '', status: l.querySelector('.status-graf').value });
+    }
+
+    const payload = { tipo: 'tratamento', id_tratamento: idTratamento, data_inicio: dataInicio, cliente: clienteNome, id_cliente: clienteId, graficos: graficos };
+
+    try {
+      const r = await fetch(URL_ATEND, { method: 'POST', body: 'dados=' + encodeURIComponent(JSON.stringify(payload)) });
+      await r.text();
+
+      // Webhook para gráficos com data de finalização
+      graficos.forEach(g => {
+        if (g.data_fim) {
+          const statusNorm = normalizarStatus(g.status);
+          const cor = STATUS_COR_MAP[statusNorm] || 5;
+          const params = new URLSearchParams({ action: 'criar', calendario: 'graficos', titulo: g.grafico, cliente: clienteNome, data_inicio: g.data_inicio || g.data_fim, data_fim: g.data_fim, hora_inicio: '09:00', hora_fim: '10:00', status: statusNorm, cor: cor, tipo: 'grafico', descricao: 'Tratamento ' + idTratamento + ' - ' + g.grafico });
+          fetch(URL_WEBHOOK + '?' + params.toString(), { method: 'GET' }).catch(e => console.error('Webhook erro:', e));
+        }
+      });
+
+      alert('Tratamento salvo com sucesso!');
+      window.location.reload();
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao salvar tratamento.');
+    }
+  }
+
+  window.onload = function() {
+    document.getElementById('idTratamento').value = gerarIdTratamento();
+    document.getElementById('dataInicio').value = new Date().toISOString().split('T')[0];
+    carregarClientes();
+    // Adicionar a primeira linha de gráfico só depois de carregar os dados
+    setTimeout(() => { adicionarLinhaGrafico(); }, 500);
+  };
+</script>
+</body>
+</html>
