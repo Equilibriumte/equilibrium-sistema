@@ -395,15 +395,23 @@ function carregarGraficosPredef() {
   fetch(URL_ATEND + '?_=' + Date.now())
     .then(r => r.json())
     .then(data => {
-      const config = data.configuracoes || data.Configuracoes || {};
+      let config = data.configuracoes || data.Configuracoes || null;
+      if (!config) {
+        const vals = Object.values(data);
+        if (vals.some(v => Array.isArray(v) && v.length > 1)) config = data;
+      }
       let found = null;
-      for (const k of Object.keys(config)) {
-        if (k.toLowerCase().indexOf('grafico') !== -1) {
-          const v = config[k];
-          if (Array.isArray(v) && v.length) { found = v; break; }
-          if (typeof v === 'string' && v.trim()) {
-            found = v.split(',').map(s => s.trim()).filter(Boolean);
-            break;
+      if (config && typeof config === 'object') {
+        for (const k of Object.keys(config)) {
+          // 🔥 CORREÇÃO: remove acentos antes de comparar
+          const keyNorm = k.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          if (keyNorm.indexOf('grafico') !== -1) {
+            const v = config[k];
+            if (Array.isArray(v) && v.length) { found = v; break; }
+            if (typeof v === 'string' && v.trim()) {
+              found = v.split(',').map(s => s.trim()).filter(Boolean);
+              break;
+            }
           }
         }
       }
