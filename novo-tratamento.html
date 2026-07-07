@@ -6,61 +6,155 @@
 <title>Novo Tratamento - Equilibrium</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+  body { background: #f4f0fa; display: flex; min-height: 100vh; }
 
-  body { background: #f4f0fa; min-height: 100vh; }
-
-  /* SIDEBAR */
   .sidebar {
-    position: fixed; top: 0; left: 0; width: 250px; height: 100vh;
-    background: linear-gradient(180deg, #4b0082, #6a0dad);
-    padding: 20px 15px; overflow-y: auto; z-index: 1000;
+    width: 260px;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%);
+    padding: 20px 0;
+    position: fixed;
+    top: 0; left: 0;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+    z-index: 100;
   }
-  .sidebar h2 { color: #ffd700; text-align: center; margin-bottom: 25px; font-size: 20px; letter-spacing: 1px; }
-  .sidebar a { display: block; color: #fff; text-decoration: none; padding: 12px 15px; border-radius: 8px; margin-bottom: 8px; transition: all 0.25s ease; font-size: 15px; }
-  .sidebar a:hover { background: #ffd700; color: #4b0082; }
-  .sidebar a.active { background: #ffd700; color: #4b0082; font-weight: bold; }
+  .sidebar-title {
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px 0 25px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    margin: 0 15px 15px 15px;
+  }
+  .sidebar-links { display: flex; flex-direction: column; }
+  .sidebar-links a {
+    color: #fff;
+    text-decoration: none;
+    padding: 12px 22px;
+    font-size: 15px;
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent;
+  }
+  .sidebar-links a:hover, .sidebar-links a.active {
+    background: #ffd700;
+    color: #4b0082;
+    border-left: 4px solid #4b0082;
+    font-weight: 600;
+  }
 
-  .content { margin-left: 250px; padding: 40px; min-height: 100vh; }
-  .content h1 { color: #4b0082; margin-bottom: 30px; font-size: 28px; }
+  .main { margin-left: 260px; padding: 30px; flex: 1; width: calc(100% - 260px); }
+  .page-title { color: #4b0082; font-size: 28px; margin-bottom: 25px; }
 
-  .card { background: #fff; border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(75, 0, 130, 0.12); margin-bottom: 30px; }
-  .card h3 { color: #4b0082; margin-bottom: 20px; font-size: 20px; border-bottom: 2px solid #e6d9f2; padding-bottom: 10px; }
+  .card {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(75,0,130,0.1);
+    padding: 25px;
+    margin-bottom: 25px;
+  }
+  .card-title { color: #4b0082; font-size: 20px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #f4f0fa; }
 
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .form-group { display: flex; flex-direction: column; position: relative; }
-  .form-group.full { grid-column: 1 / -1; }
-  label { font-weight: 600; color: #4b0082; margin-bottom: 6px; font-size: 14px; }
-  input, select, textarea { padding: 10px 12px; border: 1px solid #d9c9e8; border-radius: 8px; font-size: 14px; outline: none; transition: border 0.2s, box-shadow 0.2s; background: #fff; }
-  input:focus, select:focus { border-color: #6a0dad; box-shadow: 0 0 0 3px rgba(106, 13, 173, 0.15); }
-  input[readonly] { background: #f0e9f7; color: #555; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .form-group { display: flex; flex-direction: column; }
+  .form-group label { color: #4b0082; font-weight: 600; margin-bottom: 6px; font-size: 14px; }
+  .form-group input, .form-group select {
+    padding: 10px 12px;
+    border: 1px solid #d9c9e8;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fff;
+    transition: border 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: #6a0dad;
+    box-shadow: 0 0 0 3px rgba(106,13,173,0.15);
+  }
+  .form-group input[readonly] { background: #f4f0fa; color: #6a0dad; font-weight: 600; }
 
-  .autocomplete-list { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #d9c9e8; border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 999; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-  .autocomplete-item { padding: 10px 12px; cursor: pointer; border-bottom: 1px solid #f0e9f7; font-size: 14px; }
-  .autocomplete-item:hover, .autocomplete-item.active { background: #f4f0fa; }
+  .autocomplete-wrapper { position: relative; }
+  .autocomplete-dropdown {
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: #fff;
+    border: 1px solid #d9c9e8;
+    border-radius: 8px;
+    box-shadow: 0 6px 14px rgba(75,0,130,0.2);
+    max-height: 220px;
+    overflow-y: auto;
+    z-index: 50;
+    display: none;
+  }
+  .autocomplete-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid #f4f0fa;
+    font-size: 14px;
+    color: #333;
+  }
+  .autocomplete-item:hover { background: #f4f0fa; color: #4b0082; }
+  .autocomplete-item:last-child { border-bottom: none; }
 
-  .cliente-box { background: #f4f0fa; border: 1px dashed #b39ddb; border-radius: 8px; padding: 12px; margin-top: 10px; display: none; }
-  .cliente-box strong { color: #4b0082; }
+  .client-box {
+    margin-top: 18px;
+    background: linear-gradient(135deg, #f4f0fa, #fff);
+    border: 1px solid #d9c9e8;
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: none;
+    color: #4b0082;
+    font-weight: 600;
+  }
+  .client-box strong { color: #6a0dad; }
 
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-  thead th { background: #4b0082; color: #fff; padding: 12px 10px; text-align: left; font-size: 14px; }
-  tbody td { padding: 10px; border-bottom: 1px solid #e6d9f2; font-size: 14px; }
-  tbody tr:hover { background: #faf8fd; }
-  table input, table select { width: 100%; padding: 8px; }
-  .col-num { width: 40px; text-align: center; }
-  .col-acoes { width: 90px; text-align: center; }
-  .custom-graph { margin-top: 6px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+  th { background: #4b0082; color: #fff; padding: 10px; text-align: left; font-size: 13px; }
+  td { padding: 10px; border-bottom: 1px solid #f4f0fa; font-size: 14px; color: #333; }
+  tr:hover td { background: #f9f5fd; }
+  .empty-row td { text-align: center; color: #999; font-style: italic; padding: 18px; }
 
-  .btn { border: none; border-radius: 8px; padding: 12px 22px; font-size: 15px; cursor: pointer; transition: transform 0.15s, opacity 0.2s; color: #fff; font-weight: 600; }
-  .btn:hover { transform: translateY(-1px); opacity: 0.92; }
-  .btn-add { background: #28a745; margin-bottom: 20px; }
-  .btn-save { background: linear-gradient(135deg, #4b0082, #6a0dad); margin-top: 10px; }
-  .btn-remove { background: #dc3545; padding: 8px 14px; font-size: 13px; }
-  .actions-bar { display: flex; gap: 15px; flex-wrap: wrap; }
+  .graficos-table input, .graficos-table select {
+    padding: 7px 9px; border: 1px solid #d9c9e8; border-radius: 6px; font-size: 13px; width: 100%;
+  }
+  .graficos-table input:focus, .graficos-table select:focus { outline: none; border-color: #6a0dad; }
+
+  .btn {
+    padding: 11px 22px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-add { background: #28a745; color: #fff; }
+  .btn-add:hover { background: #218838; transform: translateY(-1px); }
+  .btn-save { background: linear-gradient(135deg, #4b0082, #6a0dad); color: #fff; }
+  .btn-save:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(75,0,130,0.4); }
+  .btn-remove { background: #dc3545; color: #fff; padding: 7px 12px; font-size: 13px; }
+  .btn-remove:hover { background: #c82333; }
+
+  .actions-row { margin-top: 20px; display: flex; gap: 14px; flex-wrap: wrap; }
+  .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+  .status-agendado { background: #fff3cd; color: #856404; }
+  .status-andamento { background: #cce5ff; color: #004085; }
+  .status-concluido { background: #d4edda; color: #155724; }
+  .status-adiado { background: #f8d7da; color: #721c24; }
+  .status-cancelado { background: #e2e3e5; color: #383d41; }
+
+  .message {
+    padding: 14px 18px; border-radius: 8px; margin-top: 18px; font-weight: 600; display: none;
+  }
+  .message.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; display: block; }
+  .message.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; display: block; }
 
   @media (max-width: 768px) {
-    .sidebar { width: 100%; height: auto; position: relative; }
-    .content { margin-left: 0; padding: 20px; }
+    .sidebar { width: 100%; min-height: auto; position: relative; }
+    .main { margin-left: 0; width: 100%; }
     .form-grid { grid-template-columns: 1fr; }
   }
 </style>
@@ -68,69 +162,87 @@
 <body>
 
 <div class="sidebar">
-  <h2>Equilibrium</h2>
-  <a href="index.html">Home</a>
-  <a href="agenda.html">Agenda</a>
-  <a href="novo-cliente.html">Novo Cliente</a>
-  <a href="clientes.html">Lista de Clientes</a>
-  <a href="atendimentos.html">Novo Atendimento</a>
-  <a href="lista-atendimentos.html">Lista de Atendimento</a>
-  <a href="novo-tratamento.html" class="active">Novo Tratamento</a>
-  <a href="lista-tratamentos.html">Lista de Tratamentos</a>
-  <a href="agenda-graficos.html">Agenda de Gráficos</a>
-  <a href="financeiro.html">Financeiro</a>
+  <div class="sidebar-title">Equilibrium</div>
+  <nav class="sidebar-links">
+    <a href="index.html">Home</a>
+    <a href="agenda.html">Agenda</a>
+    <a href="novo-cliente.html">Novo Cliente</a>
+    <a href="clientes.html">Lista de Clientes</a>
+    <a href="atendimentos.html">Novo Atendimento</a>
+    <a href="lista-atendimentos.html">Lista de Atendimento</a>
+    <a href="novo-tratamento.html" class="active">Novo Tratamento</a>
+    <a href="lista-tratamentos.html">Lista de Tratamentos</a>
+    <a href="agenda-graficos.html">Agenda de Gráficos</a>
+    <a href="financeiro.html">Financeiro</a>
+  </nav>
 </div>
 
-<div class="content">
-  <h1>Novo Tratamento</h1>
+<div class="main">
+  <h1 class="page-title">Novo Tratamento</h1>
 
   <div class="card">
-    <h3>Dados do Tratamento</h3>
+    <h2 class="card-title">Dados do Tratamento</h2>
     <div class="form-grid">
+      <div class="form-group">
+        <label for="clienteInput">Cliente</label>
+        <div class="autocomplete-wrapper">
+          <input type="text" id="clienteInput" placeholder="Digite o nome do cliente..." autocomplete="off">
+          <input type="hidden" id="clienteId">
+          <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+        </div>
+      </div>
       <div class="form-group">
         <label for="idTratamento">ID Tratamento</label>
         <input type="text" id="idTratamento" readonly>
       </div>
       <div class="form-group">
-        <label for="dataInicio">Data de Início *</label>
-        <input type="date" id="dataInicio" required>
-      </div>
-      <div class="form-group">
-        <label for="clienteBusca">Cliente</label>
-        <input type="text" id="clienteBusca" placeholder="Digite o nome para buscar..." autocomplete="off">
-        <div id="autocompleteList" class="autocomplete-list"></div>
-      </div>
-      <div class="form-group">
-        <input type="hidden" id="idCliente">
-        <div id="clienteBox" class="cliente-box">
-          <div>Cliente selecionado:</div>
-          <div><strong id="clienteNomeSel">-</strong> (ID: <span id="clienteIdSel">-</span>)</div>
-        </div>
+        <label for="dataInicio">Data de Início</label>
+        <input type="date" id="dataInicio">
       </div>
     </div>
+
+    <div class="client-box" id="clientBox">
+      Cliente selecionado: <strong id="clientBoxNome"></strong> &nbsp;|&nbsp; ID: <strong id="clientBoxId"></strong>
+    </div>
+
+    <h3 style="color:#4b0082; margin-top:25px; margin-bottom:8px; font-size:16px;">Tratamentos Anteriores</h3>
+    <table id="tratamentosAnterioresTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Data</th>
+          <th>Gráficos</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="tratamentosAnterioresBody">
+        <tr class="empty-row"><td colspan="4">Selecione um cliente para ver os tratamentos anteriores.</td></tr>
+      </tbody>
+    </table>
   </div>
 
   <div class="card">
-    <h3>Gráficos do Tratamento</h3>
-    <div class="table-wrap">
-      <table id="tabelaGraficos">
-        <thead>
-          <tr>
-            <th class="col-num">#</th>
-            <th>Gráfico</th>
-            <th>Data Início</th>
-            <th>Data Finalização</th>
-            <th>Status</th>
-            <th class="col-acoes">Ações</th>
-          </tr>
-        </thead>
-        <tbody id="tbodyGraficos"></tbody>
-      </table>
+    <h2 class="card-title">Gráficos do Tratamento</h2>
+    <table class="graficos-table">
+      <thead>
+        <tr>
+          <th style="width:40px;">#</th>
+          <th>Gráfico</th>
+          <th style="width:150px;">Data Início</th>
+          <th style="width:150px;">Data Finalização</th>
+          <th style="width:150px;">Status</th>
+          <th style="width:110px;">Ações</th>
+        </tr>
+      </thead>
+      <tbody id="graficosBody"></tbody>
+    </table>
+
+    <div class="actions-row">
+      <button class="btn btn-add" onclick="adicionarGrafico()">+ Adicionar Gráfico</button>
+      <button class="btn btn-save" onclick="salvarTratamento()">Salvar Tratamento</button>
     </div>
-    <button class="btn btn-add" onclick="adicionarLinhaGrafico()">+ Adicionar Gráfico</button>
-    <div class="actions-bar">
-      <button class="btn btn-save" onclick="salvarTratamento()">Salvar Tratamento Completo</button>
-    </div>
+
+    <div class="message" id="message"></div>
   </div>
 </div>
 
@@ -139,203 +251,385 @@
   const URL_ATEND = 'https://script.google.com/macros/s/AKfycbwcInOPirRB7TOWbWFgpQtyFyhYZRHZsB37pB8PavrHxE0PZZpuwasuU_qallBiYlZm/exec';
   const URL_WEBHOOK = 'https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec';
 
-  // Lista de gráficos - será carregada da planilha
-  let GRAFICOS_PREDEF = [
-    'Gráfico Scap', 'Decágono', 'Decágono Duplo', 'Ioshua', 'Tetragrammaton',
-    'Cruz Ansata', 'Nove Círculos', 'Nome Místico de Jesus', 'Desimpregnador',
-    'Diafragma Horário', 'Cura Quântica', 'Equilíbrio Energético',
-    'Limpeza Energética', 'Proteção Espiritual', 'Prosperidade'
+  const STATUS_OPCOES = ['Agendado', 'Em Andamento', 'Concluído', 'Adiado', 'Cancelado'];
+
+  const GRAFICOS_FALLBACK = [
+    'Alegria de viver por síntese mental','Alta vitalidade','Amplificador','Amplificador yogi','Anti-vampirismo','Antidepressão','Antidepressivo','Antidor','Antimagia','Autoestima','Biômetro de bovis','Chama trina','Círculo de proteção','Código 21','Cronodosagem homeopática','Cruz cósmica','Decágono','Desembaraçador','Desembaraçador material','Desimpregnador','Diafragma anti-horário','Diafragma horário','Escudo','Escudo protetor'
   ];
 
-  const STATUS_OPCOES = ['Agendado', 'Em Andamento', 'Concluído', 'Adiado', 'Cancelado'];
-  const STATUS_COR_MAP = { 'agendado': 5, 'em_andamento': 1, 'concluido': 2, 'adiado': 4, 'cancelado': 8 };
-
+  let GRAFICOS_PREDEF = [].concat(GRAFICOS_FALLBACK);
   let listaClientes = [];
+  let listaAtendimentos = [];
+  let configuracoes = {};
 
-  function extrairNome(c) {
-    return c.nome || c.Nome || c.name || c.Name || c['Nome Cliente'] || '';
-  }
-  function extrairId(c) {
-    return c.id || c.Id || c.ID || c.codigo || c.Codigo || '';
+  function getVal(obj, campo) {
+    if (!obj) return '';
+    if (obj.hasOwnProperty(campo)) return obj[campo];
+    const lower = campo.toLowerCase();
+    for (const k in obj) {
+      if (k.toLowerCase() === lower) return obj[k];
+    }
+    const noSpace = lower.replace(/\s+/g, '');
+    const noAccent = lower.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    for (const k in obj) {
+      const kl = k.toLowerCase().replace(/\s+/g, '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      if (kl === noSpace || kl === noAccent) return obj[k];
+    }
+    return '';
   }
 
-  function normalizarStatus(status) {
-    if (!status) return 'agendado';
-    const s = status.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    if (s.includes('andamento')) return 'em_andamento';
-    if (s.includes('conclu')) return 'concluido';
-    if (s.includes('adiad')) return 'adiado';
-    if (s.includes('cancel')) return 'cancelado';
-    return 'agendado';
+  function gerarIdTratamento() {
+    const n = Math.floor(10000 + Math.random() * 90000);
+    return 'TRAT-' + n;
+  }
+
+  function hojeISO() {
+    const d = new Date();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return d.getFullYear() + '-' + mm + '-' + dd;
+  }
+
+  function extrairGraficosPredef(configObj) {
+    if (!configObj || typeof configObj !== 'object') return [].concat(GRAFICOS_FALLBACK);
+    for (const key in configObj) {
+      if (key.toLowerCase().indexOf('grafico') !== -1) {
+        const val = configObj[key];
+        if (Array.isArray(val)) {
+          const arr = val.map(function(v){ return String(v).trim(); }).filter(function(v){ return v.length > 0; });
+          if (arr.length > 0) return arr;
+        } else if (typeof val === 'string') {
+          const arr = val.split(',').map(function(v){ return v.trim(); }).filter(function(v){ return v.length > 0; });
+          if (arr.length > 0) return arr;
+        }
+      }
+    }
+    return [].concat(GRAFICOS_FALLBACK);
   }
 
   async function carregarClientes() {
     try {
-      const resC = await fetch(URL_CLIENTES + '?_=' + Date.now());
-      const jsonC = await resC.json();
-      if (Array.isArray(jsonC)) listaClientes = jsonC;
-      else if (jsonC && Array.isArray(jsonC.dados)) listaClientes = jsonC.dados;
-      else if (jsonC && Array.isArray(jsonC.clientes)) listaClientes = jsonC.clientes;
-      else if (jsonC && Array.isArray(jsonC.data)) listaClientes = jsonC.data;
-      else listaClientes = [];
+      const [respClientes, respAtend] = await Promise.all([
+        fetch(URL_CLIENTES).then(function(r){ return r.json(); }),
+        fetch(URL_ATEND).then(function(r){ return r.json(); })
+      ]);
 
-      // TAMBÉM carregar configurações da planilha de atendimentos para pegar os gráficos
-      try {
-        const resA = await fetch(URL_ATEND + '?_=' + Date.now());
-        const jsonA = await resA.json();
-        const config = jsonA.configuracoes || jsonA.config || {};
-        // Procurar chave que contenha 'grafico' ou 'graficos'
-        let graficosRaw = null;
-        if (typeof config === 'object') {
-          for (const key in config) {
-            if (key.toLowerCase().includes('grafico')) {
-              graficosRaw = config[key];
-              break;
-            }
-          }
-        }
-        if (graficosRaw) {
-          if (typeof graficosRaw === 'string' && graficosRaw.trim()) {
-            const arr = graficosRaw.split(',').map(g => g.trim()).filter(g => g);
-            if (arr.length > 0) GRAFICOS_PREDEF = arr;
-          } else if (Array.isArray(graficosRaw) && graficosRaw.length > 0) {
-            GRAFICOS_PREDEF = graficosRaw.map(g => String(g).trim()).filter(g => g);
-          }
-        }
-      } catch(e) {
-        console.warn('Não foi possível carregar gráficos da planilha, usando lista padrão.');
+      if (respClientes && Array.isArray(respClientes.clientes)) {
+        listaClientes = respClientes.clientes;
+      } else if (Array.isArray(respClientes)) {
+        listaClientes = respClientes;
+      } else if (respClientes && Array.isArray(respClientes.dados)) {
+        listaClientes = respClientes.dados;
       }
 
-    } catch(e) {
-      console.error('Erro ao carregar clientes:', e);
+      if (respAtend && Array.isArray(respAtend.atendimentos)) {
+        listaAtendimentos = respAtend.atendimentos;
+      } else if (Array.isArray(respAtend)) {
+        listaAtendimentos = respAtend;
+      } else if (respAtend && Array.isArray(respAtend.dados)) {
+        listaAtendimentos = respAtend.dados;
+      }
+
+      if (respAtend && respAtend.configuracoes) {
+        configuracoes = respAtend.configuracoes;
+      } else if (respAtend && respAtend.config) {
+        configuracoes = respAtend.config;
+      } else if (respClientes && respClientes.configuracoes) {
+        configuracoes = respClientes.configuracoes;
+      }
+
+      GRAFICOS_PREDEF = extrairGraficosPredef(configuracoes);
+    } catch (e) {
+      console.error('Erro ao carregar dados:', e);
+      GRAFICOS_PREDEF = [].concat(GRAFICOS_FALLBACK);
     }
   }
 
-  // --- Autocomplete ---
-  const inputBusca = document.getElementById('clienteBusca');
-  const autoList = document.getElementById('autocompleteList');
-  const hiddenId = document.getElementById('idCliente');
-  const clienteBox = document.getElementById('clienteBox');
-  const clienteNomeSel = document.getElementById('clienteNomeSel');
-  const clienteIdSel = document.getElementById('clienteIdSel');
-  let clientesFiltrados = [];
-  let activeIdx = -1;
-
-  inputBusca.addEventListener('input', function() {
-    const termo = this.value.toLowerCase().trim();
-    hiddenId.value = ''; clienteBox.style.display = 'none';
-    if (termo.length < 1) { autoList.style.display = 'none'; return; }
-    clientesFiltrados = listaClientes.filter(c => extrairNome(c).toLowerCase().includes(termo)).slice(0, 10);
-    if (clientesFiltrados.length === 0) { autoList.innerHTML = '<div class="autocomplete-item">Nenhum cliente</div>'; autoList.style.display = 'block'; return; }
-    autoList.innerHTML = clientesFiltrados.map((c, i) => `<div class="autocomplete-item" data-idx="${i}">${extrairNome(c)} ${extrairId(c) ? '(' + extrairId(c) + ')' : ''}</div>`).join('');
-    autoList.style.display = 'block'; activeIdx = -1;
-  });
-
-  inputBusca.addEventListener('keydown', function(e) {
-    const items = autoList.querySelectorAll('.autocomplete-item');
-    if (e.key === 'ArrowDown') { e.preventDefault(); activeIdx = Math.min(activeIdx + 1, items.length - 1); items.forEach((el, i) => el.classList.toggle('active', i === activeIdx)); }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); activeIdx = Math.max(activeIdx - 1, 0); items.forEach((el, i) => el.classList.toggle('active', i === activeIdx)); }
-    else if (e.key === 'Enter') { e.preventDefault(); if (activeIdx >= 0 && clientesFiltrados[activeIdx]) selecionarCliente(clientesFiltrados[activeIdx]); }
-    else if (e.key === 'Escape') { autoList.style.display = 'none'; }
-  });
-
-  autoList.addEventListener('click', function(e) { const item = e.target.closest('.autocomplete-item'); if (item) { const idx = parseInt(item.dataset.idx); if (!isNaN(idx) && clientesFiltrados[idx]) selecionarCliente(clientesFiltrados[idx]); } });
-
-  inputBusca.addEventListener('blur', function() { setTimeout(() => autoList.style.display = 'none', 200); });
-
-  function selecionarCliente(c) {
-    inputBusca.value = extrairNome(c); hiddenId.value = extrairId(c);
-    clienteNomeSel.textContent = extrairNome(c); clienteIdSel.textContent = extrairId(c) || '-';
-    clienteBox.style.display = 'block'; autoList.style.display = 'none'; activeIdx = -1;
+  function mostrarDropdown(filtrados) {
+    const dropdown = document.getElementById('autocompleteDropdown');
+    dropdown.innerHTML = '';
+    if (filtrados.length === 0) {
+      dropdown.style.display = 'none';
+      return;
+    }
+    filtrados.forEach(function(cliente) {
+      const item = document.createElement('div');
+      item.className = 'autocomplete-item';
+      const nome = getVal(cliente, 'nome') || 'Sem nome';
+      const id = getVal(cliente, 'id') || getVal(cliente, 'id cliente') || '';
+      item.textContent = nome + (id ? ' (' + id + ')' : '');
+      item.onclick = function() {
+        document.getElementById('clienteInput').value = nome;
+        document.getElementById('clienteId').value = id;
+        dropdown.style.display = 'none';
+        mostrarClientBox(nome, id);
+        carregarTratamentosAnteriores(id, nome);
+      };
+      dropdown.appendChild(item);
+    });
+    dropdown.style.display = 'block';
   }
 
-  // --- ID automático ---
-  function gerarIdTratamento() { return 'TRAT-' + Math.floor(10000 + Math.random() * 90000); }
+  function mostrarClientBox(nome, id) {
+    const box = document.getElementById('clientBox');
+    document.getElementById('clientBoxNome').textContent = nome;
+    document.getElementById('clientBoxId').textContent = id;
+    box.style.display = 'block';
+  }
 
-  // --- Tabela de gráficos ---
-  function adicionarLinhaGrafico() {
-    const tbody = document.getElementById('tbodyGraficos');
+  function onClienteInput() {
+    const val = document.getElementById('clienteInput').value.toLowerCase().trim();
+    document.getElementById('clienteId').value = '';
+    document.getElementById('clientBox').style.display = 'none';
+    if (val.length < 1) {
+      document.getElementById('autocompleteDropdown').style.display = 'none';
+      return;
+    }
+    const filtrados = listaClientes.filter(function(c) {
+      const nome = String(getVal(c, 'nome') || '').toLowerCase();
+      return nome.indexOf(val) !== -1;
+    }).slice(0, 15);
+    mostrarDropdown(filtrados);
+  }
+
+  function carregarTratamentosAnteriores(idCliente, nomeCliente) {
+    const tbody = document.getElementById('tratamentosAnterioresBody');
+    tbody.innerHTML = '';
+    const filtrados = listaAtendimentos.filter(function(a) {
+      const tipo = String(getVal(a, 'tipo') || '').toLowerCase();
+      if (tipo !== 'tratamento') return false;
+      const aId = String(getVal(a, 'cliente id') || getVal(a, 'id cliente') || getVal(a, 'clienteId') || '').trim();
+      const aNome = String(getVal(a, 'cliente') || getVal(a, 'nome cliente') || '').trim().toLowerCase();
+      const targetId = String(idCliente || '').trim();
+      const targetNome = String(nomeCliente || '').trim().toLowerCase();
+      if (targetId && aId === targetId) return true;
+      if (targetNome && aNome === targetNome) return true;
+      return false;
+    });
+
+    if (filtrados.length === 0) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Nenhum tratamento anterior encontrado para este cliente.</td></tr>';
+      return;
+    }
+
+    filtrados.forEach(function(t) {
+      const tr = document.createElement('tr');
+      const id = getVal(t, 'id') || getVal(t, 'id tratamento') || '-';
+      const data = getVal(t, 'data') || getVal(t, 'data inicio') || '-';
+      const graficos = getVal(t, 'graficos') || getVal(t, 'grafico') || '-';
+      let grafStr = graficos;
+      if (Array.isArray(graficos)) grafStr = graficos.map(function(g){ return getVal(g, 'grafico') || g; }).join(', ');
+      const status = getVal(t, 'status') || '-';
+      const statusClass = 'status-' + String(status).toLowerCase().replace(/\s+/g, '');
+      tr.innerHTML = '<td>' + id + '</td>' +
+                     '<td>' + data + '</td>' +
+                     '<td>' + grafStr + '</td>' +
+                     '<td><span class="status-badge ' + statusClass + '">' + status + '</span></td>';
+      tbody.appendChild(tr);
+    });
+  }
+
+  function adicionarGrafico() {
+    const tbody = document.getElementById('graficosBody');
     const tr = document.createElement('tr');
-    const num = tbody.children.length + 1;
-    const opcoesGraf = GRAFICOS_PREDEF.map(g => `<option value="${g}">${g}</option>`).join('') + '<option value="__outro__">Outro...</option>';
-    const opcoesStatus = STATUS_OPCOES.map(s => `<option value="${s}">${s}</option>`).join('');
-    tr.innerHTML = `
-      <td class="col-num"><span class="num-linha">${num}</span></td>
-      <td>
-        <select class="sel-grafico">${opcoesGraf}</select>
-        <input type="text" class="custom-graph" placeholder="Digite o nome..." style="display:none;">
-      </td>
-      <td><input type="date" class="data-inicio-graf"></td>
-      <td><input type="date" class="data-fim-graf"></td>
-      <td><select class="status-graf">${opcoesStatus}</select></td>
-      <td class="col-acoes"><button class="btn btn-remove" onclick="removerLinhaGrafico(this)">Remover</button></td>
-    `;
+    tr.className = 'grafico-row';
+
+    const tdNum = document.createElement('td');
+    tdNum.className = 'grafico-num';
+    tdNum.textContent = '1';
+
+    const tdGraf = document.createElement('td');
+    const sel = document.createElement('select');
+    sel.className = 'grafico-select';
+    const optEmpty = document.createElement('option');
+    optEmpty.value = '';
+    optEmpty.textContent = 'Selecione...';
+    sel.appendChild(optEmpty);
+    GRAFICOS_PREDEF.forEach(function(g) {
+      const o = document.createElement('option');
+      o.value = g;
+      o.textContent = g;
+      sel.appendChild(o);
+    });
+    tdGraf.appendChild(sel);
+
+    const tdIni = document.createElement('td');
+    const inpIni = document.createElement('input');
+    inpIni.type = 'date';
+    inpIni.className = 'grafico-inicio';
+    tdIni.appendChild(inpIni);
+
+    const tdFim = document.createElement('td');
+    const inpFim = document.createElement('input');
+    inpFim.type = 'date';
+    inpFim.className = 'grafico-fim';
+    tdFim.appendChild(inpFim);
+
+    const tdStatus = document.createElement('td');
+    const selStatus = document.createElement('select');
+    selStatus.className = 'grafico-status';
+    STATUS_OPCOES.forEach(function(s) {
+      const o = document.createElement('option');
+      o.value = s;
+      o.textContent = s;
+      selStatus.appendChild(o);
+    });
+    selStatus.value = 'Agendado';
+    tdStatus.appendChild(selStatus);
+
+    const tdAcoes = document.createElement('td');
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-remove';
+    btn.textContent = 'Remover';
+    btn.onclick = function() { removerGrafico(tr); };
+    tdAcoes.appendChild(btn);
+
+    tr.appendChild(tdNum);
+    tr.appendChild(tdGraf);
+    tr.appendChild(tdIni);
+    tr.appendChild(tdFim);
+    tr.appendChild(tdStatus);
+    tr.appendChild(tdAcoes);
     tbody.appendChild(tr);
-    const sel = tr.querySelector('.sel-grafico');
-    const custom = tr.querySelector('.custom-graph');
-    sel.addEventListener('change', function() { custom.style.display = this.value === '__outro__' ? 'block' : 'none'; if (this.value !== '__outro__') custom.value = ''; });
-    renumerarLinhas();
+
+    renumerarGraficos();
   }
 
-  function removerLinhaGrafico(btn) { btn.closest('tr').remove(); renumerarLinhas(); }
-  function renumerarLinhas() { document.querySelectorAll('#tbodyGraficos tr').forEach((l, i) => { const s = l.querySelector('.num-linha'); if (s) s.textContent = i + 1; }); }
-
-  function obterNomeGrafico(linha) {
-    const sel = linha.querySelector('.sel-grafico');
-    const custom = linha.querySelector('.custom-graph');
-    return sel.value === '__outro__' ? custom.value.trim() : sel.value;
+  function removerGrafico(linha) {
+    linha.remove();
+    renumerarGraficos();
   }
 
-  // --- Salvar ---
+  function renumerarGraficos() {
+    const linhas = document.querySelectorAll('#graficosBody .grafico-row');
+    linhas.forEach(function(l, i) {
+      l.querySelector('.grafico-num').textContent = (i + 1);
+    });
+  }
+
+  function mostrarMensagem(texto, tipo) {
+    const msg = document.getElementById('message');
+    msg.textContent = texto;
+    msg.className = 'message ' + tipo;
+    setTimeout(function() {
+      msg.className = 'message';
+      msg.textContent = '';
+    }, 6000);
+  }
+
   async function salvarTratamento() {
+    const clienteNome = document.getElementById('clienteInput').value.trim();
+    let clienteId = document.getElementById('clienteId').value.trim();
+
+    if (!clienteNome) {
+      mostrarMensagem('Selecione um cliente.', 'error');
+      return;
+    }
+
+    if (!clienteId) {
+      const encontrado = listaClientes.find(function(c) {
+        return String(getVal(c, 'nome') || '').trim().toLowerCase() === clienteNome.toLowerCase();
+      });
+      if (encontrado) {
+        clienteId = getVal(encontrado, 'id') || getVal(encontrado, 'id cliente') || '';
+        document.getElementById('clienteId').value = clienteId;
+      }
+    }
+
+    if (!clienteId) {
+      mostrarMensagem('Cliente não encontrado. Selecione um cliente da lista.', 'error');
+      return;
+    }
+
     const idTratamento = document.getElementById('idTratamento').value;
     const dataInicio = document.getElementById('dataInicio').value;
-    const clienteNome = inputBusca.value.trim();
-    const clienteId = hiddenId.value;
-    if (!dataInicio) { alert('Informe a Data de Início.'); return; }
-    if (!clienteNome || !clienteId) { alert('Selecione um cliente.'); return; }
 
-    const linhas = document.querySelectorAll('#tbodyGraficos tr');
-    if (linhas.length === 0) { alert('Adicione ao menos um gráfico.'); return; }
-
+    const linhas = document.querySelectorAll('#graficosBody .grafico-row');
     const graficos = [];
-    for (let i = 0; i < linhas.length; i++) {
-      const l = linhas[i]; const nomeGraf = obterNomeGrafico(l);
-      if (!nomeGraf) { alert('Informe o nome do gráfico na linha ' + (i + 1)); return; }
-      graficos.push({ ordem: i + 1, grafico: nomeGraf, data_inicio: l.querySelector('.data-inicio-graf').value || '', data_fim: l.querySelector('.data-fim-graf').value || '', status: l.querySelector('.status-graf').value });
+    linhas.forEach(function(l, i) {
+      graficos.push({
+        ordem: i + 1,
+        grafico: l.querySelector('.grafico-select').value,
+        data_inicio: l.querySelector('.grafico-inicio').value,
+        data_fim: l.querySelector('.grafico-fim').value,
+        status: l.querySelector('.grafico-status').value
+      });
+    });
+
+    if (graficos.length === 0) {
+      mostrarMensagem('Adicione ao menos um gráfico ao tratamento.', 'error');
+      return;
     }
 
-    const payload = { tipo: 'tratamento', id_tratamento: idTratamento, data_inicio: dataInicio, cliente: clienteNome, id_cliente: clienteId, graficos: graficos };
+    const payload = {
+      tipo: 'tratamento',
+      id: idTratamento,
+      cliente: clienteNome,
+      cliente_id: clienteId,
+      data_inicio: dataInicio,
+      graficos: graficos,
+      status: graficos[0].status || 'Agendado'
+    };
 
     try {
-      const r = await fetch(URL_ATEND, { method: 'POST', body: 'dados=' + encodeURIComponent(JSON.stringify(payload)) });
-      await r.text();
-
-      // Webhook para gráficos com data de finalização
-      graficos.forEach(g => {
-        if (g.data_fim) {
-          const statusNorm = normalizarStatus(g.status);
-          const cor = STATUS_COR_MAP[statusNorm] || 5;
-          const params = new URLSearchParams({ action: 'criar', calendario: 'graficos', titulo: g.grafico, cliente: clienteNome, data_inicio: g.data_inicio || g.data_fim, data_fim: g.data_fim, hora_inicio: '09:00', hora_fim: '10:00', status: statusNorm, cor: cor, tipo: 'grafico', descricao: 'Tratamento ' + idTratamento + ' - ' + g.grafico });
-          fetch(URL_WEBHOOK + '?' + params.toString(), { method: 'GET' }).catch(e => console.error('Webhook erro:', e));
-        }
+      const body = 'dados=' + encodeURIComponent(JSON.stringify(payload));
+      await fetch(URL_ATEND, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body
       });
 
-      alert('Tratamento salvo com sucesso!');
-      window.location.reload();
-    } catch (err) {
-      console.error(err);
-      alert('Erro ao salvar tratamento.');
+      for (let i = 0; i < graficos.length; i++) {
+        const g = graficos[i];
+        if (g.data_fim) {
+          try {
+            const webhookBody = 'action=criar&calendario=graficos&dados=' + encodeURIComponent(JSON.stringify({
+              tratamento_id: idTratamento,
+              cliente: clienteNome,
+              cliente_id: clienteId,
+              grafico: g.grafico,
+              data_inicio: g.data_inicio,
+              data_fim: g.data_fim,
+              status: g.status
+            }));
+            await fetch(URL_WEBHOOK, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body: webhookBody
+            });
+          } catch (we) {
+            console.error('Erro webhook:', we);
+          }
+        }
+      }
+
+      mostrarMensagem('Tratamento salvo com sucesso! ID: ' + idTratamento, 'success');
+      setTimeout(function() {
+        window.location.href = 'lista-tratamentos.html';
+      }, 2000);
+    } catch (e) {
+      console.error('Erro ao salvar:', e);
+      mostrarMensagem('Erro ao salvar tratamento. Tente novamente.', 'error');
     }
   }
 
-  window.onload = function() {
+  document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('idTratamento').value = gerarIdTratamento();
-    document.getElementById('dataInicio').value = new Date().toISOString().split('T')[0];
+    document.getElementById('dataInicio').value = hojeISO();
+    document.getElementById('clienteInput').addEventListener('input', onClienteInput);
+    document.getElementById('clienteInput').addEventListener('blur', function() {
+      setTimeout(function() {
+        document.getElementById('autocompleteDropdown').style.display = 'none';
+      }, 200);
+    });
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.autocomplete-wrapper')) {
+        document.getElementById('autocompleteDropdown').style.display = 'none';
+      }
+    });
+    adicionarGrafico();
     carregarClientes();
-    // Adicionar a primeira linha de gráfico só depois de carregar os dados
-    setTimeout(() => { adicionarLinhaGrafico(); }, 500);
-  };
+  });
 </script>
 </body>
 </html>
