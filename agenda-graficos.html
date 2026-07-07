@@ -17,7 +17,6 @@
             min-height: 100vh;
         }
 
-        /* Sidebar */
         .sidebar {
             width: 250px;
             height: 100vh;
@@ -28,43 +27,27 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px 0;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            padding-top: 30px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
             overflow-y: auto;
-            z-index: 1000;
-        }
-
-        .sidebar::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .sidebar::-webkit-scrollbar-thumb {
-            background-color: rgba(255, 255, 255, 0.3);
-            border-radius: 3px;
         }
 
         .sidebar-title {
             color: #ffffff;
             font-size: 26px;
-            font-weight: 700;
+            font-weight: bold;
             text-align: center;
             margin-bottom: 30px;
-            padding: 10px 0;
-            border-bottom: 2px solid rgba(255, 215, 0, 0.4);
-            width: 90%;
             letter-spacing: 1px;
         }
 
-        .sidebar-menu {
-            list-style: none;
+        .sidebar-links {
             width: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
-        .sidebar-menu li {
-            width: 100%;
-        }
-
-        .sidebar-menu a {
+        .sidebar-links a {
             display: block;
             color: #ffffff;
             text-decoration: none;
@@ -74,21 +57,19 @@
             border-left: 4px solid transparent;
         }
 
-        .sidebar-menu a:hover {
+        .sidebar-links a:hover {
             background-color: #ffd700;
             color: #4b0082;
             border-left: 4px solid #4b0082;
-            font-weight: 600;
         }
 
-        .sidebar-menu a.active {
+        .sidebar-links a.active {
             background-color: #ffd700;
             color: #4b0082;
             border-left: 4px solid #4b0082;
-            font-weight: 600;
+            font-weight: bold;
         }
 
-        /* Conteúdo Principal */
         .main-content {
             margin-left: 250px;
             background-color: #f4f0fa;
@@ -96,133 +77,82 @@
             min-height: 100vh;
         }
 
-        .page-header {
-            margin-bottom: 30px;
-        }
-
-        .page-header h1 {
+        .page-title {
             color: #4b0082;
             font-size: 32px;
             margin-bottom: 10px;
         }
 
-        .page-header p {
+        .page-subtitle {
             color: #6a0dad;
             font-size: 16px;
+            margin-bottom: 30px;
             line-height: 1.6;
             max-width: 800px;
         }
 
-        /* Card */
         .card {
             background-color: #ffffff;
             border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(75, 0, 130, 0.1);
+            box-shadow: 0 4px 20px rgba(75, 0, 130, 0.15);
             padding: 30px;
             margin-bottom: 30px;
         }
 
-        .card-title {
-            color: #4b0082;
-            font-size: 20px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
         .calendar-container {
             width: 100%;
-            border-radius: 15px;
             overflow: hidden;
-            border: 2px solid #e0d4f0;
+            border-radius: 12px;
         }
 
         .calendar-container iframe {
             width: 100%;
             height: 600px;
             border: 0;
+            border-radius: 12px;
             display: block;
         }
 
-        /* Instruções */
         .instructions {
             background-color: #f4f0fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
             border-left: 4px solid #6a0dad;
+            border-radius: 8px;
+            padding: 20px 25px;
+            margin-top: 25px;
         }
 
         .instructions h3 {
             color: #4b0082;
             font-size: 18px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
-        .instructions ol {
+        .instructions ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .instructions ul li {
             color: #4b0082;
-            padding-left: 20px;
-            line-height: 1.8;
-        }
-
-        .instructions ol li {
-            margin-bottom: 8px;
-        }
-
-        .instructions code {
-            background-color: #e0d4f0;
-            padding: 2px 8px;
-            border-radius: 4px;
             font-size: 14px;
-            color: #4b0082;
+            line-height: 1.8;
+            padding-left: 20px;
+            position: relative;
         }
 
-        .info-badge {
-            display: inline-block;
-            background-color: #ffd700;
-            color: #4b0082;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 15px;
+        .instructions ul li::before {
+            content: "•";
+            color: #6a0dad;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
         }
 
-        /* Responsivo */
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
                 height: auto;
                 position: relative;
-                padding: 15px 0;
-            }
-
-            .sidebar-title {
-                margin-bottom: 15px;
-            }
-
-            .sidebar-menu {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .sidebar-menu li {
-                width: auto;
-            }
-
-            .sidebar-menu a {
-                padding: 10px 12px;
-                font-size: 13px;
-                border-left: none;
-                border-bottom: 3px solid transparent;
-            }
-
-            .sidebar-menu a:hover,
-            .sidebar-menu a.active {
-                border-left: none;
-                border-bottom: 3px solid #4b0082;
             }
 
             .main-content {
@@ -230,91 +160,74 @@
                 padding: 20px;
             }
 
-            .page-header h1 {
+            .sidebar-links {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .sidebar-links a {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+
+            .page-title {
                 font-size: 24px;
             }
 
             .calendar-container iframe {
-                height: 400px;
-            }
-
-            .card {
-                padding: 20px;
+                height: 450px;
             }
         }
     </style>
 </head>
 <body>
-
-    <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-title">Equilibrium</div>
-        <ul class="sidebar-menu">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="agenda.html">Agenda</a></li>
-            <li><a href="novo-cliente.html">Novo Cliente</a></li>
-            <li><a href="clientes.html">Lista de Clientes</a></li>
-            <li><a href="atendimentos.html">Novo Atendimento</a></li>
-            <li><a href="lista-atendimentos.html">Lista de Atendimento</a></li>
-            <li><a href="novo-tratamento.html">Novo Tratamento</a></li>
-            <li><a href="lista-tratamentos.html">Lista de Tratamentos</a></li>
-            <li><a href="agenda-graficos.html" class="active">Agenda de Gráficos</a></li>
-            <li><a href="financeiro.html">Financeiro</a></li>
-        </ul>
+        <nav class="sidebar-links">
+            <a href="index.html">Home</a>
+            <a href="agenda.html">Agenda</a>
+            <a href="novo-cliente.html">Novo Cliente</a>
+            <a href="clientes.html">Lista de Clientes</a>
+            <a href="atendimentos.html">Novo Atendimento</a>
+            <a href="lista-atendimentos.html">Lista de Atendimento</a>
+            <a href="novo-tratamento.html">Novo Tratamento</a>
+            <a href="lista-tratamentos.html">Lista de Tratamentos</a>
+            <a href="agenda-graficos.html" class="active">Agenda de Gráficos</a>
+            <a href="financeiro.html">Financeiro</a>
+        </nav>
     </aside>
 
-    <!-- Conteúdo Principal -->
     <main class="main-content">
-        <div class="page-header">
-            <h1>Agenda de Gráficos</h1>
-            <p>
-                Agende e visualize os tratamentos com gráficos radiestésicos do sistema Equilibrium.
-                Esta agenda integra diretamente com o Google Calendar para facilitar o acompanhamento
-                das sessões de tratamento, permitindo um controle eficiente dos atendimentos e
-                gráficos radiestésicos de cada cliente.
-            </p>
-        </div>
+        <h1 class="page-title">Agenda de Gráficos</h1>
+        <p class="page-subtitle">
+            Visualize e gerencie a agenda de tratamentos com gráficos radiestésicos.
+            Acompanhe os agendamentos diretamente no Google Calendar integrado abaixo,
+            organizando as sessões de tratamento e os gráficos radiestésicos de cada cliente.
+        </p>
 
-        <!-- Card do Google Calendar -->
         <div class="card">
-            <div class="card-title">
-                <span>📅</span>
-                <span>Calendário de Tratamentos</span>
-            </div>
-
-            <span class="info-badge">Google Calendar Integrado</span>
-
             <div class="calendar-container">
-                <!--
-                    ============================================================
-                    CONFIGURAÇÃO DO GOOGLE CALENDAR
-                    ============================================================
-                    Substitua o valor do atributo src abaixo pelo link de
-                    incorporação do seu Google Calendar.
-                -->
                 <iframe
-                    src="https://calendar.google.com/calendar/embed?src=SEU_CALENDAR_ID%40gmail.com&ctz=America%2FSao_Paulo"
-                    title="Agenda de Tratamentos - Equilibrium"
-                    allowfullscreen
-                    loading="lazy">
+                    src="https://calendar.google.com/calendar/embed?src=3c23c1b339dd330985fe7b0541c3810edc7e38fe93be31181ceb0a0c69d840cd%40group.calendar.google.com&ctz=America%2FSao_Paulo"
+                    frameborder="0"
+                    scrolling="no"
+                    title="Agenda de Gráficos - Tratamentos">
                 </iframe>
             </div>
 
-            <!-- Instruções de Configuração -->
             <div class="instructions">
-                <h3>📋 Como configurar o Google Calendar</h3>
-                <ol>
-                    <li>Acesse o <a href="https://calendar.google.com" target="_blank" style="color: #6a0dad;">Google Calendar</a> com sua conta.</li>
-                    <li>No painel esquerdo, clique nos três pontos ao lado do calendário desejado.</li>
-                    <li>Selecione a opção <strong>"Configurações e compartilhamento"</strong>.</li>
-                    <li>Role até a seção <strong>"Integrar calendário"</strong>.</li>
-                    <li>Copie o link exibido no campo <strong>"Incorporar calendário"</strong>.</li>
-                    <li>Substitua o valor do atributo <code>src</code> no iframe acima pelo link copiado.</li>
-                    <li>Salve o arquivo e recarregue a página para visualizar sua agenda.</li>
-                </ol>
+                <h3>Instruções de Uso</h3>
+                <ul>
+                    <li>Utilize o calendário acima para visualizar todos os agendamentos de tratamentos com gráficos radiestésicos.</li>
+                    <li>Clique sobre um evento no calendário para visualizar os detalhes do tratamento agendado.</li>
+                    <li>Para criar um novo agendamento, acesse diretamente o Google Calendar vinculado a este sistema.</li>
+                    <li>Os horários exibidos estão no fuso horário de São Paulo (America/Sao_Paulo).</li>
+                    <li>Mantenha os eventos atualizados para garantir o acompanhamento correto dos gráficos radiestésicos de cada cliente.</li>
+                    <li>Em caso de dúvidas sobre um tratamento específico, consulte a Lista de Tratamentos no menu lateral.</li>
+                </ul>
             </div>
         </div>
     </main>
-
 </body>
 </html>
