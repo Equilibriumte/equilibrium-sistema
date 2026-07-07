@@ -33,6 +33,33 @@
         .btn-action { padding: 15px 25px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .btn-save { background: #ffd700; color: #4b0082; flex: 1; }
         .btn-next { background: #4b0082; color: white; }
+        /* Estilos para o autocomplete */
+        .autocomplete-wrapper { position: relative; width: 100%; }
+        .autocomplete-list {
+            position: absolute; top: 100%; left: 0; right: 0;
+            background: white; border: 2px solid #4b0082; border-top: none;
+            border-radius: 0 0 10px 10px; max-height: 250px; overflow-y: auto;
+            z-index: 1000; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        .autocomplete-list .item {
+            padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #f0e8f7;
+            transition: 0.2s; font-size: 14px;
+        }
+        .autocomplete-list .item:hover, .autocomplete-list .item.selected {
+            background: #f0e6fa; color: #4b0082;
+        }
+        .autocomplete-list .item .info {
+            font-size: 11px; color: #888; margin-top: 2px;
+        }
+        .autocomplete-list .item .highlight {
+            background: #ffd700; font-weight: bold;
+        }
+        .cliente-selecionado {
+            margin-top: 8px; padding: 10px 14px; background: #f0e6fa;
+            border-radius: 8px; font-size: 13px; color: #4b0082; display: none;
+            border-left: 4px solid #4b0082;
+        }
+        .cliente-selecionado strong { display: block; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -40,16 +67,15 @@
         <h2>Equilibrium</h2>
         <nav>
             <a href="index.html">🏠 Home</a>
-            <a href="agenda.html">📅 Agenda</a>
             <a href="novo-cliente.html">👤 Novo Cliente</a>
-            <a href="clientes.html" class="active">📋 Lista de Clientes</a>
-            <a href="atendimentos.html">✨ Novo Atendimento</a>
-            <a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
+            <a href="clientes.html">📋 Lista de Clientes</a>
             <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
             <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
+            <a href="atendimentos.html" class="active">✨ Novo Atendimento</a>
+            <a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
+            <a href="agenda.html">📅 Agenda</a>
             <a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
             <a href="financeiro.html">💰 Financeiro</a>
-
         </nav>
     </div>
 
@@ -68,9 +94,15 @@
                 <div class="form-grid">
                     <div class="form-group full">
                         <label>Nome do Cliente</label>
-                        <input type="text" id="nomeCliente" list="listaClientes" placeholder="Digite para buscar..." required autocomplete="off">
-                        <datalist id="listaClientes"></datalist>
+                        <div class="autocomplete-wrapper">
+                            <input type="text" id="nomeCliente" placeholder="Digite o nome para buscar..." required autocomplete="off">
+                            <div class="autocomplete-list" id="autoList"></div>
+                        </div>
                         <input type="hidden" id="idCliente">
+                        <div class="cliente-selecionado" id="clienteInfo">
+                            <strong id="clienteNome"></strong>
+                            <span id="clienteDetalhes"></span>
+                        </div>
                     </div>
                     <div class="form-group"><label>Data</label><input type="date" id="dataAtend" required></div>
                     <div class="form-group"><label>Status</label><select id="statusSelect"><option value="">Carregando...</option></select></div>
@@ -122,6 +154,141 @@
         const URL_ATEND = 'https://script.google.com/macros/s/AKfycbwcInOPirRB7TOWbWFgpQtyFyhYZRHZsB37pB8PavrHxE0PZZpuwasuU_qallBiYlZm/exec';
         let listaGlobalClientes = [];
 
+        // --- Função para extrair valor de qualquer objeto de cliente ---
+        function extrairValor(obj, ...nomes) {
+            if (!obj || typeof obj !== 'object') return '';
+            const chaves = Object.keys(obj);
+            for (let nome of nomes) {
+                const encontrada = chaves.find(k => k.toLowerCase().trim() === nome.toLowerCase().trim());
+                if (encontrada && obj[encontrada] !== null && obj[encontrada] !== undefined) return String(obj[encontrada]);
+            }
+            // Fallback: busca parcial
+            for (let nome of nomes) {
+                const alvo = nome.toLowerCase().replace(/[^a-z0-9]/g, '');
+                const encontrada = chaves.find(k => k.toLowerCase().replace(/[^a-z0-9]/g, '') === alvo);
+                if (encontrada && obj[encontrada] !== null && obj[encontrada] !== undefined) return String(obj[encontrada]);
+            }
+            return '';
+        }
+
+        function extrairId(obj) {
+            return extrairValor(obj, 'id', 'ID', 'Id', 'codigo', 'Codigo', 'código', 'Código', 'ClienteID', 'cliente_id');
+        }
+
+        function extrairNome(obj) {
+            return extrairValor(obj, 'nome', 'Nome', 'nomeCliente', 'NomeCliente', 'Nome Cliente', 'nome_cliente', 'name', 'Name', 'nome_completo');
+        }
+
+        function extrairWhats(obj) {
+            return extrairValor(obj, 'whatsapp', 'WhatsApp', 'whats', 'Whats', 'telefone', 'Telefone', 'celular', 'Celular', 'tel', 'Tel');
+        }
+
+        // --- Autocomplete melhorado ---
+        const inputCliente = document.getElementById('nomeCliente');
+        const autoList = document.getElementById('autoList');
+        const hiddenId = document.getElementById('idCliente');
+        const infoDiv = document.getElementById('clienteInfo');
+        const infoNome = document.getElementById('clienteNome');
+        const infoDetalhes = document.getElementById('clienteDetalhes');
+
+        let clienteSelecionado = null;
+        let selectedIndex = -1;
+        let resultadosAtuais = [];
+
+        function fecharAutoList() {
+            autoList.style.display = 'none';
+            selectedIndex = -1;
+        }
+
+        function selecionarCliente(cliente) {
+            clienteSelecionado = cliente;
+            const nome = extrairNome(cliente);
+            const id = extrairId(cliente);
+            const whats = extrairWhats(cliente);
+            inputCliente.value = nome;
+            hiddenId.value = id;
+            infoNome.textContent = nome;
+            infoDetalhes.textContent = (id ? 'ID: ' + id : '') + (whats && whats !== id ? ' | ' + whats : '');
+            infoDiv.style.display = 'block';
+            fecharAutoList();
+        }
+
+        function limparCliente() {
+            clienteSelecionado = null;
+            hiddenId.value = '';
+            infoDiv.style.display = 'none';
+        }
+
+        function buscarClientes(termo) {
+            if (!termo || termo.length < 1) { fecharAutoList(); return []; }
+            const t = termo.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            return listaGlobalClientes.filter(c => {
+                const nome = extrairNome(c).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                const whats = extrairWhats(c);
+                const id = extrairId(c);
+                return nome.includes(t) || whats.includes(t) || id.toLowerCase().includes(t);
+            });
+        }
+
+        function renderizarAutoList(resultados) {
+            resultadosAtuais = resultados;
+            autoList.innerHTML = '';
+            if (resultados.length === 0) { autoList.style.display = 'none'; return; }
+            resultados.forEach((c, i) => {
+                const div = document.createElement('div');
+                div.className = 'item' + (i === selectedIndex ? ' selected' : '');
+                const nome = extrairNome(c);
+                const id = extrairId(c);
+                const detalhes = id ? id : extrairWhats(c);
+                div.innerHTML = '<strong>' + nome + '</strong>' + (detalhes ? '<div class="info">' + detalhes + '</div>' : '');
+                div.onclick = () => selecionarCliente(c);
+                div.onmouseenter = () => { selectedIndex = i; document.querySelectorAll('.autocomplete-list .item').forEach((el, j) => el.classList.toggle('selected', j === i)); };
+                autoList.appendChild(div);
+            });
+            autoList.style.display = 'block';
+        }
+
+        inputCliente.addEventListener('input', function() {
+            if (clienteSelecionado && this.value !== extrairNome(clienteSelecionado)) {
+                limparCliente();
+            }
+            const termo = this.value.trim();
+            const resultados = buscarClientes(termo);
+            renderizarAutoList(resultados);
+        });
+
+        inputCliente.addEventListener('keydown', function(e) {
+            const items = autoList.querySelectorAll('.item');
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+                items.forEach((el, i) => el.classList.toggle('selected', i === selectedIndex));
+                if (items[selectedIndex]) items[selectedIndex].scrollIntoView({ block: 'nearest' });
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedIndex = Math.max(selectedIndex - 1, -1);
+                items.forEach((el, i) => el.classList.toggle('selected', i === selectedIndex));
+                if (items[selectedIndex]) items[selectedIndex].scrollIntoView({ block: 'nearest' });
+            } else if (e.key === 'Enter' && selectedIndex >= 0 && resultadosAtuais[selectedIndex]) {
+                e.preventDefault();
+                selecionarCliente(resultadosAtuais[selectedIndex]);
+            } else if (e.key === 'Escape') {
+                fecharAutoList();
+            }
+        });
+
+        inputCliente.addEventListener('blur', function() {
+            setTimeout(fecharAutoList, 200);
+        });
+
+        inputCliente.addEventListener('focus', function() {
+            if (this.value.trim().length > 0) {
+                const resultados = buscarClientes(this.value.trim());
+                renderizarAutoList(resultados);
+            }
+        });
+
+        // --- Funções originais mantidas ---
         function showTab(i) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -139,14 +306,21 @@
             try {
                 const resC = await fetch(URL_CLIENTES + "?_=" + new Date().getTime());
                 const jsonC = await resC.json();
-                listaGlobalClientes = Array.isArray(jsonC) ? jsonC : (jsonC.data || jsonC.dados || []);
-                const dl = document.getElementById('listaClientes');
-                dl.innerHTML = "";
-                listaGlobalClientes.forEach(c => {
-                    let o = document.createElement('option');
-                    o.value = c.nome || c.Nome || c['Nome Cliente'] || c[2];
-                    dl.appendChild(o);
-                });
+                // Aceita array ou objeto com array dentro
+                listaGlobalClientes = [];
+                if (Array.isArray(jsonC)) {
+                    listaGlobalClientes = jsonC;
+                } else if (jsonC && Array.isArray(jsonC.data)) {
+                    listaGlobalClientes = jsonC.data;
+                } else if (jsonC && Array.isArray(jsonC.dados)) {
+                    listaGlobalClientes = jsonC.dados;
+                } else if (jsonC && Array.isArray(jsonC.clientes)) {
+                    listaGlobalClientes = jsonC.clientes;
+                } else if (jsonC && Array.isArray(jsonC.rows)) {
+                    listaGlobalClientes = jsonC.rows;
+                } else if (jsonC && Array.isArray(jsonC.records)) {
+                    listaGlobalClientes = jsonC.records;
+                }
 
                 const resA = await fetch(URL_ATEND);
                 const jsonA = await resA.json();
@@ -182,12 +356,6 @@
 
             } catch (e) { console.error("Erro no carregamento:", e); }
         }
-
-        document.getElementById('nomeCliente').oninput = (e) => {
-            const digitado = e.target.value;
-            const c = listaGlobalClientes.find(x => (x.nome || x.Nome || x['Nome Cliente'] || x[2]) === digitado);
-            if (c) document.getElementById('idCliente').value = c.id || c.ID || c['ID Cliente'] || c[1];
-        };
 
         async function enviarDados() {
             const getC = (n) => Array.from(document.querySelectorAll(`input[name="${n}"]:checked`)).map(cb => cb.value).join(", ");
