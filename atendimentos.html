@@ -1,412 +1,658 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atendimentos - Equilibrium</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { display: flex; background-color: #f4f0fa; min-height: 100vh; }
-        .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
-        .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
-        .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
-        .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
-        .main-content { margin-left: 250px; flex: 1; padding: 40px; width: calc(100% - 250px); }
-        .tabs-header { display: flex; gap: 5px; margin-bottom: 20px; background: #e0d0f0; padding: 5px; border-radius: 12px; overflow-x: auto; }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: none; color: #4b0082; cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 12px; transition: 0.3s; }
-        .tab-btn.active { background: #4b0082; color: #ffd700; }
-        .tab-content { display: none; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        .tab-content.active { display: block; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .full { grid-column: span 2; }
-        label { display: block; font-weight: bold; color: #4b0082; margin-bottom: 8px; font-size: 14px; }
-        input, select, textarea { width: 100%; padding: 12px; border: 2px solid #e0d0f0; border-radius: 8px; outline: none; }
-        .multi-select-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; padding: 10px; border: 2px solid #e0d0f0; border-radius: 8px; max-height: 150px; overflow-y: auto; }
-        .option-item { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; padding: 5px; border-radius: 5px; }
-        .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 15px 0; }
-        .color-btn { padding: 15px; border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; text-align: center; font-size: 11px; }
-        .color-btn span { display: block; font-size: 15px; margin-top: 5px; }
-        .c-coronario { background: #8a2be2; } .c-frontal { background: #4b0082; } .c-laringeo { background: #87ceeb; color: #333; }
-        .c-cardiaco { background: #228b22; } .c-umbilical { background: #ffd700; color: #333; } .c-sacro { background: #ff8c00; } .c-basico { background: #ff0000; }
-        .d-mental { background: #5dade2; } .d-emocional { background: #ec7063; } .d-espiritual { background: #af7ac5; } .d-fisico { background: #58d68d; }
-        .nav-actions { display: flex; justify-content: space-between; margin-top: 30px; gap: 15px; }
-        .btn-action { padding: 15px 25px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-save { background: #ffd700; color: #4b0082; flex: 1; }
-        .btn-next { background: #4b0082; color: white; }
-        /* Estilos para o autocomplete */
-        .autocomplete-wrapper { position: relative; width: 100%; }
-        .autocomplete-list {
-            position: absolute; top: 100%; left: 0; right: 0;
-            background: white; border: 2px solid #4b0082; border-top: none;
-            border-radius: 0 0 10px 10px; max-height: 250px; overflow-y: auto;
-            z-index: 1000; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-        .autocomplete-list .item {
-            padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #f0e8f7;
-            transition: 0.2s; font-size: 14px;
-        }
-        .autocomplete-list .item:hover, .autocomplete-list .item.selected {
-            background: #f0e6fa; color: #4b0082;
-        }
-        .autocomplete-list .item .info {
-            font-size: 11px; color: #888; margin-top: 2px;
-        }
-        .autocomplete-list .item .highlight {
-            background: #ffd700; font-weight: bold;
-        }
-        .cliente-selecionado {
-            margin-top: 8px; padding: 10px 14px; background: #f0e6fa;
-            border-radius: 8px; font-size: 13px; color: #4b0082; display: none;
-            border-left: 4px solid #4b0082;
-        }
-        .cliente-selecionado strong { display: block; font-size: 14px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equilibrium - Ficha de Atendimento</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+  body { display: flex; min-height: 100vh; background: #f4f1f8; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 260px;
+    background: linear-gradient(180deg, #4b0082, #6a0dad);
+    color: #fff;
+    padding: 20px 0;
+    min-height: 100vh;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .sidebar .logo {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    padding: 10px 20px 25px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+  }
+  .sidebar a {
+    display: block;
+    color: #f0e6ff;
+    text-decoration: none;
+    padding: 12px 22px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent;
+  }
+  .sidebar a:hover { background: rgba(255,255,255,0.08); border-left-color: #c9a0ff; }
+  .sidebar a.active { background: rgba(255,255,255,0.15); border-left-color: #fff; font-weight: 600; }
+
+  /* MAIN */
+  .main { flex: 1; padding: 30px; overflow-y: auto; }
+  .header { margin-bottom: 25px; }
+  .header h1 { color: #4b0082; font-size: 26px; }
+  .header p { color: #666; font-size: 14px; margin-top: 5px; }
+
+  /* CARD */
+  .card {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 18px rgba(75,0,130,0.10);
+    padding: 25px;
+    margin-bottom: 20px;
+  }
+  .card h2 { color: #4b0082; font-size: 18px; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid #ede4f6; }
+
+  /* TABS */
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+  .tab-btn {
+    padding: 10px 20px;
+    border: none;
+    background: #ede4f6;
+    color: #4b0082;
+    border-radius: 10px 10px 0 0;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  .tab-btn:hover { background: #d9c6f0; }
+  .tab-btn.active { background: linear-gradient(135deg, #4b0082, #6a0dad); color: #fff; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* FORM GRID */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .form-grid .full { grid-column: 1 / -1; }
+  .form-group { display: flex; flex-direction: column; }
+  .form-group label { font-size: 13px; color: #4b0082; font-weight: 600; margin-bottom: 6px; }
+  .form-group input, .form-group select, .form-group textarea {
+    padding: 10px 12px;
+    border: 1px solid #d9c6f0;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+    background: #fff;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: #6a0dad;
+    box-shadow: 0 0 0 3px rgba(106,13,173,0.15);
+  }
+  .form-group input[readonly] { background: #f4f1f8; color: #555; }
+  .form-group textarea { resize: vertical; min-height: 70px; }
+
+  /* AUTOCOMPLETE */
+  .autocomplete-wrap { position: relative; }
+  .autocomplete-list {
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: #fff;
+    border: 1px solid #d9c6f0;
+    border-radius: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 100;
+    display: none;
+    box-shadow: 0 6px 14px rgba(75,0,130,0.15);
+  }
+  .autocomplete-list div { padding: 10px 12px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #f0e6ff; }
+  .autocomplete-list div:hover { background: #ede4f6; }
+
+  /* CLIENTE SELECIONADO */
+  .cliente-box {
+    background: linear-gradient(135deg, #ede4f6, #f4f1f8);
+    border: 1px solid #c9a0ff;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #4b0082;
+    display: none;
+    margin-top: 4px;
+  }
+  .cliente-box strong { color: #6a0dad; }
+
+  /* CHAKRAS / CORES */
+  .chakra-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+  .chakra-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px;
+    border: 1px solid #d9c6f0;
+    border-radius: 8px;
+    font-size: 13px;
+  }
+  .chakra-item input { accent-color: #6a0dad; }
+  .cor-swatch { width: 16px; height: 16px; border-radius: 50%; display: inline-block; }
+
+  /* BUTTONS */
+  .btn-save {
+    background: linear-gradient(135deg, #4b0082, #6a0dad);
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 18px;
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+  }
+  .btn-save:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(75,0,130,0.35); }
+  .btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .msg { margin-top: 12px; font-size: 14px; font-weight: 600; min-height: 20px; }
+  .msg.ok { color: #2e7d32; }
+  .msg.err { color: #c62828; }
+
+  /* BUSCA */
+  .busca-result { margin-top: 15px; }
+  .busca-result table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .busca-result th, .busca-result td { padding: 8px 10px; border-bottom: 1px solid #ede4f6; text-align: left; }
+  .busca-result th { background: #ede4f6; color: #4b0082; }
+
+  @media (max-width: 768px) {
+    .sidebar { width: 70px; }
+    .sidebar .logo { font-size: 14px; padding: 10px 5px; }
+    .sidebar a { padding: 12px 18px; font-size: 0; }
+    .sidebar a::first-letter { font-size: 18px; }
+    .form-grid { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
 <body>
-    <div class="sidebar">
-        <h2>Equilibrium</h2>
-        <nav>
-            <a href="index.html">🏠 Home</a>
-            <a href="agenda.html">📅 Agenda</a>
-            <a href="novo-cliente.html">👤 Novo Cliente</a> 
-            <a href="clientes.html" class="active">📋 Lista de Clientes</a>
-            <a href="atendimentos.html">✨ Novo Atendimento</a>
-            <a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
-            <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
-            <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
-            <a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
-            <a href="financeiro.html">💰 Financeiro</a>
 
-        </nav>
-    </div>
+<div class="sidebar">
+  <div class="logo">Equilibrium</div>
+  <a href="index.html">🏠 Home</a>
+  <a href="agenda.html">📅 Agenda</a>
+  <a href="novo-cliente.html">👤 Novo Cliente</a>
+  <a href="clientes.html">📋 Lista de Clientes</a>
+  <a href="atendimentos.html" class="active">✨ Novo Atendimento</a>
+  <a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
+  <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
+  <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
+  <a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
+  <a href="financeiro.html">💰 Financeiro</a>
+</div>
 
-    <div class="main-content">
-        <h1 style="color: #4b0082; margin-bottom: 20px;">Ficha de Atendimento</h1>
-        <div class="tabs-header">
-            <button class="tab-btn active" onclick="showTab(0)">1. Dados</button>
-            <button class="tab-btn" onclick="showTab(1)">2. Inicial</button>
-            <button class="tab-btn" onclick="showTab(2)">3. Específico</button>
-            <button class="tab-btn" onclick="showTab(3)">4. Ambiente</button>
-            <button class="tab-btn" onclick="showTab(4)">5. Busca</button>
+<div class="main">
+  <div class="header">
+    <h1>Ficha de Atendimento</h1>
+    <p>Preencha os dados do atendimento nas abas abaixo.</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="dados">1. Dados</button>
+    <button class="tab-btn" data-tab="inicial">2. Inicial</button>
+    <button class="tab-btn" data-tab="especifico">3. Específico</button>
+    <button class="tab-btn" data-tab="ambiente">4. Ambiente</button>
+    <button class="tab-btn" data-tab="busca">5. Busca</button>
+  </div>
+
+  <!-- ABA DADOS -->
+  <div class="tab-content active" id="dados">
+    <div class="card">
+      <h2>Dados do Atendimento</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="id_atendimento">ID Atendimento</label>
+          <input type="text" id="id_atendimento" readonly>
+        </div>
+        <div class="form-group">
+          <label for="data_atendimento">Data do Atendimento</label>
+          <input type="date" id="data_atendimento">
         </div>
 
-        <form id="formAtendimento">
-            <div class="tab-content active">
-                <div class="form-grid">
-                    <div class="form-group full">
-                        <label>Nome do Cliente</label>
-                        <div class="autocomplete-wrapper">
-                            <input type="text" id="nomeCliente" placeholder="Digite o nome para buscar..." required autocomplete="off">
-                            <div class="autocomplete-list" id="autoList"></div>
-                        </div>
-                        <input type="hidden" id="idCliente">
-                        <div class="cliente-selecionado" id="clienteInfo">
-                            <strong id="clienteNome"></strong>
-                            <span id="clienteDetalhes"></span>
-                        </div>
-                    </div>
-                    <div class="form-group"><label>Data</label><input type="date" id="dataAtend" required></div>
-                    <div class="form-group"><label>Status</label><select id="statusSelect"><option value="">Carregando...</option></select></div>
-                    <div class="form-group full"><label>Queixa Principal</label><textarea id="queixaP"></textarea></div>
-                    <div class="form-group full"><label>Queixa Secundária</label><textarea id="queixaS"></textarea></div>
-                </div>
-                <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(1)">PRÓXIMO ➔</button></div>
-            </div>
+        <div class="form-group full">
+          <label for="nome_cliente">Nome do Cliente</label>
+          <div class="autocomplete-wrap">
+            <input type="text" id="nome_cliente" autocomplete="off" placeholder="Digite para buscar cliente...">
+            <div class="autocomplete-list" id="autocomplete-list"></div>
+          </div>
+          <input type="hidden" id="id_cliente">
+          <div class="cliente-box" id="cliente-box"></div>
+        </div>
 
-            <div class="tab-content">
-                <div class="form-group"><label>Bovis (4 dígitos)</label><input type="number" id="bovis"></div>
-                <label style="margin-top: 15px;">Chakras (%)</label>
-                <div class="btn-grid">
-                    <button type="button" class="color-btn c-coronario" onclick="setVal(this, 'v-coronario')">Coronário<span id="v-coronario">-</span></button>
-                    <button type="button" class="color-btn c-frontal" onclick="setVal(this, 'v-frontal')">Frontal<span id="v-frontal">-</span></button>
-                    <button type="button" class="color-btn c-laringeo" onclick="setVal(this, 'v-laringeo')">Laríngeo<span id="v-laringeo">-</span></button>
-                    <button type="button" class="color-btn c-cardiaco" onclick="setVal(this, 'v-cardiaco')">Cardíaco<span id="v-cardiaco">-</span></button>
-                    <button type="button" class="color-btn c-umbilical" onclick="setVal(this, 'v-umbilical')">Umbilical<span id="v-umbilical">-</span></button>
-                    <button type="button" class="color-btn c-sacro" onclick="setVal(this, 'v-sacro')">Sacro<span id="v-sacro">-</span></button>
-                    <button type="button" class="color-btn c-basico" onclick="setVal(this, 'v-basico')">Básico<span id="v-basico">-</span></button>
-                </div>
-                <div class="form-grid">
-                    <div class="form-group"><label>Tamanho Aura</label><input type="text" id="auraT" placeholder="Ex: 80%"></div>
-                    <div class="form-group"><label>Proteção Aura</label><input type="text" id="protecaoAura" placeholder="Ex: 100%"></div>
-                </div>
-                <div class="form-grid" style="margin-top:15px;">
-                    <div class="form-group"><label>Cores em Excesso</label><div id="coresExcesso" class="multi-select-container"></div></div>
-                    <div class="form-group"><label>Cores em Falta</label><div id="coresFalta" class="multi-select-container"></div></div>
-                </div>
-                <label style="margin-top: 15px;">Campos (%)</label>
-                <div class="btn-grid">
-                    <button type="button" class="color-btn d-mental" onclick="setVal(this, 'v-mental')">Mental<span id="v-mental">-</span></button>
-                    <button type="button" class="color-btn d-emocional" onclick="setVal(this, 'v-emocional')">Emocional<span id="v-emocional">-</span></button>
-                    <button type="button" class="color-btn d-espiritual" onclick="setVal(this, 'v-espiritual')">Espiritual<span id="v-espiritual">-</span></button>
-                    <button type="button" class="color-btn d-fisico" onclick="setVal(this, 'v-fisico')">Físico<span id="v-fisico">-</span></button>
-                </div>
-                <div class="form-group full"><label>Diagnóstico Inicial</label><textarea id="diagInicial"></textarea></div>
-                <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(2)">PRÓXIMO ➔</button></div>
-            </div>
+        <div class="form-group">
+          <label for="status">Status</label>
+          <select id="status">
+            <option value="">Carregando...</option>
+          </select>
+        </div>
 
-            <div class="tab-content"><label>Queixa Específica</label><textarea id="queixaE"></textarea><label>Causa Raiz</label><textarea id="causaRaiz"></textarea><label>Crenças</label><textarea id="crencas"></textarea><label>Diagnóstico Específico</label><textarea id="diagEspec"></textarea><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(3)">PRÓXIMO ➔</button></div></div>
-            <div class="tab-content"><div class="form-grid"><div class="form-group"><label>Tipo Ambiente</label><select id="tipoAmbiente"></select></div><div class="form-group"><label>Endereço</label><input type="text" id="endAmbiente"></div><div class="form-group full"><label>Queixa Ambiente</label><textarea id="queixaAmbiente"></textarea></div><div class="form-group full"><label>Pessoas Env.</label><input type="text" id="pessoasEnv"></div><div class="form-group full"><label>Diag. Ambiente</label><textarea id="diagAmbiente"></textarea></div></div><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(4)">PRÓXIMO ➔</button></div></div>
-            <div class="tab-content"><div class="form-grid"><div class="form-group"><label>Tipo Busca</label><select id="tipoBusca"></select></div><div class="form-group"><label>Info Busca</label><input type="text" id="infoBusca"></div><div class="form-group full"><label>Resultado</label><select id="resBusca"></select></div><div class="form-group full"><label>Descrição</label><textarea id="descBusca"></textarea></div></div><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">FINALIZAR E SALVAR</button></div></div>
-        </form>
+        <div class="form-group full">
+          <label for="queixa_principal">Queixa Principal</label>
+          <textarea id="queixa_principal" placeholder="Descreva a queixa principal..."></textarea>
+        </div>
+
+        <div class="form-group full">
+          <label for="queixa_secundaria">Queixa Secundária</label>
+          <textarea id="queixa_secundaria" placeholder="Descreva a queixa secundária..."></textarea>
+        </div>
+      </div>
+      <button class="btn-save" onclick="salvarAtendimento('dados')">SALVAR AGORA</button>
+      <div class="msg" id="msg-dados"></div>
     </div>
+  </div>
 
-    <script>
-        const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
-        const URL_ATEND = 'https://script.google.com/macros/s/AKfycbwcInOPirRB7TOWbWFgpQtyFyhYZRHZsB37pB8PavrHxE0PZZpuwasuU_qallBiYlZm/exec';
-        let listaGlobalClientes = [];
+  <!-- ABA INICIAL -->
+  <div class="tab-content" id="inicial">
+    <div class="card">
+      <h2>Avaliação Inicial</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="inicial_humor">Humor</label>
+          <select id="inicial_humor">
+            <option value="">Selecione...</option>
+            <option>Alegre</option>
+            <option>Tranquilo</option>
+            <option>Ansioso</option>
+            <option>Triste</option>
+            <option>Irritado</option>
+            <option>Deprimido</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="inicial_energia">Nível de Energia</label>
+          <select id="inicial_energia">
+            <option value="">Selecione...</option>
+            <option>Alta</option>
+            <option>Média</option>
+            <option>Baixa</option>
+            <option>Muito Baixa</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="inicial_sono">Qualidade do Sono</label>
+          <select id="inicial_sono">
+            <option value="">Selecione...</option>
+            <option>Excelente</option>
+            <option>Boa</option>
+            <option>Ruim</option>
+            <option>Péssima</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="inicial_apetite">Apetite</label>
+          <select id="inicial_apetite">
+            <option value="">Selecione...</option>
+            <option>Normal</option>
+            <option>Aumentado</option>
+            <option>Reduzido</option>
+            <option>Sem apetite</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label for="inicial_observacoes">Observações Iniciais</label>
+          <textarea id="inicial_observacoes" placeholder="Observações gerais..."></textarea>
+        </div>
+      </div>
+      <button class="btn-save" onclick="salvarAtendimento('inicial')">SALVAR AGORA</button>
+      <div class="msg" id="msg-inicial"></div>
+    </div>
+  </div>
 
-        // --- Função para extrair valor de qualquer objeto de cliente ---
-        function extrairValor(obj, ...nomes) {
-            if (!obj || typeof obj !== 'object') return '';
-            const chaves = Object.keys(obj);
-            for (let nome of nomes) {
-                const encontrada = chaves.find(k => k.toLowerCase().trim() === nome.toLowerCase().trim());
-                if (encontrada && obj[encontrada] !== null && obj[encontrada] !== undefined) return String(obj[encontrada]);
-            }
-            // Fallback: busca parcial
-            for (let nome of nomes) {
-                const alvo = nome.toLowerCase().replace(/[^a-z0-9]/g, '');
-                const encontrada = chaves.find(k => k.toLowerCase().replace(/[^a-z0-9]/g, '') === alvo);
-                if (encontrada && obj[encontrada] !== null && obj[encontrada] !== undefined) return String(obj[encontrada]);
-            }
-            return '';
-        }
+  <!-- ABA ESPECÍFICO -->
+  <div class="tab-content" id="especifico">
+    <div class="card">
+      <h2>Avaliação Específica - Chakras</h2>
+      <div class="form-group" style="margin-bottom:15px;">
+        <label>Chakras Avaliados</label>
+        <div class="chakra-grid" id="chakras-grid"></div>
+      </div>
+      <div class="form-group" style="margin-bottom:15px;">
+        <label>Cores Identificadas</label>
+        <div class="chakra-grid" id="cores-grid"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label for="especifico_diagnostico">Diagnóstico Energético</label>
+          <textarea id="especifico_diagnostico" placeholder="Diagnóstico energético detalhado..."></textarea>
+        </div>
+        <div class="form-group full">
+          <label for="especifico_tratamento">Tratamento Aplicado</label>
+          <textarea id="especifico_tratamento" placeholder="Técnicas e procedimentos aplicados..."></textarea>
+        </div>
+      </div>
+      <button class="btn-save" onclick="salvarAtendimento('especifico')">SALVAR AGORA</button>
+      <div class="msg" id="msg-especifico"></div>
+    </div>
+  </div>
 
-        function extrairId(obj) {
-            return extrairValor(obj, 'id', 'ID', 'Id', 'codigo', 'Codigo', 'código', 'Código', 'ClienteID', 'cliente_id');
-        }
+  <!-- ABA AMBIENTE -->
+  <div class="tab-content" id="ambiente">
+    <div class="card">
+      <h2>Ambiente do Atendimento</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="ambiente_local">Local</label>
+          <input type="text" id="ambiente_local" placeholder="Ex: Consultório 1">
+        </div>
+        <div class="form-group">
+          <label for="ambiente_temperatura">Temperatura</label>
+          <input type="text" id="ambiente_temperatura" placeholder="Ex: Agradável">
+        </div>
+        <div class="form-group">
+          <label for="ambiente_iluminacao">Iluminação</label>
+          <select id="ambiente_iluminacao">
+            <option value="">Selecione...</option>
+            <option>Natural</option>
+            <option>Difusa</option>
+            <option>Velas</option>
+            <option>Artificial suave</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="ambiente_musica">Música/Ambiente Sonoro</label>
+          <input type="text" id="ambiente_musica" placeholder="Ex: Mantras, silêncio...">
+        </div>
+        <div class="form-group">
+          <label for="ambiente_aromatizacao">Aromatização</label>
+          <input type="text" id="ambiente_aromatizacao" placeholder="Ex: Lavanda, sálvia...">
+        </div>
+        <div class="form-group">
+          <label for="ambiente_duracao">Duração (min)</label>
+          <input type="number" id="ambiente_duracao" min="0" placeholder="60">
+        </div>
+        <div class="form-group full">
+          <label for="ambiente_observacoes">Observações do Ambiente</label>
+          <textarea id="ambiente_observacoes" placeholder="Notas sobre o ambiente..."></textarea>
+        </div>
+      </div>
+      <button class="btn-save" onclick="salvarAtendimento('ambiente')">SALVAR AGORA</button>
+      <div class="msg" id="msg-ambiente"></div>
+    </div>
+  </div>
 
-        function extrairNome(obj) {
-            return extrairValor(obj, 'nome', 'Nome', 'nomeCliente', 'NomeCliente', 'Nome Cliente', 'nome_cliente', 'name', 'Name', 'nome_completo');
-        }
+  <!-- ABA BUSCA -->
+  <div class="tab-content" id="busca">
+    <div class="card">
+      <h2>Buscar Atendimentos</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="busca_termo">Buscar por nome ou ID</label>
+          <input type="text" id="busca_termo" placeholder="Digite nome do cliente ou ID do atendimento...">
+        </div>
+        <div class="form-group" style="justify-content:flex-end;">
+          <button class="btn-save" onclick="buscarAtendimentos()" style="margin-top:22px;">BUSCAR</button>
+        </div>
+      </div>
+      <div class="busca-result" id="busca-result"></div>
+    </div>
+  </div>
+</div>
 
-        function extrairWhats(obj) {
-            return extrairValor(obj, 'whatsapp', 'WhatsApp', 'whats', 'Whats', 'telefone', 'Telefone', 'celular', 'Celular', 'tel', 'Tel');
-        }
+<script>
+const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
+const URL_ATEND = 'https://script.google.com/macros/s/AKfycbwcInOPirRB7TOWbWFgpQtyFyhYZRHZsB37pB8PavrHxE0PZZpuwasuU_qallBiYlZm/exec';
 
-        // --- Autocomplete melhorado ---
-        const inputCliente = document.getElementById('nomeCliente');
-        const autoList = document.getElementById('autoList');
-        const hiddenId = document.getElementById('idCliente');
-        const infoDiv = document.getElementById('clienteInfo');
-        const infoNome = document.getElementById('clienteNome');
-        const infoDetalhes = document.getElementById('clienteDetalhes');
+let listaClientes = [];
+let listaAtendimentos = [];
+let chakrasSelecionados = [];
+let coresSelecionadas = [];
 
-        let clienteSelecionado = null;
-        let selectedIndex = -1;
-        let resultadosAtuais = [];
+const CHAKRAS = ['Básico','Sacro','Plexo Solar','Cardíaco','Laríngeo','Frontal','Coronário'];
+const CORES = [
+  {nome:'Vermelho', cor:'#e53935'},
+  {nome:'Laranja', cor:'#fb8c00'},
+  {nome:'Amarelo', cor:'#fdd835'},
+  {nome:'Verde', cor:'#43a047'},
+  {nome:'Azul', cor:'#1e88e5'},
+  {nome:'Anil', cor:'#5e35b1'},
+  {nome:'Violeta', cor:'#8e24aa'},
+  {nome:'Branco', cor:'#ffffff'},
+  {nome:'Dourado', cor:'#ffd700'},
+  {nome:'Prata', cor:'#c0c0c0'}
+];
 
-        function fecharAutoList() {
-            autoList.style.display = 'none';
-            selectedIndex = -1;
-        }
+function getVal(obj, campo) {
+  const keys = Object.keys(obj);
+  const keyEncontrada = keys.find(k => k.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === campo.toLowerCase());
+  return keyEncontrada ? obj[keyEncontrada] : "";
+}
 
-        function selecionarCliente(cliente) {
-            clienteSelecionado = cliente;
-            const nome = extrairNome(cliente);
-            const id = extrairId(cliente);
-            const whats = extrairWhats(cliente);
-            inputCliente.value = nome;
-            hiddenId.value = id;
-            infoNome.textContent = nome;
-            infoDetalhes.textContent = (id ? 'ID: ' + id : '') + (whats && whats !== id ? ' | ' + whats : '');
-            infoDiv.style.display = 'block';
-            fecharAutoList();
-        }
+function gerarIdAtendimento() {
+  const num = Math.floor(10000 + Math.random() * 90000);
+  return 'ATEND-' + num;
+}
 
-        function limparCliente() {
-            clienteSelecionado = null;
-            hiddenId.value = '';
-            infoDiv.style.display = 'none';
-        }
+function mostrarMsg(tab, texto, tipo) {
+  const el = document.getElementById('msg-' + tab);
+  if (!el) return;
+  el.textContent = texto;
+  el.className = 'msg ' + (tipo || '');
+  setTimeout(() => { el.textContent = ''; el.className = 'msg'; }, 4000);
+}
 
-        function buscarClientes(termo) {
-            if (!termo || termo.length < 1) { fecharAutoList(); return []; }
-            const t = termo.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-            return listaGlobalClientes.filter(c => {
-                const nome = extrairNome(c).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                const whats = extrairWhats(c);
-                const id = extrairId(c);
-                return nome.includes(t) || whats.includes(t) || id.toLowerCase().includes(t);
-            });
-        }
+/* TABS */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
 
-        function renderizarAutoList(resultados) {
-            resultadosAtuais = resultados;
-            autoList.innerHTML = '';
-            if (resultados.length === 0) { autoList.style.display = 'none'; return; }
-            resultados.forEach((c, i) => {
-                const div = document.createElement('div');
-                div.className = 'item' + (i === selectedIndex ? ' selected' : '');
-                const nome = extrairNome(c);
-                const id = extrairId(c);
-                const detalhes = id ? id : extrairWhats(c);
-                div.innerHTML = '<strong>' + nome + '</strong>' + (detalhes ? '<div class="info">' + detalhes + '</div>' : '');
-                div.onclick = () => selecionarCliente(c);
-                div.onmouseenter = () => { selectedIndex = i; document.querySelectorAll('.autocomplete-list .item').forEach((el, j) => el.classList.toggle('selected', j === i)); };
-                autoList.appendChild(div);
-            });
-            autoList.style.display = 'block';
-        }
+/* AUTOCOMPLETE CLIENTE */
+async function carregarClientes() {
+  try {
+    const res = await fetch(URL_CLIENTES);
+    const data = await res.json();
+    listaClientes = Array.isArray(data) ? data : (data.dados || data.clientes || []);
+  } catch (e) {
+    console.error('Erro ao carregar clientes:', e);
+    listaClientes = [];
+  }
+}
 
-        inputCliente.addEventListener('input', function() {
-            if (clienteSelecionado && this.value !== extrairNome(clienteSelecionado)) {
-                limparCliente();
-            }
-            const termo = this.value.trim();
-            const resultados = buscarClientes(termo);
-            renderizarAutoList(resultados);
-        });
+document.getElementById('nome_cliente').addEventListener('input', function() {
+  const termo = this.value.toLowerCase().trim();
+  const list = document.getElementById('autocomplete-list');
+  document.getElementById('id_cliente').value = '';
+  document.getElementById('cliente-box').style.display = 'none';
+  if (!termo) { list.style.display = 'none'; return; }
+  const filtrados = listaClientes.filter(c => {
+    const nome = String(getVal(c, 'nome') || '').toLowerCase();
+    return nome.includes(termo);
+  }).slice(0, 10);
+  if (!filtrados.length) { list.style.display = 'none'; return; }
+  list.innerHTML = filtrados.map(c => {
+    const nome = getVal(c, 'nome') || '';
+    const id = getVal(c, 'id') || '';
+    return `<div onclick="selecionarCliente('${nome.replace(/'/g, "\\'")}', '${id}')">${nome} (ID: ${id})</div>`;
+  }).join('');
+  list.style.display = 'block';
+});
 
-        inputCliente.addEventListener('keydown', function(e) {
-            const items = autoList.querySelectorAll('.item');
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
-                items.forEach((el, i) => el.classList.toggle('selected', i === selectedIndex));
-                if (items[selectedIndex]) items[selectedIndex].scrollIntoView({ block: 'nearest' });
-            } else if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                selectedIndex = Math.max(selectedIndex - 1, -1);
-                items.forEach((el, i) => el.classList.toggle('selected', i === selectedIndex));
-                if (items[selectedIndex]) items[selectedIndex].scrollIntoView({ block: 'nearest' });
-            } else if (e.key === 'Enter' && selectedIndex >= 0 && resultadosAtuais[selectedIndex]) {
-                e.preventDefault();
-                selecionarCliente(resultadosAtuais[selectedIndex]);
-            } else if (e.key === 'Escape') {
-                fecharAutoList();
-            }
-        });
+function selecionarCliente(nome, id) {
+  document.getElementById('nome_cliente').value = nome;
+  document.getElementById('id_cliente').value = id;
+  document.getElementById('autocomplete-list').style.display = 'none';
+  const box = document.getElementById('cliente-box');
+  box.innerHTML = 'Cliente selecionado: <strong>' + nome + '</strong> (ID: ' + id + ')';
+  box.style.display = 'block';
+}
 
-        inputCliente.addEventListener('blur', function() {
-            setTimeout(fecharAutoList, 200);
-        });
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.autocomplete-wrap')) {
+    document.getElementById('autocomplete-list').style.display = 'none';
+  }
+});
 
-        inputCliente.addEventListener('focus', function() {
-            if (this.value.trim().length > 0) {
-                const resultados = buscarClientes(this.value.trim());
-                renderizarAutoList(resultados);
-            }
-        });
+/* STATUS */
+async function carregarStatus() {
+  const sel = document.getElementById('status');
+  try {
+    const res = await fetch(URL_ATEND + '?acao=status');
+    const data = await res.json();
+    const opcoes = Array.isArray(data) ? data : (data.status || data.opcoes || []);
+    sel.innerHTML = '<option value="">Selecione...</option>';
+    if (opcoes.length) {
+      opcoes.forEach(o => {
+        const v = typeof o === 'string' ? o : (getVal(o, 'status') || getVal(o, 'nome') || '');
+        if (v) sel.innerHTML += '<option value="' + v + '">' + v + '</option>';
+      });
+    } else {
+      ['Agendado','Em andamento','Concluído','Cancelado'].forEach(s =>
+        sel.innerHTML += '<option value="' + s + '">' + s + '</option>');
+    }
+  } catch (e) {
+    sel.innerHTML = '<option value="">Selecione...</option>';
+    ['Agendado','Em andamento','Concluído','Cancelado'].forEach(s =>
+      sel.innerHTML += '<option value="' + s + '">' + s + '</option>');
+  }
+}
 
-        // --- Funções originais mantidas ---
-        function showTab(i) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content')[i].classList.add('active');
-            document.querySelectorAll('.tab-btn')[i].classList.add('active');
-            window.scrollTo(0,0);
-        }
+/* CHAKRAS E CORES */
+function montarChakrasECores() {
+  const cg = document.getElementById('chakras-grid');
+  cg.innerHTML = CHAKRAS.map(c =>
+    '<label class="chakra-item"><input type="checkbox" value="' + c + '" onchange="atualizarChakras()"> ' + c + '</label>'
+  ).join('');
 
-        function setVal(btn, id) {
-            const v = prompt("Digite a %:");
-            if (v) document.getElementById(id).innerText = v + "%";
-        }
+  const co = document.getElementById('cores-grid');
+  co.innerHTML = CORES.map(c =>
+    '<label class="chakra-item"><input type="checkbox" value="' + c.nome + '" onchange="atualizarCores()"> <span class="cor-swatch" style="background:' + c.cor + ';border:1px solid #ccc;"></span> ' + c.nome + '</label>'
+  ).join('');
+}
 
-        async function carregarTudo() {
-            try {
-                const resC = await fetch(URL_CLIENTES + "?_=" + new Date().getTime());
-                const jsonC = await resC.json();
-                // Aceita array ou objeto com array dentro
-                listaGlobalClientes = [];
-                if (Array.isArray(jsonC)) {
-                    listaGlobalClientes = jsonC;
-                } else if (jsonC && Array.isArray(jsonC.data)) {
-                    listaGlobalClientes = jsonC.data;
-                } else if (jsonC && Array.isArray(jsonC.dados)) {
-                    listaGlobalClientes = jsonC.dados;
-                } else if (jsonC && Array.isArray(jsonC.clientes)) {
-                    listaGlobalClientes = jsonC.clientes;
-                } else if (jsonC && Array.isArray(jsonC.rows)) {
-                    listaGlobalClientes = jsonC.rows;
-                } else if (jsonC && Array.isArray(jsonC.records)) {
-                    listaGlobalClientes = jsonC.records;
-                }
+function atualizarChakras() {
+  chakrasSelecionados = Array.from(document.querySelectorAll('#chakras-grid input:checked')).map(i => i.value);
+}
+function atualizarCores() {
+  coresSelecionadas = Array.from(document.querySelectorAll('#cores-grid input:checked')).map(i => i.value);
+}
 
-                const resA = await fetch(URL_ATEND);
-                const jsonA = await resA.json();
-                const config = jsonA.configuracoes || {};
-                
-                const fillS = (id, list) => {
-                    const s = document.getElementById(id);
-                    if(!s) return;
-                    s.innerHTML = "<option value=''>Selecione...</option>";
-                    if(list) list.forEach(v => { let o = document.createElement('option'); o.value = v; o.text = v; s.appendChild(o); });
-                };
+/* SALVAR */
+function salvarAtendimento(tab) {
+  const id_atendimento = document.getElementById('id_atendimento').value;
+  const data_atendimento = document.getElementById('data_atendimento').value;
+  const id_cliente = document.getElementById('id_cliente').value;
+  const nome_cliente = document.getElementById('nome_cliente').value;
+  const status = document.getElementById('status').value;
+  const queixa_principal = document.getElementById('queixa_principal').value;
+  const queixa_secundaria = document.getElementById('queixa_secundaria').value;
 
-                const fillM = (id, list, pref) => {
-                    const c = document.getElementById(id);
-                    if(!c) return;
-                    c.innerHTML = "";
-                    if(list) list.forEach(v => {
-                        const l = document.createElement('label');
-                        l.className = 'option-item';
-                        l.innerHTML = `<input type="checkbox" name="${pref}" value="${v}"> ${v}`;
-                        c.appendChild(l);
-                    });
-                };
+  if (!id_cliente || !nome_cliente) {
+    mostrarMsg(tab, 'Selecione um cliente da lista.', 'err');
+    return;
+  }
+  if (!data_atendimento) {
+    mostrarMsg(tab, 'Informe a data do atendimento.', 'err');
+    return;
+  }
 
-                const findKey = (obj, target) => Object.keys(obj).find(k => k.toLowerCase() === target.toLowerCase());
+  const payload = {
+    id_atendimento,
+    data_atendimento,
+    id_cliente,
+    nome_cliente,
+    status,
+    queixa_principal,
+    queixa_secundaria,
+    inicial_humor: document.getElementById('inicial_humor').value,
+    inicial_energia: document.getElementById('inicial_energia').value,
+    inicial_sono: document.getElementById('inicial_sono').value,
+    inicial_apetite: document.getElementById('inicial_apetite').value,
+    inicial_observacoes: document.getElementById('inicial_observacoes').value,
+    chakras: chakrasSelecionados.join(', '),
+    cores: coresSelecionadas.join(', '),
+    especifico_diagnostico: document.getElementById('especifico_diagnostico').value,
+    especifico_tratamento: document.getElementById('especifico_tratamento').value,
+    ambiente_local: document.getElementById('ambiente_local').value,
+    ambiente_temperatura: document.getElementById('ambiente_temperatura').value,
+    ambiente_iluminacao: document.getElementById('ambiente_iluminacao').value,
+    ambiente_musica: document.getElementById('ambiente_musica').value,
+    ambiente_aromatizacao: document.getElementById('ambiente_aromatizacao').value,
+    ambiente_duracao: document.getElementById('ambiente_duracao').value,
+    ambiente_observacoes: document.getElementById('ambiente_observacoes').value
+  };
 
-                fillM('coresExcesso', config[findKey(config, 'cores')], 'exc');
-                fillM('coresFalta', config[findKey(config, 'cores')], 'fal');
-                fillS('statusSelect', config[findKey(config, 'status')]);
-                fillS('tipoAmbiente', config[findKey(config, 'ambientes')]);
-                fillS('tipoBusca', config[findKey(config, 'buscaTipos')]);
-                fillS('resBusca', config[findKey(config, 'buscaResultados')]);
+  const btn = event.target;
+  btn.disabled = true;
+  const original = btn.textContent;
+  btn.textContent = 'Salvando...';
 
-            } catch (e) { console.error("Erro no carregamento:", e); }
-        }
+  fetch(URL_ATEND, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'dados=' + encodeURIComponent(JSON.stringify(payload))
+  })
+  .then(r => r.json())
+  .then(() => {
+    mostrarMsg(tab, 'Atendimento salvo com sucesso!', 'ok');
+  })
+  .catch(e => {
+    mostrarMsg(tab, 'Erro ao salvar: ' + e.message, 'err');
+  })
+  .finally(() => {
+    btn.disabled = false;
+    btn.textContent = original;
+  });
+}
 
-        async function enviarDados() {
-            const getC = (n) => Array.from(document.querySelectorAll(`input[name="${n}"]:checked`)).map(cb => cb.value).join(", ");
-            const p = {
-                'Data do Atendimento': document.getElementById('dataAtend').value,
-                'ID Cliente': document.getElementById('idCliente').value,
-                'Nome Cliente': document.getElementById('nomeCliente').value,
-                'Status': document.getElementById('statusSelect').value,
-                'Queixa Principal': document.getElementById('queixaP').value,
-                'Queixa Secundária': document.getElementById('queixaS').value,
-                'Bovis': document.getElementById('bovis').value,
-                'Coronário': document.getElementById('v-coronario').innerText,
-                'Frontal': document.getElementById('v-frontal').innerText,
-                'Laríngeo': document.getElementById('v-laringeo').innerText,
-                'Cardíaco': document.getElementById('v-cardiaco').innerText,
-                'Umbilical': document.getElementById('v-umbilical').innerText,
-                'Sacro': document.getElementById('v-sacro').innerText,
-                'Básico': document.getElementById('v-basico').innerText,
-                'Tamanho Aura': document.getElementById('auraT').value,
-                'Proteção Aura': document.getElementById('protecaoAura').value,
-                'Cores Excesso': getC('exc'),
-                'Cores Falta': getC('fal'),
-                'Mental': document.getElementById('v-mental').innerText,
-                'Emocional': document.getElementById('v-emocional').innerText,
-                'Espiritual': document.getElementById('v-espiritual').innerText,
-                'Físico': document.getElementById('v-fisico').innerText,
-                'Diagnóstico Inicial': document.getElementById('diagInicial').value,
-                'Queixa Espec.': document.getElementById('queixaE').value,
-                'Causa Raiz': document.getElementById('causaRaiz').value,
-                'Crenças': document.getElementById('crencas').value,
-                'Diagnóstico Específico': document.getElementById('diagEspec').value,
-                'Tipo Ambiente': document.getElementById('tipoAmbiente').value,
-                'Endereço Ambiente': document.getElementById('endAmbiente').value,
-                'Queixa Ambiente': document.getElementById('queixaAmbiente').value,
-                'Pessoas Envolvidas': document.getElementById('pessoasEnv').value,
-                'Diagnóstico Ambiente': document.getElementById('diagAmbiente').value,
-                'Tipo Busca': document.getElementById('tipoBusca').value,
-                'Descrição Busca': document.getElementById('descBusca').value,
-                'Info Busca': document.getElementById('infoBusca').value,
-                'Resultado Busca': document.getElementById('resBusca').value
-            };
+/* BUSCA */
+async function buscarAtendimentos() {
+  const termo = document.getElementById('busca_termo').value.toLowerCase().trim();
+  const resEl = document.getElementById('busca-result');
+  resEl.innerHTML = '<p>Buscando...</p>';
+  try {
+    const res = await fetch(URL_ATEND);
+    const data = await res.json();
+    listaAtendimentos = Array.isArray(data) ? data : (data.dados || data.atendimentos || []);
+    let filtrados = listaAtendimentos;
+    if (termo) {
+      filtrados = listaAtendimentos.filter(a => {
+        const nome = String(getVal(a, 'nome_cliente') || '').toLowerCase();
+        const id = String(getVal(a, 'id_atendimento') || '').toLowerCase();
+        return nome.includes(termo) || id.includes(termo);
+      });
+    }
+    if (!filtrados.length) {
+      resEl.innerHTML = '<p>Nenhum atendimento encontrado.</p>';
+      return;
+    }
+    let html = '<table><thead><tr><th>ID</th><th>Data</th><th>Cliente</th><th>Status</th><th>Queixa Principal</th></tr></thead><tbody>';
+    filtrados.forEach(a => {
+      html += '<tr>' +
+        '<td>' + (getVal(a, 'id_atendimento') || '') + '</td>' +
+        '<td>' + (getVal(a, 'data_atendimento') || '') + '</td>' +
+        '<td>' + (getVal(a, 'nome_cliente') || '') + '</td>' +
+        '<td>' + (getVal(a, 'status') || '') + '</td>' +
+        '<td>' + (getVal(a, 'queixa_principal') || '') + '</td>' +
+        '</tr>';
+    });
+    html += '</tbody></table>';
+    resEl.innerHTML = html;
+  } catch (e) {
+    resEl.innerHTML = '<p style="color:#c62828;">Erro ao buscar: ' + e.message + '</p>';
+  }
+}
 
-            try {
-                const r = await fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(p) }).then(res => res.json());
-                if (r.success) { alert("✅ Atendimento salvo com sucesso!"); location.reload(); }
-                else { alert("❌ Erro ao salvar: " + (r.error || r.message)); }
-            } catch (e) { alert("❌ Erro de conexão."); }
-        }
-
-        window.onload = carregarTudo;
-    </script>
+/* INIT */
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('id_atendimento').value = gerarIdAtendimento();
+  const hoje = new Date().toISOString().split('T')[0];
+  document.getElementById('data_atendimento').value = hoje;
+  montarChakrasECores();
+  carregarClientes();
+  carregarStatus();
+});
+</script>
 </body>
 </html>
