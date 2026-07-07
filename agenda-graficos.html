@@ -11,91 +11,40 @@
       box-sizing: border-box;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-
     body {
       background: #f4f0fa;
       min-height: 100vh;
     }
-
     /* SIDEBAR */
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 250px;
-      height: 100vh;
-      background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%);
-      padding: 20px 0;
-      overflow-y: auto;
-      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-      z-index: 1000;
-    }
-
-    .sidebar .logo {
-      color: #ffffff;
-      text-align: center;
-      font-size: 22px;
-      font-weight: bold;
-      padding: 15px 10px 25px;
-      letter-spacing: 1px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-      margin-bottom: 15px;
-    }
-
-    .sidebar a {
-      display: block;
-      color: #ffffff;
-      text-decoration: none;
-      padding: 14px 22px;
-      font-size: 15px;
-      transition: all 0.25s ease;
-      border-left: 4px solid transparent;
-    }
-
-    .sidebar a:hover {
-      background: #ffd700;
-      color: #4b0082;
-      border-left-color: #4b0082;
-    }
-
-    .sidebar a.active {
-      background: #ffd700;
-      color: #4b0082;
-      border-left-color: #4b0082;
-      font-weight: 600;
-    }
-
+    .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
+    .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
+    .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
+    .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
     /* CONTEÚDO PRINCIPAL */
     .main-content {
       margin-left: 250px;
       padding: 40px;
       min-height: 100vh;
     }
-
     .page-header {
       margin-bottom: 30px;
     }
-
     .page-header h1 {
       color: #4b0082;
       font-size: 32px;
       margin-bottom: 8px;
     }
-
     .page-header p {
       color: #6a0dad;
       font-size: 16px;
       line-height: 1.5;
       max-width: 800px;
     }
-
-    /* CARDS */
     .cards-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 25px;
     }
-
     .card {
       background: #ffffff;
       border-radius: 15px;
@@ -103,11 +52,6 @@
       padding: 25px;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-
-    .card:hover {
-      box-shadow: 0 6px 20px rgba(75, 0, 130, 0.18);
-    }
-
     .card h2 {
       color: #4b0082;
       font-size: 20px;
@@ -115,188 +59,81 @@
       padding-bottom: 10px;
       border-bottom: 2px solid #f4f0fa;
     }
-
     .calendar-iframe {
       width: 100%;
       height: 500px;
       border: 0;
       border-radius: 12px;
     }
-
-    /* FORMULÁRIO */
-    .form-group {
-      margin-bottom: 16px;
-    }
-
+    .form-group { margin-bottom: 16px; }
     .form-group label {
-      display: block;
-      color: #4b0082;
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 6px;
+      display: block; color: #4b0082; font-size: 14px;
+      font-weight: 600; margin-bottom: 6px;
     }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #d9c9e8;
-      border-radius: 8px;
-      font-size: 14px;
-      color: #333;
-      background: #faf8fd;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 10px 12px; border: 1px solid #d9c9e8;
+      border-radius: 8px; font-size: 14px; color: #333;
+      background: #faf8fd; transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: #6a0dad;
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none; border-color: #6a0dad;
       box-shadow: 0 0 0 3px rgba(106, 13, 173, 0.15);
     }
-
-    .form-group textarea {
-      resize: vertical;
-      min-height: 70px;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .btn-submit {
-      width: 100%;
-      background: linear-gradient(135deg, #4b0082 0%, #6a0dad 100%);
-      color: #ffffff;
-      border: none;
-      padding: 13px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.25s ease, transform 0.1s ease;
-    }
-
-    .btn-submit:hover {
-      background: linear-gradient(135deg, #6a0dad 0%, #4b0082 100%);
-    }
-
-    .btn-submit:active {
-      transform: scale(0.98);
-    }
-
-    .btn-submit:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .message {
-      padding: 12px 15px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      font-size: 14px;
-      display: none;
-    }
-
-    .message.success {
-      background: #e6f9ec;
-      color: #1d7a3d;
-      border: 1px solid #b5e6c4;
-      display: block;
-    }
-
-    .message.error {
-      background: #fdecea;
-      color: #b71c1c;
-      border: 1px solid #f5c6cb;
-      display: block;
-    }
-
-    /* RESPONSIVO */
-    @media (max-width: 992px) {
-      .cards-container {
-        grid-template-columns: 1fr;
-      }
-    }
-
+    .form-group textarea { resize: vertical; min-height: 70px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .btn-submit { width: 100%; background: linear-gradient(135deg, #4b0082 0%, #6a0dad 100%); color: #ffffff; border: none; padding: 13px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.25s ease, transform 0.1s ease; }
+    .btn-submit:hover { background: linear-gradient(135deg, #6a0dad 0%, #4b0082 100%); }
+    .message { padding: 12px 15px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; display: none; }
+    .message.success { background: #e6f9ec; color: #1d7a3d; border: 1px solid #b5e6c4; display: block; }
+    .message.error { background: #fdecea; color: #b71c1c; border: 1px solid #f5c6cb; display: block; }
+    @media (max-width: 992px) { .cards-container { grid-template-columns: 1fr; } }
     @media (max-width: 768px) {
-      .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-      }
-
-      .main-content {
-        margin-left: 0;
-        padding: 20px;
-      }
-
-      .form-row {
-        grid-template-columns: 1fr;
-      }
+      .sidebar { width: 100%; height: auto; position: relative; }
+      .main-content { margin-left: 0; padding: 20px; }
+      .form-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-
   <!-- SIDEBAR -->
-  <nav class="sidebar">
-    <div class="logo">Equilibrium</div>
-    <a href="index.html">Home</a>
-    <a href="agenda.html">Agenda</a>
-    <a href="novo-cliente.html">Novo Cliente</a>
-    <a href="clientes.html">Lista de Clientes</a>
-    <a href="atendimentos.html">Novo Atendimento</a>
-    <a href="lista-atendimentos.html">Lista de Atendimento</a>
-    <a href="novo-tratamento.html">Novo Tratamento</a>
-    <a href="lista-tratamentos.html">Lista de Tratamentos</a>
-    <a href="agenda-graficos.html" class="active">Agenda de Gráficos</a>
-    <a href="financeiro.html">Financeiro</a>
-  </nav>
-
+  <div class="sidebar">
+    <h2>Equilibrium</h2>
+    <nav>
+      <a href="index.html">🏠 Home</a>
+      <a href="agenda.html">📅 Agenda</a>
+      <a href="novo-cliente.html">👤 Novo Cliente</a>
+      <a href="clientes.html">📋 Lista de Clientes</a>
+      <a href="atendimentos.html">✨ Novo Atendimento</a>
+      <a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
+      <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
+      <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
+      <a href="agenda-graficos.html" class="active">📊 Agenda de Gráficos</a>
+      <a href="financeiro.html">💰 Financeiro</a>
+    </nav>
+  </div>
   <!-- CONTEÚDO PRINCIPAL -->
   <main class="main-content">
     <div class="page-header">
       <h1>Agenda de Gráficos</h1>
       <p>Gerencie os agendamentos dos tratamentos radiestésicos. Visualize a agenda do Google Calendar e crie novos eventos diretamente nesta página.</p>
     </div>
-
     <div class="cards-container">
-
-      <!-- CARD 1: Google Calendar -->
       <section class="card">
         <h2>Calendário</h2>
-        <iframe
-          id="calendarFrame"
-          class="calendar-iframe"
-          src="https://calendar.google.com/calendar/embed?src=3c23c1b339dd330985fe7b0541c3810edc7e38fe93be31181ceb0a0c69d840cd%40group.calendar.google.com&ctz=America%2FSao_Paulo"
-          frameborder="0"
-          scrolling="no"
-          loading="lazy"
-          title="Agenda de Gráficos - Google Calendar">
-        </iframe>
+        <iframe id="calendarFrame" class="calendar-iframe" src="https://calendar.google.com/calendar/embed?src=3c23c1b339dd330985fe7b0541c3810edc7e38fe93be31181ceb0a0c69d840cd%40group.calendar.google.com&ctz=America%2FSao_Paulo" frameborder="0" scrolling="no" loading="lazy" title="Agenda de Gráficos - Google Calendar"></iframe>
       </section>
-
-      <!-- CARD 2: Formulário Novo Evento -->
       <section class="card">
         <h2>Novo Agendamento</h2>
         <div id="formMessage" class="message"></div>
-
         <form id="formAgendamento">
           <div class="form-group">
             <label for="titulo">Título do Tratamento *</label>
             <input type="text" id="titulo" name="titulo" required placeholder="Ex.: Gráfico Radiestésico">
           </div>
-
           <div class="form-group">
             <label for="cliente">Cliente</label>
             <input type="text" id="cliente" name="cliente" placeholder="Nome do cliente (opcional)">
           </div>
-
           <div class="form-row">
             <div class="form-group">
               <label for="data_inicio">Data Início *</label>
@@ -307,7 +144,6 @@
               <input type="time" id="hora_inicio" name="hora_inicio" value="09:00">
             </div>
           </div>
-
           <div class="form-row">
             <div class="form-group">
               <label for="data_fim">Data Fim *</label>
@@ -318,7 +154,6 @@
               <input type="time" id="hora_fim" name="hora_fim" value="10:00">
             </div>
           </div>
-
           <div class="form-group">
             <label for="status">Status</label>
             <select id="status" name="status">
@@ -329,19 +164,15 @@
               <option value="cancelado">Cancelado</option>
             </select>
           </div>
-
           <div class="form-group">
             <label for="descricao">Descrição</label>
             <textarea id="descricao" name="descricao" placeholder="Observações sobre o tratamento (opcional)"></textarea>
           </div>
-
           <button type="submit" class="btn-submit" id="btnSubmit">Criar Agendamento</button>
         </form>
       </section>
-
     </div>
   </main>
-
   <script>
     (function () {
       const form = document.getElementById('formAgendamento');
@@ -350,47 +181,21 @@
       const calendarFrame = document.getElementById('calendarFrame');
       const dataInicio = document.getElementById('data_inicio');
       const dataFim = document.getElementById('data_fim');
-
       const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec';
-
-      // Mapeamento de status para código de cor
-      const STATUS_COR = {
-        agendado: 5,
-        em_andamento: 1,
-        concluido: 2,
-        adiado: 4,
-        cancelado: 8
-      };
-
-      // Preencher data fim igual à data início ao alterar data início
+      const STATUS_COR = { agendado: 5, em_andamento: 1, concluido: 2, adiado: 4, cancelado: 8 };
       dataInicio.addEventListener('change', function () {
-        if (!dataFim.value || dataFim.value < dataInicio.value) {
-          dataFim.value = dataInicio.value;
-        }
+        if (!dataFim.value || dataFim.value < dataInicio.value) { dataFim.value = dataInicio.value; }
       });
-
-      function showMessage(text, type) {
-        messageBox.textContent = text;
-        messageBox.className = 'message ' + type;
-      }
-
-      function clearMessage() {
-        messageBox.textContent = '';
-        messageBox.className = 'message';
-      }
-
+      function showMessage(text, type) { messageBox.textContent = text; messageBox.className = 'message ' + type; }
+      function clearMessage() { messageBox.textContent = ''; messageBox.className = 'message'; }
       function reloadCalendar() {
         const currentSrc = calendarFrame.src;
         calendarFrame.src = '';
-        setTimeout(function () {
-          calendarFrame.src = currentSrc;
-        }, 400);
+        setTimeout(function () { calendarFrame.src = currentSrc; }, 400);
       }
-
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         clearMessage();
-
         const titulo = document.getElementById('titulo').value.trim();
         const cliente = document.getElementById('cliente').value.trim();
         const data_inicio = document.getElementById('data_inicio').value;
@@ -399,39 +204,17 @@
         const hora_fim = document.getElementById('hora_fim').value;
         const status = document.getElementById('status').value;
         const descricao = document.getElementById('descricao').value.trim();
-
-        if (!titulo || !data_inicio || !data_fim) {
-          showMessage('Preencha todos os campos obrigatórios.', 'error');
-          return;
-        }
-
+        if (!titulo || !data_inicio || !data_fim) { showMessage('Preencha todos os campos obrigatórios.', 'error'); return; }
         const cor = STATUS_COR[status] !== undefined ? STATUS_COR[status] : 5;
-
         const params = new URLSearchParams();
-        params.append('action', 'criar');
-        params.append('calendario', 'graficos');
-        params.append('titulo', titulo);
-        params.append('cliente', cliente);
-        params.append('data_inicio', data_inicio);
-        params.append('hora_inicio', hora_inicio);
-        params.append('data_fim', data_fim);
-        params.append('hora_fim', hora_fim);
-        params.append('status', status);
-        params.append('cor', cor);
-        params.append('tipo', 'grafico');
-        params.append('descricao', descricao);
-
-        btnSubmit.disabled = true;
-        btnSubmit.textContent = 'Criando...';
-
-        fetch(WEBHOOK_URL, {
-          method: 'POST',
-          body: params
-        })
+        params.append('action', 'criar'); params.append('calendario', 'graficos'); params.append('titulo', titulo);
+        params.append('cliente', cliente); params.append('data_inicio', data_inicio); params.append('hora_inicio', hora_inicio);
+        params.append('data_fim', data_fim); params.append('hora_fim', hora_fim); params.append('status', status);
+        params.append('cor', cor); params.append('tipo', 'grafico'); params.append('descricao', descricao);
+        btnSubmit.disabled = true; btnSubmit.textContent = 'Criando...';
+        fetch(WEBHOOK_URL, { method: 'POST', body: params })
           .then(function (response) {
-            if (!response.ok) {
-              throw new Error('Erro na resposta do servidor: ' + response.status);
-            }
+            if (!response.ok) throw new Error('Erro: ' + response.status);
             return response.text().catch(function () { return ''; });
           })
           .then(function () {
@@ -441,13 +224,8 @@
             document.getElementById('hora_fim').value = '10:00';
             reloadCalendar();
           })
-          .catch(function (err) {
-            showMessage('Erro ao criar agendamento: ' + err.message, 'error');
-          })
-          .finally(function () {
-            btnSubmit.disabled = false;
-            btnSubmit.textContent = 'Criar Agendamento';
-          });
+          .catch(function (err) { showMessage('Erro ao criar agendamento: ' + err.message, 'error'); })
+          .finally(function () { btnSubmit.disabled = false; btnSubmit.textContent = 'Criar Agendamento'; });
       });
     })();
   </script>
