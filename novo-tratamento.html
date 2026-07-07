@@ -9,43 +9,13 @@
   body { display: flex; min-height: 100vh; background: #f4f1f8; }
 
   /* SIDEBAR */
-  .sidebar {
-    width: 260px;
-    background: linear-gradient(180deg, #4b0082, #6a0dad);
-    color: #fff;
-    padding: 20px 0;
-    min-height: 100vh;
-    position: sticky;
-    top: 0;
-  }
-  .sidebar .logo {
-    text-align: center;
-    font-size: 22px;
-    font-weight: bold;
-    padding: 10px 20px 25px;
-    border-bottom: 1px solid rgba(255,255,255,0.15);
-    letter-spacing: 1px;
-  }
-  .sidebar ul { list-style: none; margin-top: 15px; }
-  .sidebar ul li a {
-    display: block;
-    padding: 12px 22px;
-    color: #e8e0f5;
-    text-decoration: none;
-    font-size: 14px;
-    transition: all 0.2s;
-    border-left: 4px solid transparent;
-  }
-  .sidebar ul li a:hover { background: rgba(255,255,255,0.08); color: #fff; }
-  .sidebar ul li a.active {
-    background: rgba(255,255,255,0.15);
-    border-left-color: #fff;
-    color: #fff;
-    font-weight: 600;
-  }
+  .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
+  .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
+  .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
+  .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
 
   /* MAIN */
-  .main { flex: 1; padding: 30px; }
+  .main { margin-left: 250px; padding: 30px; flex: 1; }
   .header { margin-bottom: 25px; }
   .header h1 { color: #4b0082; font-size: 26px; }
   .header p { color: #666; font-size: 14px; margin-top: 5px; }
@@ -163,29 +133,28 @@
 
   @media (max-width: 768px) {
     .grid-2 { grid-template-columns: 1fr; }
-    .sidebar { width: 70px; }
-    .sidebar .logo { font-size: 14px; padding: 10px 5px; }
-    .sidebar ul li a { font-size: 11px; padding: 12px 8px; text-align: center; }
+    .sidebar { width: 100%; height: auto; position: relative; }
+    .main { margin-left: 0; padding: 20px; }
   }
 </style>
 </head>
 <body>
 
-<aside class="sidebar">
-  <div class="logo">EQUILIBRIUM</div>
-  <ul>
-    <li><a href="home.html">Home</a></li>
-    <li><a href="agenda.html">Agenda</a></li>
-    <li><a href="novo-cliente.html">Novo Cliente</a></li>
-    <li><a href="lista-clientes.html">Lista de Clientes</a></li>
-    <li><a href="novo-atendimento.html">Novo Atendimento</a></li>
-    <li><a href="lista-atendimentos.html">Lista de Atendimento</a></li>
-    <li><a href="novo-tratamento.html" class="active">Novo Tratamento</a></li>
-    <li><a href="lista-tratamentos.html">Lista de Tratamentos</a></li>
-    <li><a href="agenda-graficos.html">Agenda de Gráficos</a></li>
-    <li><a href="financeiro.html">Financeiro</a></li>
-  </ul>
-</aside>
+<div class="sidebar">
+    <h2>Equilibrium</h2>
+    <nav>
+        <a href="index.html">🏠 Home</a>
+        <a href="agenda.html">📅 Agenda</a>
+        <a href="novo-cliente.html">👤 Novo Cliente</a>
+        <a href="clientes.html">📋 Lista de Clientes</a>
+        <a href="atendimentos.html">✨ Novo Atendimento</a>
+        <a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
+        <a href="novo-tratamento.html" class="active">🩺 Novo Tratamento</a>
+        <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
+        <a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
+        <a href="financeiro.html">💰 Financeiro</a>
+    </nav>
+</div>
 
 <main class="main">
   <div class="header">
@@ -311,8 +280,11 @@ function statusColor(s) {
 }
 
 function gerarTratamentoId() {
-  const n = Math.floor(10000 + Math.random() * 90000);
-  return 'TRAT-' + n;
+  let ultimoId = parseInt(localStorage.getItem('ultimoIdTratamento') || '0');
+  ultimoId++;
+  const novoId = String(ultimoId).padStart(6, '0');
+  localStorage.setItem('ultimoIdTratamento', ultimoId.toString());
+  return 'TRAT-' + novoId;
 }
 
 function hojeISO() {
@@ -420,15 +392,15 @@ function carregarClientes() {
 
 /* ============ CARREGAR GRÁFICOS PREDEF ============ */
 function carregarGraficosPredef() {
-  fetch(URL_ATEND + '?action=configuracoes')
+  fetch(URL_ATEND + '?_=' + Date.now())
     .then(r => r.json())
     .then(data => {
-      const cfg = Array.isArray(data) ? { graficos: data } : (data || {});
+      const config = data.configuracoes || data.Configuracoes || {};
       let found = null;
-      for (const k of Object.keys(cfg)) {
-        if (String(k).toLowerCase().includes('grafico')) {
-          const v = cfg[k];
-          if (Array.isArray(v)) { found = v; break; }
+      for (const k of Object.keys(config)) {
+        if (k.toLowerCase().indexOf('grafico') !== -1) {
+          const v = config[k];
+          if (Array.isArray(v) && v.length) { found = v; break; }
           if (typeof v === 'string' && v.trim()) {
             found = v.split(',').map(s => s.trim()).filter(Boolean);
             break;
@@ -436,8 +408,9 @@ function carregarGraficosPredef() {
         }
       }
       graficosPredef = (found && found.length) ? found : GRAFICOS_FALLBACK.slice();
+      renderGraficos();
     })
-    .catch(() => { graficosPredef = GRAFICOS_FALLBACK.slice(); });
+    .catch(() => { graficosPredef = GRAFICOS_FALLBACK.slice(); renderGraficos(); });
 }
 
 /* ============ GRÁFICOS TABLE ============ */
