@@ -1,233 +1,455 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agenda de Gráficos - Equilibrium</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda de Gráficos - Equilibrium</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-        body {
-            background-color: #f4f0fa;
-            min-height: 100vh;
-        }
+    body {
+      background: #f4f0fa;
+      min-height: 100vh;
+    }
 
-        .sidebar {
-            width: 250px;
-            height: 100vh;
-            position: fixed;
-            left: 0;
-            top: 0;
-            background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 30px;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-            overflow-y: auto;
-        }
+    /* SIDEBAR */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100vh;
+      background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%);
+      padding: 20px 0;
+      overflow-y: auto;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    }
 
-        .sidebar-title {
-            color: #ffffff;
-            font-size: 26px;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 30px;
-            letter-spacing: 1px;
-        }
+    .sidebar .logo {
+      color: #ffffff;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      padding: 15px 10px 25px;
+      letter-spacing: 1px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      margin-bottom: 15px;
+    }
 
-        .sidebar-links {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-        }
+    .sidebar a {
+      display: block;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 14px 22px;
+      font-size: 15px;
+      transition: all 0.25s ease;
+      border-left: 4px solid transparent;
+    }
 
-        .sidebar-links a {
-            display: block;
-            color: #ffffff;
-            text-decoration: none;
-            padding: 14px 20px;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
-        }
+    .sidebar a:hover {
+      background: #ffd700;
+      color: #4b0082;
+      border-left-color: #4b0082;
+    }
 
-        .sidebar-links a:hover {
-            background-color: #ffd700;
-            color: #4b0082;
-            border-left: 4px solid #4b0082;
-        }
+    .sidebar a.active {
+      background: #ffd700;
+      color: #4b0082;
+      border-left-color: #4b0082;
+      font-weight: 600;
+    }
 
-        .sidebar-links a.active {
-            background-color: #ffd700;
-            color: #4b0082;
-            border-left: 4px solid #4b0082;
-            font-weight: bold;
-        }
+    /* CONTEÚDO PRINCIPAL */
+    .main-content {
+      margin-left: 250px;
+      padding: 40px;
+      min-height: 100vh;
+    }
 
-        .main-content {
-            margin-left: 250px;
-            background-color: #f4f0fa;
-            padding: 40px;
-            min-height: 100vh;
-        }
+    .page-header {
+      margin-bottom: 30px;
+    }
 
-        .page-title {
-            color: #4b0082;
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
+    .page-header h1 {
+      color: #4b0082;
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
 
-        .page-subtitle {
-            color: #6a0dad;
-            font-size: 16px;
-            margin-bottom: 30px;
-            line-height: 1.6;
-            max-width: 800px;
-        }
+    .page-header p {
+      color: #6a0dad;
+      font-size: 16px;
+      line-height: 1.5;
+      max-width: 800px;
+    }
 
-        .card {
-            background-color: #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(75, 0, 130, 0.15);
-            padding: 30px;
-            margin-bottom: 30px;
-        }
+    /* CARDS */
+    .cards-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
 
-        .calendar-container {
-            width: 100%;
-            overflow: hidden;
-            border-radius: 12px;
-        }
+    .card {
+      background: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(75, 0, 130, 0.12);
+      padding: 25px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-        .calendar-container iframe {
-            width: 100%;
-            height: 600px;
-            border: 0;
-            border-radius: 12px;
-            display: block;
-        }
+    .card:hover {
+      box-shadow: 0 6px 20px rgba(75, 0, 130, 0.18);
+    }
 
-        .instructions {
-            background-color: #f4f0fa;
-            border-left: 4px solid #6a0dad;
-            border-radius: 8px;
-            padding: 20px 25px;
-            margin-top: 25px;
-        }
+    .card h2 {
+      color: #4b0082;
+      font-size: 20px;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f4f0fa;
+    }
 
-        .instructions h3 {
-            color: #4b0082;
-            font-size: 18px;
-            margin-bottom: 12px;
-        }
+    .calendar-iframe {
+      width: 100%;
+      height: 500px;
+      border: 0;
+      border-radius: 12px;
+    }
 
-        .instructions ul {
-            list-style: none;
-            padding: 0;
-        }
+    /* FORMULÁRIO */
+    .form-group {
+      margin-bottom: 16px;
+    }
 
-        .instructions ul li {
-            color: #4b0082;
-            font-size: 14px;
-            line-height: 1.8;
-            padding-left: 20px;
-            position: relative;
-        }
+    .form-group label {
+      display: block;
+      color: #4b0082;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
 
-        .instructions ul li::before {
-            content: "•";
-            color: #6a0dad;
-            font-weight: bold;
-            position: absolute;
-            left: 0;
-        }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d9c9e8;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #333;
+      background: #faf8fd;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
 
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #6a0dad;
+      box-shadow: 0 0 0 3px rgba(106, 13, 173, 0.15);
+    }
 
-            .main-content {
-                margin-left: 0;
-                padding: 20px;
-            }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
 
-            .sidebar-links {
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
 
-            .sidebar-links a {
-                padding: 10px 15px;
-                font-size: 14px;
-            }
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, #4b0082 0%, #6a0dad 100%);
+      color: #ffffff;
+      border: none;
+      padding: 13px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.25s ease, transform 0.1s ease;
+    }
 
-            .page-title {
-                font-size: 24px;
-            }
+    .btn-submit:hover {
+      background: linear-gradient(135deg, #6a0dad 0%, #4b0082 100%);
+    }
 
-            .calendar-container iframe {
-                height: 450px;
-            }
-        }
-    </style>
+    .btn-submit:active {
+      transform: scale(0.98);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .message {
+      padding: 12px 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .message.success {
+      background: #e6f9ec;
+      color: #1d7a3d;
+      border: 1px solid #b5e6c4;
+      display: block;
+    }
+
+    .message.error {
+      background: #fdecea;
+      color: #b71c1c;
+      border: 1px solid #f5c6cb;
+      display: block;
+    }
+
+    /* RESPONSIVO */
+    @media (max-width: 992px) {
+      .cards-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding: 20px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-    <aside class="sidebar">
-        <div class="sidebar-title">Equilibrium</div>
-        <nav class="sidebar-links">
-            <a href="index.html">Home</a>
-            <a href="agenda.html">Agenda</a>
-            <a href="novo-cliente.html">Novo Cliente</a>
-            <a href="clientes.html">Lista de Clientes</a>
-            <a href="atendimentos.html">Novo Atendimento</a>
-            <a href="lista-atendimentos.html">Lista de Atendimento</a>
-            <a href="novo-tratamento.html">Novo Tratamento</a>
-            <a href="lista-tratamentos.html">Lista de Tratamentos</a>
-            <a href="agenda-graficos.html" class="active">Agenda de Gráficos</a>
-            <a href="financeiro.html">Financeiro</a>
-        </nav>
-    </aside>
 
-    <main class="main-content">
-        <h1 class="page-title">Agenda de Gráficos</h1>
-        <p class="page-subtitle">
-            Visualize e gerencie a agenda de tratamentos com gráficos radiestésicos.
-            Acompanhe os agendamentos diretamente no Google Calendar integrado abaixo,
-            organizando as sessões de tratamento e os gráficos radiestésicos de cada cliente.
-        </p>
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="logo">Equilibrium</div>
+    <a href="index.html">Home</a>
+    <a href="agenda.html">Agenda</a>
+    <a href="novo-cliente.html">Novo Cliente</a>
+    <a href="clientes.html">Lista de Clientes</a>
+    <a href="atendimentos.html">Novo Atendimento</a>
+    <a href="lista-atendimentos.html">Lista de Atendimento</a>
+    <a href="novo-tratamento.html">Novo Tratamento</a>
+    <a href="lista-tratamentos.html">Lista de Tratamentos</a>
+    <a href="agenda-graficos.html" class="active">Agenda de Gráficos</a>
+    <a href="financeiro.html">Financeiro</a>
+  </nav>
 
-        <div class="card">
-            <div class="calendar-container">
-                <iframe
-                    src="https://calendar.google.com/calendar/embed?src=3c23c1b339dd330985fe7b0541c3810edc7e38fe93be31181ceb0a0c69d840cd%40group.calendar.google.com&ctz=America%2FSao_Paulo"
-                    frameborder="0"
-                    scrolling="no"
-                    title="Agenda de Gráficos - Tratamentos">
-                </iframe>
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="main-content">
+    <div class="page-header">
+      <h1>Agenda de Gráficos</h1>
+      <p>Gerencie os agendamentos dos tratamentos radiestésicos. Visualize a agenda do Google Calendar e crie novos eventos diretamente nesta página.</p>
+    </div>
+
+    <div class="cards-container">
+
+      <!-- CARD 1: Google Calendar -->
+      <section class="card">
+        <h2>Calendário</h2>
+        <iframe
+          id="calendarFrame"
+          class="calendar-iframe"
+          src="https://calendar.google.com/calendar/embed?src=3c23c1b339dd330985fe7b0541c3810edc7e38fe93be31181ceb0a0c69d840cd%40group.calendar.google.com&ctz=America%2FSao_Paulo"
+          frameborder="0"
+          scrolling="no"
+          loading="lazy"
+          title="Agenda de Gráficos - Google Calendar">
+        </iframe>
+      </section>
+
+      <!-- CARD 2: Formulário Novo Evento -->
+      <section class="card">
+        <h2>Novo Agendamento</h2>
+        <div id="formMessage" class="message"></div>
+
+        <form id="formAgendamento">
+          <div class="form-group">
+            <label for="titulo">Título do Tratamento *</label>
+            <input type="text" id="titulo" name="titulo" required placeholder="Ex.: Gráfico Radiestésico">
+          </div>
+
+          <div class="form-group">
+            <label for="cliente">Cliente</label>
+            <input type="text" id="cliente" name="cliente" placeholder="Nome do cliente (opcional)">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="data_inicio">Data Início *</label>
+              <input type="date" id="data_inicio" name="data_inicio" required>
             </div>
-
-            <div class="instructions">
-                <h3>Instruções de Uso</h3>
-                <ul>
-                    <li>Utilize o calendário acima para visualizar todos os agendamentos de tratamentos com gráficos radiestésicos.</li>
-                    <li>Clique sobre um evento no calendário para visualizar os detalhes do tratamento agendado.</li>
-                    <li>Para criar um novo agendamento, acesse diretamente o Google Calendar vinculado a este sistema.</li>
-                    <li>Os horários exibidos estão no fuso horário de São Paulo (America/Sao_Paulo).</li>
-                    <li>Mantenha os eventos atualizados para garantir o acompanhamento correto dos gráficos radiestésicos de cada cliente.</li>
-                    <li>Em caso de dúvidas sobre um tratamento específico, consulte a Lista de Tratamentos no menu lateral.</li>
-                </ul>
+            <div class="form-group">
+              <label for="hora_inicio">Hora Início</label>
+              <input type="time" id="hora_inicio" name="hora_inicio" value="09:00">
             </div>
-        </div>
-    </main>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="data_fim">Data Fim *</label>
+              <input type="date" id="data_fim" name="data_fim" required>
+            </div>
+            <div class="form-group">
+              <label for="hora_fim">Hora Fim</label>
+              <input type="time" id="hora_fim" name="hora_fim" value="10:00">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" name="status">
+              <option value="agendado">Agendado</option>
+              <option value="em_andamento">Em Andamento</option>
+              <option value="concluido">Concluído</option>
+              <option value="adiado">Adiado</option>
+              <option value="cancelado">Cancelado</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="descricao">Descrição</label>
+            <textarea id="descricao" name="descricao" placeholder="Observações sobre o tratamento (opcional)"></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit" id="btnSubmit">Criar Agendamento</button>
+        </form>
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      const form = document.getElementById('formAgendamento');
+      const messageBox = document.getElementById('formMessage');
+      const btnSubmit = document.getElementById('btnSubmit');
+      const calendarFrame = document.getElementById('calendarFrame');
+      const dataInicio = document.getElementById('data_inicio');
+      const dataFim = document.getElementById('data_fim');
+
+      const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec';
+
+      // Mapeamento de status para código de cor
+      const STATUS_COR = {
+        agendado: 5,
+        em_andamento: 1,
+        concluido: 2,
+        adiado: 4,
+        cancelado: 8
+      };
+
+      // Preencher data fim igual à data início ao alterar data início
+      dataInicio.addEventListener('change', function () {
+        if (!dataFim.value || dataFim.value < dataInicio.value) {
+          dataFim.value = dataInicio.value;
+        }
+      });
+
+      function showMessage(text, type) {
+        messageBox.textContent = text;
+        messageBox.className = 'message ' + type;
+      }
+
+      function clearMessage() {
+        messageBox.textContent = '';
+        messageBox.className = 'message';
+      }
+
+      function reloadCalendar() {
+        const currentSrc = calendarFrame.src;
+        calendarFrame.src = '';
+        setTimeout(function () {
+          calendarFrame.src = currentSrc;
+        }, 400);
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        clearMessage();
+
+        const titulo = document.getElementById('titulo').value.trim();
+        const cliente = document.getElementById('cliente').value.trim();
+        const data_inicio = document.getElementById('data_inicio').value;
+        const hora_inicio = document.getElementById('hora_inicio').value;
+        const data_fim = document.getElementById('data_fim').value;
+        const hora_fim = document.getElementById('hora_fim').value;
+        const status = document.getElementById('status').value;
+        const descricao = document.getElementById('descricao').value.trim();
+
+        if (!titulo || !data_inicio || !data_fim) {
+          showMessage('Preencha todos os campos obrigatórios.', 'error');
+          return;
+        }
+
+        const cor = STATUS_COR[status] !== undefined ? STATUS_COR[status] : 5;
+
+        const params = new URLSearchParams();
+        params.append('action', 'criar');
+        params.append('calendario', 'graficos');
+        params.append('titulo', titulo);
+        params.append('cliente', cliente);
+        params.append('data_inicio', data_inicio);
+        params.append('hora_inicio', hora_inicio);
+        params.append('data_fim', data_fim);
+        params.append('hora_fim', hora_fim);
+        params.append('status', status);
+        params.append('cor', cor);
+        params.append('tipo', 'grafico');
+        params.append('descricao', descricao);
+
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = 'Criando...';
+
+        fetch(WEBHOOK_URL, {
+          method: 'POST',
+          body: params
+        })
+          .then(function (response) {
+            if (!response.ok) {
+              throw new Error('Erro na resposta do servidor: ' + response.status);
+            }
+            return response.text().catch(function () { return ''; });
+          })
+          .then(function () {
+            showMessage('Agendamento criado com sucesso! O calendário será recarregado.', 'success');
+            form.reset();
+            document.getElementById('hora_inicio').value = '09:00';
+            document.getElementById('hora_fim').value = '10:00';
+            reloadCalendar();
+          })
+          .catch(function (err) {
+            showMessage('Erro ao criar agendamento: ' + err.message, 'error');
+          })
+          .finally(function () {
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = 'Criar Agendamento';
+          });
+      });
+    })();
+  </script>
 </body>
 </html>
