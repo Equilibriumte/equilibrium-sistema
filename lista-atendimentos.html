@@ -276,37 +276,43 @@
     const URL = "https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec";
     let dadosOriginais = [];
 
-    function normalizarChave(chave) {
-      return String(chave || "")
-        .trim()
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "");
+    function normalizar(s) {
+      return String(s || "").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
 
-    function construirMapa(obj) {
-      const mapa = {};
-      if (!obj || typeof obj !== "object") return mapa;
-      Object.keys(obj).forEach(function (k) {
-        mapa[normalizarChave(k)] = obj[k];
-      });
-      return mapa;
-    }
+    function buscarValor(obj, coluna) {
+      if (!obj || typeof obj !== 'object') return '';
+      const colNorm = normalizar(coluna);
+      const chaves = Object.keys(obj);
 
-    function valorDe(mapa, nomeColuna) {
-      const chave = normalizarChave(nomeColuna);
-      if (chave in mapa) return mapa[chave];
-      const semEspacos = chave.replace(/\s+/g, "");
-      if (semEspacos in mapa) return mapa[semEspacos];
-      const semPontos = chave.replace(/[.]/g, "");
-      if (semPontos in mapa) return mapa[semPontos];
-      return "";
+      for (const chave of chaves) {
+        if (normalizar(chave) === colNorm) {
+          return obj[chave];
+        }
+      }
+
+      const colSemEspacos = colNorm.replace(/\s+/g, '');
+      for (const chave of chaves) {
+        if (normalizar(chave).replace(/\s+/g, '') === colSemEspacos) {
+          return obj[chave];
+        }
+      }
+
+      const colSemPontos = colNorm.replace(/[.]/g, '');
+      for (const chave of chaves) {
+        if (normalizar(chave).replace(/[.]/g, '') === colSemPontos) {
+          return obj[chave];
+        }
+      }
+
+      return '';
     }
 
     function formatarValor(v) {
       if (v === null || v === undefined) return "";
       if (typeof v === "number") return String(v);
-      if (typeof v === "object") return JSON.stringify(v);
+      if (typeof v === "object" && !(v instanceof Date)) return JSON.stringify(v);
+      if (typeof v === "object" && v instanceof Date) return v.toLocaleDateString('pt-BR');
       return String(v);
     }
 
@@ -336,11 +342,10 @@
       }
 
       dados.forEach(function (linha) {
-        const mapa = construirMapa(linha);
         const tr = document.createElement("tr");
         COLUNAS.forEach(function (col, idx) {
           const td = document.createElement("td");
-          const valor = formatarValor(valorDe(mapa, col));
+          const valor = formatarValor(buscarValor(linha, col));
           td.textContent = valor;
           td.title = valor;
           if (idx === 0) td.classList.add("col-fixed");
@@ -352,12 +357,12 @@
     }
 
     function filtrarDados(termo) {
-      const t = normalizarChave(termo);
+      const t = normalizar(termo);
       if (!t) return dadosOriginais;
       return dadosOriginais.filter(function (linha) {
-        const mapa = construirMapa(linha);
         return COLUNAS.some(function (col) {
-          return normalizarChave(formatarValor(valorDe(mapa, col))).indexOf(t) !== -1;
+          const v = formatarValor(buscarValor(linha, col));
+          return normalizar(v).indexOf(t) !== -1;
         });
       });
     }
