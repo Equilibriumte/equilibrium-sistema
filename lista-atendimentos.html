@@ -1,394 +1,332 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Equilibrium - Histórico de Atendimentos</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lista de Atendimentos - Equilibrium</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: #f4f0fa;
+    color: #333;
+    min-height: 100vh;
+  }
 
-    body {
-      background: #f4f0fa;
-      color: #333;
-      min-height: 100vh;
-    }
+  /* Sidebar */
+  .sidebar {
+    width: 250px;
+    position: fixed;
+    top: 0; left: 0;
+    height: 100vh;
+    background: linear-gradient(180deg, #4b0082, #6a0dad);
+    color: #fff;
+    padding: 24px 0;
+    overflow-y: auto;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+  }
+  .sidebar h2 {
+    text-align: center;
+    font-size: 22px;
+    padding-bottom: 14px;
+    margin-bottom: 18px;
+    border-bottom: 2px solid #d4af37;
+    letter-spacing: 1px;
+  }
+  .sidebar nav { display: flex; flex-direction: column; }
+  .sidebar nav a {
+    color: #f0e6ff;
+    text-decoration: none;
+    padding: 12px 22px;
+    font-size: 15px;
+    transition: background 0.2s, padding-left 0.2s;
+    border-left: 4px solid transparent;
+  }
+  .sidebar nav a:hover {
+    background: rgba(255,255,255,0.08);
+    padding-left: 28px;
+  }
+  .sidebar nav a.active {
+    background: rgba(255,255,255,0.15);
+    border-left-color: #d4af37;
+    font-weight: 600;
+  }
 
-    .layout {
-      min-height: 100vh;
-    }
+  /* Main */
+  .main {
+    margin-left: 250px;
+    padding: 32px;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header h1 {
+    color: #4b0082;
+    font-size: 26px;
+  }
+  .header .subtitle {
+    color: #6a0dad;
+    font-size: 14px;
+    margin-top: 4px;
+  }
 
-    .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
-    .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
-    .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
-    .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
+  /* Card */
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 6px 20px rgba(75,0,130,0.08);
+  }
 
-    .main {
-      margin-left: 250px;
-      padding: 32px;
-      overflow-x: hidden;
-    }
+  /* Toolbar */
+  .toolbar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  .search-input {
+    flex: 1;
+    min-width: 240px;
+    padding: 12px 16px;
+    border: 2px solid #e0d4f0;
+    border-radius: 10px;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: #faf8ff;
+  }
+  .search-input:focus {
+    border-color: #6a0dad;
+    box-shadow: 0 0 0 3px rgba(106,13,173,0.15);
+  }
+  .btn {
+    padding: 11px 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.2s, transform 0.05s;
+  }
+  .btn-primary { background: #4b0082; color: #fff; }
+  .btn-primary:hover { background: #6a0dad; }
+  .btn-secondary { background: #e0d4f0; color: #4b0082; }
+  .btn-secondary:hover { background: #d0c0e8; }
+  .btn:active { transform: translateY(1px); }
 
-    .header {
-      margin-bottom: 24px;
-    }
+  #status {
+    font-size: 13px;
+    color: #6a0dad;
+    margin-bottom: 14px;
+    min-height: 18px;
+  }
 
-    .header h2 {
-      font-size: 26px;
-      color: #4b0082;
-      font-weight: 700;
-    }
+  /* Table */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid #eee;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    min-width: 700px;
+  }
+  thead th {
+    background: #4b0082;
+    color: #fff;
+    text-align: left;
+    padding: 12px 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  tbody td {
+    padding: 11px 14px;
+    border-bottom: 1px solid #f0e8fa;
+    white-space: nowrap;
+    max-width: 320px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  tbody tr:hover { background: #f7f2fc; }
+  tbody tr:nth-child(even) { background: #fbf9fe; }
+  tbody tr:nth-child(even):hover { background: #f7f2fc; }
+  td.empty {
+    text-align: center;
+    color: #999;
+    padding: 28px;
+    font-style: italic;
+  }
 
-    .header p {
-      color: #6a0dad;
-      margin-top: 4px;
-      font-size: 14px;
-    }
+  /* Colunas fixas (destaque visual sutil) */
+  .col-fixed { background: #efe6fa; font-weight: 600; color: #4b0082; }
+  .col-fixed-2 { background: #f3ecfb; font-weight: 600; color: #4b0082; }
+  thead .col-fixed, thead .col-fixed-2 { background: #3a0066; color: #fff; }
 
-    .card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 4px 20px rgba(75, 0, 130, 0.08);
-    }
-
-    .toolbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .toolbar input {
-      padding: 10px 14px;
-      border: 1px solid #d9c9e8;
-      border-radius: 8px;
-      font-size: 14px;
-      width: 280px;
-      max-width: 100%;
-      outline: none;
-      transition: border 0.2s ease;
-    }
-
-    .toolbar input:focus {
-      border-color: #6a0dad;
-    }
-
-    .status {
-      font-size: 13px;
-      color: #6a0dad;
-    }
-
-    .table-wrapper {
-      overflow-x: auto;
-      border-radius: 12px;
-      border: 1px solid #ece3f5;
-    }
-
-    table {
-      border-collapse: collapse;
-      width: max-content;
-      min-width: 100%;
-      table-layout: fixed;
-    }
-
-    thead th {
-      background: #4b0082;
-      color: #fff;
-      text-align: left;
-      padding: 12px 14px;
-      font-size: 13px;
-      font-weight: 600;
-      white-space: nowrap;
-      position: sticky;
-      top: 0;
-      z-index: 2;
-    }
-
-    thead th.col-fixed {
-      position: sticky;
-      left: 0;
-      z-index: 4;
-      background: #4b0082;
-    }
-
-    thead th.col-fixed-2 {
-      position: sticky;
-      left: 150px;
-      z-index: 4;
-      background: #4b0082;
-    }
-
-    tbody td {
-      padding: 12px 14px;
-      font-size: 13px;
-      border-bottom: 1px solid #f0e9f7;
-      max-width: 150px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      background: #fff;
-    }
-
-    tbody td.col-fixed {
-      position: sticky;
-      left: 0;
-      z-index: 3;
-      background: #fff;
-      box-shadow: 2px 0 4px rgba(75, 0, 130, 0.06);
-    }
-
-    tbody td.col-fixed-2 {
-      position: sticky;
-      left: 150px;
-      z-index: 3;
-      background: #fff;
-      box-shadow: 2px 0 4px rgba(75, 0, 130, 0.06);
-    }
-
-    tbody tr:hover td {
-      background: #f7f2fc;
-    }
-
-    tbody tr:hover td.col-fixed,
-    tbody tr:hover td.col-fixed-2 {
-      background: #f0e6fa;
-    }
-
-    .empty {
-      text-align: center;
-      padding: 40px;
-      color: #999;
-      font-size: 14px;
-    }
-
-    .loader {
-      text-align: center;
-      padding: 40px;
-      color: #6a0dad;
-      font-size: 14px;
-    }
-
-    @media (max-width: 768px) {
-      .sidebar {
-        width: 70px;
-      }
-      .sidebar h2,
-      .sidebar nav a span {
-        display: none;
-      }
-      .main {
-        margin-left: 0;
-        padding: 20px;
-      }
-    }
-  </style>
+  @media (max-width: 768px) {
+    .sidebar { width: 200px; }
+    .main { margin-left: 200px; padding: 20px; }
+  }
+  @media (max-width: 560px) {
+    .sidebar { transform: translateX(-100%); }
+    .main { margin-left: 0; padding: 16px; }
+  }
+</style>
 </head>
 <body>
-  <div class="layout">
-    <div class="sidebar">
-        <h2>Equilibrium</h2>
-        <nav>
-            <a href="index.html">🏠 Home</a>
-            <a href="agenda.html">📅 Agenda</a>
-            <a href="novo-cliente.html">👤 Novo Cliente</a>
-            <a href="clientes.html">📋 Lista de Clientes</a>
-            <a href="atendimentos.html">✨ Novo Atendimento</a>
-            <a href="lista-atendimentos.html" class="active">📜 Lista de Atendimento</a>
-            <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
-            <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
-            <a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
-            <a href="financeiro.html">💰 Financeiro</a>
-        </nav>
+
+<div class="sidebar">
+  <h2>Equilibrium</h2>
+  <nav>
+    <a href="index.html">🏠 Home</a>
+    <a href="agenda.html">📅 Agenda</a>
+    <a href="novo-cliente.html">👤 Novo Cliente</a>
+    <a href="clientes.html">📋 Lista de Clientes</a>
+    <a href="atendimentos.html">✨ Novo Atendimento</a>
+    <a href="lista-atendimentos.html" class="active">📜 Lista de Atendimento</a>
+    <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
+    <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
+    <a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
+    <a href="financeiro.html">💰 Financeiro</a>
+  </nav>
+</div>
+
+<div class="main">
+  <div class="header">
+    <div>
+      <h1>📜 Lista de Atendimentos</h1>
+      <div class="subtitle">Visualize e pesquise todos os atendimentos registrados.</div>
     </div>
-
-    <main class="main">
-      <div class="header">
-        <h2>Histórico de Atendimentos</h2>
-        <p>Visualização completa de todos os atendimentos registrados.</p>
-      </div>
-
-      <div class="card">
-        <div class="toolbar">
-          <input type="text" id="busca" placeholder="Buscar por cliente, ID ou queixa...">
-          <div class="status" id="status">Carregando...</div>
-        </div>
-
-        <div class="table-wrapper">
-          <table id="tabela">
-            <thead>
-              <tr id="thead-row"></tr>
-            </thead>
-            <tbody id="tbody"></tbody>
-          </table>
-        </div>
-      </div>
-    </main>
+    <button class="btn btn-primary" onclick="carregar()">🔄 Atualizar</button>
   </div>
 
-  <script>
-    const COLUNAS = [
-      "Data do Atendimento",
-      "ID Atendimento",
-      "ID Cliente",
-      "Nome Cliente",
-      "Status",
-      "Queixa Principal",
-      "Queixa Secundária",
-      "Bovis",
-      "Coronário",
-      "Frontal",
-      "Laríngeo",
-      "Cardíaco",
-      "Umbilical",
-      "Sacro",
-      "Básico",
-      "Tamanho Aura",
-      "Proteção Aura",
-      "Cores Excesso",
-      "Cores Falta",
-      "Mental",
-      "Emocional",
-      "Espiritual",
-      "Físico",
-      "Diagnóstico Inicial",
-      "Queixa Espec.",
-      "Causa Raiz",
-      "Crenças",
-      "Diagnóstico Específico",
-      "Tipo Ambiente",
-      "Endereço Ambiente",
-      "Queixa Ambiente",
-      "Pessoas Envolvidas",
-      "Diagnóstico Ambiente",
-      "Tipo Busca",
-      "Descrição Busca",
-      "Info Busca",
-      "Resultado Busca"
-    ];
+  <div class="card">
+    <div class="toolbar">
+      <input type="text" id="search" class="search-input" placeholder="🔍 Buscar em todas as colunas..." oninput="filtrar(this.value)">
+    </div>
+    <div id="status">Carregando...</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr id="thead-row"></tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
-    const URL = "https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec";
-    let dadosOriginais = [];
+<script>
+  const URL = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
+  let colunas = [];        // nomes das colunas (vindas da API)
+  let dadosOriginais = []; // todos os registros
 
-    function normalizar(s) {
-      return String(s || "").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    }
+  async function carregar() {
+    const status = document.getElementById('status');
+    status.textContent = 'Carregando...';
+    try {
+      const resp = await fetch(URL + '?read=true');
+      const json = await resp.json();
 
-    function buscarValor(obj, coluna) {
-      if (!obj || typeof obj !== 'object') return '';
-      const colNorm = normalizar(coluna);
-      const chaves = Object.keys(obj);
-
-      for (const chave of chaves) {
-        if (normalizar(chave) === colNorm) {
-          return obj[chave];
-        }
+      if (json && json.success && Array.isArray(json.columns)) {
+        colunas = json.columns;
+      } else {
+        colunas = [];
       }
 
-      const colSemEspacos = colNorm.replace(/\s+/g, '');
-      for (const chave of chaves) {
-        if (normalizar(chave).replace(/\s+/g, '') === colSemEspacos) {
-          return obj[chave];
-        }
+      let data = [];
+      if (json && Array.isArray(json.data)) {
+        data = json.data;
       }
 
-      const colSemPontos = colNorm.replace(/[.]/g, '');
-      for (const chave of chaves) {
-        if (normalizar(chave).replace(/[.]/g, '') === colSemPontos) {
-          return obj[chave];
-        }
-      }
-
-      return '';
+      dadosOriginais = data;
+      renderizarTabela(data);
+      status.textContent = data.length + ' registro(s) carregado(s).';
+    } catch (err) {
+      console.error(err);
+      status.textContent = 'Erro ao carregar dados.';
+      renderizarTabela([]);
     }
+  }
 
-    function formatarValor(v) {
-      if (v === null || v === undefined) return "";
-      if (typeof v === "number") return String(v);
-      if (typeof v === "object" && !(v instanceof Date)) return JSON.stringify(v);
-      if (typeof v === "object" && v instanceof Date) return v.toLocaleDateString('pt-BR');
-      return String(v);
-    }
+  function renderizarTabela(dados) {
+    const theadRow = document.getElementById('thead-row');
+    const tbody = document.getElementById('tbody');
+    theadRow.innerHTML = '';
+    tbody.innerHTML = '';
 
-    function renderizarTabela(dados) {
-      const theadRow = document.getElementById("thead-row");
-      const tbody = document.getElementById("tbody");
-      theadRow.innerHTML = "";
-      tbody.innerHTML = "";
-
-      COLUNAS.forEach(function (col, idx) {
-        const th = document.createElement("th");
-        th.textContent = col;
-        if (idx === 0) th.classList.add("col-fixed");
-        if (idx === 3) th.classList.add("col-fixed-2");
-        theadRow.appendChild(th);
-      });
-
-      if (!dados || dados.length === 0) {
-        const tr = document.createElement("tr");
-        const td = document.createElement("td");
-        td.colSpan = COLUNAS.length;
-        td.className = "empty";
-        td.textContent = "Nenhum atendimento encontrado.";
-        tr.appendChild(td);
-        tbody.appendChild(tr);
-        return;
-      }
-
-      dados.forEach(function (linha) {
-        const tr = document.createElement("tr");
-        COLUNAS.forEach(function (col, idx) {
-          const td = document.createElement("td");
-          const valor = formatarValor(buscarValor(linha, col));
-          td.textContent = valor;
-          td.title = valor;
-          if (idx === 0) td.classList.add("col-fixed");
-          if (idx === 3) td.classList.add("col-fixed-2");
-          tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-      });
-    }
-
-    function filtrarDados(termo) {
-      const t = normalizar(termo);
-      if (!t) return dadosOriginais;
-      return dadosOriginais.filter(function (linha) {
-        return COLUNAS.some(function (col) {
-          const v = formatarValor(buscarValor(linha, col));
-          return normalizar(v).indexOf(t) !== -1;
-        });
-      });
-    }
-
-    async function carregar() {
-      const status = document.getElementById("status");
-      status.textContent = "Carregando...";
-      try {
-        const resp = await fetch(URL + "?read=true");
-        const json = await resp.json();
-        const data = json && Array.isArray(json.data) ? json.data : [];
-        dadosOriginais = data;
-        renderizarTabela(data);
-        status.textContent = data.length + " registro(s) carregado(s).";
-      } catch (err) {
-        console.error(err);
-        status.textContent = "Erro ao carregar dados.";
-        renderizarTabela([]);
-      }
-    }
-
-    document.getElementById("busca").addEventListener("input", function (e) {
-      renderizarTabela(filtrarDados(e.target.value));
+    // Cabeçalhos usando as colunas da API
+    colunas.forEach(function(nome, idx) {
+      const th = document.createElement('th');
+      th.textContent = nome;
+      if (idx === 0) th.classList.add('col-fixed');
+      if (idx === 3) th.classList.add('col-fixed-2');
+      theadRow.appendChild(th);
     });
 
-    carregar();
-  </script>
+    if (!dados || dados.length === 0) {
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = Math.max(colunas.length, 1);
+      td.className = 'empty';
+      td.textContent = 'Nenhum atendimento encontrado.';
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+      return;
+    }
+
+    dados.forEach(function(linha) {
+      const tr = document.createElement('tr');
+      colunas.forEach(function(nomeCol, idx) {
+        const td = document.createElement('td');
+        // Acesso direto pelo nome da coluna
+        let valor = '';
+        if (linha && typeof linha === 'object' && nomeCol in linha) {
+          valor = linha[nomeCol];
+        }
+        // Formatar
+        if (valor === null || valor === undefined) valor = '';
+        else if (typeof valor === 'object') {
+          try { valor = JSON.stringify(valor); } catch(e) { valor = ''; }
+        } else {
+          valor = String(valor);
+        }
+        td.textContent = valor;
+        td.title = valor;
+        if (idx === 0) td.classList.add('col-fixed');
+        if (idx === 3) td.classList.add('col-fixed-2');
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+  }
+
+  function filtrar(termo) {
+    const t = termo.toLowerCase().trim();
+    if (!t) { renderizarTabela(dadosOriginais); return; }
+    const filtrados = dadosOriginais.filter(function(linha) {
+      return colunas.some(function(nomeCol) {
+        const v = String(linha[nomeCol] || '').toLowerCase();
+        return v.indexOf(t) !== -1;
+      });
+    });
+    renderizarTabela(filtrados);
+  }
+
+  // Inicializa ao carregar a página
+  document.addEventListener('DOMContentLoaded', carregar);
+</script>
+
 </body>
 </html>
