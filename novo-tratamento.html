@@ -176,7 +176,7 @@ function getVal(obj) {
 }
 
 function statusKey(s) {
-  return String(s || '').toLowerCase().replace('&aacute;','a').replace('&eacute;','e').replace('&iacute;','i').replace('&oacute;','o').replace('&uacute;','u').replace('&ccedil;','c').replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g,'');
+  return String(s || '').toLowerCase().replace(/&aacute;/g,'a').replace(/&eacute;/g,'e').replace(/&iacute;/g,'i').replace(/&oacute;/g,'o').replace(/&uacute;/g,'u').replace(/&ccedil;/g,'c').replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g,'');
 }
 
 function statusColor(s) {
@@ -252,68 +252,114 @@ function selecionarCliente(nome, id) {
   carregarTratamentosAnteriores(id);
 }
 
-// ===== FUNÇÃO CARREGAR TRATAMENTOS COM FALLBACK PARA ATENDIMENTOS =====
+/* ==================================================================
+   FUNÇÃO 1 - carregarTratamentosAnteriores (MODIFICADA)
+   Primeiro busca da aba "Equilibrium - Atendimentos" via ?read=true
+   para mostrar os atendimentos do cliente como tratamentos anteriores,
+   e também tenta carregar da aba "Tratamentos"
+   ================================================================== */
 function carregarTratamentosAnteriores(id) {
   var tbody = document.querySelector('#tratamentosAnteriores tbody');
   tratamentoSelecionadoId = null;
   tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Carregando...</td></tr>';
   
-  // Primeiro tenta buscar da aba Tratamentos
-  fetch(URL_ATEND + '?action=tratamentos&_=' + Date.now())
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      var arr = [];
-      if (data && data.success && Array.isArray(data.data)) {
-        arr = data.data;
-      } else if (Array.isArray(data)) {
-        arr = data;
-      }
-      
-      // Filtra registros do cliente
-      var doCliente = [];
-      var clienteId = id;
-      for (var i = 0; i < arr.length; i++) {
-        var t = arr[i];
-        var tcli = String(getVal(t, 'cliente_id', 'idcliente', 'clienteid', 'ID Cliente') || '');
-        if (tcli === clienteId) {
-          doCliente.push(t);
-        }
-      }
-      
-      if (doCliente.length > 0) {
-        renderTratamentos(doCliente);
-        mostrarMsg('Tratamentos do cliente carregados.', 'success');
-        return;
-      }
-      
-      // Se não achou na aba Tratamentos, mostra mensagem
-      tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Nenhum tratamento anterior encontrado na aba Tratamentos. Quando voc&ecirc; salvar um tratamento aqui, ele aparecer&aacute; nesta lista.</td></tr>';
-    })
-    .catch(function() {
-      tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Nenhum tratamento anterior encontrado.</td></tr>';
+  // Busca TANTO da aba Tratamentos quanto da aba Equilibrium - Atendimentos
+  Promise.all([
+    fetch(URL_ATEND + '?action=tratamentos&_=' + Date.now()).then(function(r) { return r.(); }).catch(function() { return {}; }),
+    fetch(URL_ATEND + '?_=' + Date.now()).then(function(r) { return r.(); }).catch(function() { return {}; })
+  ])
+  .then(function(results) {
+    var tratamentosData = results[0];
+    var atendimentosData = results[1];
+    
+    // Extrai dados da aba Tratamentos
+    var tratamentos = [];
+    if (tratamentosData && tratamentosData.success && Array.isArray(tratamentosData.data)) {
+      tratamentos = tratamentosData.data;
+    } else if (Array.isArray(tratamentosData)) {
+      tratamentos = tratamentosData;
+    } else if (tratamentosData && Array.isArray(tratamentosData.dados)) {
+      tratamentos = tratamentosData.dados;
+    }
+    
+    // Extrai dados da aba Equilibrium - Atendimentos
+    var atendimentos = [];
+    if (atendimentosData && atendimentosData.success && Array.isArray(atendimentosData.data)) {
+      atendimentos = atendimentosData.data;
+    } else if (Array.isArray(atendimentosData)) {
+      atendimentos = atendimentosData;
+    } else if (atendimentosData && Array.isArray(atendimentosData.dados)) {
+      atendimentos = atendimentosData.dados;
+    }
+    
+    // Filtra tratamentos do cliente
+    var doCliente = tratamentos.filter(function(t) {
+      var tCliId = String(getVal(t, 'cliente_id', 'idcliente', 'clienteid', 'ID Cliente') || '');
+      return tCliId === id;
     });
+    
+    // Se tem tratamentos na aba Tratamentos, usa eles
+    if (doCliente.length > 0) {
+      renderTratamentos(doCliente);
+      mostrarMsg('Tratamentos carregados da aba Tratamentos.', 'success');
+      return;
+    }
+    
+    // Fallback: usa atendimentos da aba Equilibrium - Atendimentos
+    // como "tratamentos anteriores" para este cliente
+    var clienteNome = document.getElementById('cbNome').textContent.replace('Cliente: ','').trim().toLowerCase();
+    var atendDoCliente = atendimentos.filter(function(a) {
+      var aCliId = String(getVal(a, 'idcliente', 'clienteid', 'ID Cliente', 'id') || '');
+      var aNome = String(getVal(a, 'nomecliente', 'nome', 'Nome Cliente', 'cliente') || '').toLowerCase();
+      return aCliId === id || aNome.indexOf(clienteNome) !== -1;
+    });
+    
+    if (atendDoCliente.length > 0) {
+      renderTratamentos(atendDoCliente);
+      mostrarMsg('Mostrando atendimentos do cliente. Clique em um para usar como tratamento.', 'success');
+    } else {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Nenhum atendimento ou tratamento encontrado para este cliente.</td></tr>';
+    }
+  })
+  .catch(function() {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Erro ao carregar dados.</td></tr>';
+  });
 }
 
+/* ==================================================================
+   FUNÇÃO 2 - renderTratamentos (MODIFICADA)
+   Converte tanto atendimentos quanto tratamentos para exibição
+   ================================================================== */
 function renderTratamentos(arr) {
   var tbody = document.querySelector('#tratamentosAnteriores tbody');
   if (!arr || !arr.length) {
-    tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Nenhum tratamento anterior encontrado.</td></tr>';
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Nenhum registro encontrado.</td></tr>';
     return;
   }
   var html = '';
   for (var i = 0; i < arr.length; i++) {
-    var t = arr[i];
-    var tid = getVal(t, 'id', 'idtratamento', 'tratamentoid', 'id_tratamento', 'ID Tratamento', 'ID') || '-';
-    var dt = getVal(t, 'datainicio', 'data', 'inicio', 'data_inicio', 'Data Inicio', 'Data') || '-';
-    var graf = getVal(t, 'graficos', 'grafico', 'quantidade', 'qtd') || '-';
-    var st = getVal(t, 'status', 'situacao', 'Status') || 'Agendado';
+    var item = arr[i];
+    // Tenta extrair como tratamento, se não acha, extrai como atendimento
+    var tid = getVal(item, 'id', 'idtratamento', 'tratamentoid', 'id_tratamento', 'ID Tratamento',
+                     'idatendimento', 'ID Atendimento', 'ID Atendimento') || '-';
+    var dt = getVal(item, 'datainicio', 'data', 'inicio', 'data_inicio', 'Data Inicio', 'Data',
+                     'Data do Atendimento', 'data_do_atendimento') || '-';
+    var graf = getVal(item, 'graficos', 'grafico', 'Gráfico', 'quantidade', 'qtd') || '-';
+    var st = getVal(item, 'status', 'situacao', 'Status') || 'Realizado';
+    
+    // Se veio da aba Equilibrium - Atendimentos (não tem gráfico), coloca "-"
+    if (graf === '0' || graf === '' || graf === '-') {
+      // Verifica se tem campos de chakras para estimar "gráficos"
+      var temChakras = getVal(item, 'coronario', 'Coronário', 'chcoronario');
+      graf = temChakras ? '1 (atendimento)' : '-';
+    }
+    
     html += '<tr class="trat-row-selectable" onclick="selecionarTratamento(\'' + tid.replace(/'/g, "\\'") + '\')" data-trat-id="' + tid.replace(/'/g, "\\'") + '">';
     html += '<td><strong>' + tid + '</strong></td><td>' + dt + '</td><td>' + graf + '</td>';
     html += '<td><span class="status-badge" style="background:' + statusColor(st) + '">' + st + '</span></td></tr>';
   }
   tbody.innerHTML = html;
 }
-// ===== FIM DA FUNÇÃO MODIFICADA =====
 
 function selecionarTratamento(tid) {
   var linhas = document.querySelectorAll('.trat-row-selectable');
@@ -323,25 +369,25 @@ function selecionarTratamento(tid) {
     linha.classList.add('selected');
     tratamentoSelecionadoId = tid;
     document.getElementById('tratamentoId').value = tid;
-    mostrarMsg('Tratamento ' + tid + ' selecionado.', 'success');
+    mostrarMsg('Registro ' + tid + ' selecionado. Adicione os gr&aacute;ficos.', 'success');
   }
 }
 
 function carregarClientes() {
-  fetch(URL_CLIENTES).then(function(r) { return r.json(); }).then(function(data) {
+  fetch(URL_CLIENTES).then(function(r) { return r.(); }).then(function(data) {
     listaClientes = Array.isArray(data) ? data : (data.dados || data.clientes || data.lista || []);
   }).catch(function() { listaClientes = []; });
 }
 
 function carregarGraficosPredef() {
-  fetch(URL_ATEND + '?_=' + Date.now()).then(function(r) { return r.json(); }).then(function(data) {
+  fetch(URL_ATEND + '?_=' + Date.now()).then(function(r) { return r.(); }).then(function(data) {
     var config = data.configuracoes || data.Configuracoes || null;
     if (!config) { var vals = Object.values(data); if (vals.some(function(v) { return Array.isArray(v) && v.length > 1; })) config = data; }
     var found = null;
     if (config && typeof config === 'object') {
       for (var k in config) {
         if (config.hasOwnProperty(k)) {
-          var keyNorm = k.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          var keyNorm = k.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '');
           if (keyNorm.indexOf('grafico') !== -1) {
             var v = config[k];
             if (Array.isArray(v) && v.length) { found = v; break; }
@@ -378,13 +424,9 @@ function renderGraficos() {
     html += '<td><input type="date" value="' + (g.data_inicio || '') + '" onchange="atualizarGrafico(' + i + ', \'data_inicio\', this.value)"></td>';
     html += '<td><input type="date" value="' + (g.data_fim || '') + '" onchange="atualizarGrafico(' + i + ', \'data_fim\', this.value)"></td>';
     html += '<td><select onchange="atualizarGrafico(' + i + ', \'status\', this.value)">';
-    for (var j = 0; j < STATUS_OPCOES.length; j++) {
-      var s = STATUS_OPCOES[j];
-      html += '<option value="' + s + '" ' + (g.status === s ? 'selected' : '') + '>' + s + '</option>';
-    }
+    for (var j = 0; j < STATUS_OPCOES.length; j++) { var s = STATUS_OPCOES[j]; html += '<option value="' + s + '" ' + (g.status === s ? 'selected' : '') + '>' + s + '</option>'; }
     html += '</select></td>';
-    html += '<td class="col-acoes"><button class="btn btn-red" onclick="removerGrafico(' + i + ')">Remover</button></td>';
-    html += '</tr>';
+    html += '<td class="col-acoes"><button class="btn btn-red" onclick="removerGrafico(' + i + ')">Remover</button></td></tr>';
   }
   tbody.innerHTML = html;
   var selects = tbody.querySelectorAll('tr td:nth-child(2) select');
@@ -414,26 +456,14 @@ function salvarTratamento() {
     data_inicio: document.getElementById('dataInicio').value,
     graficos: []
   };
-  for (var i = 0; i < graficos.length; i++) {
-    var g = graficos[i];
-    payload.graficos.push({ ordem: i + 1, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status });
-  }
-  mostrarMsg('Salvando...', 'success');
+  for (var i = 0; i < graficos.length; i++) { var g = graficos[i]; payload.graficos.push({ ordem: i + 1, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status }); }
+  mostrarMsg('Salvando na aba Tratamentos...', 'success');
   fetch(URL_ATEND, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'dados=' + encodeURIComponent(JSON.stringify(payload)) })
-    .then(function(r) { return r.json(); })
+    .then(function(r) { return r.(); })
     .then(function(res) {
       var webhooks = [];
-      for (var i = 0; i < graficos.length; i++) {
-        var g = graficos[i];
-        if (g.data_fim && g.grafico) {
-          var wh = { action: 'criar', calendario: 'graficos', cliente: clienteNome, cliente_id: clienteId, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status, tratamento_id: payload.tratamento_id };
-          webhooks.push(fetch(URL_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'dados=' + encodeURIComponent(JSON.stringify(wh)) }).catch(function() {}));
-        }
-      }
-      Promise.all(webhooks).then(function() {
-        mostrarMsg('Tratamento salvo! ID: ' + payload.tratamento_id, 'success');
-        setTimeout(function() { window.location.href = 'lista-tratamentos.html'; }, 1500);
-      });
+      for (var i = 0; i < graficos.length; i++) { var g = graficos[i]; if (g.data_fim && g.grafico) { var wh = { action: 'criar', calendario: 'graficos', cliente: clienteNome, cliente_id: clienteId, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status, tratamento_id: payload.tratamento_id }; webhooks.push(fetch(URL_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'dados=' + encodeURIComponent(JSON.stringify(wh)) }).catch(function() {})); } }
+      Promise.all(webhooks).then(function() { mostrarMsg('Tratamento salvo na aba Tratamentos! ID: ' + payload.tratamento_id, 'success'); setTimeout(function() { window.location.href = 'lista-tratamentos.html'; }, 1500); });
     }).catch(function(err) { mostrarMsg('Erro: ' + err.message, 'error'); });
 }
 
