@@ -1,584 +1,238 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agenda de Gráficos - Equilibrium</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background: #f4f0fa;
-      min-height: 100vh;
-    }
-
-    /* SIDEBAR */
-    .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
-    .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
-    .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
-    .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
-
-    /* CONTEÚDO PRINCIPAL */
-    .main {
-      margin-left: 250px;
-      padding: 40px;
-      min-height: 100vh;
-    }
-
-    .header h1 {
-      color: #4b0082;
-      font-size: 32px;
-      margin-bottom: 6px;
-    }
-
-    .header p {
-      color: #6a0dad;
-      font-size: 16px;
-      margin-bottom: 30px;
-      opacity: 0.85;
-    }
-
-    /* CARDS */
-    .cards {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 25px;
-    }
-
-    .card {
-      background: #ffffff;
-      border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(75, 0, 130, 0.12);
-      padding: 25px;
-    }
-
-    .card h2 {
-      color: #4b0082;
-      font-size: 20px;
-      margin-bottom: 18px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid #f4f0fa;
-    }
-
-    .calendar-wrapper {
-      overflow: hidden;
-      border-radius: 12px;
-    }
-
-    #calendarFrame {
-      width: 100%;
-      height: 500px;
-      border: 0;
-      border-radius: 12px;
-      display: block;
-    }
-
-    /* TABELA DE GRÁFICOS */
-    .graficos-table-container {
-      max-height: 200px;
-      overflow-y: auto;
-      margin-top: 20px;
-      border-radius: 10px;
-      border: 1px solid #d9c9e8;
-      background: #faf8fd;
-    }
-
-    .graficos-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-
-    .graficos-table thead th {
-      position: sticky;
-      top: 0;
-      background: #4b0082;
-      color: #ffffff;
-      padding: 10px 12px;
-      text-align: left;
-      font-weight: 600;
-      font-size: 13px;
-      z-index: 1;
-    }
-
-    .graficos-table tbody td {
-      padding: 8px 12px;
-      border-bottom: 1px solid #e8e0f0;
-      color: #333;
-    }
-
-    .graficos-table tbody tr:last-child td {
-      border-bottom: none;
-    }
-
-    .graficos-table tbody tr:hover {
-      background: #f4f0fa;
-    }
-
-    .status-badge {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    .status-agendado { background: #e3f2fd; color: #1565c0; }
-    .status-em_andamento { background: #fff3e0; color: #e65100; }
-    .status-concluido { background: #e8f5e9; color: #2e7d32; }
-    .status-adiado { background: #f3e5f5; color: #7b1fa2; }
-    .status-cancelado { background: #ffebee; color: #c62828; }
-
-    /* FORMULÁRIO */
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-group label {
-      display: block;
-      color: #4b0082;
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #d9c9e8;
-      border-radius: 8px;
-      font-size: 14px;
-      color: #333;
-      background: #faf8fd;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: #6a0dad;
-      box-shadow: 0 0 0 3px rgba(106, 13, 173, 0.15);
-    }
-
-    .form-group textarea {
-      resize: vertical;
-      min-height: 70px;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .btn {
-      width: 100%;
-      background: linear-gradient(180deg, #4b0082, #6a0dad);
-      color: #ffffff;
-      border: none;
-      padding: 13px;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.2s ease;
-      margin-top: 8px;
-    }
-
-    .btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 15px rgba(75, 0, 130, 0.3);
-    }
-
-    .btn:active {
-      transform: translateY(0);
-    }
-
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .message {
-      padding: 12px 15px;
-      border-radius: 8px;
-      margin-top: 15px;
-      font-size: 14px;
-      display: none;
-    }
-
-    .message.success {
-      background: #e6f9ec;
-      color: #1e7e34;
-      border: 1px solid #b7e2c4;
-      display: block;
-    }
-
-    .message.error {
-      background: #fdecea;
-      color: #a8281c;
-      border: 1px solid #f5c6cb;
-      display: block;
-    }
-
-    /* RESPONSIVO */
-    @media (max-width: 992px) {
-      .cards {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-      }
-
-      .main {
-        margin-left: 0;
-        padding: 25px 18px;
-      }
-
-      .form-row {
-        grid-template-columns: 1fr;
-      }
-
-      #calendarFrame {
-        height: 400px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda de Gráficos - Equilibrium</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+  body { background: #f4f1f8; min-height: 100vh; }
+  .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; overflow-y: auto; }
+  .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
+  .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; font-size: 14px; }
+  .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
+  .main { margin-left: 250px; padding: 30px; min-height: 100vh; }
+  .header { margin-bottom: 25px; }
+  .header h1 { color: #4b0082; font-size: 28px; }
+  .header p { color: #6a0dad; font-size: 15px; margin-top: 5px; }
+  .card { background: #fff; border-radius: 12px; padding: 22px; margin-bottom: 22px; box-shadow: 0 2px 8px rgba(75,0,130,0.08); }
+  .card h3 { color: #4b0082; font-size: 17px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #ede4f7; }
+  .cal-wrap { border: 1px solid #d8cce8; border-radius: 10px; overflow: hidden; }
+  .cal-wrap iframe { width: 100%; height: 480px; border: 0; display: block; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-group { display: flex; flex-direction: column; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label { font-size: 13px; color: #4b0082; margin-bottom: 5px; font-weight: 600; }
+  .form-group input, .form-group select, .form-group textarea { padding: 9px 11px; border: 1px solid #d8cce8; border-radius: 7px; font-size: 14px; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #6a0dad; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
+  .btn-purple { background: linear-gradient(180deg, #4b0082, #6a0dad); color: #fff; border: none; padding: 11px 22px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+  .btn-purple:hover { opacity: 0.9; }
+  .btn-gold { background: #ffd700; color: #4b0082; border: none; padding: 11px 22px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+  .btn-gold:hover { opacity: 0.9; }
+  .table-wrap { overflow-x: auto; max-height: 300px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 500px; }
+  thead th { background: #4b0082; color: #fff; padding: 10px 12px; text-align: left; position: sticky; top: 0; z-index: 2; }
+  tbody td { padding: 9px 12px; border-bottom: 1px solid #f0e8fa; }
+  tbody tr:hover { background: #f7f2fc; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+  .b-agendado { background: #e3f2fd; color: #1565c0; }
+  .b-andamento { background: #fff3e0; color: #e65100; }
+  .b-concluido { background: #e8f5e9; color: #2e7d32; }
+  .b-adiado { background: #fce4ec; color: #c62828; }
+  .b-cancelado { background: #ffebee; color: #b71c1c; }
+  .b-default { background: #f0e8fa; color: #4b0082; }
+  .vazio { text-align: center; color: #999; padding: 20px; }
+  @media (max-width: 768px) { .sidebar { width: 100%; height: auto; position: relative; } .main { margin-left: 0; padding: 20px; } .form-grid { grid-template-columns: 1fr; } }
+</style>
 </head>
 <body>
-
-  <!-- SIDEBAR -->
-  <div class="sidebar">
+<div class="sidebar">
     <h2>Equilibrium</h2>
     <nav>
-      <a href="index.html">🏠 Home</a>
-      <a href="agenda.html">📅 Agenda</a>
-      <a href="novo-cliente.html">👤 Novo Cliente</a>
-      <a href="clientes.html">📋 Lista de Clientes</a>
-      <a href="atendimentos.html">✨ Novo Atendimento</a>
-      <a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
-      <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
-      <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
-      <a href="agenda-graficos.html" class="active">📊 Agenda de Gráficos</a>
-      <a href="financeiro.html">💰 Financeiro</a>
+        <a href="index.html">🏠 Home</a>
+        <a href="agenda.html">📅 Agenda</a>
+        <a href="novo-cliente.html">👤 Novo Cliente</a>
+        <a href="clientes.html">📋 Lista de Clientes</a>
+        <a href="atendimentos.html">✨ Novo Atendimento</a>
+        <a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
+        <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
+        <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
+        <a href="agenda-graficos.html" class="active">📊 Agenda de Gráficos</a>
+        <a href="financeiro.html">💰 Financeiro</a>
     </nav>
+</div>
+<div class="main">
+  <div class="header">
+    <h1>📊 Agenda de Gráficos</h1>
+    <p>Gerencie os gráficos dos tratamentos diretamente no calendário e adicione novos manualmente.</p>
   </div>
 
-  <!-- CONTEÚDO PRINCIPAL -->
-  <main class="main">
-    <div class="header">
-      <h1>Agenda de Gráficos</h1>
-      <p>Visualize os gráficos agendados no calendário e adicione novos manualmente.</p>
+  <div class="card">
+    <h3>📅 Google Calendar</h3>
+    <div class="cal-wrap">
+      <iframe src="https://calendar.google.com/calendar/embed?src=equilibriumterapiasenergeticas%40gmail.com&ctz=America%2FSao_Paulo&showPrint=0&showTabs=0&showCalendars=0&showTitle=0&showNav=1&showDate=1"></iframe>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;">
+    <div class="card">
+      <h3>➕ Novo Gráfico</h3>
+      <form id="formGrafico" class="form-grid">
+        <div class="form-group">
+          <label>Cliente</label>
+          <input type="text" id="inputCliente" placeholder="Nome do cliente" required>
+        </div>
+        <div class="form-group">
+          <label>Gráfico *</label>
+          <input type="text" id="inputGrafico" placeholder="Ex: Desimpregnador" required>
+        </div>
+        <div class="form-group">
+          <label>Data Início *</label>
+          <input type="date" id="inputDtInicio" required>
+        </div>
+        <div class="form-group">
+          <label>Data Finalização *</label>
+          <input type="date" id="inputDtFim" required>
+        </div>
+        <div class="form-group full">
+          <label>Status</label>
+          <select id="inputStatus">
+            <option value="agendado">Agendado</option>
+            <option value="em_andamento" selected>Em Andamento</option>
+            <option value="concluido">Concluído</option>
+            <option value="adiado">Adiado</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-purple full" style="grid-column:1/-1;margin-top:5px;">Agendar Gráfico</button>
+      </form>
+      <div id="msg" style="font-size:13px;margin-top:10px;color:#6a0dad;"></div>
     </div>
 
-    <div class="cards">
-
-      <!-- CARD 1: Google Calendar + Tabela de Gráficos -->
-      <section class="card">
-        <h2>Calendário Google</h2>
-        <div class="calendar-wrapper">
-          <iframe
-            id="calendarFrame"
-            src="https://calendar.google.com/calendar/embed?src=equilibriumterapiasenergeticas%40gmail.com&ctz=America%2FSao_Paulo"
-            loading="lazy"
-            title="Agenda Google Calendar">
-          </iframe>
-        </div>
-
-        <div class="graficos-table-container">
-          <table class="graficos-table">
-            <thead>
-              <tr>
-                <th>Cliente</th>
-                <th>Gráfico</th>
-                <th>Data Finalização</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="graficosTableBody">
-              <tr>
-                <td colspan="4" style="text-align:center;padding:20px;color:#999;">Carregando gráficos...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- CARD 2: Formulário Novo Gráfico -->
-      <section class="card">
-        <h2>Novo Gráfico</h2>
-        <form id="graficoForm">
-          <div class="form-group">
-            <label for="cliente">Cliente</label>
-            <input type="text" id="cliente" name="cliente" placeholder="Nome do cliente">
-          </div>
-
-          <div class="form-group">
-            <label for="grafico">Gráfico *</label>
-            <input type="text" id="grafico" name="grafico" required placeholder="Nome do gráfico">
-          </div>
-
-          <div class="form-group">
-            <label for="data_inicio">Data Início *</label>
-            <input type="date" id="data_inicio" name="data_inicio" required>
-          </div>
-
-          <div class="form-group">
-            <label for="data_finalizacao">Data Finalização *</label>
-            <input type="date" id="data_finalizacao" name="data_finalizacao" required>
-          </div>
-
-          <div class="form-group">
-            <label for="status">Status</label>
-            <select id="status" name="status">
-              <option value="agendado">Agendado</option>
-              <option value="em_andamento">Em Andamento</option>
-              <option value="concluido">Concluído</option>
-              <option value="adiado">Adiado</option>
-              <option value="cancelado">Cancelado</option>
-            </select>
-          </div>
-
-          <button type="submit" class="btn" id="btnCriar">Agendar Gráfico</button>
-
-          <div class="message" id="messageBox"></div>
-        </form>
-      </section>
-
+    <div class="card">
+      <h3>📋 Gráficos Agendados <button class="btn-gold" style="float:right;padding:5px 12px;font-size:12px;" onclick="carregarGraficos()">🔄</button></h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Cliente</th><th>Gráfico</th><th>Data Fim</th><th>Status</th></tr></thead>
+          <tbody id="tabelaGraficos"><tr><td class="vazio" colspan="4">Carregando...</td></tr></tbody>
+        </table>
+      </div>
     </div>
-  </main>
+  </div>
+</div>
+<script>
+var URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
+var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec';
 
-  <script>
-    (function () {
-      var form = document.getElementById('graficoForm');
-      var dataInicio = document.getElementById('data_inicio');
-      var dataFinalizacao = document.getElementById('data_finalizacao');
-      var messageBox = document.getElementById('messageBox');
-      var btnCriar = document.getElementById('btnCriar');
-      var calendarFrame = document.getElementById('calendarFrame');
-      var graficosTableBody = document.getElementById('graficosTableBody');
+function hojeISO() { var d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function escapeHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function badgeCls(st) {
+  var s=String(st||'').toLowerCase().replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'_');
+  if(s.indexOf('agend')!==-1) return 'b-agendado';
+  if(s.indexOf('andamento')!==-1) return 'b-andamento';
+  if(s.indexOf('conclu')!==-1) return 'b-concluido';
+  if(s.indexOf('adi')!==-1) return 'b-adiado';
+  if(s.indexOf('cancel')!==-1) return 'b-cancelado';
+  return 'b-default';
+}
+function fmtData(v) {
+  if(!v)return'';var s=String(v).trim().split('T')[0];var p=s.split('-');
+  if(p.length===3)return p[2]+'/'+p[1]+'/'+p[0];return s;
+}
 
-      var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec';
-      var URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
-
-      var COR_MAP = {
-        agendado: 5,
-        em_andamento: 1,
-        concluido: 2,
-        adiado: 4,
-        cancelado: 8
-      };
-
-      var STATUS_LABELS = {
-        'agendado': 'Agendado',
-        'em_andamento': 'Em Andamento',
-        'concluido': 'Concluído',
-        'adiado': 'Adiado',
-        'cancelado': 'Cancelado'
-      };
-
-      function todayISO() {
-        var d = new Date();
-        var y = d.getFullYear();
-        var m = String(d.getMonth() + 1).padStart(2, '0');
-        var day = String(d.getDate()).padStart(2, '0');
-        return y + '-' + m + '-' + day;
+function carregarGraficos() {
+  var tb=document.getElementById('tabelaGraficos');
+  tb.innerHTML='<tr><td class="vazio" colspan="4">Carregando...</td></tr>';
+  fetch(URL_ATEND+'?action=tratamentos&_='+Date.now())
+    .then(function(r){return r.text();})
+    .then(function(text){
+      var json=JSON.parse(text);
+      if(!json.success||!Array.isArray(json.columns)||!Array.isArray(json.data)){
+        tb.innerHTML='<tr><td class="vazio" colspan="4">Nenhum grafico agendado.</td></tr>';return;
       }
-
-      var today = todayISO();
-      dataInicio.value = today;
-      dataFinalizacao.value = today;
-
-      dataInicio.addEventListener('change', function () {
-        if (!dataFinalizacao.value || dataFinalizacao.value < dataInicio.value) {
-          dataFinalizacao.value = dataInicio.value;
-        }
+      var cols=json.columns;
+      var dados=json.data;
+      function getVal(linha,nome){
+        for(var i=0;i<cols.length;i++){
+          if(String(cols[i]).toLowerCase().trim()===String(nome).toLowerCase().trim()){
+            return(linha[i]!==undefined&&linha[i]!==null)?String(linha[i]):'';
+          }
+        }return'';
+      }
+      var cg=[];
+      for(var i=0;i<dados.length;i++){
+        var g=getVal(dados[i],'Grafico')||getVal(dados[i],'Gráfico');
+        if(g&&g.trim()!=='')cg.push(dados[i]);
+      }
+      if(!cg.length){tb.innerHTML='<tr><td class="vazio" colspan="4">Nenhum grafico agendado.</td></tr>';return;}
+      cg.sort(function(a,b){
+        var da=getVal(a,'Data Finalizacao')||getVal(a,'Data Finalização')||'';
+        var db=getVal(b,'Data Finalizacao')||getVal(b,'Data Finalização')||'';
+        return da.localeCompare(db);
       });
-
-      function showMessage(text, type) {
-        messageBox.textContent = text;
-        messageBox.className = 'message ' + type;
+      var html='';
+      for(var i=0;i<cg.length;i++){
+        var l=cg[i];
+        var c=getVal(l,'Nome Cliente')||'-';
+        var g=getVal(l,'Grafico')||getVal(l,'Gráfico')||'-';
+        var df=fmtData(getVal(l,'Data Finalizacao')||getVal(l,'Data Finalização'));
+        var st=getVal(l,'Status')||'-';
+        html+='<tr><td>'+escapeHtml(c)+'</td><td>'+escapeHtml(g)+'</td><td>'+escapeHtml(df)+'</td><td><span class="badge '+badgeCls(st)+'">'+escapeHtml(st)+'</span></td></tr>';
       }
+      tb.innerHTML=html;
+    })
+    .catch(function(){tb.innerHTML='<tr><td class="vazio" colspan="4">Erro ao carregar.</td></tr>';});
+}
 
-      function clearMessage() {
-        messageBox.textContent = '';
-        messageBox.className = 'message';
+document.getElementById('formGrafico').addEventListener('submit',function(e){
+  e.preventDefault();
+  var cliente=document.getElementById('inputCliente').value.trim();
+  var grafico=document.getElementById('inputGrafico').value.trim();
+  var dtInicio=document.getElementById('inputDtInicio').value;
+  var dtFim=document.getElementById('inputDtFim').value;
+  var status=document.getElementById('inputStatus').value;
+  if(!cliente||!grafico||!dtInicio||!dtFim){document.getElementById('msg').textContent='Preencha os campos obrigatorios.';return;}
+
+  // Gerar ID de tratamento
+  var n=parseInt(localStorage.getItem('agendaGrafCount')||'600');n++;localStorage.setItem('agendaGrafCount',n.toString());
+  var tratId='TRAT-'+n;
+
+  var payload={
+    tipo:'tratamento',action:'criar_tratamento',
+    cliente_nome:cliente,cliente_id:'',
+    tratamento_id:tratId,data_inicio:dtInicio,
+    graficos:[{grafico:grafico,data_inicio:dtInicio,data_fim:dtFim,status:status}]
+  };
+
+  document.getElementById('msg').textContent='Salvando...';
+  fetch(URL_ATEND,{method:'POST',body:JSON.stringify(payload)})
+    .then(function(r){return r.text();})
+    .then(function(text){
+      var res=JSON.parse(text);
+      if(res.success){
+        document.getElementById('msg').textContent='Grafico agendado com sucesso!';
+        document.getElementById('inputCliente').value='';
+        document.getElementById('inputGrafico').value='';
+        document.getElementById('inputDtFim').value='';
+        var hoje=hojeISO();
+        document.getElementById('inputDtInicio').value=hoje;
+        carregarGraficos();
+        // Envia webhook para o Google Calendar
+        var wh=new URLSearchParams();
+        wh.append('action','criar');wh.append('calendario','graficos');
+        wh.append('cliente',cliente);wh.append('grafico',grafico);
+        wh.append('data_inicio',dtInicio);wh.append('data_fim',dtFim);
+        wh.append('status',status);
+        fetch(WEBHOOK_URL,{method:'POST',body:wh}).catch(function(){});
+      } else {
+        document.getElementById('msg').textContent='Erro: '+(res.message||'desconhecido');
       }
+    })
+    .catch(function(err){document.getElementById('msg').textContent='Erro: '+err.message;});
+});
 
-      function reloadCalendar() {
-        var currentSrc = calendarFrame.src;
-        calendarFrame.src = '';
-        setTimeout(function () {
-          calendarFrame.src = currentSrc + (currentSrc.indexOf('?') !== -1 ? '&' : '?') + 't=' + new Date().getTime();
-        }, 300);
-      }
-
-      function escapeHtml(str) {
-        return String(str)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;')
-          .replace(/'/g, '&#039;');
-      }
-
-      function formatarData(iso) {
-        if (!iso) return '-';
-        var parts = String(iso).split('T')[0].split('-');
-        if (parts.length === 3) {
-          return parts[2] + '/' + parts[1] + '/' + parts[0];
-        }
-        return iso;
-      }
-
-      function statusLabel(value) {
-        return STATUS_LABELS[value] || value || '-';
-      }
-
-      function statusClass(value) {
-        var key = String(value || '').toLowerCase().trim();
-        if (STATUS_LABELS[key]) {
-          return 'status-badge status-' + key;
-        }
-        return 'status-badge';
-      }
-
-      function carregarGraficos() {
-        graficosTableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:#999;">Carregando gráficos...</td></tr>';
-
-        fetch(URL_ATEND + '?action=tratamentos')
-          .then(function (r) {
-            if (!r.ok) {
-              throw new Error('Erro ao carregar gráficos: ' + r.status);
-            }
-            return r.text();
-          })
-          .then(function (text) {
-            var data;
-            try {
-              data = JSON.parse(text);
-            } catch (e) {
-              throw new Error('Resposta inválida do servidor.');
-            }
-
-            var lista = [];
-            if (Array.isArray(data)) {
-              lista = data;
-            } else if (data && Array.isArray(data.tratamentos)) {
-              lista = data.tratamentos;
-            } else if (data && Array.isArray(data.data)) {
-              lista = data.data;
-            } else if (data && Array.isArray(data.registros)) {
-              lista = data.registros;
-            }
-
-            lista = lista.filter(function (item) {
-              var grafico = (item.grafico || item.graficos || item.nome_grafico || item.nomeGrafico || '').toString().trim();
-              return grafico.length > 0;
-            });
-
-            if (lista.length === 0) {
-              graficosTableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:#999;">Nenhum gráfico agendado.</td></tr>';
-              return;
-            }
-
-            graficosTableBody.innerHTML = lista.map(function (item) {
-              var cliente = (item.cliente || item.nome_cliente || item.nomeCliente || '-').toString();
-              var grafico = (item.grafico || item.graficos || item.nome_grafico || item.nomeGrafico || '-').toString();
-              var dataFinal = formatarData(item.data_finalizacao || item.dataFinalizacao || item.data_fim || item.dataFim || '');
-              var status = item.status || '';
-              var sLabel = statusLabel(status);
-              var sClass = statusClass(status);
-
-              return '<tr>' +
-                '<td>' + escapeHtml(cliente) + '</td>' +
-                '<td>' + escapeHtml(grafico) + '</td>' +
-                '<td>' + escapeHtml(dataFinal) + '</td>' +
-                '<td><span class="' + sClass + '">' + escapeHtml(sLabel) + '</span></td>' +
-                '</tr>';
-            }).join('');
-          })
-          .catch(function (err) {
-            console.error(err);
-            graficosTableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:#a8281c;">Erro ao carregar gráficos.</td></tr>';
-          });
-      }
-
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        clearMessage();
-
-        var cliente = document.getElementById('cliente').value.trim();
-        var grafico = document.getElementById('grafico').value.trim();
-        var dtInicio = dataInicio.value;
-        var dtFinalizacao = dataFinalizacao.value;
-        var status = document.getElementById('status').value;
-
-        if (!grafico || !dtInicio || !dtFinalizacao) {
-          showMessage('Preencha os campos obrigatórios: Gráfico, Data Início e Data Finalização.', 'error');
-          return;
-        }
-
-        var cor = COR_MAP[status] !== undefined ? COR_MAP[status] : 5;
-
-        var params = new URLSearchParams();
-        params.append('action', 'criar');
-        params.append('calendario', 'graficos');
-        params.append('cliente', cliente);
-        params.append('grafico', grafico);
-        params.append('data_inicio', dtInicio);
-        params.append('data_finalizacao', dtFinalizacao);
-        params.append('status', status);
-        params.append('cor', cor);
-        params.append('tipo', 'grafico');
-
-        btnCriar.disabled = true;
-        btnCriar.textContent = 'Agendando...';
-
-        fetch(WEBHOOK_URL, {
-          method: 'POST',
-          body: params
-        })
-          .then(function (response) {
-            if (!response.ok) {
-              throw new Error('Erro na resposta do servidor: ' + response.status);
-            }
-            return response.text().catch(function () { return ''; });
-          })
-          .then(function () {
-            showMessage('Gráfico agendado com sucesso! O calendário será recarregado.', 'success');
-            form.reset();
-            dataInicio.value = today;
-            dataFinalizacao.value = today;
-            reloadCalendar();
-            carregarGraficos();
-          })
-          .catch(function (err) {
-            console.error(err);
-            showMessage('Erro ao agendar gráfico. Tente novamente.', 'error');
-          })
-          .finally(function () {
-            btnCriar.disabled = false;
-            btnCriar.textContent = 'Agendar Gráfico';
-          });
-      });
-
-      carregarGraficos();
-    })();
-  </script>
+document.getElementById('inputDtInicio').value=hojeISO();
+carregarGraficos();
+</script>
 </body>
 </html>
