@@ -5,544 +5,815 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agenda de Gráficos - Equilibrium</title>
 <style>
-:root {
-  --roxo-escuro: #4a148c;
-  --roxo: #6a1b9a;
-  --roxo-claro: #9c27b0;
-  --roxo-suave: #e1bee7;
-  --bg: #f3e5f5;
-  --card-bg: #ffffff;
-  --texto: #333333;
-  --texto-suave: #666666;
-  --borda: #e0e0e0;
-  --sombra: 0 4px 12px rgba(74, 20, 140, 0.15);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'Segoe UI', Tahoma, sans-serif;
-  background: var(--bg);
-  color: var(--texto);
-  display: flex;
-  min-height: 100vh;
-}
-.sidebar {
-  width: 260px;
-  background: linear-gradient(180deg, var(--roxo-escuro), var(--roxo));
-  color: #fff;
-  padding: 20px 0;
-  min-height: 100vh;
-  position: sticky;
-  top: 0;
-}
-.sidebar h2 {
-  text-align: center;
-  font-size: 20px;
-  margin-bottom: 25px;
-  letter-spacing: 1px;
-}
-.sidebar a {
-  display: block;
-  padding: 14px 22px;
-  color: #fff;
-  text-decoration: none;
-  font-size: 15px;
-  transition: background 0.2s, padding 0.2s;
-  border-left: 4px solid transparent;
-}
-.sidebar a:hover {
-  background: rgba(255,255,255,0.12);
-  padding-left: 28px;
-}
-.sidebar a.active {
-  background: rgba(255,255,255,0.18);
-  border-left-color: var(--roxo-claro);
-  font-weight: 600;
-}
-.main {
-  flex: 1;
-  padding: 25px 30px;
-  overflow-x: auto;
-}
-.header h1 {
-  font-size: 26px;
-  color: var(--roxo-escuro);
-  margin-bottom: 4px;
-}
-.header p {
-  color: var(--texto-suave);
-  margin-bottom: 22px;
-  font-size: 14px;
-}
-.grid {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 22px;
-}
-@media (max-width: 980px) {
-  .grid { grid-template-columns: 1fr; }
-  .sidebar { width: 200px; }
-}
-@media (max-width: 640px) {
-  body { flex-direction: column; }
-  .sidebar { width: 100%; min-height: auto; position: relative; }
-}
-.card {
-  background: var(--card-bg);
-  border-radius: 14px;
-  box-shadow: var(--sombra);
-  padding: 20px;
-  margin-bottom: 20px;
-}
-.card h3 {
-  color: var(--roxo-escuro);
-  margin-bottom: 14px;
-  font-size: 18px;
-}
-iframe.calendar {
-  width: 100%;
-  height: 500px;
-  border: 0;
-  border-radius: 10px;
-}
-.table-wrap { overflow-x: auto; }
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-th, td {
-  padding: 10px 12px;
-  text-align: left;
-  border-bottom: 1px solid var(--borda);
-  font-size: 14px;
-}
-th {
-  background: var(--roxo-suave);
-  color: var(--roxo-escuro);
-  font-weight: 600;
-}
-tr:hover td { background: #faf5fc; }
-.btn {
-  background: var(--roxo);
-  color: #fff;
-  border: none;
-  padding: 9px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.2s;
-}
-.btn:hover { background: var(--roxo-escuro); }
-.btn-sec { background: var(--roxo-claro); }
-.btn-sec:hover { background: var(--roxo); }
-.toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-.form-group { margin-bottom: 14px; position: relative; }
-label {
-  display: block;
-  font-size: 13px;
-  margin-bottom: 5px;
-  color: var(--roxo-escuro);
-  font-weight: 600;
-}
-input, select {
-  width: 100%;
-  padding: 9px 11px;
-  border: 1px solid var(--borda);
-  border-radius: 8px;
-  font-size: 14px;
-  outline: none;
-  transition: border 0.2s;
-}
-input:focus, select:focus { border-color: var(--roxo-claro); }
-.autocomplete-list {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: #fff;
-  border: 1px solid var(--borda);
-  border-radius: 8px;
-  max-height: 180px;
-  overflow-y: auto;
-  z-index: 100;
-  display: none;
-  box-shadow: var(--sombra);
-}
-.autocomplete-list div {
-  padding: 9px 12px;
-  cursor: pointer;
-  font-size: 14px;
-}
-.autocomplete-list div:hover { background: var(--roxo-suave); }
-.badge {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-  display: inline-block;
-}
-.badge-pendente { background: #fff3cd; color: #856404; }
-.badge-em-andamento { background: #cce5ff; color: #004085; }
-.badge-concluido { background: #d4edda; color: #155724; }
-.badge-cancelado { background: #f8d7da; color: #721c24; }
-.badge-default { background: #e2e3e5; color: #383d41; }
-.msg {
-  margin-top: 10px;
-  padding: 9px;
-  border-radius: 8px;
-  font-size: 13px;
-  display: none;
-}
-.msg-ok { background: #d4edda; color: #155724; }
-.msg-err { background: #f8d7da; color: #721c24; }
+  :root {
+    --roxo-principal: #6a1b9a;
+    --roxo-claro: #9c27b0;
+    --roxo-escuro: #4a148c;
+    --roxo-fundo: #f3e5f5;
+    --roxo-hover: #7b1fa2;
+    --branco: #ffffff;
+    --cinza-claro: #f5f5f5;
+    --cinza-medio: #e0e0e0;
+    --cinza-texto: #555555;
+    --verde: #2e7d32;
+    --vermelho: #c62828;
+    --amarelo: #f9a825;
+    --sombra: 0 2px 8px rgba(74, 20, 140, 0.15);
+    --sombra-hover: 0 4px 16px rgba(74, 20, 140, 0.25);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  body {
+    background: linear-gradient(135deg, var(--roxo-fundo) 0%, #ede7f6 100%);
+    min-height: 100vh;
+    display: flex;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 260px;
+    background: linear-gradient(180deg, var(--roxo-escuro) 0%, var(--roxo-principal) 100%);
+    color: var(--branco);
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.2);
+    z-index: 100;
+  }
+
+  .sidebar-header {
+    padding: 24px 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .sidebar-header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .sidebar-header p {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-top: 4px;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 0;
+  }
+
+  .sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent;
+  }
+
+  .sidebar-nav a:hover {
+    background: rgba(255,255,255,0.1);
+    color: var(--branco);
+    border-left-color: var(--roxo-claro);
+  }
+
+  .sidebar-nav a.active {
+    background: rgba(255,255,255,0.18);
+    color: var(--branco);
+    border-left-color: #e1bee7;
+    font-weight: 600;
+  }
+
+  .sidebar-nav a .icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+  }
+
+  /* Main */
+  .main {
+    margin-left: 260px;
+    flex: 1;
+    padding: 28px 32px;
+    min-height: 100vh;
+  }
+
+  .header-title {
+    margin-bottom: 24px;
+  }
+
+  .header-title h2 {
+    font-size: 28px;
+    color: var(--roxo-escuro);
+    font-weight: 700;
+  }
+
+  .header-title p {
+    color: var(--cinza-texto);
+    margin-top: 6px;
+    font-size: 15px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 24px;
+  }
+
+  .card {
+    background: var(--branco);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--sombra);
+    margin-bottom: 24px;
+  }
+
+  .card h3 {
+    color: var(--roxo-escuro);
+    font-size: 18px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Calendar iframe */
+  .calendar-wrapper {
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--cinza-medio);
+    margin-bottom: 20px;
+  }
+
+  .calendar-wrapper iframe {
+    width: 100%;
+    height: 500px;
+    border: 0;
+    display: block;
+  }
+
+  /* Table */
+  .table-wrapper {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid var(--cinza-medio);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead th {
+    background: var(--roxo-principal);
+    color: var(--branco);
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--cinza-medio);
+    color: var(--cinza-texto);
+  }
+
+  tbody tr:hover {
+    background: var(--roxo-fundo);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .status-concluido { background: #e8f5e9; color: var(--verde); }
+  .status-andamento { background: #fff8e1; color: var(--amarelo); }
+  .status-pendente  { background: #ffebee; color: var(--vermelho); }
+  .status-padrao    { background: var(--cinza-claro); color: var(--cinza-texto); }
+
+  .btn {
+    background: var(--roxo-principal);
+    color: var(--branco);
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn:hover {
+    background: var(--roxo-hover);
+    box-shadow: var(--sombra-hover);
+  }
+
+  .btn-secondary {
+    background: var(--roxo-claro);
+  }
+
+  .btn-secondary:hover {
+    background: var(--roxo-hover);
+  }
+
+  .btn-block {
+    width: 100%;
+    justify-content: center;
+    padding: 12px;
+  }
+
+  .table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  /* Form */
+  .form-group {
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--roxo-escuro);
+    margin-bottom: 6px;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--cinza-medio);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--cinza-texto);
+    transition: border 0.2s ease;
+    background: var(--branco);
+  }
+
+  .form-group input:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: var(--roxo-claro);
+    box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.15);
+  }
+
+  .autocomplete-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--branco);
+    border: 1px solid var(--cinza-medio);
+    border-radius: 8px;
+    max-height: 180px;
+    overflow-y: auto;
+    z-index: 50;
+    box-shadow: var(--sombra-hover);
+    display: none;
+  }
+
+  .autocomplete-list div {
+    padding: 10px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--cinza-texto);
+    border-bottom: 1px solid var(--cinza-claro);
+  }
+
+  .autocomplete-list div:hover {
+    background: var(--roxo-fundo);
+  }
+
+  .autocomplete-list div:last-child {
+    border-bottom: none;
+  }
+
+  .empty-row {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    padding: 20px;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 20px;
+    color: var(--roxo-principal);
+    font-weight: 600;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--roxo-escuro);
+    color: var(--branco);
+    padding: 14px 20px;
+    border-radius: 8px;
+    box-shadow: var(--sombra-hover);
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    font-size: 14px;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .toast.success { background: var(--verde); }
+  .toast.error { background: var(--vermelho); }
+
+  @media (max-width: 1024px) {
+    .grid { grid-template-columns: 1fr; }
+    .sidebar { width: 220px; }
+    .main { margin-left: 220px; }
+  }
+
+  @media (max-width: 768px) {
+    .sidebar { width: 70px; }
+    .sidebar-header h1 { font-size: 14px; }
+    .sidebar-header p { display: none; }
+    .sidebar-nav a span:not(.icon) { display: none; }
+    .main { margin-left: 70px; padding: 16px; }
+  }
 </style>
 </head>
 <body>
 
-<aside class="sidebar">
-  <h2>Equilibrium</h2>
-  <a href="home.html">🏠 Home</a>
-  <a href="agenda.html">📅 Agenda</a>
-  <a href="novo-cliente.html">👤 Novo Cliente</a>
-  <a href="lista-clientes.html">📋 Lista de Clientes</a>
-  <a href="novo-atendimento.html">✨ Novo Atendimento</a>
-  <a href="lista-atendimento.html">📜 Lista de Atendimento</a>
-  <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
-  <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
-  <a href="agenda-graficos.html" class="active">📊 Agenda de Gráficos</a>
-  <a href="financeiro.html">💰 Financeiro</a>
-</aside>
+  <!-- Sidebar Equilibrium -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h1>Equilibrium</h1>
+      <p>Sistema de Gestão</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="index.html"><span class="icon">🏠</span><span>Home</span></a>
+      <a href="agenda.html"><span class="icon">📅</span><span>Agenda</span></a>
+      <a href="novo-cliente.html"><span class="icon">👤</span><span>Novo Cliente</span></a>
+      <a href="lista-clientes.html"><span class="icon">📋</span><span>Lista de Clientes</span></a>
+      <a href="novo-atendimento.html"><span class="icon">🩺</span><span>Novo Atendimento</span></a>
+      <a href="lista-atendimento.html"><span class="icon">📑</span><span>Lista de Atendimento</span></a>
+      <a href="novo-tratamento.html"><span class="icon">💊</span><span>Novo Tratamento</span></a>
+      <a href="lista-tratamentos.html"><span class="icon">🗂️</span><span>Lista de Tratamentos</span></a>
+      <a href="agenda-graficos.html" class="active"><span class="icon">📊</span><span>Agenda de Gráficos</span></a>
+      <a href="financeiro.html"><span class="icon">💰</span><span>Financeiro</span></a>
+    </nav>
+  </aside>
 
-<main class="main">
-  <div class="header">
-    <h1>📊 Agenda de Gráficos</h1>
-    <p>Visualize o calendário, agende novos gráficos e acompanhe o status dos gráficos em andamento.</p>
-  </div>
+  <!-- Main -->
+  <main class="main">
+    <div class="header-title">
+      <h2>📊 Agenda de Gráficos</h2>
+      <p>Gerencie o agendamento e acompanhamento dos gráficos dos clientes.</p>
+    </div>
 
-  <div class="grid">
-    <!-- Card Esquerdo: Calendário + Tabela -->
-    <div>
-      <div class="card">
-        <h3>📅 Calendário</h3>
-        <iframe class="calendar" src="https://calendar.google.com/calendar/embed?src=equilibriumterapiasenergeticas%40gmail.com&ctz=America%2FSao_Paulo&showPrint=0&showTabs=0&showCalendars=0&showTitle=0&showNav=1&showDate=1"></iframe>
+    <div class="grid">
+      <!-- Coluna Esquerda -->
+      <div>
+        <div class="card">
+          <h3>📅 Calendário de Gráficos</h3>
+          <div class="calendar-wrapper">
+            <iframe
+              src="https://calendar.google.com/calendar/embed?src=3c23c1b339dd330985fe7b0541c3810edc7e38fe93be31181ceb0a0c69d840cd%40group.calendar.google.com&ctz=America%2FSao_Paulo&showPrint=0&showTabs=0&showCalendars=0&showTitle=0&showNav=1&showDate=1&mode=MONTH"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen></iframe>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="table-header">
+            <h3 style="margin:0;">📋 Gráficos Agendados</h3>
+            <button class="btn btn-secondary" onclick="carregarGraficos()">🔄 Atualizar</button>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Gráfico</th>
+                  <th>Data Fim</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyGraficos">
+                <tr><td colspan="4" class="empty-row">Carregando gráficos...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
-      <div class="card">
-        <div class="toolbar">
-          <h3>📋 Gráficos Agendados</h3>
-          <button class="btn btn-sec" onclick="carregarGraficos()">🔄 Atualizar</button>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Cliente</th>
-                <th>Gráfico</th>
-                <th>Data Fim</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="tbodyGraficos">
-              <tr><td colspan="4" style="text-align:center;color:#999;">Carregando...</td></tr>
-            </tbody>
-          </table>
+      <!-- Coluna Direita -->
+      <div>
+        <div class="card">
+          <h3>➕ Novo Gráfico</h3>
+          <form id="formGrafico" autocomplete="off">
+            <div class="form-group">
+              <label for="clienteInput">Cliente</label>
+              <input type="text" id="clienteInput" placeholder="Digite o nome do cliente..." required>
+              <div class="autocomplete-list" id="autocompleteList"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="graficoSelect">Gráfico</label>
+              <select id="graficoSelect" required>
+                <option value="">Carregando gráficos...</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="dataInicio">Data Início</label>
+              <input type="date" id="dataInicio" required>
+            </div>
+
+            <div class="form-group">
+              <label for="dataFim">Data Finalização</label>
+              <input type="date" id="dataFim" required>
+            </div>
+
+            <div class="form-group">
+              <label for="statusSelect">Status</label>
+              <select id="statusSelect" required>
+                <option value="Pendente">Pendente</option>
+                <option value="Em Andamento">Em Andamento</option>
+                <option value="Concluído">Concluído</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-block">Agendar Gráfico</button>
+          </form>
         </div>
       </div>
     </div>
+  </main>
 
-    <!-- Card Direito: Novo Gráfico -->
-    <div class="card">
-      <h3>➕ Novo Gráfico</h3>
-      <form id="formGrafico">
-        <div class="form-group">
-          <label for="cliente">Cliente *</label>
-          <input type="text" id="cliente" autocomplete="off" placeholder="Digite o nome do cliente...">
-          <input type="hidden" id="clienteId">
-          <div class="autocomplete-list" id="autocompleteCliente"></div>
-        </div>
-
-        <div class="form-group">
-          <label for="grafico">Gráfico *</label>
-          <select id="grafico">
-            <option value="">Carregando...</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="dataInicio">Data Início *</label>
-          <input type="date" id="dataInicio">
-        </div>
-
-        <div class="form-group">
-          <label for="dataFim">Data Finalização</label>
-          <input type="date" id="dataFim">
-        </div>
-
-        <div class="form-group">
-          <label for="status">Status</label>
-          <select id="status">
-            <option value="Pendente">Pendente</option>
-            <option value="Em Andamento">Em Andamento</option>
-            <option value="Concluído">Concluído</option>
-            <option value="Cancelado">Cancelado</option>
-          </select>
-        </div>
-
-        <button type="submit" class="btn" style="width:100%;">Agendar Gráfico</button>
-        <div class="msg" id="msgForm"></div>
-      </form>
-    </div>
-  </div>
-</main>
+  <div class="toast" id="toast"></div>
 
 <script>
-var URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
-var URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
-var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec';
+  const URL_ATEND = "https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec";
+  const URL_CLIENTES = "https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec";
+  const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec";
 
-var listaClientes = [];
+  let listaClientes = [];
+  let graficosPredef = [];
 
-function normalizar(str) {
-  if (str === null || str === undefined) return '';
-  return String(str).normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
-}
+  /* ---------- Utilitários ---------- */
+  function showToast(msg, tipo) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + (tipo || '');
+    setTimeout(() => t.classList.add('show'), 10);
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
 
-function getVal(row, columns, nome) {
-  if (!row || !columns) return '';
-  var alvo = normalizar(nome);
-  for (var i = 0; i < columns.length; i++) {
-    if (normalizar(columns[i]) === alvo) {
-      return row[i] !== undefined && row[i] !== null ? row[i] : '';
+  function normalizarTexto(str) {
+    if (!str) return '';
+    return String(str).normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
+  }
+
+  function formatarDataBR(dataStr) {
+    if (!dataStr) return '-';
+    let d = new Date(dataStr);
+    if (isNaN(d)) {
+      // tenta parse dd/mm/yyyy
+      const parts = String(dataStr).split('/');
+      if (parts.length === 3) {
+        d = new Date(parts[2], parts[1] - 1, parts[0]);
+      }
+    }
+    if (isNaN(d)) return String(dataStr);
+    const dia = String(d.getDate()).padStart(2, '0');
+    const mes = String(d.getMonth() + 1).padStart(2, '0');
+    const ano = d.getFullYear();
+    return dia + '/' + mes + '/' + ano;
+  }
+
+  function gerarIdTratamento() {
+    let seq = parseInt(localStorage.getItem('TRAT_SEQ') || '0', 10);
+    seq += 1;
+    localStorage.setItem('TRAT_SEQ', String(seq));
+    return 'TRAT-' + String(seq).padStart(6, '0');
+  }
+
+  function statusClass(status) {
+    const s = normalizarTexto(status);
+    if (s.indexOf('conclu') >= 0) return 'status-concluido';
+    if (s.indexOf('andamento') >= 0) return 'status-andamento';
+    if (s.indexOf('pendente') >= 0) return 'status-pendente';
+    return 'status-padrao';
+  }
+
+  /* ---------- Carregar Clientes (autocomplete) ---------- */
+  async function carregarClientes() {
+    try {
+      const r = await fetch(URL_CLIENTES);
+      const text = await r.text();
+      const data = JSON.parse(text);
+      let arr = [];
+      if (Array.isArray(data)) {
+        arr = data;
+      } else if (data && Array.isArray(data.data)) {
+        arr = data.data;
+      } else if (data && Array.isArray(data.clientes)) {
+        arr = data.clientes;
+      } else if (data && Array.isArray(data.values)) {
+        arr = data.values;
+      }
+      listaClientes = arr.map(c => {
+        if (typeof c === 'string') return c;
+        return c.Nome || c.nome || c.name || c.Cliente || c.cliente || '';
+      }).filter(Boolean);
+    } catch (e) {
+      console.error('Erro ao carregar clientes:', e);
+      listaClientes = [];
     }
   }
-  for (var j = 0; j < columns.length; j++) {
-    if (normalizar(columns[j]).indexOf(alvo) !== -1) {
-      return row[j] !== undefined && row[j] !== null ? row[j] : '';
-    }
-  }
-  return '';
-}
 
-function formatarData(valor) {
-  if (!valor) return '';
-  var s = String(valor);
-  if (s.indexOf('/') !== -1) return s;
-  if (s.indexOf('-') !== -1 && s.length >= 10) {
-    var partes = s.substring(0, 10).split('-');
-    if (partes.length === 3) return partes[2] + '/' + partes[1] + '/' + partes[0];
-  }
-  var d = new Date(s);
-  if (!isNaN(d.getTime())) {
-    return ('0'+d.getDate()).slice(-2) + '/' + ('0'+(d.getMonth()+1)).slice(-2) + '/' + d.getFullYear();
-  }
-  return s;
-}
+  function setupAutocomplete() {
+    const input = document.getElementById('clienteInput');
+    const list = document.getElementById('autocompleteList');
 
-function statusBadge(status) {
-  var s = normalizar(status);
-  var cls = 'badge-default';
-  if (s.indexOf('pendente') !== -1) cls = 'badge-pendente';
-  else if (s.indexOf('andamento') !== -1) cls = 'badge-em-andamento';
-  else if (s.indexOf('conclu') !== -1) cls = 'badge-concluido';
-  else if (s.indexOf('cancel') !== -1) cls = 'badge-cancelado';
-  return '<span class="badge ' + cls + '">' + (status || 'Pendente') + '</span>';
-}
-
-function mostrarMsg(texto, ok) {
-  var el = document.getElementById('msgForm');
-  el.textContent = texto;
-  el.className = 'msg ' + (ok ? 'msg-ok' : 'msg-err');
-  el.style.display = 'block';
-  setTimeout(function() { el.style.display = 'none'; }, 4000);
-}
-
-function carregarClientes() {
-  fetch(URL_CLIENTES)
-    .then(function(r) { return r.text(); })
-    .then(function(text) {
-      var data = JSON.parse(text);
-      var cols = data.columns || [];
-      var rows = data.data || [];
-      listaClientes = rows.map(function(r) {
-        return {
-          id: getVal(r, cols, 'ID') || getVal(r, cols, 'Id'),
-          nome: getVal(r, cols, 'Nome') || getVal(r, cols, 'Cliente')
-        };
-      }).filter(function(c) { return c.nome; });
-    })
-    .catch(function(err) { console.error('Erro clientes:', err); });
-}
-
-function carregarGraficosPredef() {
-  var sel = document.getElementById('grafico');
-  sel.innerHTML = '<option value="">Carregando...</option>';
-  fetch(URL_ATEND + '?action=configuracoes')
-    .then(function(r) { return r.text(); })
-    .then(function(text) {
-      var data = JSON.parse(text);
-      var graficos = [];
-      var cfg = data.configuracoes || data.config || data;
-      var chaves = Object.keys(cfg);
-      for (var i = 0; i < chaves.length; i++) {
-        if (normalizar(chaves[i]) === 'graficos' || normalizar(chaves[i]).indexOf('grafico') !== -1) {
-          var val = cfg[chaves[i]];
-          if (Array.isArray(val)) graficos = val;
-          else if (typeof val === 'string') graficos = val.split(/[,;\n]/).map(function(s){return s.trim();}).filter(Boolean);
-          break;
-        }
-      }
-      if (graficos.length === 0) {
-        for (var k in cfg) {
-          if (Array.isArray(cfg[k]) && normalizar(k).indexOf('grafico') !== -1) {
-            graficos = cfg[k]; break;
-          }
-        }
-      }
-      sel.innerHTML = '<option value="">Selecione...</option>';
-      graficos.forEach(function(g) {
-        var opt = document.createElement('option');
-        opt.value = g; opt.textContent = g;
-        sel.appendChild(opt);
-      });
-      if (graficos.length === 0) sel.innerHTML = '<option value="">Nenhum gráfico cadastrado</option>';
-    })
-    .catch(function(err) {
-      console.error('Erro graficos predef:', err);
-      sel.innerHTML = '<option value="">Erro ao carregar</option>';
-    });
-}
-
-function carregarGraficos() {
-  var tbody = document.getElementById('tbodyGraficos');
-  tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#999;">Carregando...</td></tr>';
-  fetch(URL_ATEND + '?action=tratamentos')
-    .then(function(r) { return r.text(); })
-    .then(function(text) {
-      var data = JSON.parse(text);
-      var cols = data.columns || [];
-      var rows = data.data || [];
-      var itens = [];
-      rows.forEach(function(r) {
-        var grafico = getVal(r, cols, 'Gráfico');
-        if (!grafico) return;
-        itens.push({
-          cliente: getVal(r, cols, 'Cliente') || getVal(r, cols, 'Cliente Nome'),
-          grafico: grafico,
-          dataFim: getVal(r, cols, 'Data Finalização') || getVal(r, cols, 'Data Fim') || getVal(r, cols, 'Data Finalizacao'),
-          status: getVal(r, cols, 'Status')
+    input.addEventListener('input', function() {
+      const val = normalizarTexto(this.value);
+      list.innerHTML = '';
+      if (!val) { list.style.display = 'none'; return; }
+      const matches = listaClientes.filter(c => normalizarTexto(c).indexOf(val) >= 0).slice(0, 10);
+      if (matches.length === 0) { list.style.display = 'none'; return; }
+      matches.forEach(m => {
+        const div = document.createElement('div');
+        div.textContent = m;
+        div.addEventListener('click', function() {
+          input.value = m;
+          list.innerHTML = '';
+          list.style.display = 'none';
         });
+        list.appendChild(div);
       });
-      itens.sort(function(a, b) {
-        var da = a.dataFim || ''; var db = b.dataFim || '';
-        return da.toString().localeCompare(db.toString());
-      });
-      if (itens.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#999;">Nenhum gráfico agendado.</td></tr>';
+      list.style.display = 'block';
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.form-group') || e.target.id !== 'clienteInput') {
+        if (e.target.id !== 'clienteInput') list.style.display = 'none';
+      }
+    });
+  }
+
+  /* ---------- Carregar Gráficos Predefinidos ---------- */
+  async function carregarGraficosPredef() {
+    const sel = document.getElementById('graficoSelect');
+    try {
+      const r = await fetch(URL_ATEND + '?_=' + Date.now());
+      const text = await r.text();
+      const data = JSON.parse(text);
+      let graficos = [];
+      if (data && Array.isArray(data.Graficos)) {
+        graficos = data.Graficos;
+      } else if (data && Array.isArray(data.graficos)) {
+        graficos = data.graficos;
+      } else if (data && data.Configuracoes && Array.isArray(data.Configuracoes.Graficos)) {
+        graficos = data.Configuracoes.Graficos;
+      } else if (data && data.Configuracoes && Array.isArray(data.Configuracoes)) {
+        const cfg = data.Configuracoes.find(c => c.Graficos || c.graficos);
+        if (cfg) graficos = cfg.Graficos || cfg.graficos || [];
+      }
+      graficosPredef = graficos;
+      sel.innerHTML = '';
+      if (graficos.length === 0) {
+        sel.innerHTML = '<option value="">Nenhum gráfico cadastrado</option>';
         return;
       }
+      sel.innerHTML = '<option value="">Selecione um gráfico...</option>';
+      graficos.forEach(g => {
+        const nome = typeof g === 'string' ? g : (g.Nome || g.nome || g.name || g.Grupo || g.grupo || '');
+        if (nome) {
+          const opt = document.createElement('option');
+          opt.value = nome;
+          opt.textContent = nome;
+          sel.appendChild(opt);
+        }
+      });
+    } catch (e) {
+      console.error('Erro ao carregar gráficos predefinidos:', e);
+      sel.innerHTML = '<option value="">Erro ao carregar gráficos</option>';
+    }
+  }
+
+  /* ---------- Carregar Gráficos Agendados ---------- */
+  function getVal(row, columns, chave) {
+    if (!columns || !row) return '';
+    const chaveNorm = normalizarTexto(chave);
+    for (let i = 0; i < columns.length; i++) {
+      const colNorm = normalizarTexto(columns[i]);
+      if (colNorm === chaveNorm || colNorm.indexOf(chaveNorm) >= 0 || chaveNorm.indexOf(colNorm) >= 0) {
+        return row[i] != null ? row[i] : '';
+      }
+    }
+    return '';
+  }
+
+  async function carregarGraficos() {
+    const tbody = document.getElementById('tbodyGraficos');
+    tbody.innerHTML = '<tr><td colspan="4" class="loading">Carregando gráficos...</td></tr>';
+    try {
+      const r = await fetch(URL_ATEND + '?action=tratamentos');
+      const text = await r.text();
+      const data = JSON.parse(text);
+      let columns = data.columns || data.Columns || [];
+      let rows = data.data || data.rows || data.values || [];
+      if (!Array.isArray(columns)) columns = [];
+      if (!Array.isArray(rows)) rows = [];
+
+      let itens = rows.map(row => {
+        const cliente = getVal(row, columns, 'Cliente') || getVal(row, columns, 'Nome');
+        const grafico = getVal(row, columns, 'Grafico') || getVal(row, columns, 'Grupo');
+        const dataFim = getVal(row, columns, 'Data Finalizacao') ||
+                       getVal(row, columns, 'Data Fim') ||
+                       getVal(row, columns, 'Finalizacao') ||
+                       getVal(row, columns, 'Fim');
+        const status = getVal(row, columns, 'Status');
+        return { cliente, grafico, dataFim, status };
+      }).filter(it => it.grafico && String(it.grafico).trim() !== '');
+
+      itens.sort((a, b) => {
+        const da = new Date(a.dataFim);
+        const db = new Date(b.dataFim);
+        if (isNaN(da) && isNaN(db)) return 0;
+        if (isNaN(da)) return 1;
+        if (isNaN(db)) return -1;
+        return da - db;
+      });
+
+      if (itens.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-row">Nenhum gráfico agendado.</td></tr>';
+        return;
+      }
+
       tbody.innerHTML = '';
-      itens.forEach(function(it) {
-        var tr = document.createElement('tr');
-        tr.innerHTML = '<td>' + (it.cliente || '-') + '</td><td>' + (it.grafico || '-') + '</td><td>' + formatarData(it.dataFim) + '</td><td>' + statusBadge(it.status) + '</td>';
+      itens.forEach(it => {
+        const tr = document.createElement('tr');
+        const cls = statusClass(it.status);
+        tr.innerHTML =
+          '<td>' + (it.cliente || '-') + '</td>' +
+          '<td>' + (it.grafico || '-') + '</td>' +
+          '<td>' + formatarDataBR(it.dataFim) + '</td>' +
+          '<td><span class="status-badge ' + cls + '">' + (it.status || '-') + '</span></td>';
         tbody.appendChild(tr);
       });
-    })
-    .catch(function(err) {
-      console.error('Erro graficos:', err);
-      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#c00;">Erro ao carregar gráficos.</td></tr>';
-    });
-}
+    } catch (e) {
+      console.error('Erro ao carregar gráficos:', e);
+      tbody.innerHTML = '<tr><td colspan="4" class="empty-row">Erro ao carregar gráficos.</td></tr>';
+    }
+  }
 
-function setupAutocomplete() {
-  var input = document.getElementById('cliente');
-  var hidden = document.getElementById('clienteId');
-  var box = document.getElementById('autocompleteCliente');
-  input.addEventListener('input', function() {
-    hidden.value = '';
-    var q = normalizar(input.value);
-    box.innerHTML = '';
-    if (!q) { box.style.display = 'none'; return; }
-    var filtrados = listaClientes.filter(function(c) {
-      return normalizar(c.nome).indexOf(q) !== -1;
-    }).slice(0, 10);
-    if (filtrados.length === 0) { box.style.display = 'none'; return; }
-    filtrados.forEach(function(c) {
-      var div = document.createElement('div');
-      div.textContent = c.nome;
-      div.addEventListener('click', function() {
-        input.value = c.nome;
-        hidden.value = c.id;
-        box.style.display = 'none';
+  /* ---------- Submit ---------- */
+    /* ---------- Submit ---------- */
+  document.getElementById('formGrafico').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const cliente = document.getElementById('clienteInput').value.trim();
+    const grafico = document.getElementById('graficoSelect').value;
+    const dataInicio = document.getElementById('dataInicio').value;
+    const dataFim = document.getElementById('dataFim').value;
+    const status = document.getElementById('statusSelect').value;
+
+    if (!cliente || !grafico || !dataInicio || !dataFim || !status) {
+      showToast('Preencha todos os campos.', 'error');
+      return;
+    }
+
+    const idTrat = gerarIdTratamento();
+    const payload = {
+      tipo: 'tratamento',
+      action: 'criar_tratamento',
+      cliente_nome: cliente,
+      cliente_id: '',
+      tratamento_id: idTrat,
+      data_inicio: dataInicio,
+      graficos: [{
+        grafico: grafico,
+        data_inicio: dataInicio,
+        data_fim: dataFim,
+        status: status
+      }]
+    };
+
+    const btn = this.querySelector('button[type=submit]');
+    const txtOriginal = btn.textContent;
+    btn.textContent = 'Agendando...';
+    btn.disabled = true;
+
+    try {
+      const r = await fetch(URL_ATEND, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        redirect: 'follow'
       });
-      box.appendChild(div);
-    });
-    box.style.display = 'block';
-  });
-  document.addEventListener('click', function(e) { if (e.target !== input) box.style.display = 'none'; });
-}
+      const respText = await r.text();
+      console.log('Resposta:', respText);
 
-document.getElementById('formGrafico').addEventListener('submit', function(e) {
-  e.preventDefault();
-  var clienteNome = document.getElementById('cliente').value.trim();
-  var clienteId = document.getElementById('clienteId').value.trim();
-  var grafico = document.getElementById('grafico').value;
-  var dataInicio = document.getElementById('dataInicio').value;
-  var dataFim = document.getElementById('dataFim').value;
-  var status = document.getElementById('status').value;
+      // Webhook
+      try {
+        const wh = new URLSearchParams();
+        wh.append('action', 'criar');
+        wh.append('calendario', 'graficos');
+        wh.append('cliente', cliente);
+        wh.append('grafico', grafico);
+        wh.append('data_inicio', dataInicio);
+        wh.append('data_fim', dataFim);
+        wh.append('status', status);
+        await fetch(WEBHOOK_URL, { method: 'POST', body: wh, redirect: 'follow' });
+      } catch (we) { console.warn('Webhook:', we); }
 
-  if (!clienteNome) { mostrarMsg('Selecione um cliente.', false); return; }
-  if (!grafico) { mostrarMsg('Selecione um gráfico.', false); return; }
-  if (!dataInicio) { mostrarMsg('Informe a data de início.', false); return; }
-
-  var chave = 'equilibrium_tratamento_seq';
-  var seq = parseInt(localStorage.getItem(chave) || '0', 10) + 1;
-  localStorage.setItem(chave, String(seq));
-  var tratamentoId = 'TRAT-' + String(seq).padStart(6, '0');
-
-  var payload = {
-    tipo: 'tratamento',
-    action: 'criar_tratamento',
-    cliente_nome: clienteNome,
-    cliente_id: clienteId,
-    tratamento_id: tratamentoId,
-    data_inicio: dataInicio,
-    graficos: [{ grafico: grafico, data_inicio: dataInicio, data_fim: dataFim, status: status }]
-  };
-
-  var btn = this.querySelector('button[type=submit]');
-  btn.disabled = true; btn.textContent = 'Agendando...';
-
-  fetch(URL_ATEND, { method: 'POST', redirect: 'follow', body: JSON.stringify(payload) })
-    .then(function(r) { return r.text(); })
-    .then(function() {
-      return fetch(WEBHOOK_URL, { method: 'POST', redirect: 'follow', body: JSON.stringify({
-        evento: 'novo_grafico', cliente_nome: clienteNome, grafico: grafico,
-        data_inicio: dataInicio, data_fim: dataFim, status: status, tratamento_id: tratamentoId
-      })}).then(function() { return null; });
-    })
-    .then(function() {
-      mostrarMsg('Gráfico agendado com sucesso!', true);
-      document.getElementById('formGrafico').reset();
+      showToast('Gráfico agendado! ID: ' + idTrat, 'success');
+      this.reset();
+      document.getElementById('dataInicio').value = new Date().toISOString().split('T')[0];
       carregarGraficos();
-    })
-    .catch(function(err) {
+    } catch (err) {
       console.error('Erro:', err);
-      mostrarMsg('Erro ao agendar: ' + err.message, false);
-    })
-    .finally(function() { btn.disabled = false; btn.textContent = 'Agendar Gráfico'; });
-});
+      showToast('Erro ao agendar.', 'error');
+    } finally {
+      btn.textContent = txtOriginal;
+      btn.disabled = false;
+    }
+  });
+      // Webhook
+      try {
+        await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            tipo: 'novo_grafico',
+            id: idTrat,
+            cliente: cliente,
+            grafico: grafico,
+            dataInicio: dataInicio,
+            dataFinalizacao: dataFim,
+            status: status,
+            timestamp: new Date().toISOString()
+          }),
+          redirect: 'follow'
+        });
+      } catch (we) {
+        console.warn('Webhook falhou:', we);
+      }
 
-window.addEventListener('DOMContentLoaded', function() {
-  setupAutocomplete();
-  carregarClientes();
-  carregarGraficosPredef();
-  carregarGraficos();
-});
+      showToast('Gráfico agendado com sucesso! ID: ' + idTrat, 'success');
+      this.reset();
+      carregarGraficos();
+    } catch (err) {
+      console.error('Erro ao agendar:', err);
+      showToast('Erro ao agendar gráfico.', 'error');
+    } finally {
+      btn.textContent = txtOriginal;
+      btn.disabled = false;
+    }
+  });
+
+  /* ---------- Init ---------- */
+  (async function init() {
+    setupAutocomplete();
+    await Promise.all([carregarClientes(), carregarGraficosPredef()]);
+    carregarGraficos();
+  })();
 </script>
 </body>
 </html>
