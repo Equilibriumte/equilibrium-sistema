@@ -180,8 +180,8 @@
 </div>
 <script>
   const URL = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
-  let colunas = [];        // nomes das colunas (vindas da API)
-  let dadosOriginais = []; // todos os registros
+  let colunas = [];
+  let dadosOriginais = [];
   async function carregar() {
     const status = document.getElementById('status');
     status.textContent = 'Carregando...';
@@ -241,6 +241,16 @@
           try { valor = JSON.stringify(valor); } catch(e) { valor = ''; }
         } else {
           valor = String(valor);
+          // Formatar ISO datetime "2026-07-07T00:00:00.000Z" para "07/07/2026"
+          if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(valor)) {
+            const p = valor.split('T')[0].split('-');
+            valor = p[2] + '/' + p[1] + '/' + p[0];
+          }
+          // Formatar ISO date "2026-07-07" para "07/07/2026"
+          else if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) {
+            const p = valor.split('-');
+            valor = p[2] + '/' + p[1] + '/' + p[0];
+          }
         }
         td.textContent = valor;
         td.title = valor;
