@@ -71,6 +71,7 @@
                         <datalist id="listaClientes"></datalist>
                         <input type="hidden" id="idCliente">
                     </div>
+                    <div class="form-group"><label>ID Atendimento</label><input type="text" id="idAtendimento" readonly style="font-weight:bold;color:#4b0082;background:#f0e6fa;"></div>
                     <div class="form-group"><label>Data</label><input type="date" id="dataAtend" required></div>
                     <div class="form-group"><label>Status</label><select id="statusSelect"><option value="">Carregando...</option></select></div>
                     <div class="form-group full"><label>Queixa Principal</label><textarea id="queixaP"></textarea></div>
@@ -147,6 +148,14 @@
             return '';
         }
 
+        function gerarIdAtendimento() {
+            let ultimoId = parseInt(localStorage.getItem('ultimoIdAtendimento') || '0');
+            ultimoId++;
+            const novoId = String(ultimoId).padStart(7, '0');
+            localStorage.setItem('ultimoIdAtendimento', ultimoId.toString());
+            return 'ATEND-' + novoId;
+        }
+
         function showTab(i) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -217,6 +226,7 @@
         async function enviarDados() {
             const getC = (n) => Array.from(document.querySelectorAll(`input[name="${n}"]:checked`)).map(cb => cb.value).join(", ");
             const p = {
+                'ID Atendimento': document.getElementById('idAtendimento').value,
                 'Data do Atendimento': document.getElementById('dataAtend').value,
                 'ID Cliente': document.getElementById('idCliente').value,
                 'Nome Cliente': document.getElementById('nomeCliente').value,
@@ -262,7 +272,10 @@
             } catch (e) { alert("❌ Erro de conexão."); }
         }
 
-        window.onload = carregarTudo;
+        window.onload = function() {
+            document.getElementById('idAtendimento').value = gerarIdAtendimento();
+            carregarTudo();
+        };
     </script>
 </body>
 </html>
