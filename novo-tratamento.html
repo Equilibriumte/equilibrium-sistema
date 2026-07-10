@@ -279,7 +279,7 @@ function carregarAtendimentosCliente(clienteId) {
         if (aid) {
           var option = document.createElement('option');
           option.value = aid;
-          option.textContent = aid + ' - ' + dt + (st ? ' [' + st + ']' : '');
+          option.textContent = aid;
           select.appendChild(option);
         }
       }
