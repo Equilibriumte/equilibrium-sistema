@@ -179,7 +179,7 @@ function getVal(obj) {
   return '';
 }
 function statusKey(s) {
-  return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+  return String(s || '').toLowerCase().replace(/\s+/g, '_').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 function statusColor(s) {
   var k = statusKey(s);
@@ -226,7 +226,7 @@ function onClienteInput() {
     var nome = getVal(c, 'nome', 'name', 'nomecliente', 'cliente') || 'Sem nome';
     var id = getVal(c, 'id', 'idcliente', 'clienteid', 'codigo', 'cod') || '';
     var extra = getVal(c, 'telefone', 'celular', 'fone', 'email') || '';
-    html += '<div class="autocomplete-item" onclick="selecionarCliente(\'' + nome.replace(/'/g, "\'") + '\', \'' + String(id).replace(/'/g, "\'") + '\')">' + nome + '<small>' + extra + '</small></div>';
+    html += '<div class="autocomplete-item" onclick="selecionarCliente(\'' + nome.replace(/'/g, "\\'") + '\', \'' + String(id).replace(/'/g, "\\'") + '\')">' + nome + '<small>' + extra + '</small></div>';
   }
   dd.innerHTML = html;
   dd.style.display = 'block';
@@ -274,8 +274,6 @@ function carregarAtendimentosCliente(clienteId) {
       for (var i = 0; i < filtrados.length; i++) {
         var a = filtrados[i];
         var aid = getVal(a, 'id', 'idatendimento', 'ID Atendimento', 'ID') || '';
-        var dt = getVal(a, 'dataatendimento', 'Data do Atendimento', 'data', 'Data') || '';
-        var st = getVal(a, 'status', 'Status') || '';
         if (aid) {
           var option = document.createElement('option');
           option.value = aid;
@@ -293,11 +291,11 @@ function carregarTratamentosAnteriores(id) {
   var tbody = document.querySelector('#tratamentosAnteriores tbody');
   tratamentoSelecionadoId = null;
   tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Carregando...</td></tr>';
-  fetch(URL_ATEND + '?action=tratamentos')
+  fetch(URL_ATEND + '?action=tratamentos&_=' + Date.now())
     .then(function(r) { return r.text(); })
     .then(function(text) {
       var data = JSON.parse(text);
-      var arr = Array.isArray(data) ? data : (data.data || data.dados || data.tratamentos || data.lista || []);
+      var arr = Array.isArray(data) ? data : (data.data || data.dados || []);
       if (!arr.length) {
         tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Nenhum tratamento anterior.</td></tr>';
         return;
@@ -307,9 +305,9 @@ function carregarTratamentosAnteriores(id) {
         var t = arr[i];
         var tid = getVal(t, 'id', 'idtratamento', 'tratamentoid') || '-';
         var dt = getVal(t, 'datainicio', 'data', 'inicio', 'data_inicio') || '-';
-        var graf = getVal(t, 'graficos', 'grafico', 'quantidade', 'qtd', 'quantidadede', 'quant') || '-';
+        var graf = getVal(t, 'graficos', 'grafico', 'quantidade', 'qtd') || '-';
         var st = getVal(t, 'status', 'situacao') || 'Agendado';
-        html += '<tr class="trat-row-selectable" onclick="selecionarTratamento(\'' + tid.replace(/'/g, "\'") + '\')" data-trat-id="' + tid.replace(/'/g, "\'") + '">';
+        html += '<tr class="trat-row-selectable" onclick="selecionarTratamento(\'' + tid.replace(/'/g, "\\'") + '\')" data-trat-id="' + tid.replace(/'/g, "\\'") + '">';
         html += '<td><strong>' + tid + '</strong></td><td>' + dt + '</td><td>' + graf + '</td>';
         html += '<td><span class="status-badge" style="background:' + statusColor(st) + '">' + st + '</span></td></tr>';
       }
@@ -342,10 +340,7 @@ function carregarGraficosPredef() {
     .then(function(text) {
       var data = JSON.parse(text);
       var config = data.configuracoes || data.Configuracoes || null;
-      if (!config) {
-        var vals = Object.values(data);
-        if (vals.some(function(v) { return Array.isArray(v) && v.length > 1; })) config = data;
-      }
+      if (!config) { var vals = Object.values(data); if (vals.some(function(v) { return Array.isArray(v) && v.length > 1; })) config = data; }
       var found = null;
       if (config && typeof config === 'object') {
         for (var k in config) {
@@ -420,12 +415,12 @@ function salvarTratamento() {
   };
   for (var i = 0; i < graficos.length; i++) { var g = graficos[i]; payload.graficos.push({ ordem: i + 1, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status }); }
   mostrarMsg('Salvando...', 'success');
-  fetch(URL_ATEND, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'dados=' + encodeURIComponent(JSON.stringify(payload)) })
+  fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(payload) })
     .then(function(r) { return r.text(); })
     .then(function(text) {
       var res = JSON.parse(text);
       var webhooks = [];
-      for (var i = 0; i < graficos.length; i++) { var g = graficos[i]; if (g.data_fim && g.grafico) { var wh = { action: 'criar', calendario: 'graficos', cliente: clienteNome, cliente_id: clienteId, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status, tratamento_id: payload.tratamento_id }; webhooks.push(fetch(URL_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'dados=' + encodeURIComponent(JSON.stringify(wh)) }).then(function(r2) { return r2.text(); }).catch(function() {})); } }
+      for (var i = 0; i < graficos.length; i++) { var g = graficos[i]; if (g.data_fim && g.grafico) { var wh = { action: 'criar', calendario: 'graficos', cliente: clienteNome, cliente_id: clienteId, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status, tratamento_id: payload.tratamento_id }; webhooks.push(fetch(URL_WEBHOOK, { method: 'POST', body: JSON.stringify(wh) }).then(function(r2) { return r2.text(); }).catch(function() {})); } }
       Promise.all(webhooks).then(function() { mostrarMsg('Tratamento salvo! ID: ' + payload.tratamento_id, 'success'); setTimeout(function() { window.location.href = 'lista-tratamentos.html'; }, 1500); });
     })
     .catch(function(err) { mostrarMsg('Erro: ' + err.message, 'error'); });
