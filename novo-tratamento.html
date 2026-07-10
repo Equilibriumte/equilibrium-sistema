@@ -233,7 +233,7 @@
 
 <script>
 const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
-const URL_ATEND = 'https://script.google.com/macros/s/AKfycbwcInOPirRB7TOWbWFgpQtyFyhYZRHZsB37pB8PavrHxE0PZZpuwasuU_qallBiYlZm/exec';
+const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
 const URL_WEBHOOK = 'https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec';
 
 const STATUS_OPCOES = ['Agendado', 'Em Andamento', 'Concluído', 'Adiado', 'Cancelado'];
@@ -496,6 +496,7 @@ function salvarTratamento() {
   if (!graficos.length) { mostrarMsg('Adicione ao menos um gráfico.', 'error'); return; }
 
   const payload = {
+    tipo: 'tratamento',
     action: 'criar_tratamento',
     cliente_id: clienteId,
     cliente_nome: clienteNome,
