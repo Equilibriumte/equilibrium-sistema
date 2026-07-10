@@ -5,463 +5,544 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agenda de Gráficos - Equilibrium</title>
 <style>
-:root{
-  --roxo:#6a1b9a;
-  --roxo-claro:#9c27b0;
-  --roxo-escuro:#4a148c;
-  --bg:#f5f0fa;
-  --card:#ffffff;
-  --texto:#333;
-  --borda:#e0d4f0;
+:root {
+  --roxo-escuro: #4a148c;
+  --roxo: #6a1b9a;
+  --roxo-claro: #9c27b0;
+  --roxo-suave: #e1bee7;
+  --bg: #f3e5f5;
+  --card-bg: #ffffff;
+  --texto: #333333;
+  --texto-suave: #666666;
+  --borda: #e0e0e0;
+  --sombra: 0 4px 12px rgba(74, 20, 140, 0.15);
 }
-*{box-sizing:border-box;margin:0;padding:0;}
-body{
-  font-family:'Segoe UI',Tahoma,sans-serif;
-  background:var(--bg);
-  color:var(--texto);
-  display:flex;
-  min-height:100vh;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: var(--bg);
+  color: var(--texto);
+  display: flex;
+  min-height: 100vh;
 }
-.sidebar{
-  background:linear-gradient(180deg,var(--roxo-escuro),var(--roxo));
-  color:#fff;
-  width:240px;
-  min-height:100vh;
-  padding:20px 0;
-  position:fixed;
-  top:0;left:0;
+.sidebar {
+  width: 260px;
+  background: linear-gradient(180deg, var(--roxo-escuro), var(--roxo));
+  color: #fff;
+  padding: 20px 0;
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
 }
-.sidebar .logo{
-  text-align:center;
-  padding:10px 20px 25px;
-  font-size:22px;
-  font-weight:bold;
-  border-bottom:1px solid rgba(255,255,255,0.15);
-  margin-bottom:15px;
+.sidebar h2 {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 25px;
+  letter-spacing: 1px;
 }
-.sidebar a{
-  display:block;
-  padding:12px 24px;
-  color:#fff;
-  text-decoration:none;
-  font-size:14px;
-  transition:background 0.2s;
-  border-left:4px solid transparent;
+.sidebar a {
+  display: block;
+  padding: 14px 22px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 15px;
+  transition: background 0.2s, padding 0.2s;
+  border-left: 4px solid transparent;
 }
-.sidebar a:hover{background:rgba(255,255,255,0.1);}
-.sidebar a.active{
-  background:rgba(255,255,255,0.18);
-  border-left-color:#fff;
-  font-weight:600;
+.sidebar a:hover {
+  background: rgba(255,255,255,0.12);
+  padding-left: 28px;
 }
-.main{
-  margin-left:240px;
-  padding:30px;
-  flex:1;
-  width:calc(100% - 240px);
+.sidebar a.active {
+  background: rgba(255,255,255,0.18);
+  border-left-color: var(--roxo-claro);
+  font-weight: 600;
 }
-.header{margin-bottom:25px;}
-.header h1{
-  color:var(--roxo-escuro);
-  font-size:28px;
-  margin-bottom:6px;
+.main {
+  flex: 1;
+  padding: 25px 30px;
+  overflow-x: auto;
 }
-.header p{color:#666;font-size:14px;}
-.grid{
-  display:grid;
-  grid-template-columns:1.5fr 1fr;
-  gap:25px;
+.header h1 {
+  font-size: 26px;
+  color: var(--roxo-escuro);
+  margin-bottom: 4px;
 }
-.card{
-  background:var(--card);
-  border-radius:12px;
-  padding:22px;
-  box-shadow:0 2px 10px rgba(106,27,154,0.08);
-  border:1px solid var(--borda);
+.header p {
+  color: var(--texto-suave);
+  margin-bottom: 22px;
+  font-size: 14px;
 }
-.card h2{
-  color:var(--roxo-escuro);
-  font-size:18px;
-  margin-bottom:15px;
-  padding-bottom:10px;
-  border-bottom:2px solid var(--borda);
+.grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 22px;
 }
-.calendar-wrap{
-  border-radius:8px;
-  overflow:hidden;
-  margin-bottom:20px;
-  border:1px solid var(--borda);
+@media (max-width: 980px) {
+  .grid { grid-template-columns: 1fr; }
+  .sidebar { width: 200px; }
 }
-.calendar-wrap iframe{display:block;width:100%;border:0;}
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
+@media (max-width: 640px) {
+  body { flex-direction: column; }
+  .sidebar { width: 100%; min-height: auto; position: relative; }
 }
-thead th{
-  background:var(--roxo);
-  color:#fff;
-  padding:10px;
-  text-align:left;
-  font-weight:600;
+.card {
+  background: var(--card-bg);
+  border-radius: 14px;
+  box-shadow: var(--sombra);
+  padding: 20px;
+  margin-bottom: 20px;
 }
-tbody td{padding:9px 10px;border-bottom:1px solid var(--borda);}
-tbody tr:hover{background:#f9f5fd;}
-td.vazio{
-  text-align:center;
-  color:#999;
-  padding:20px;
-  font-style:italic;
+.card h3 {
+  color: var(--roxo-escuro);
+  margin-bottom: 14px;
+  font-size: 18px;
 }
-.badge{
-  display:inline-block;
-  padding:3px 10px;
-  border-radius:12px;
-  font-size:11px;
-  font-weight:600;
+iframe.calendar {
+  width: 100%;
+  height: 500px;
+  border: 0;
+  border-radius: 10px;
 }
-.badge.Agendado{background:#fff3cd;color:#856404;}
-.badge.Em-Andamento{background:#d1ecf1;color:#0c5460;}
-.badge.Concluido{background:#d4edda;color:#155724;}
-.badge.Adiado{background:#ffe0b2;color:#8a5a00;}
-.badge.Cancelado{background:#f8d7da;color:#721c24;}
-.form-group{margin-bottom:15px;}
-.form-group label{
-  display:block;
-  margin-bottom:6px;
-  font-weight:600;
-  color:var(--roxo-escuro);
-  font-size:13px;
+.table-wrap { overflow-x: auto; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
 }
-.form-group input,
-.form-group select{
-  width:100%;
-  padding:10px;
-  border:1px solid var(--borda);
-  border-radius:8px;
-  font-size:14px;
-  background:#fff;
+th, td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--borda);
+  font-size: 14px;
 }
-.form-group input:focus,
-.form-group select:focus{
-  outline:none;
-  border-color:var(--roxo-claro);
-  box-shadow:0 0 0 3px rgba(156,39,176,0.15);
+th {
+  background: var(--roxo-suave);
+  color: var(--roxo-escuro);
+  font-weight: 600;
 }
-.autocomplete-wrap{position:relative;}
-.autocomplete-list{
-  position:absolute;
-  top:100%;left:0;right:0;
-  background:#fff;
-  border:1px solid var(--borda);
-  border-radius:8px;
-  max-height:180px;
-  overflow-y:auto;
-  z-index:10;
-  display:none;
+tr:hover td { background: #faf5fc; }
+.btn {
+  background: var(--roxo);
+  color: #fff;
+  border: none;
+  padding: 9px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
 }
-.autocomplete-list div{
-  padding:9px 12px;
-  cursor:pointer;
-  font-size:13px;
+.btn:hover { background: var(--roxo-escuro); }
+.btn-sec { background: var(--roxo-claro); }
+.btn-sec:hover { background: var(--roxo); }
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
 }
-.autocomplete-list div:hover{background:#f3e8ff;}
-.btn{
-  width:100%;
-  background:linear-gradient(135deg,var(--roxo),var(--roxo-claro));
-  color:#fff;
-  border:none;
-  padding:12px;
-  border-radius:8px;
-  font-size:15px;
-  font-weight:600;
-  cursor:pointer;
-  transition:opacity 0.2s;
+.form-group { margin-bottom: 14px; position: relative; }
+label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 5px;
+  color: var(--roxo-escuro);
+  font-weight: 600;
 }
-.btn:hover{opacity:0.92;}
-.msg{
-  margin-top:12px;
-  padding:10px;
-  border-radius:8px;
-  font-size:13px;
-  text-align:center;
-  display:none;
+input, select {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s;
 }
-.msg.ok{background:#d4edda;color:#155724;display:block;}
-.msg.erro{background:#f8d7da;color:#721c24;display:block;}
-@media(max-width:900px){
-  .grid{grid-template-columns:1fr;}
-  .sidebar{position:relative;width:100%;min-height:auto;}
-  .main{margin-left:0;width:100%;}
+input:focus, select:focus { border-color: var(--roxo-claro); }
+.autocomplete-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 100;
+  display: none;
+  box-shadow: var(--sombra);
 }
+.autocomplete-list div {
+  padding: 9px 12px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.autocomplete-list div:hover { background: var(--roxo-suave); }
+.badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+.badge-pendente { background: #fff3cd; color: #856404; }
+.badge-em-andamento { background: #cce5ff; color: #004085; }
+.badge-concluido { background: #d4edda; color: #155724; }
+.badge-cancelado { background: #f8d7da; color: #721c24; }
+.badge-default { background: #e2e3e5; color: #383d41; }
+.msg {
+  margin-top: 10px;
+  padding: 9px;
+  border-radius: 8px;
+  font-size: 13px;
+  display: none;
+}
+.msg-ok { background: #d4edda; color: #155724; }
+.msg-err { background: #f8d7da; color: #721c24; }
 </style>
 </head>
 <body>
+
 <aside class="sidebar">
-  <div class="logo">Equilibrium</div>
-  <a href="index.html">🏠 Home</a>
+  <h2>Equilibrium</h2>
+  <a href="home.html">🏠 Home</a>
   <a href="agenda.html">📅 Agenda</a>
   <a href="novo-cliente.html">👤 Novo Cliente</a>
-  <a href="clientes.html">📋 Lista de Clientes</a>
-  <a href="atendimentos.html">✨ Novo Atendimento</a>
-  <a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
+  <a href="lista-clientes.html">📋 Lista de Clientes</a>
+  <a href="novo-atendimento.html">✨ Novo Atendimento</a>
+  <a href="lista-atendimento.html">📜 Lista de Atendimento</a>
   <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
   <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
   <a href="agenda-graficos.html" class="active">📊 Agenda de Gráficos</a>
   <a href="financeiro.html">💰 Financeiro</a>
 </aside>
+
 <main class="main">
   <div class="header">
     <h1>📊 Agenda de Gráficos</h1>
-    <p>Visualize os gráficos no calendário, gerencie as datas e adicione novos manualmente.</p>
+    <p>Visualize o calendário, agende novos gráficos e acompanhe o status dos gráficos em andamento.</p>
   </div>
+
   <div class="grid">
-    <div class="card">
-      <h2>📅 Calendário Google</h2>
-      <div class="calendar-wrap">
-        <iframe src="https://calendar.google.com/calendar/embed?src=equilibriumterapiasenergeticas%40gmail.com&ctz=America%2FSao_Paulo&showPrint=0&showTabs=0&showCalendars=0&showTitle=0&showNav=1&showDate=1" style="height:480px;" frameborder="0"></iframe>
+    <!-- Card Esquerdo: Calendário + Tabela -->
+    <div>
+      <div class="card">
+        <h3>📅 Calendário</h3>
+        <iframe class="calendar" src="https://calendar.google.com/calendar/embed?src=equilibriumterapiasenergeticas%40gmail.com&ctz=America%2FSao_Paulo&showPrint=0&showTabs=0&showCalendars=0&showTitle=0&showNav=1&showDate=1"></iframe>
       </div>
-      <h2 style="margin-top:20px;">📋 Gráficos Agendados</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Cliente</th>
-            <th>Gráfico</th>
-            <th>Data Fim</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="tabelaGraficos">
-          <tr><td class="vazio" colspan="4">Carregando...</td></tr>
-        </tbody>
-      </table>
+
+      <div class="card">
+        <div class="toolbar">
+          <h3>📋 Gráficos Agendados</h3>
+          <button class="btn btn-sec" onclick="carregarGraficos()">🔄 Atualizar</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Gráfico</th>
+                <th>Data Fim</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyGraficos">
+              <tr><td colspan="4" style="text-align:center;color:#999;">Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
+
+    <!-- Card Direito: Novo Gráfico -->
     <div class="card">
-      <h2>➕ Novo Gráfico</h2>
+      <h3>➕ Novo Gráfico</h3>
       <form id="formGrafico">
         <div class="form-group">
-          <label for="inputCliente">Cliente *</label>
-          <div class="autocomplete-wrap">
-            <input type="text" id="inputCliente" autocomplete="off" placeholder="Digite o nome do cliente..." required>
-            <div class="autocomplete-list" id="autocompleteList"></div>
-          </div>
+          <label for="cliente">Cliente *</label>
+          <input type="text" id="cliente" autocomplete="off" placeholder="Digite o nome do cliente...">
+          <input type="hidden" id="clienteId">
+          <div class="autocomplete-list" id="autocompleteCliente"></div>
         </div>
+
         <div class="form-group">
-          <label for="selectGrafico">Gráfico *</label>
-          <select id="selectGrafico" required>
+          <label for="grafico">Gráfico *</label>
+          <select id="grafico">
             <option value="">Carregando...</option>
           </select>
         </div>
+
         <div class="form-group">
-          <label for="inputDtInicio">Data Início *</label>
-          <input type="date" id="inputDtInicio" required>
+          <label for="dataInicio">Data Início *</label>
+          <input type="date" id="dataInicio">
         </div>
+
         <div class="form-group">
-          <label for="inputDtFim">Data Finalização</label>
-          <input type="date" id="inputDtFim">
+          <label for="dataFim">Data Finalização</label>
+          <input type="date" id="dataFim">
         </div>
+
         <div class="form-group">
-          <label for="inputStatus">Status</label>
-          <select id="inputStatus">
-            <option value="Agendado">Agendado</option>
-            <option value="Em Andamento" selected>Em Andamento</option>
+          <label for="status">Status</label>
+          <select id="status">
+            <option value="Pendente">Pendente</option>
+            <option value="Em Andamento">Em Andamento</option>
             <option value="Concluído">Concluído</option>
-            <option value="Adiado">Adiado</option>
             <option value="Cancelado">Cancelado</option>
           </select>
         </div>
-        <button type="submit" class="btn">Agendar Gráfico</button>
-        <div class="msg" id="msg"></div>
+
+        <button type="submit" class="btn" style="width:100%;">Agendar Gráfico</button>
+        <div class="msg" id="msgForm"></div>
       </form>
     </div>
   </div>
 </main>
+
 <script>
-var URL_ATEND='https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
-var URL_CLIENTES='https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
-var WEBHOOK_URL='https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec';
-var listaClientes=[];
+var URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
+var URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
+var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec';
 
-function hojeISO(){
-  var d=new Date();
-  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-}
-function esc(s){
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function bCls(st){
-  var s=String(st).trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'-');
-  if(s.indexOf('agend')!==-1)return 'Agendado';
-  if(s.indexOf('andamento')!==-1)return 'Em-Andamento';
-  if(s.indexOf('conclu')!==-1)return 'Concluido';
-  if(s.indexOf('adi')!==-1)return 'Adiado';
-  if(s.indexOf('cancel')!==-1)return 'Cancelado';
-  return 'Agendado';
-}
-function mostrarMsg(txt,tipo){
-  var el=document.getElementById('msg');
-  el.textContent=txt;
-  el.className='msg '+tipo;
+var listaClientes = [];
+
+function normalizar(str) {
+  if (str === null || str === undefined) return '';
+  return String(str).normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
 }
 
-// === CARREGAR CLIENTES (autocomplete) ===
-function carregarClientes(){
+function getVal(row, columns, nome) {
+  if (!row || !columns) return '';
+  var alvo = normalizar(nome);
+  for (var i = 0; i < columns.length; i++) {
+    if (normalizar(columns[i]) === alvo) {
+      return row[i] !== undefined && row[i] !== null ? row[i] : '';
+    }
+  }
+  for (var j = 0; j < columns.length; j++) {
+    if (normalizar(columns[j]).indexOf(alvo) !== -1) {
+      return row[j] !== undefined && row[j] !== null ? row[j] : '';
+    }
+  }
+  return '';
+}
+
+function formatarData(valor) {
+  if (!valor) return '';
+  var s = String(valor);
+  if (s.indexOf('/') !== -1) return s;
+  if (s.indexOf('-') !== -1 && s.length >= 10) {
+    var partes = s.substring(0, 10).split('-');
+    if (partes.length === 3) return partes[2] + '/' + partes[1] + '/' + partes[0];
+  }
+  var d = new Date(s);
+  if (!isNaN(d.getTime())) {
+    return ('0'+d.getDate()).slice(-2) + '/' + ('0'+(d.getMonth()+1)).slice(-2) + '/' + d.getFullYear();
+  }
+  return s;
+}
+
+function statusBadge(status) {
+  var s = normalizar(status);
+  var cls = 'badge-default';
+  if (s.indexOf('pendente') !== -1) cls = 'badge-pendente';
+  else if (s.indexOf('andamento') !== -1) cls = 'badge-em-andamento';
+  else if (s.indexOf('conclu') !== -1) cls = 'badge-concluido';
+  else if (s.indexOf('cancel') !== -1) cls = 'badge-cancelado';
+  return '<span class="badge ' + cls + '">' + (status || 'Pendente') + '</span>';
+}
+
+function mostrarMsg(texto, ok) {
+  var el = document.getElementById('msgForm');
+  el.textContent = texto;
+  el.className = 'msg ' + (ok ? 'msg-ok' : 'msg-err');
+  el.style.display = 'block';
+  setTimeout(function() { el.style.display = 'none'; }, 4000);
+}
+
+function carregarClientes() {
   fetch(URL_CLIENTES)
-    .then(function(r){return r.text();})
-    .then(function(text){
-      var data=JSON.parse(text);
-      listaClientes=Array.isArray(data)?data:(data.dados||data.clientes||data.lista||[]);
+    .then(function(r) { return r.text(); })
+    .then(function(text) {
+      var data = JSON.parse(text);
+      var cols = data.columns || [];
+      var rows = data.data || [];
+      listaClientes = rows.map(function(r) {
+        return {
+          id: getVal(r, cols, 'ID') || getVal(r, cols, 'Id'),
+          nome: getVal(r, cols, 'Nome') || getVal(r, cols, 'Cliente')
+        };
+      }).filter(function(c) { return c.nome; });
     })
-    .catch(function(){listaClientes=[];});
+    .catch(function(err) { console.error('Erro clientes:', err); });
 }
-function nomeCliente(c){
-  if(!c)return '';
-  if(typeof c==='string')return c;
-  return c.nome||c.Nome||c.name||c.cliente||c.Cliente||'';
-}
-function mostrarSugestoes(){
-  var q=document.getElementById('inputCliente').value.toLowerCase().trim();
-  var list=document.getElementById('autocompleteList');
-  if(!q){list.style.display='none';return;}
-  var res=[];
-  for(var i=0;i<listaClientes.length&&res.length<10;i++){
-    var n=nomeCliente(listaClientes[i]);
-    if(n&&n.toLowerCase().indexOf(q)!==-1)res.push(n);
-  }
-  if(!res.length){list.style.display='none';return;}
-  list.innerHTML='';
-  for(var i=0;i<res.length;i++){
-    var d=document.createElement('div');
-    d.textContent=res[i];
-    d.onclick=function(){document.getElementById('inputCliente').value=this.textContent;list.style.display='none';};
-    list.appendChild(d);
-  }
-  list.style.display='block';
-}
-document.getElementById('inputCliente').addEventListener('input',mostrarSugestoes);
-document.getElementById('inputCliente').addEventListener('blur',function(){setTimeout(function(){document.getElementById('autocompleteList').style.display='none';},200);});
 
-// === CARREGAR GRÁFICOS (select) ===
-function carregarGraficosPredef(){
-  fetch(URL_ATEND+'?_='+Date.now())
-    .then(function(r){return r.text();})
-    .then(function(text){
-      var data=JSON.parse(text);
-      var config=data.configuracoes||data.Configuracoes||null;
-      if(!config){var vals=Object.values(data);if(vals.some(function(v){return Array.isArray(v)&&v.length>1;}))config=data;}
-      var found=null;
-      if(config&&typeof config==='object'){
-        for(var k in config){
-          if(config.hasOwnProperty(k)){
-            var keyNorm=k.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-            if(keyNorm.indexOf('grafico')!==-1){
-              var v=config[k];
-              if(Array.isArray(v)&&v.length){found=v;break;}
-              if(typeof v==='string'&&v.trim()){found=v.split(',').map(function(s){return s.trim();}).filter(Boolean);break;}
-            }
+function carregarGraficosPredef() {
+  var sel = document.getElementById('grafico');
+  sel.innerHTML = '<option value="">Carregando...</option>';
+  fetch(URL_ATEND + '?action=configuracoes')
+    .then(function(r) { return r.text(); })
+    .then(function(text) {
+      var data = JSON.parse(text);
+      var graficos = [];
+      var cfg = data.configuracoes || data.config || data;
+      var chaves = Object.keys(cfg);
+      for (var i = 0; i < chaves.length; i++) {
+        if (normalizar(chaves[i]) === 'graficos' || normalizar(chaves[i]).indexOf('grafico') !== -1) {
+          var val = cfg[chaves[i]];
+          if (Array.isArray(val)) graficos = val;
+          else if (typeof val === 'string') graficos = val.split(/[,;\n]/).map(function(s){return s.trim();}).filter(Boolean);
+          break;
+        }
+      }
+      if (graficos.length === 0) {
+        for (var k in cfg) {
+          if (Array.isArray(cfg[k]) && normalizar(k).indexOf('grafico') !== -1) {
+            graficos = cfg[k]; break;
           }
         }
       }
-      var sel=document.getElementById('selectGrafico');
-      if(found&&found.length){
-        sel.innerHTML='<option value="">Selecione um gráfico...</option>';
-        for(var i=0;i<found.length;i++){
-          sel.innerHTML+='<option value="'+found[i]+'">'+found[i]+'</option>';
-        }
-      } else {
-        sel.innerHTML='<option value="">Nenhum gráfico disponível</option>';
-      }
-    })
-    .catch(function(){});
-}
-
-// === CARREGAR TABELA DE GRÁFICOS ===
-function carregarGraficos(){
-  var tb=document.getElementById('tabelaGraficos');
-  tb.innerHTML='<tr><td class="vazio" colspan="4">Carregando...</td></tr>';
-  fetch(URL_ATEND+'?action=tratamentos&_='+Date.now())
-    .then(function(r){return r.text();})
-    .then(function(text){
-      var json=JSON.parse(text);
-      if(!json.success||!Array.isArray(json.columns)||!Array.isArray(json.data)){
-        tb.innerHTML='<tr><td class="vazio" colspan="4">Nenhum grafico agendado.</td></tr>';return;
-      }
-      var cols=json.columns;
-      var dados=json.data;
-      function getVal(linha,nome){
-        for(var i=0;i<cols.length;i++){
-          if(String(cols[i]).toLowerCase().trim()===String(nome).toLowerCase().trim()){
-            return(linha[i]!==undefined&&linha[i]!==null)?String(linha[i]):'';
-          }
-        }return'';
-      }
-      var cg=[];
-      for(var i=0;i<dados.length;i++){
-        var g=getVal(dados[i],'Grafico')||getVal(dados[i],'Gráfico');
-        if(g&&g.trim()!=='')cg.push(dados[i]);
-      }
-      if(!cg.length){tb.innerHTML='<tr><td class="vazio" colspan="4">Nenhum grafico agendado.</td></tr>';return;}
-      cg.sort(function(a,b){
-        var da=getVal(a,'Data Finalizacao')||getVal(a,'Data Finalização')||'';
-        var db=getVal(b,'Data Finalizacao')||getVal(b,'Data Finalização')||'';
-        return da.localeCompare(db);
+      sel.innerHTML = '<option value="">Selecione...</option>';
+      graficos.forEach(function(g) {
+        var opt = document.createElement('option');
+        opt.value = g; opt.textContent = g;
+        sel.appendChild(opt);
       });
-      var html='';
-      for(var i=0;i<cg.length;i++){
-        var l=cg[i];
-        var c=getVal(l,'Nome Cliente')||'-';
-        var g=getVal(l,'Grafico')||getVal(l,'Gráfico')||'-';
-        var df=getVal(l,'Data Finalizacao')||getVal(l,'Data Finalização')||'';
-        var st=getVal(l,'Status')||'-';
-        var dfF=df.split('T')[0].split('-');
-        var dataF=dfF.length===3?dfF[2]+'/'+dfF[1]+'/'+dfF[0]:df;
-        html+='<tr><td>'+esc(c)+'</td><td>'+esc(g)+'</td><td>'+esc(dataF)+'</td><td><span class="badge '+bCls(st)+'">'+esc(st)+'</span></td></tr>';
-      }
-      tb.innerHTML=html;
+      if (graficos.length === 0) sel.innerHTML = '<option value="">Nenhum gráfico cadastrado</option>';
     })
-    .catch(function(){tb.innerHTML='<tr><td class="vazio" colspan="4">Erro ao carregar.</td></tr>';});
+    .catch(function(err) {
+      console.error('Erro graficos predef:', err);
+      sel.innerHTML = '<option value="">Erro ao carregar</option>';
+    });
 }
 
-// === SALVAR NOVO GRÁFICO ===
-document.getElementById('formGrafico').addEventListener('submit',function(e){
-  e.preventDefault();
-  var cliente=document.getElementById('inputCliente').value.trim();
-  var grafico=document.getElementById('selectGrafico').value;
-  var dtInicio=document.getElementById('inputDtInicio').value;
-  var dtFim=document.getElementById('inputDtFim').value;
-  var statusSel=document.getElementById('inputStatus').value;
-  if(!cliente||!grafico||!dtInicio){mostrarMsg('Preencha cliente, grafico e data inicio.','erro');return;}
-  var n=parseInt(localStorage.getItem('agGraf')||'700');n++;localStorage.setItem('agGraf',n.toString());
-  var payload={tipo:'tratamento',action:'criar_tratamento',cliente_nome:cliente,cliente_id:'',tratamento_id:'TRAT-'+n,data_inicio:dtInicio,graficos:[{grafico:grafico,data_inicio:dtInicio,data_fim:dtFim,status:statusSel}]};
-  mostrarMsg('Salvando...','ok');
-  fetch(URL_ATEND,{method:'POST',body:JSON.stringify(payload),redirect:'follow'})
-    .then(function(r){return r.text();})
-    .then(function(text){
-      var res=JSON.parse(text);
-      if(res.success){
-        mostrarMsg('Grafico agendado com sucesso!','ok');
-        document.getElementById('inputCliente').value='';
-        document.getElementById('selectGrafico').value='';
-        document.getElementById('inputDtFim').value='';
-        document.getElementById('inputDtInicio').value=hojeISO();
-        carregarGraficos();
-        var wh=new URLSearchParams();
-        wh.append('action','criar');wh.append('calendario','graficos');
-        wh.append('cliente',cliente);wh.append('grafico',grafico);
-        wh.append('data_inicio',dtInicio);wh.append('data_fim',dtFim);wh.append('status',statusSel);
-        fetch(WEBHOOK_URL,{method:'POST',body:wh,redirect:'follow'}).catch(function(){});
-      } else {
-        mostrarMsg('Erro: '+(res.message||'desconhecido'),'erro');
+function carregarGraficos() {
+  var tbody = document.getElementById('tbodyGraficos');
+  tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#999;">Carregando...</td></tr>';
+  fetch(URL_ATEND + '?action=tratamentos')
+    .then(function(r) { return r.text(); })
+    .then(function(text) {
+      var data = JSON.parse(text);
+      var cols = data.columns || [];
+      var rows = data.data || [];
+      var itens = [];
+      rows.forEach(function(r) {
+        var grafico = getVal(r, cols, 'Gráfico');
+        if (!grafico) return;
+        itens.push({
+          cliente: getVal(r, cols, 'Cliente') || getVal(r, cols, 'Cliente Nome'),
+          grafico: grafico,
+          dataFim: getVal(r, cols, 'Data Finalização') || getVal(r, cols, 'Data Fim') || getVal(r, cols, 'Data Finalizacao'),
+          status: getVal(r, cols, 'Status')
+        });
+      });
+      itens.sort(function(a, b) {
+        var da = a.dataFim || ''; var db = b.dataFim || '';
+        return da.toString().localeCompare(db.toString());
+      });
+      if (itens.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#999;">Nenhum gráfico agendado.</td></tr>';
+        return;
       }
+      tbody.innerHTML = '';
+      itens.forEach(function(it) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td>' + (it.cliente || '-') + '</td><td>' + (it.grafico || '-') + '</td><td>' + formatarData(it.dataFim) + '</td><td>' + statusBadge(it.status) + '</td>';
+        tbody.appendChild(tr);
+      });
     })
-    .catch(function(err){mostrarMsg('Erro de conexao: '+err.message,'erro');});
+    .catch(function(err) {
+      console.error('Erro graficos:', err);
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#c00;">Erro ao carregar gráficos.</td></tr>';
+    });
+}
+
+function setupAutocomplete() {
+  var input = document.getElementById('cliente');
+  var hidden = document.getElementById('clienteId');
+  var box = document.getElementById('autocompleteCliente');
+  input.addEventListener('input', function() {
+    hidden.value = '';
+    var q = normalizar(input.value);
+    box.innerHTML = '';
+    if (!q) { box.style.display = 'none'; return; }
+    var filtrados = listaClientes.filter(function(c) {
+      return normalizar(c.nome).indexOf(q) !== -1;
+    }).slice(0, 10);
+    if (filtrados.length === 0) { box.style.display = 'none'; return; }
+    filtrados.forEach(function(c) {
+      var div = document.createElement('div');
+      div.textContent = c.nome;
+      div.addEventListener('click', function() {
+        input.value = c.nome;
+        hidden.value = c.id;
+        box.style.display = 'none';
+      });
+      box.appendChild(div);
+    });
+    box.style.display = 'block';
+  });
+  document.addEventListener('click', function(e) { if (e.target !== input) box.style.display = 'none'; });
+}
+
+document.getElementById('formGrafico').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var clienteNome = document.getElementById('cliente').value.trim();
+  var clienteId = document.getElementById('clienteId').value.trim();
+  var grafico = document.getElementById('grafico').value;
+  var dataInicio = document.getElementById('dataInicio').value;
+  var dataFim = document.getElementById('dataFim').value;
+  var status = document.getElementById('status').value;
+
+  if (!clienteNome) { mostrarMsg('Selecione um cliente.', false); return; }
+  if (!grafico) { mostrarMsg('Selecione um gráfico.', false); return; }
+  if (!dataInicio) { mostrarMsg('Informe a data de início.', false); return; }
+
+  var chave = 'equilibrium_tratamento_seq';
+  var seq = parseInt(localStorage.getItem(chave) || '0', 10) + 1;
+  localStorage.setItem(chave, String(seq));
+  var tratamentoId = 'TRAT-' + String(seq).padStart(6, '0');
+
+  var payload = {
+    tipo: 'tratamento',
+    action: 'criar_tratamento',
+    cliente_nome: clienteNome,
+    cliente_id: clienteId,
+    tratamento_id: tratamentoId,
+    data_inicio: dataInicio,
+    graficos: [{ grafico: grafico, data_inicio: dataInicio, data_fim: dataFim, status: status }]
+  };
+
+  var btn = this.querySelector('button[type=submit]');
+  btn.disabled = true; btn.textContent = 'Agendando...';
+
+  fetch(URL_ATEND, { method: 'POST', redirect: 'follow', body: JSON.stringify(payload) })
+    .then(function(r) { return r.text(); })
+    .then(function() {
+      return fetch(WEBHOOK_URL, { method: 'POST', redirect: 'follow', body: JSON.stringify({
+        evento: 'novo_grafico', cliente_nome: clienteNome, grafico: grafico,
+        data_inicio: dataInicio, data_fim: dataFim, status: status, tratamento_id: tratamentoId
+      })}).then(function() { return null; });
+    })
+    .then(function() {
+      mostrarMsg('Gráfico agendado com sucesso!', true);
+      document.getElementById('formGrafico').reset();
+      carregarGraficos();
+    })
+    .catch(function(err) {
+      console.error('Erro:', err);
+      mostrarMsg('Erro ao agendar: ' + err.message, false);
+    })
+    .finally(function() { btn.disabled = false; btn.textContent = 'Agendar Gráfico'; });
 });
 
-// === INICIALIZAÇÃO ===
-document.getElementById('inputDtInicio').value=hojeISO();
-carregarClientes();
-carregarGraficosPredef();
-carregarGraficos();
+window.addEventListener('DOMContentLoaded', function() {
+  setupAutocomplete();
+  carregarClientes();
+  carregarGraficosPredef();
+  carregarGraficos();
+});
 </script>
 </body>
 </html>
