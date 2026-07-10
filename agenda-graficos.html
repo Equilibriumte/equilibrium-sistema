@@ -1,42 +1,49 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agenda de Gráficos - Equilibrium</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
-  body { display: flex; min-height: 100vh; background: #f4f1f8; }
-  .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; overflow-y: auto; }
-  .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
-  .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
-  .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
-  .main { margin-left: 250px; padding: 30px; flex: 1; }
-  .header { margin-bottom: 25px; }
-  .header h1 { color: #4b0082; font-size: 26px; }
-  .header p { color: #666; font-size: 14px; margin-top: 5px; }
-  .toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
-  .search-input { flex: 1; min-width: 240px; padding: 12px 16px; border: 2px solid #e0d4f0; border-radius: 10px; font-size: 15px; outline: none; background: #faf8ff; }
-  .search-input:focus { border-color: #6a0dad; box-shadow: 0 0 0 3px rgba(106,13,173,0.15); }
-  .btn { padding: 11px 18px; border: none; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; transition: 0.2s; }
-  .btn-refresh { background: #4b0082; color: #fff; }
-  .btn-refresh:hover { background: #6a0dad; }
-  .btn-save { background: #28a745; color: #fff; padding: 7px 14px; font-size: 12px; border-radius: 6px; }
-  .btn-save:hover { background: #218838; }
-  .card { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(75,0,130,0.08); }
-  .table-wrap { overflow-x: auto; overflow-y: auto; max-height: 65vh; border-radius: 10px; border: 1px solid #eee; }
-  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 700px; }
-  thead th { background: #4b0082; color: #fff; padding: 12px 14px; text-align: left; font-weight: 600; white-space: nowrap; position: sticky; top: 0; z-index: 2; }
-  tbody td { padding: 11px 14px; border-bottom: 1px solid #f0e8fa; white-space: nowrap; }
-  tbody tr:hover { background: #f7f2fc; }
-  tbody tr:nth-child(even) { background: #fbf9fe; }
-  .empty { text-align: center; color: #999; padding: 28px; font-style: italic; }
-  .status { font-size: 13px; color: #6a0dad; margin-bottom: 12px; min-height: 18px; }
-  input[type=date], select { padding: 6px 8px; border: 1px solid #d8cce8; border-radius: 5px; font-size: 13px; }
-  .badge { padding: 3px 10px; border-radius: 12px; font-size: 12px; color: #fff; }
-  @media (max-width: 768px) { .sidebar { width: 200px; } .main { margin-left: 200px; padding: 20px; } }
-  @media (max-width: 560px) { .sidebar { width: 100%; height: auto; position: relative; } .main { margin-left: 0; padding: 16px; } }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda de Gráficos - Equilibrium</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: #f4f0fa; min-height: 100vh; }
+    .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; overflow-y: auto; }
+    .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
+    .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
+    .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
+    .main { margin-left: 250px; padding: 40px; min-height: 100vh; }
+    .header h1 { color: #4b0082; font-size: 32px; margin-bottom: 6px; }
+    .header p { color: #6a0dad; font-size: 16px; margin-bottom: 30px; }
+    .cards { display: grid; grid-template-columns: 1.5fr 1fr; gap: 25px; }
+    .card { background: #fff; border-radius: 15px; box-shadow: 0 4px 15px rgba(75,0,130,0.12); padding: 25px; }
+    .card h2 { color: #4b0082; font-size: 20px; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 2px solid #f4f0fa; display: flex; justify-content: space-between; align-items: center; }
+    .toolbar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+    .toolbar input { flex: 1; min-width: 180px; padding: 9px 12px; border: 1px solid #d9c9e8; border-radius: 8px; font-size: 14px; }
+    .table-wrap { overflow-x: auto; max-height: 500px; overflow-y: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 550px; }
+    th { background: #f8f5fb; color: #4b0082; padding: 10px 8px; text-align: left; border-bottom: 2px solid #ede4f7; position: sticky; top: 0; z-index: 2; }
+    td { padding: 8px; border-bottom: 1px solid #f0ebf7; }
+    td.fn { font-size: 12px; }
+    input.dt-inline { padding: 4px 6px; border: 1px solid #d9c9e8; border-radius: 4px; font-size: 12px; width: 130px; }
+    select.st-inline { padding: 4px 6px; border: 1px solid #d9c9e8; border-radius: 4px; font-size: 12px; }
+    .btn { border: none; border-radius: 6px; padding: 10px 16px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .btn-purple { background: linear-gradient(180deg,#4b0082,#6a0dad); color: #fff; }
+    .btn-purple:hover { opacity: 0.9; }
+    .btn-gold { background: #ffd700; color: #4b0082; }
+    .btn-sm { padding: 5px 10px; font-size: 11px; }
+    .btn-green { background: #28a745; color: #fff; padding: 5px 10px; font-size: 11px; }
+    .btn-green:hover { background: #218838; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; color: #4b0082; font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+    .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #d9c9e8; border-radius: 8px; font-size: 14px; }
+    .btn-full { width: 100%; padding: 12px; font-size: 15px; margin-top: 5px; }
+    .vazio { text-align: center; color: #999; padding: 30px; font-size: 14px; }
+    .msg { padding: 10px 14px; border-radius: 8px; margin: 10px 0; font-size: 13px; display: none; }
+    .msg.ok { background: #d4edda; color: #155724; display: block; }
+    .msg.erro { background: #f8d7da; color: #721c24; display: block; }
+    @media (max-width: 1100px) { .cards { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) { .sidebar { width: 100%; height: auto; position: relative; } .main { margin-left: 0; padding: 20px; } }
+  </style>
 </head>
 <body>
 <div class="sidebar">
@@ -54,42 +61,86 @@
         <a href="financeiro.html">💰 Financeiro</a>
     </nav>
 </div>
-<div class="main">
+<main class="main">
   <div class="header">
     <h1>📊 Agenda de Gráficos</h1>
-    <p>Visualize e edite as datas de finalização e status dos gráficos.</p>
+    <p>Visualize os gráficos agendados dos tratamentos e adicione novos manualmente.</p>
   </div>
-  <div class="card">
-    <div class="toolbar">
-      <input type="text" id="search" class="search-input" placeholder="🔍 Buscar..." oninput="filtrar()">
-      <button class="btn btn-refresh" onclick="carregar()">🔄 Atualizar</button>
-    </div>
-    <div id="status" class="status">Carregando...</div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Cliente</th><th>Gráfico</th><th>Data Início</th><th>Data Finalização</th><th>Status</th><th>Ações</th></tr></thead>
-        <tbody id="tbody"></tbody>
-      </table>
-    </div>
+  <div id="msg" class="msg"></div>
+  <div class="cards">
+    <!-- Card Esquerdo - Tabela -->
+    <section class="card">
+      <h2>
+        Gráficos Agendados
+        <button class="btn btn-gold btn-sm" onclick="carregarDados()">🔄 Atualizar</button>
+      </h2>
+      <div class="toolbar">
+        <input type="text" id="busca" placeholder="Buscar por cliente ou gráfico..." onkeyup="filtrar()">
+      </div>
+      <div id="statusInfo" style="font-size:12px;color:#6a0dad;margin-bottom:8px;">Carregando...</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Cliente</th><th>Gráfico</th><th>Início</th><th>Finalização</th><th>Status</th><th>Ações</th></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </section>
+    <!-- Card Direito - Formulário -->
+    <section class="card">
+      <h2>➕ Novo Agendamento</h2>
+      <form id="formAgendamento">
+        <div class="form-group">
+          <label>Cliente *</label>
+          <input type="text" id="inputCliente" required placeholder="Nome do cliente">
+        </div>
+        <div class="form-group">
+          <label>Gráfico *</label>
+          <input type="text" id="inputGrafico" required placeholder="Ex: Desimpregnador">
+        </div>
+        <div class="form-group">
+          <label>Data Início *</label>
+          <input type="date" id="inputDataInicio" required>
+        </div>
+        <div class="form-group">
+          <label>Data Finalização</label>
+          <input type="date" id="inputDataFim">
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="inputStatus">
+            <option value="Agendado">Agendado</option>
+            <option value="Em Andamento" selected>Em Andamento</option>
+            <option value="Concluído">Concluído</option>
+            <option value="Adiado">Adiado</option>
+            <option value="Cancelado">Cancelado</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-purple btn-full">Adicionar à Agenda</button>
+      </form>
+    </section>
   </div>
-</div>
+</main>
 <script>
 var URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
-var todosDados = [];
-var todosDadosObj = [];
+var colunas = [];
+var dadosLinhas = [];
+var dadosFiltrados = [];
 
-function getVal(obj) {
-  var keys = Array.prototype.slice.call(arguments, 1);
-  if (!obj || typeof obj !== 'object' || !keys.length) return '';
-  for (var i = 0; i < keys.length; i++) {
-    var k = keys[i];
-    if (obj.hasOwnProperty(k) && obj[k] != null && String(obj[k]).trim() !== '') return String(obj[k]);
-  }
-  for (var i = 0; i < keys.length; i++) {
-    var nk = String(keys[i]).toLowerCase().replace(/\s+/g, '');
-    var ok = Object.keys(obj);
-    for (var j = 0; j < ok.length; j++) {
-      if (String(ok[j]).toLowerCase().replace(/\s+/g, '') === nk && obj[ok[j]] != null && String(obj[ok[j]]).trim() !== '') return String(obj[ok[j]]);
+function mostrarMsg(txt, tipo) {
+  var el = document.getElementById('msg');
+  el.textContent = txt;
+  el.className = 'msg ' + tipo;
+  setTimeout(function() { el.className = 'msg'; el.textContent = ''; }, 4000);
+}
+
+function getCol(idx) {
+  return (colunas[idx] !== undefined && colunas[idx] !== null) ? colunas[idx] : '';
+}
+
+function valorLinha(linha, nomeColuna) {
+  for (var i = 0; i < colunas.length; i++) {
+    if (String(colunas[i]).toLowerCase().trim() === String(nomeColuna).toLowerCase().trim()) {
+      return (linha[i] !== undefined && linha[i] !== null) ? linha[i] : '';
     }
   }
   return '';
@@ -98,141 +149,190 @@ function getVal(obj) {
 function fmtData(v) {
   if (!v) return '';
   var s = String(v).trim();
+  if (!s) return '';
   if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return s;
   var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (m) return m[3] + '/' + m[2] + '/' + m[1];
   return s;
 }
 
-function toDateInput(v) {
+function toInputDate(v) {
   if (!v) return '';
   var s = String(v).trim();
   var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (m) return m[1] + '-' + m[2] + '-' + m[3];
-  var d = new Date(s);
-  if (!isNaN(d)) return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-  return '';
+  return s;
 }
 
-function badgeCls(st) {
-  var s = String(st||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-  if (s.indexOf('conclu')!==-1) return '#28a745';
-  if (s.indexOf('andamento')!==-1) return '#ffc107';
-  if (s.indexOf('agend')!==-1) return '#17a2b8';
-  if (s.indexOf('adi')!==-1) return '#fd7e14';
-  if (s.indexOf('cancel')!==-1) return '#dc3545';
-  return '#6c757d';
+function gerarTratamentoId() {
+  var n = parseInt(localStorage.getItem('agendaGrafCount') || '500');
+  n++;
+  localStorage.setItem('agendaGrafCount', n.toString());
+  return 'TRAT-' + n;
 }
 
-function carregar() {
-  var statusEl = document.getElementById('status');
-  statusEl.textContent = 'Carregando...';
+function carregarDados() {
+  document.getElementById('statusInfo').textContent = 'Carregando...';
   fetch(URL_ATEND + '?action=tratamentos&_=' + Date.now())
     .then(function(r) { return r.text(); })
     .then(function(text) {
       var json = JSON.parse(text);
-      var data = (json && Array.isArray(json.data)) ? json.data : [];
-      var comGrafico = [];
-      for (var i = 0; i < data.length; i++) {
-        var g = getVal(data[i], 'Grafico', 'grafico', 'Gráfico', 'nomeGrafico');
-        if (g && g.trim() !== '') comGrafico.push(data[i]);
+      if (!json.success || !Array.isArray(json.columns) || !Array.isArray(json.data)) {
+        document.getElementById('statusInfo').textContent = 'Erro: formato inválido.';
+        return;
       }
-      todosDados = comGrafico;
-      renderizar(comGrafico);
-      statusEl.textContent = comGrafico.length + ' grafico(s).';
+      colunas = json.columns;
+      dadosLinhas = json.data.filter(function(linha) {
+        var g = valorLinha(linha, 'Grafico') || valorLinha(linha, 'Gráfico') || valorLinha(linha, 'grafico');
+        return g && String(g).trim() !== '';
+      });
+      dadosLinhas.sort(function(a, b) {
+        var da = valorLinha(a, 'Data Finalizacao') || valorLinha(a, 'Data Finalização') || valorLinha(a, 'data_finalizacao') || '';
+        var db = valorLinha(b, 'Data Finalizacao') || valorLinha(b, 'Data Finalização') || valorLinha(b, 'data_finalizacao') || '';
+        return String(da).localeCompare(String(db));
+      });
+      renderizar(dadosLinhas);
+      document.getElementById('statusInfo').textContent = dadosLinhas.length + ' gráfico(s) carregado(s).';
     })
     .catch(function() {
-      statusEl.textContent = 'Erro ao carregar.';
-      renderizar([]);
+      document.getElementById('statusInfo').textContent = 'Erro ao carregar.';
     });
 }
 
-function renderizar(dados) {
+function renderizar(lista) {
   var tbody = document.getElementById('tbody');
   tbody.innerHTML = '';
-  if (!dados || !dados.length) {
-    tbody.innerHTML = '<tr><td class="empty" colspan="6">Nenhum grafico encontrado.</td></tr>';
+  if (!lista || lista.length === 0) {
+    tbody.innerHTML = '<tr><td class="vazio" colspan="6">Nenhum gráfico encontrado.</td></tr>';
     return;
   }
-  for (var i = 0; i < dados.length; i++) {
-    var r = dados[i];
-    var cliente = getVal(r, 'Nome Cliente', 'nomeCliente', 'NomeCliente', 'nome', 'cliente') || '-';
-    var grafico = getVal(r, 'Grafico', 'grafico', 'Gráfico', 'nomeGrafico') || '-';
-    var dtInicio = fmtData(getVal(r, 'Data Inicio', 'Data Início', 'data_inicio', 'datainicio'));
-    var dtFim = getVal(r, 'Data Finalizacao', 'Data Finalização', 'data_finalizacao', 'datafinalizacao');
-    var dataFimInput = toDateInput(dtFim);
-    var status = getVal(r, 'Status', 'status') || 'Agendado';
-    var bc = badgeCls(status);
-    
-    var idTrat = getVal(r, 'ID Tratamento', 'id_tratamento', 'idtratamento', 'ID', 'id');
-    
-    tbody.innerHTML += '<tr id="row-' + i + '">' +
-      '<td>' + cliente + '</td>' +
+  for (var i = 0; i < lista.length; i++) {
+    var linha = lista[i];
+    var cliente = valorLinha(linha, 'Nome Cliente') || valorLinha(linha, 'nomeCliente') || '-';
+    var grafico = valorLinha(linha, 'Grafico') || valorLinha(linha, 'Gráfico') || valorLinha(linha, 'grafico') || '-';
+    var dtInicio = fmtData(valorLinha(linha, 'Data Inicio') || valorLinha(linha, 'Data Início') || valorLinha(linha, 'data_inicio'));
+    var dtFim = toInputDate(valorLinha(linha, 'Data Finalizacao') || valorLinha(linha, 'Data Finalização') || valorLinha(linha, 'data_finalizacao'));
+    var status = valorLinha(linha, 'Status') || valorLinha(linha, 'status') || 'Agendado';
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td>' + cliente + '</td>' +
       '<td>' + grafico + '</td>' +
       '<td>' + dtInicio + '</td>' +
-      '<td><input type="date" id="df-' + i + '" value="' + dataFimInput + '"></td>' +
-      '<td><select id="st-' + i + '">' +
+      '<td><input type="date" class="dt-inline" id="df-' + i + '" value="' + dtFim + '"></td>' +
+      '<td><select class="st-inline" id="st-' + i + '">' +
         '<option value="Agendado"' + (status==='Agendado'?' selected':'') + '>Agendado</option>' +
         '<option value="Em Andamento"' + (status==='Em Andamento'?' selected':'') + '>Em Andamento</option>' +
         '<option value="Concluído"' + (status==='Concluído'?' selected':'') + '>Concluído</option>' +
         '<option value="Adiado"' + (status==='Adiado'?' selected':'') + '>Adiado</option>' +
         '<option value="Cancelado"' + (status==='Cancelado'?' selected':'') + '>Cancelado</option>' +
       '</select></td>' +
-      '<td><button class="btn btn-save" onclick="salvar(' + i + ')">💾 Salvar</button></td></tr>';
+      '<td><button class="btn btn-green" onclick="salvarEdicao(' + i + ')">💾</button></td>';
+    tbody.appendChild(tr);
   }
 }
 
-function salvar(idx) {
-  var r = todosDados[idx];
-  if (!r) return;
-  var idTrat = getVal(r, 'ID Tratamento', 'id_tratamento', 'idtratamento', 'ID', 'id');
-  var grafico = getVal(r, 'Grafico', 'grafico', 'Gráfico', 'nomeGrafico');
-  if (!idTrat || !grafico) { alert('Erro: dados insuficientes.'); return; }
+function filtrar() {
+  var termo = document.getElementById('busca').value.toLowerCase().trim();
+  if (!termo) { renderizar(dadosLinhas); return; }
+  var filt = [];
+  for (var i = 0; i < dadosLinhas.length; i++) {
+    var c = String(valorLinha(dadosLinhas[i], 'Nome Cliente') || '').toLowerCase();
+    var g = String(valorLinha(dadosLinhas[i], 'Grafico') || valorLinha(dadosLinhas[i], 'Gráfico') || '').toLowerCase();
+    if (c.indexOf(termo) !== -1 || g.indexOf(termo) !== -1) filt.push(dadosLinhas[i]);
+  }
+  renderizar(filt);
+}
+
+function salvarEdicao(idx) {
+  var linha = dadosLinhas[idx];
+  if (!linha) return;
+  var idTrat = valorLinha(linha, 'ID Tratamento') || valorLinha(linha, 'id_tratamento') || '';
+  var grafico = valorLinha(linha, 'Grafico') || valorLinha(linha, 'Gráfico') || '';
+  var cliente = valorLinha(linha, 'Nome Cliente') || '';
+  if (!idTrat || !grafico) { mostrarMsg('Dados insuficientes para salvar.', 'erro'); return; }
   
-  var dataFim = document.getElementById('df-' + idx).value;
-  var status = document.getElementById('st-' + idx).value;
-  
-  document.getElementById('status').textContent = 'Salvando...';
+  var novaDataFim = document.getElementById('df-' + idx).value;
+  var novoStatus = document.getElementById('st-' + idx).value;
   
   var payload = {
     action: 'editar_grafico',
     id_tratamento: idTrat,
     nome_grafico: grafico,
-    data_finalizacao: dataFim,
-    status: status
+    data_finalizacao: novaDataFim,
+    status: novoStatus
   };
   
+  mostrarMsg('Salvando...', 'ok');
   fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(payload) })
     .then(function(r) { return r.text(); })
     .then(function(text) {
-      var json = JSON.parse(text);
-      if (json.success) {
-        document.getElementById('status').textContent = 'Salvo!';
-        carregar();
+      var res = JSON.parse(text);
+      if (res.success) {
+        mostrarMsg('Gráfico atualizado!', 'ok');
+        carregarDados();
       } else {
-        document.getElementById('status').textContent = 'Erro: ' + (json.message || 'falha');
+        mostrarMsg('Erro: ' + (res.message || res.error || 'desconhecido'), 'erro');
       }
     })
     .catch(function(err) {
-      document.getElementById('status').textContent = 'Erro: ' + err.message;
+      mostrarMsg('Erro: ' + err.message, 'erro');
     });
 }
 
-function filtrar() {
-  var termo = document.getElementById('search').value.toLowerCase().trim();
-  if (!termo) { renderizar(todosDados); return; }
-  var filt = [];
-  for (var i = 0; i < todosDados.length; i++) {
-    var r = todosDados[i];
-    var c = String(getVal(r, 'Nome Cliente', 'nomeCliente', 'nome', 'cliente') || '').toLowerCase();
-    var g = String(getVal(r, 'Grafico', 'grafico', 'Gráfico', 'nomeGrafico') || '').toLowerCase();
-    var s = String(getVal(r, 'Status', 'status') || '').toLowerCase();
-    if (c.indexOf(termo) !== -1 || g.indexOf(termo) !== -1 || s.indexOf(termo) !== -1) filt.push(r);
+document.getElementById('formAgendamento').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var cliente = document.getElementById('inputCliente').value.trim();
+  var grafico = document.getElementById('inputGrafico').value.trim();
+  var dataInicio = document.getElementById('inputDataInicio').value;
+  var dataFim = document.getElementById('inputDataFim').value;
+  var status = document.getElementById('inputStatus').value;
+  
+  if (!cliente || !grafico || !dataInicio) {
+    mostrarMsg('Preencha Cliente, Gráfico e Data Início.', 'erro');
+    return;
   }
-  renderizar(filt);
-}
+  
+  var payload = {
+    tipo: 'tratamento',
+    action: 'criar_tratamento',
+    cliente_nome: cliente,
+    cliente_id: '',
+    tratamento_id: gerarTratamentoId(),
+    data_inicio: dataInicio,
+    graficos: [{
+      grafico: grafico,
+      data_inicio: dataInicio,
+      data_fim: dataFim,
+      status: status
+    }]
+  };
+  
+  mostrarMsg('Salvando...', 'ok');
+  fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(payload) })
+    .then(function(r) { return r.text(); })
+    .then(function(text) {
+      var res = JSON.parse(text);
+      if (res.success) {
+        mostrarMsg('Agendamento criado!', 'ok');
+        document.getElementById('inputCliente').value = '';
+        document.getElementById('inputGrafico').value = '';
+        document.getElementById('inputDataFim').value = '';
+        document.getElementById('inputStatus').value = 'Em Andamento';
+        var hoje = new Date().toISOString().split('T')[0];
+        document.getElementById('inputDataInicio').value = hoje;
+        carregarDados();
+      } else {
+        mostrarMsg('Erro: ' + (res.message || res.error || 'desconhecido'), 'erro');
+      }
+    })
+    .catch(function(err) {
+      mostrarMsg('Erro de conexão: ' + err.message, 'erro');
+    });
+});
 
-document.addEventListener('DOMContentLoaded', carregar);
+// Init
+var hoje = new Date().toISOString().split('T')[0];
+document.getElementById('inputDataInicio').value = hoje;
+carregarDados();
 </script>
 </body>
 </html>
