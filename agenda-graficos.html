@@ -1,233 +1,238 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agenda de Gráficos - Equilibrium</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    body {
-      background: #f4f0fa;
-      min-height: 100vh;
-    }
-    /* SIDEBAR */
-    .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
-    .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
-    .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
-    .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
-    /* CONTEÚDO PRINCIPAL */
-    .main-content {
-      margin-left: 250px;
-      padding: 40px;
-      min-height: 100vh;
-    }
-    .page-header {
-      margin-bottom: 30px;
-    }
-    .page-header h1 {
-      color: #4b0082;
-      font-size: 32px;
-      margin-bottom: 8px;
-    }
-    .page-header p {
-      color: #6a0dad;
-      font-size: 16px;
-      line-height: 1.5;
-      max-width: 800px;
-    }
-    .cards-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 25px;
-    }
-    .card {
-      background: #ffffff;
-      border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(75, 0, 130, 0.12);
-      padding: 25px;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .card h2 {
-      color: #4b0082;
-      font-size: 20px;
-      margin-bottom: 15px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #f4f0fa;
-    }
-    .calendar-iframe {
-      width: 100%;
-      height: 500px;
-      border: 0;
-      border-radius: 12px;
-    }
-    .form-group { margin-bottom: 16px; }
-    .form-group label {
-      display: block; color: #4b0082; font-size: 14px;
-      font-weight: 600; margin-bottom: 6px;
-    }
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%; padding: 10px 12px; border: 1px solid #d9c9e8;
-      border-radius: 8px; font-size: 14px; color: #333;
-      background: #faf8fd; transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-      outline: none; border-color: #6a0dad;
-      box-shadow: 0 0 0 3px rgba(106, 13, 173, 0.15);
-    }
-    .form-group textarea { resize: vertical; min-height: 70px; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .btn-submit { width: 100%; background: linear-gradient(135deg, #4b0082 0%, #6a0dad 100%); color: #ffffff; border: none; padding: 13px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.25s ease, transform 0.1s ease; }
-    .btn-submit:hover { background: linear-gradient(135deg, #6a0dad 0%, #4b0082 100%); }
-    .message { padding: 12px 15px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; display: none; }
-    .message.success { background: #e6f9ec; color: #1d7a3d; border: 1px solid #b5e6c4; display: block; }
-    .message.error { background: #fdecea; color: #b71c1c; border: 1px solid #f5c6cb; display: block; }
-    @media (max-width: 992px) { .cards-container { grid-template-columns: 1fr; } }
-    @media (max-width: 768px) {
-      .sidebar { width: 100%; height: auto; position: relative; }
-      .main-content { margin-left: 0; padding: 20px; }
-      .form-row { grid-template-columns: 1fr; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda de Gráficos - Equilibrium</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+  body { display: flex; min-height: 100vh; background: #f4f1f8; }
+  .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; overflow-y: auto; }
+  .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
+  .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
+  .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
+  .main { margin-left: 250px; padding: 30px; flex: 1; }
+  .header { margin-bottom: 25px; }
+  .header h1 { color: #4b0082; font-size: 26px; }
+  .header p { color: #666; font-size: 14px; margin-top: 5px; }
+  .toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
+  .search-input { flex: 1; min-width: 240px; padding: 12px 16px; border: 2px solid #e0d4f0; border-radius: 10px; font-size: 15px; outline: none; background: #faf8ff; }
+  .search-input:focus { border-color: #6a0dad; box-shadow: 0 0 0 3px rgba(106,13,173,0.15); }
+  .btn { padding: 11px 18px; border: none; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; transition: 0.2s; }
+  .btn-refresh { background: #4b0082; color: #fff; }
+  .btn-refresh:hover { background: #6a0dad; }
+  .btn-save { background: #28a745; color: #fff; padding: 7px 14px; font-size: 12px; border-radius: 6px; }
+  .btn-save:hover { background: #218838; }
+  .card { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(75,0,130,0.08); }
+  .table-wrap { overflow-x: auto; overflow-y: auto; max-height: 65vh; border-radius: 10px; border: 1px solid #eee; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 700px; }
+  thead th { background: #4b0082; color: #fff; padding: 12px 14px; text-align: left; font-weight: 600; white-space: nowrap; position: sticky; top: 0; z-index: 2; }
+  tbody td { padding: 11px 14px; border-bottom: 1px solid #f0e8fa; white-space: nowrap; }
+  tbody tr:hover { background: #f7f2fc; }
+  tbody tr:nth-child(even) { background: #fbf9fe; }
+  .empty { text-align: center; color: #999; padding: 28px; font-style: italic; }
+  .status { font-size: 13px; color: #6a0dad; margin-bottom: 12px; min-height: 18px; }
+  input[type=date], select { padding: 6px 8px; border: 1px solid #d8cce8; border-radius: 5px; font-size: 13px; }
+  .badge { padding: 3px 10px; border-radius: 12px; font-size: 12px; color: #fff; }
+  @media (max-width: 768px) { .sidebar { width: 200px; } .main { margin-left: 200px; padding: 20px; } }
+  @media (max-width: 560px) { .sidebar { width: 100%; height: auto; position: relative; } .main { margin-left: 0; padding: 16px; } }
+</style>
 </head>
 <body>
-  <!-- SIDEBAR -->
-  <div class="sidebar">
+<div class="sidebar">
     <h2>Equilibrium</h2>
     <nav>
-      <a href="index.html">🏠 Home</a>
-      <a href="agenda.html">📅 Agenda</a>
-      <a href="novo-cliente.html">👤 Novo Cliente</a>
-      <a href="clientes.html">📋 Lista de Clientes</a>
-      <a href="atendimentos.html">✨ Novo Atendimento</a>
-      <a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
-      <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
-      <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
-      <a href="agenda-graficos.html" class="active">📊 Agenda de Gráficos</a>
-      <a href="financeiro.html">💰 Financeiro</a>
+        <a href="index.html">🏠 Home</a>
+        <a href="agenda.html">📅 Agenda</a>
+        <a href="novo-cliente.html">👤 Novo Cliente</a>
+        <a href="clientes.html">📋 Lista de Clientes</a>
+        <a href="atendimentos.html">✨ Novo Atendimento</a>
+        <a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
+        <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
+        <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
+        <a href="agenda-graficos.html" class="active">📊 Agenda de Gráficos</a>
+        <a href="financeiro.html">💰 Financeiro</a>
     </nav>
+</div>
+<div class="main">
+  <div class="header">
+    <h1>📊 Agenda de Gráficos</h1>
+    <p>Visualize e edite as datas de finalização e status dos gráficos.</p>
   </div>
-  <!-- CONTEÚDO PRINCIPAL -->
-  <main class="main-content">
-    <div class="page-header">
-      <h1>Agenda de Gráficos</h1>
-      <p>Gerencie os agendamentos dos tratamentos radiestésicos. Visualize a agenda do Google Calendar e crie novos eventos diretamente nesta página.</p>
+  <div class="card">
+    <div class="toolbar">
+      <input type="text" id="search" class="search-input" placeholder="🔍 Buscar..." oninput="filtrar()">
+      <button class="btn btn-refresh" onclick="carregar()">🔄 Atualizar</button>
     </div>
-    <div class="cards-container">
-      <section class="card">
-        <h2>Calendário</h2>
-        <iframe id="calendarFrame" class="calendar-iframe" src="https://calendar.google.com/calendar/embed?src=3c23c1b339dd330985fe7b0541c3810edc7e38fe93be31181ceb0a0c69d840cd%40group.calendar.google.com&ctz=America%2FSao_Paulo" frameborder="0" scrolling="no" loading="lazy" title="Agenda de Gráficos - Google Calendar"></iframe>
-      </section>
-      <section class="card">
-        <h2>Novo Agendamento</h2>
-        <div id="formMessage" class="message"></div>
-        <form id="formAgendamento">
-          <div class="form-group">
-            <label for="titulo">Título do Tratamento *</label>
-            <input type="text" id="titulo" name="titulo" required placeholder="Ex.: Gráfico Radiestésico">
-          </div>
-          <div class="form-group">
-            <label for="cliente">Cliente</label>
-            <input type="text" id="cliente" name="cliente" placeholder="Nome do cliente (opcional)">
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="data_inicio">Data Início *</label>
-              <input type="date" id="data_inicio" name="data_inicio" required>
-            </div>
-            <div class="form-group">
-              <label for="hora_inicio">Hora Início</label>
-              <input type="time" id="hora_inicio" name="hora_inicio" value="09:00">
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="data_fim">Data Fim *</label>
-              <input type="date" id="data_fim" name="data_fim" required>
-            </div>
-            <div class="form-group">
-              <label for="hora_fim">Hora Fim</label>
-              <input type="time" id="hora_fim" name="hora_fim" value="10:00">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="status">Status</label>
-            <select id="status" name="status">
-              <option value="agendado">Agendado</option>
-              <option value="em_andamento">Em Andamento</option>
-              <option value="concluido">Concluído</option>
-              <option value="adiado">Adiado</option>
-              <option value="cancelado">Cancelado</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="descricao">Descrição</label>
-            <textarea id="descricao" name="descricao" placeholder="Observações sobre o tratamento (opcional)"></textarea>
-          </div>
-          <button type="submit" class="btn-submit" id="btnSubmit">Criar Agendamento</button>
-        </form>
-      </section>
+    <div id="status" class="status">Carregando...</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Cliente</th><th>Gráfico</th><th>Data Início</th><th>Data Finalização</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
     </div>
-  </main>
-  <script>
-    (function () {
-      const form = document.getElementById('formAgendamento');
-      const messageBox = document.getElementById('formMessage');
-      const btnSubmit = document.getElementById('btnSubmit');
-      const calendarFrame = document.getElementById('calendarFrame');
-      const dataInicio = document.getElementById('data_inicio');
-      const dataFim = document.getElementById('data_fim');
-      const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec';
-      const STATUS_COR = { agendado: 5, em_andamento: 1, concluido: 2, adiado: 4, cancelado: 8 };
-      dataInicio.addEventListener('change', function () {
-        if (!dataFim.value || dataFim.value < dataInicio.value) { dataFim.value = dataInicio.value; }
-      });
-      function showMessage(text, type) { messageBox.textContent = text; messageBox.className = 'message ' + type; }
-      function clearMessage() { messageBox.textContent = ''; messageBox.className = 'message'; }
-      function reloadCalendar() {
-        const currentSrc = calendarFrame.src;
-        calendarFrame.src = '';
-        setTimeout(function () { calendarFrame.src = currentSrc; }, 400);
+  </div>
+</div>
+<script>
+var URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
+var todosDados = [];
+var todosDadosObj = [];
+
+function getVal(obj) {
+  var keys = Array.prototype.slice.call(arguments, 1);
+  if (!obj || typeof obj !== 'object' || !keys.length) return '';
+  for (var i = 0; i < keys.length; i++) {
+    var k = keys[i];
+    if (obj.hasOwnProperty(k) && obj[k] != null && String(obj[k]).trim() !== '') return String(obj[k]);
+  }
+  for (var i = 0; i < keys.length; i++) {
+    var nk = String(keys[i]).toLowerCase().replace(/\s+/g, '');
+    var ok = Object.keys(obj);
+    for (var j = 0; j < ok.length; j++) {
+      if (String(ok[j]).toLowerCase().replace(/\s+/g, '') === nk && obj[ok[j]] != null && String(obj[ok[j]]).trim() !== '') return String(obj[ok[j]]);
+    }
+  }
+  return '';
+}
+
+function fmtData(v) {
+  if (!v) return '';
+  var s = String(v).trim();
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return s;
+  var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) return m[3] + '/' + m[2] + '/' + m[1];
+  return s;
+}
+
+function toDateInput(v) {
+  if (!v) return '';
+  var s = String(v).trim();
+  var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) return m[1] + '-' + m[2] + '-' + m[3];
+  var d = new Date(s);
+  if (!isNaN(d)) return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  return '';
+}
+
+function badgeCls(st) {
+  var s = String(st||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  if (s.indexOf('conclu')!==-1) return '#28a745';
+  if (s.indexOf('andamento')!==-1) return '#ffc107';
+  if (s.indexOf('agend')!==-1) return '#17a2b8';
+  if (s.indexOf('adi')!==-1) return '#fd7e14';
+  if (s.indexOf('cancel')!==-1) return '#dc3545';
+  return '#6c757d';
+}
+
+function carregar() {
+  var statusEl = document.getElementById('status');
+  statusEl.textContent = 'Carregando...';
+  fetch(URL_ATEND + '?action=tratamentos&_=' + Date.now())
+    .then(function(r) { return r.text(); })
+    .then(function(text) {
+      var json = JSON.parse(text);
+      var data = (json && Array.isArray(json.data)) ? json.data : [];
+      var comGrafico = [];
+      for (var i = 0; i < data.length; i++) {
+        var g = getVal(data[i], 'Grafico', 'grafico', 'Gráfico', 'nomeGrafico');
+        if (g && g.trim() !== '') comGrafico.push(data[i]);
       }
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        clearMessage();
-        const titulo = document.getElementById('titulo').value.trim();
-        const cliente = document.getElementById('cliente').value.trim();
-        const data_inicio = document.getElementById('data_inicio').value;
-        const hora_inicio = document.getElementById('hora_inicio').value;
-        const data_fim = document.getElementById('data_fim').value;
-        const hora_fim = document.getElementById('hora_fim').value;
-        const status = document.getElementById('status').value;
-        const descricao = document.getElementById('descricao').value.trim();
-        if (!titulo || !data_inicio || !data_fim) { showMessage('Preencha todos os campos obrigatórios.', 'error'); return; }
-        const cor = STATUS_COR[status] !== undefined ? STATUS_COR[status] : 5;
-        const params = new URLSearchParams();
-        params.append('action', 'criar'); params.append('calendario', 'graficos'); params.append('titulo', titulo);
-        params.append('cliente', cliente); params.append('data_inicio', data_inicio); params.append('hora_inicio', hora_inicio);
-        params.append('data_fim', data_fim); params.append('hora_fim', hora_fim); params.append('status', status);
-        params.append('cor', cor); params.append('tipo', 'grafico'); params.append('descricao', descricao);
-        btnSubmit.disabled = true; btnSubmit.textContent = 'Criando...';
-        fetch(WEBHOOK_URL, { method: 'POST', body: params })
-          .then(function (response) {
-            if (!response.ok) throw new Error('Erro: ' + response.status);
-            return response.text().catch(function () { return ''; });
-          })
-          .then(function () {
-            showMessage('Agendamento criado com sucesso! O calendário será recarregado.', 'success');
-            form.reset();
-            document.getElementById('hora_inicio').value = '09:00';
-            document.getElementById('hora_fim').value = '10:00';
-            reloadCalendar();
-          })
-          .catch(function (err) { showMessage('Erro ao criar agendamento: ' + err.message, 'error'); })
-          .finally(function () { btnSubmit.disabled = false; btnSubmit.textContent = 'Criar Agendamento'; });
-      });
-    })();
-  </script>
+      todosDados = comGrafico;
+      renderizar(comGrafico);
+      statusEl.textContent = comGrafico.length + ' grafico(s).';
+    })
+    .catch(function() {
+      statusEl.textContent = 'Erro ao carregar.';
+      renderizar([]);
+    });
+}
+
+function renderizar(dados) {
+  var tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+  if (!dados || !dados.length) {
+    tbody.innerHTML = '<tr><td class="empty" colspan="6">Nenhum grafico encontrado.</td></tr>';
+    return;
+  }
+  for (var i = 0; i < dados.length; i++) {
+    var r = dados[i];
+    var cliente = getVal(r, 'Nome Cliente', 'nomeCliente', 'NomeCliente', 'nome', 'cliente') || '-';
+    var grafico = getVal(r, 'Grafico', 'grafico', 'Gráfico', 'nomeGrafico') || '-';
+    var dtInicio = fmtData(getVal(r, 'Data Inicio', 'Data Início', 'data_inicio', 'datainicio'));
+    var dtFim = getVal(r, 'Data Finalizacao', 'Data Finalização', 'data_finalizacao', 'datafinalizacao');
+    var dataFimInput = toDateInput(dtFim);
+    var status = getVal(r, 'Status', 'status') || 'Agendado';
+    var bc = badgeCls(status);
+    
+    var idTrat = getVal(r, 'ID Tratamento', 'id_tratamento', 'idtratamento', 'ID', 'id');
+    
+    tbody.innerHTML += '<tr id="row-' + i + '">' +
+      '<td>' + cliente + '</td>' +
+      '<td>' + grafico + '</td>' +
+      '<td>' + dtInicio + '</td>' +
+      '<td><input type="date" id="df-' + i + '" value="' + dataFimInput + '"></td>' +
+      '<td><select id="st-' + i + '">' +
+        '<option value="Agendado"' + (status==='Agendado'?' selected':'') + '>Agendado</option>' +
+        '<option value="Em Andamento"' + (status==='Em Andamento'?' selected':'') + '>Em Andamento</option>' +
+        '<option value="Concluído"' + (status==='Concluído'?' selected':'') + '>Concluído</option>' +
+        '<option value="Adiado"' + (status==='Adiado'?' selected':'') + '>Adiado</option>' +
+        '<option value="Cancelado"' + (status==='Cancelado'?' selected':'') + '>Cancelado</option>' +
+      '</select></td>' +
+      '<td><button class="btn btn-save" onclick="salvar(' + i + ')">💾 Salvar</button></td></tr>';
+  }
+}
+
+function salvar(idx) {
+  var r = todosDados[idx];
+  if (!r) return;
+  var idTrat = getVal(r, 'ID Tratamento', 'id_tratamento', 'idtratamento', 'ID', 'id');
+  var grafico = getVal(r, 'Grafico', 'grafico', 'Gráfico', 'nomeGrafico');
+  if (!idTrat || !grafico) { alert('Erro: dados insuficientes.'); return; }
+  
+  var dataFim = document.getElementById('df-' + idx).value;
+  var status = document.getElementById('st-' + idx).value;
+  
+  document.getElementById('status').textContent = 'Salvando...';
+  
+  var payload = {
+    action: 'editar_grafico',
+    id_tratamento: idTrat,
+    nome_grafico: grafico,
+    data_finalizacao: dataFim,
+    status: status
+  };
+  
+  fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(payload) })
+    .then(function(r) { return r.text(); })
+    .then(function(text) {
+      var json = JSON.parse(text);
+      if (json.success) {
+        document.getElementById('status').textContent = 'Salvo!';
+        carregar();
+      } else {
+        document.getElementById('status').textContent = 'Erro: ' + (json.message || 'falha');
+      }
+    })
+    .catch(function(err) {
+      document.getElementById('status').textContent = 'Erro: ' + err.message;
+    });
+}
+
+function filtrar() {
+  var termo = document.getElementById('search').value.toLowerCase().trim();
+  if (!termo) { renderizar(todosDados); return; }
+  var filt = [];
+  for (var i = 0; i < todosDados.length; i++) {
+    var r = todosDados[i];
+    var c = String(getVal(r, 'Nome Cliente', 'nomeCliente', 'nome', 'cliente') || '').toLowerCase();
+    var g = String(getVal(r, 'Grafico', 'grafico', 'Gráfico', 'nomeGrafico') || '').toLowerCase();
+    var s = String(getVal(r, 'Status', 'status') || '').toLowerCase();
+    if (c.indexOf(termo) !== -1 || g.indexOf(termo) !== -1 || s.indexOf(termo) !== -1) filt.push(r);
+  }
+  renderizar(filt);
+}
+
+document.addEventListener('DOMContentLoaded', carregar);
+</script>
 </body>
 </html>
