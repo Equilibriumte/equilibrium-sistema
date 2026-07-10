@@ -1,720 +1,236 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Novo Atendimento - Equilibrium</title>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
-body { background: #f4f0fa; color: #333; }
-
-.sidebar {
-  position: fixed;
-  top: 0; left: 0;
-  width: 250px;
-  height: 100vh;
-  background: linear-gradient(180deg, #4b0082, #6a0dad);
-  color: #fff;
-  padding: 20px 0;
-  overflow-y: auto;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.2);
-}
-.sidebar h2 {
-  text-align: center;
-  font-size: 22px;
-  margin-bottom: 25px;
-  letter-spacing: 1px;
-}
-.sidebar nav { display: flex; flex-direction: column; }
-.sidebar nav a {
-  color: #fff;
-  text-decoration: none;
-  padding: 12px 20px;
-  font-size: 15px;
-  transition: all 0.2s;
-  border-left: 4px solid transparent;
-}
-.sidebar nav a:hover {
-  background: rgba(255,255,255,0.15);
-  border-left: 4px solid #d4af37;
-  color: #d4af37;
-}
-.sidebar nav a.active {
-  background: rgba(255,255,255,0.2);
-  border-left: 4px solid #d4af37;
-  font-weight: bold;
-}
-
-main {
-  margin-left: 250px;
-  padding: 25px;
-}
-.header {
-  background: #fff;
-  border-radius: 15px;
-  padding: 18px 25px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(75,0,130,0.1);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.header h1 { color: #4b0082; font-size: 24px; }
-.header .sub { color: #6a0dad; font-size: 13px; }
-
-.card {
-  background: #fff;
-  border-radius: 15px;
-  padding: 25px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(75,0,130,0.1);
-}
-.card h3 {
-  color: #4b0082;
-  margin-bottom: 15px;
-  font-size: 18px;
-  border-bottom: 2px solid #e0d0f0;
-  padding-bottom: 8px;
-}
-
-.tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-.tab-btn {
-  background: #e0d0f0;
-  color: #4b0082;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: all 0.2s;
-}
-.tab-btn:hover { background: #c8b0e8; }
-.tab-btn.active {
-  background: linear-gradient(135deg, #4b0082, #6a0dad);
-  color: #fff;
-}
-
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px 20px;
-}
-.form-group { display: flex; flex-direction: column; }
-.form-group.full { grid-column: 1 / -1; }
-.form-group label {
-  font-size: 13px;
-  color: #4b0082;
-  margin-bottom: 5px;
-  font-weight: 600;
-}
-.form-group input,
-.form-group select,
-.form-group textarea {
-  padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: border 0.2s;
-}
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #6a0dad;
-  box-shadow: 0 0 0 2px rgba(106,13,173,0.15);
-}
-.form-group textarea { resize: vertical; min-height: 80px; }
-
-.autocomplete-wrap { position: relative; }
-.autocomplete-list {
-  position: absolute;
-  top: 100%; left: 0; right: 0;
-  background: #fff;
-  border: 2px solid #6a0dad;
-  border-radius: 8px;
-  max-height: 200px;
-  overflow-y: auto;
-  z-index: 100;
-  display: none;
-}
-.autocomplete-list div {
-  padding: 10px 12px;
-  cursor: pointer;
-  border-bottom: 1px solid #eee;
-  font-size: 14px;
-}
-.autocomplete-list div:hover { background: #f0e6fa; }
-
-.btn-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
-.chakra-btn, .campo-btn {
-  color: #fff;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  transition: transform 0.15s, opacity 0.2s;
-}
-.chakra-btn:hover, .campo-btn:hover { transform: translateY(-2px); }
-.chakra-btn.selected, .campo-btn.selected {
-  outline: 3px solid #d4af37;
-  outline-offset: 2px;
-}
-
-.c-coronario { background: #9b30ff; }
-.c-frontal { background: #6a5acd; }
-.c-laringeo { background: #48d1cc; }
-.c-cardiaco { background: #32cd32; }
-.c-umbilical { background: #ffd700; color: #333; }
-.c-sacro { background: #ff8c00; }
-.c-basico { background: #e60000; }
-
-.d-mental { background: #5b9bd5; }
-.d-emocional { background: #ed7d31; }
-.d-espiritual { background: #7030a0; }
-.d-fisico { background: #548235; }
-
-.multi-select {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  min-height: 50px;
-}
-.color-chip {
-  padding: 6px 12px;
-  border-radius: 20px;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  user-select: none;
-}
-.color-chip.selected { box-shadow: 0 0 0 3px #d4af37; }
-
-.btn-row {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-  gap: 10px;
-}
-.btn {
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 700;
-  transition: all 0.2s;
-}
-.btn-save {
-  background: linear-gradient(135deg, #4b0082, #6a0dad);
-  color: #fff;
-}
-.btn-save:hover { opacity: 0.9; transform: translateY(-2px); }
-.btn-next {
-  background: linear-gradient(135deg, #d4af37, #c0a020);
-  color: #fff;
-}
-.btn-next:hover { opacity: 0.9; transform: translateY(-2px); }
-.btn-back {
-  background: #ccc;
-  color: #333;
-}
-
-#statusMsg {
-  margin-top: 15px;
-  padding: 12px;
-  border-radius: 8px;
-  display: none;
-  font-weight: 600;
-}
-#statusMsg.ok { background: #d4edda; color: #155724; display: block; }
-#statusMsg.err { background: #f8d7da; color: #721c24; display: block; }
-
-@media (max-width: 768px) {
-  .sidebar { width: 200px; }
-  main { margin-left: 200px; }
-  .form-grid { grid-template-columns: 1fr; }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atendimentos - Equilibrium</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { display: flex; background-color: #f4f0fa; min-height: 100vh; }
+        .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
+        .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
+        .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
+        .main-content { margin-left: 250px; flex: 1; padding: 40px; width: calc(100% - 250px); }
+        .tabs-header { display: flex; gap: 5px; margin-bottom: 20px; background: #e0d0f0; padding: 5px; border-radius: 12px; overflow-x: auto; }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: none; color: #4b0082; cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 12px; transition: 0.3s; }
+        .tab-btn.active { background: #4b0082; color: #ffd700; }
+        .tab-content { display: none; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .tab-content.active { display: block; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .full { grid-column: span 2; }
+        label { display: block; font-weight: bold; color: #4b0082; margin-bottom: 8px; font-size: 14px; }
+        input, select, textarea { width: 100%; padding: 12px; border: 2px solid #e0d0f0; border-radius: 8px; outline: none; }
+        .multi-select-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; padding: 10px; border: 2px solid #e0d0f0; border-radius: 8px; max-height: 150px; overflow-y: auto; }
+        .option-item { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; padding: 5px; border-radius: 5px; }
+        .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 15px 0; }
+        .color-btn { padding: 15px; border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; text-align: center; font-size: 11px; }
+        .color-btn span { display: block; font-size: 15px; margin-top: 5px; }
+        .c-coronario { background: #8a2be2; } .c-frontal { background: #4b0082; } .c-laringeo { background: #87ceeb; color: #333; }
+        .c-cardiaco { background: #228b22; } .c-umbilical { background: #ffd700; color: #333; } .c-sacro { background: #ff8c00; } .c-basico { background: #ff0000; }
+        .d-mental { background: #5dade2; } .d-emocional { background: #ec7063; } .d-espiritual { background: #af7ac5; } .d-fisico { background: #58d68d; }
+        .nav-actions { display: flex; justify-content: space-between; margin-top: 30px; gap: 15px; }
+        .btn-action { padding: 15px 25px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-save { background: #ffd700; color: #4b0082; flex: 1; }
+        .btn-next { background: #4b0082; color: white; }
+    </style>
 </head>
 <body>
-
-<div class="sidebar">
-  <h2>Equilibrium</h2>
-  <nav>
-    <a href="index.html">🏠 Home</a>
-    <a href="agenda.html">📅 Agenda</a>
-    <a href="novo-cliente.html">👤 Novo Cliente</a>
-    <a href="clientes.html">📋 Lista de Clientes</a>
-    <a href="atendimentos.html" class="active">✨ Novo Atendimento</a>
-    <a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
-    <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
-    <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
-    <a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
-    <a href="financeiro.html">💰 Financeiro</a>
-  </nav>
-</div>
-
-<main>
-  <div class="header">
-    <div>
-      <h1>✨ Novo Atendimento</h1>
-      <div class="sub">Sistema Equilibrium - Registro de Atendimento</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="tabs">
-      <button class="tab-btn active" onclick="showTab(0)">1. Dados</button>
-      <button class="tab-btn" onclick="showTab(1)">2. Inicial</button>
-      <button class="tab-btn" onclick="showTab(2)">3. Específico</button>
-      <button class="tab-btn" onclick="showTab(3)">4. Ambiente</button>
-      <button class="tab-btn" onclick="showTab(4)">5. Busca</button>
+    <div class="sidebar">
+        <h2>Equilibrium</h2>
+        <nav>
+            <a href="novo-cliente.html">🏠 Home</a>
+            <a href="clientes.html">📋 Lista de Clientes</a>
+            <a href="atendimentos.html" class="active">✨ Atendimentos</a>
+            <a href="lista-atendimentos.html">📜 Histórico</a>
+        </nav>
     </div>
 
-    <!-- ABA 1: DADOS -->
-    <div class="tab-content active" id="tab-0">
-      <h3>Dados do Atendimento</h3>
-      <div class="form-grid">
-        <div class="form-group"><label>ID Atendimento</label><input type="text" id="idAtendimento" readonly style="font-weight:bold;color:#4b0082;background:#f0e6fa;"></div>
-        <div class="form-group"><label>Data do Atendimento</label><input type="date" id="data"></div>
-        <div class="form-group full">
-          <label>Cliente (autocomplete)</label>
-          <div class="autocomplete-wrap">
-            <input type="text" id="clienteBusca" placeholder="Digite o nome do cliente..." oninput="buscarClientes()">
-            <div class="autocomplete-list" id="autocompleteList"></div>
-          </div>
+    <div class="main-content">
+        <h1 style="color: #4b0082; margin-bottom: 20px;">Ficha de Atendimento</h1>
+        <div class="tabs-header">
+            <button class="tab-btn active" onclick="showTab(0)">1. Dados</button>
+            <button class="tab-btn" onclick="showTab(1)">2. Inicial</button>
+            <button class="tab-btn" onclick="showTab(2)">3. Específico</button>
+            <button class="tab-btn" onclick="showTab(3)">4. Ambiente</button>
+            <button class="tab-btn" onclick="showTab(4)">5. Busca</button>
         </div>
-        <div class="form-group"><label>ID Cliente</label><input type="text" id="clienteId" readonly></div>
-        <div class="form-group"><label>WhatsApp</label><input type="text" id="clienteWhats" readonly></div>
-        <div class="form-group"><label>Terapeuta</label><input type="text" id="terapeuta"></div>
-        <div class="form-group"><label>Tipo de Atendimento</label>
-          <select id="tipoAtendimento">
-            <option value="">Selecione...</option>
-            <option value="Presencial">Presencial</option>
-            <option value="Online">Online</option>
-            <option value="Domiciliar">Domiciliar</option>
-          </select>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-save" onclick="enviarDados()">💾 SALVAR AGORA</button>
-        <button class="btn btn-next" onclick="showTab(1)">PRÓXIMO ▶</button>
-      </div>
+
+        <form id="formAtendimento">
+            <div class="tab-content active">
+                <div class="form-grid">
+                    <div class="form-group full">
+                        <label>Nome do Cliente</label>
+                        <input type="text" id="nomeCliente" list="listaClientes" placeholder="Digite para buscar..." required autocomplete="off">
+                        <datalist id="listaClientes"></datalist>
+                        <input type="hidden" id="idCliente">
+                    </div>
+                    <div class="form-group"><label>Data</label><input type="date" id="dataAtend" required></div>
+                    <div class="form-group"><label>Status</label><select id="statusSelect"><option value="">Carregando...</option></select></div>
+                    <div class="form-group full"><label>Queixa Principal</label><textarea id="queixaP"></textarea></div>
+                    <div class="form-group full"><label>Queixa Secundária</label><textarea id="queixaS"></textarea></div>
+                </div>
+                <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(1)">PRÓXIMO ➔</button></div>
+            </div>
+
+            <div class="tab-content">
+                <div class="form-group"><label>Bovis (4 dígitos)</label><input type="number" id="bovis"></div>
+                <label style="margin-top: 15px;">Chakras (%)</label>
+                <div class="btn-grid">
+                    <button type="button" class="color-btn c-coronario" onclick="setVal(this, 'v-coronario')">Coronário<span id="v-coronario">-</span></button>
+                    <button type="button" class="color-btn c-frontal" onclick="setVal(this, 'v-frontal')">Frontal<span id="v-frontal">-</span></button>
+                    <button type="button" class="color-btn c-laringeo" onclick="setVal(this, 'v-laringeo')">Laríngeo<span id="v-laringeo">-</span></button>
+                    <button type="button" class="color-btn c-cardiaco" onclick="setVal(this, 'v-cardiaco')">Cardíaco<span id="v-cardiaco">-</span></button>
+                    <button type="button" class="color-btn c-umbilical" onclick="setVal(this, 'v-umbilical')">Umbilical<span id="v-umbilical">-</span></button>
+                    <button type="button" class="color-btn c-sacro" onclick="setVal(this, 'v-sacro')">Sacro<span id="v-sacro">-</span></button>
+                    <button type="button" class="color-btn c-basico" onclick="setVal(this, 'v-basico')">Básico<span id="v-basico">-</span></button>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Tamanho Aura</label><input type="text" id="auraT" placeholder="Ex: 80%"></div>
+                    <div class="form-group"><label>Proteção Aura</label><input type="text" id="protecaoAura" placeholder="Ex: 100%"></div>
+                </div>
+                <div class="form-grid" style="margin-top:15px;">
+                    <div class="form-group"><label>Cores em Excesso</label><div id="coresExcesso" class="multi-select-container"></div></div>
+                    <div class="form-group"><label>Cores em Falta</label><div id="coresFalta" class="multi-select-container"></div></div>
+                </div>
+                <label style="margin-top: 15px;">Campos (%)</label>
+                <div class="btn-grid">
+                    <button type="button" class="color-btn d-mental" onclick="setVal(this, 'v-mental')">Mental<span id="v-mental">-</span></button>
+                    <button type="button" class="color-btn d-emocional" onclick="setVal(this, 'v-emocional')">Emocional<span id="v-emocional">-</span></button>
+                    <button type="button" class="color-btn d-espiritual" onclick="setVal(this, 'v-espiritual')">Espiritual<span id="v-espiritual">-</span></button>
+                    <button type="button" class="color-btn d-fisico" onclick="setVal(this, 'v-fisico')">Físico<span id="v-fisico">-</span></button>
+                </div>
+                <div class="form-group full"><label>Diagnóstico Inicial</label><textarea id="diagInicial"></textarea></div>
+                <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(2)">PRÓXIMO ➔</button></div>
+            </div>
+
+            <div class="tab-content"><label>Queixa Específica</label><textarea id="queixaE"></textarea><label>Causa Raiz</label><textarea id="causaRaiz"></textarea><label>Crenças</label><textarea id="crencas"></textarea><label>Diagnóstico Específico</label><textarea id="diagEspec"></textarea><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(3)">PRÓXIMO ➔</button></div></div>
+            <div class="tab-content"><div class="form-grid"><div class="form-group"><label>Tipo Ambiente</label><select id="tipoAmbiente"></select></div><div class="form-group"><label>Endereço</label><input type="text" id="endAmbiente"></div><div class="form-group full"><label>Queixa Ambiente</label><textarea id="queixaAmbiente"></textarea></div><div class="form-group full"><label>Pessoas Env.</label><input type="text" id="pessoasEnv"></div><div class="form-group full"><label>Diag. Ambiente</label><textarea id="diagAmbiente"></textarea></div></div><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(4)">PRÓXIMO ➔</button></div></div>
+            <div class="tab-content"><div class="form-grid"><div class="form-group"><label>Tipo Busca</label><select id="tipoBusca"></select></div><div class="form-group"><label>Info Busca</label><input type="text" id="infoBusca"></div><div class="form-group full"><label>Resultado</label><select id="resBusca"></select></div><div class="form-group full"><label>Descrição</label><textarea id="descBusca"></textarea></div></div><div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">FINALIZAR E SALVAR</button></div></div>
+        </form>
     </div>
 
-    <!-- ABA 2: INICIAL -->
-    <div class="tab-content" id="tab-1">
-      <h3>Avaliação Inicial</h3>
-      <div class="form-grid">
-        <div class="form-group full">
-          <label>Chakras (clique para selecionar e informar %)</label>
-          <div class="btn-group">
-            <button class="chakra-btn c-coronario" onclick="setVal(this,'chCoronario')">Coronário</button>
-            <button class="chakra-btn c-frontal" onclick="setVal(this,'chFrontal')">Frontal</button>
-            <button class="chakra-btn c-laringeo" onclick="setVal(this,'chLaringeo')">Laríngeo</button>
-            <button class="chakra-btn c-cardiaco" onclick="setVal(this,'chCardiaco')">Cardíaco</button>
-            <button class="chakra-btn c-umbilical" onclick="setVal(this,'chUmbilical')">Umbilical</button>
-            <button class="chakra-btn c-sacro" onclick="setVal(this,'chSacro')">Sacro</button>
-            <button class="chakra-btn c-basico" onclick="setVal(this,'chBasico')">Básico</button>
-          </div>
-          <input type="hidden" id="chCoronario">
-          <input type="hidden" id="chFrontal">
-          <input type="hidden" id="chLaringeo">
-          <input type="hidden" id="chCardiaco">
-          <input type="hidden" id="chUmbilical">
-          <input type="hidden" id="chSacro">
-          <input type="hidden" id="chBasico">
-        </div>
-        <div class="form-group full">
-          <label>Campos (clique para selecionar e informar %)</label>
-          <div class="btn-group">
-            <button class="campo-btn d-mental" onclick="setVal(this,'dMental')">Mental</button>
-            <button class="campo-btn d-emocional" onclick="setVal(this,'dEmocional')">Emocional</button>
-            <button class="campo-btn d-espiritual" onclick="setVal(this,'dEspiritual')">Espiritual</button>
-            <button class="campo-btn d-fisico" onclick="setVal(this,'dFisico')">Físico</button>
-          </div>
-          <input type="hidden" id="dMental">
-          <input type="hidden" id="dEmocional">
-          <input type="hidden" id="dEspiritual">
-          <input type="hidden" id="dFisico">
-        </div>
-        <div class="form-group"><label>Bovis</label><input type="number" id="bovis" placeholder="Ex: 8500"></div>
-        <div class="form-group"><label>Queixa Principal</label><input type="text" id="queixa"></div>
-        <div class="form-group full"><label>Observações Iniciais</label><textarea id="obsInicial"></textarea></div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-back" onclick="showTab(0)">◀ VOLTAR</button>
-        <div style="display:flex;gap:10px;">
-          <button class="btn btn-save" onclick="enviarDados()">💾 SALVAR AGORA</button>
-          <button class="btn btn-next" onclick="showTab(2)">PRÓXIMO ▶</button>
-        </div>
-      </div>
-    </div>
+    <script>
+        const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
+        const URL_ATEND = 'https://script.google.com/macros/s/AKfycbxdiShi7tnGpm_JoDoddDsiaLswyfPZcH69-ZXjT8JnQV4yN2zEhyOnG0cBfa-iOWG_/exec';
+        let listaGlobalClientes = [];
 
-    <!-- ABA 3: ESPECÍFICO -->
-    <div class="tab-content" id="tab-2">
-      <h3>Avaliação Específica</h3>
-      <div class="form-grid">
-        <div class="form-group full">
-          <label>Cores (multi-select)</label>
-          <div class="multi-select" id="coresBox"></div>
-        </div>
-        <div class="form-group"><label>Essência</label>
-          <select id="essencia"><option value="">Selecione...</option></select>
-        </div>
-        <div class="form-group"><label>Floral</label>
-          <select id="floral"><option value="">Selecione...</option></select>
-        </div>
-        <div class="form-group"><label>Cristal</label>
-          <select id="cristal"><option value="">Selecione...</option></select>
-        </div>
-        <div class="form-group"><label>Aromaterapia</label>
-          <select id="aromaterapia"><option value="">Selecione...</option></select>
-        </div>
-        <div class="form-group full"><label>Procedimento Específico</label><textarea id="procEspecifico"></textarea></div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-back" onclick="showTab(1)">◀ VOLTAR</button>
-        <div style="display:flex;gap:10px;">
-          <button class="btn btn-save" onclick="enviarDados()">💾 SALVAR AGORA</button>
-          <button class="btn btn-next" onclick="showTab(3)">PRÓXIMO ▶</button>
-        </div>
-      </div>
-    </div>
+        function showTab(i) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content')[i].classList.add('active');
+            document.querySelectorAll('.tab-btn')[i].classList.add('active');
+            window.scrollTo(0,0);
+        }
 
-    <!-- ABA 4: AMBIENTE -->
-    <div class="tab-content" id="tab-3">
-      <h3>Ambiente</h3>
-      <div class="form-grid">
-        <div class="form-group"><label>Música</label>
-          <select id="musica"><option value="">Selecione...</option></select>
-        </div>
-        <div class="form-group"><label>Incenso</label>
-          <select id="incenso"><option value="">Selecione...</option></select>
-        </div>
-        <div class="form-group"><label>Temperatura</label><input type="text" id="temperatura"></div>
-        <div class="form-group"><label>Iluminação</label>
-          <select id="iluminacao">
-            <option value="">Selecione...</option>
-            <option value="Clara">Clara</option>
-            <option value="Suave">Suave</option>
-            <option value="Semi-escura">Semi-escura</option>
-            <option value="Escura">Escura</option>
-          </select>
-        </div>
-        <div class="form-group full"><label>Observações do Ambiente</label><textarea id="obsAmbiente"></textarea></div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-back" onclick="showTab(2)">◀ VOLTAR</button>
-        <div style="display:flex;gap:10px;">
-          <button class="btn btn-save" onclick="enviarDados()">💾 SALVAR AGORA</button>
-          <button class="btn btn-next" onclick="showTab(4)">PRÓXIMO ▶</button>
-        </div>
-      </div>
-    </div>
+        function setVal(btn, id) {
+            const v = prompt("Digite a %:");
+            if (v) document.getElementById(id).innerText = v + "%";
+        }
 
-    <!-- ABA 5: BUSCA -->
-    <div class="tab-content" id="tab-4">
-      <h3>Busca e Finalização</h3>
-      <div class="form-grid">
-        <div class="form-group full">
-          <label>Buscar Atendimento (por cliente ou ID)</label>
-          <div class="autocomplete-wrap">
-            <input type="text" id="buscaAtend" placeholder="Digite nome ou ID..." oninput="buscarAtendimentos()">
-            <div class="autocomplete-list" id="autocompleteAtend"></div>
-          </div>
-        </div>
-        <div class="form-group full"><label>Resumo do Atendimento</label><textarea id="resumo"></textarea></div>
-        <div class="form-group"><label>Status</label>
-          <select id="status">
-            <option value="Em andamento">Em andamento</option>
-            <option value="Concluído">Concluído</option>
-            <option value="Cancelado">Cancelado</option>
-          </select>
-        </div>
-        <div class="form-group"><label>Próximo Retorno</label><input type="date" id="retorno"></div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-back" onclick="showTab(3)">◀ VOLTAR</button>
-        <button class="btn btn-save" onclick="enviarDados()">💾 SALVAR AGORA</button>
-      </div>
-    </div>
+        async function carregarTudo() {
+            try {
+                const resC = await fetch(URL_CLIENTES + "?_=" + new Date().getTime());
+                const jsonC = await resC.json();
+                listaGlobalClientes = Array.isArray(jsonC) ? jsonC : (jsonC.data || jsonC.dados || []);
+                const dl = document.getElementById('listaClientes');
+                dl.innerHTML = "";
+                listaGlobalClientes.forEach(c => {
+                    let o = document.createElement('option');
+                    o.value = c.nome || c.Nome || c['Nome Cliente'] || c[2];
+                    dl.appendChild(o);
+                });
 
-    <div id="statusMsg"></div>
-  </div>
-</main>
+                const resA = await fetch(URL_ATEND);
+                const jsonA = await resA.json();
+                const config = jsonA.configuracoes || {};
+                
+                const fillS = (id, list) => {
+                    const s = document.getElementById(id);
+                    if(!s) return;
+                    s.innerHTML = "<option value=''>Selecione...</option>";
+                    if(list) list.forEach(v => { let o = document.createElement('option'); o.value = v; o.text = v; s.appendChild(o); });
+                };
 
-<script>
-const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
-const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
+                const fillM = (id, list, pref) => {
+                    const c = document.getElementById(id);
+                    if(!c) return;
+                    c.innerHTML = "";
+                    if(list) list.forEach(v => {
+                        const l = document.createElement('label');
+                        l.className = 'option-item';
+                        l.innerHTML = `<input type="checkbox" name="${pref}" value="${v}"> ${v}`;
+                        c.appendChild(l);
+                    });
+                };
 
-let listaClientes = [];
-let listaAtendimentos = [];
-let coresSelecionadas = [];
+                const findKey = (obj, target) => Object.keys(obj).find(k => k.toLowerCase() === target.toLowerCase());
 
-function gerarIdAtendimento() {
-  let ultimoId = parseInt(localStorage.getItem('ultimoIdAtendimento') || '0');
-  ultimoId++;
-  const novoId = String(ultimoId).padStart(6, '0');
-  localStorage.setItem('ultimoIdAtendimento', ultimoId.toString());
-  return 'ATEND-' + novoId;
-}
+                fillM('coresExcesso', config[findKey(config, 'cores')], 'exc');
+                fillM('coresFalta', config[findKey(config, 'cores')], 'fal');
+                fillS('statusSelect', config[findKey(config, 'status')]);
+                fillS('tipoAmbiente', config[findKey(config, 'ambientes')]);
+                fillS('tipoBusca', config[findKey(config, 'buscaTipos')]);
+                fillS('resBusca', config[findKey(config, 'buscaResultados')]);
 
-function extrairValor(obj, ...nomes) {
-  if (!obj) return '';
-  const keys = Object.keys(obj);
-  for (let nome of nomes) {
-    const low = nome.toLowerCase();
-    for (let k of keys) {
-      if (k.toLowerCase() === low) {
-        let v = obj[k];
-        if (v === null || v === undefined) return '';
-        return String(v).trim();
-      }
-    }
-  }
-  return '';
-}
+            } catch (e) { console.error("Erro no carregamento:", e); }
+        }
 
-function getVal(obj, ...nomes) { return extrairValor(obj, ...nomes); }
+        document.getElementById('nomeCliente').oninput = (e) => {
+            const digitado = e.target.value;
+            const c = listaGlobalClientes.find(x => (x.nome || x.Nome || x['Nome Cliente'] || x[2]) === digitado);
+            if (c) document.getElementById('idCliente').value = c.id || c.ID || c['ID Cliente'] || c[1];
+        };
 
-function extrairNome(obj) {
-  return extrairValor(obj, 'Nome', 'nome', 'Nome Completo', 'cliente', 'Cliente');
-}
-function extrairId(obj) {
-  return extrairValor(obj, 'ID', 'id', 'Id Cliente', 'ID Cliente', 'Codigo', 'Código');
-}
-function extrairWhats(obj) {
-  return extrairValor(obj, 'WhatsApp', 'whatsapp', 'Telefone', 'Celular', 'Contato');
-}
+        async function enviarDados() {
+            const getC = (n) => Array.from(document.querySelectorAll(`input[name="${n}"]:checked`)).map(cb => cb.value).join(", ");
+            const p = {
+                'Data do Atendimento': document.getElementById('dataAtend').value,
+                'ID Cliente': document.getElementById('idCliente').value,
+                'Nome Cliente': document.getElementById('nomeCliente').value,
+                'Status': document.getElementById('statusSelect').value,
+                'Queixa Principal': document.getElementById('queixaP').value,
+                'Queixa Secundária': document.getElementById('queixaS').value,
+                'Bovis': document.getElementById('bovis').value,
+                'Coronário': document.getElementById('v-coronario').innerText,
+                'Frontal': document.getElementById('v-frontal').innerText,
+                'Laríngeo': document.getElementById('v-laringeo').innerText,
+                'Cardíaco': document.getElementById('v-cardiaco').innerText,
+                'Umbilical': document.getElementById('v-umbilical').innerText,
+                'Sacro': document.getElementById('v-sacro').innerText,
+                'Básico': document.getElementById('v-basico').innerText,
+                'Tamanho Aura': document.getElementById('auraT').value,
+                'Proteção Aura': document.getElementById('protecaoAura').value,
+                'Cores Excesso': getC('exc'),
+                'Cores Falta': getC('fal'),
+                'Mental': document.getElementById('v-mental').innerText,
+                'Emocional': document.getElementById('v-emocional').innerText,
+                'Espiritual': document.getElementById('v-espiritual').innerText,
+                'Físico': document.getElementById('v-fisico').innerText,
+                'Diagnóstico Inicial': document.getElementById('diagInicial').value,
+                'Queixa Espec.': document.getElementById('queixaE').value,
+                'Causa Raiz': document.getElementById('causaRaiz').value,
+                'Crenças': document.getElementById('crencas').value,
+                'Diagnóstico Específico': document.getElementById('diagEspec').value,
+                'Tipo Ambiente': document.getElementById('tipoAmbiente').value,
+                'Endereço Ambiente': document.getElementById('endAmbiente').value,
+                'Queixa Ambiente': document.getElementById('queixaAmbiente').value,
+                'Pessoas Envolvidas': document.getElementById('pessoasEnv').value,
+                'Diagnóstico Ambiente': document.getElementById('diagAmbiente').value,
+                'Tipo Busca': document.getElementById('tipoBusca').value,
+                'Descrição Busca': document.getElementById('descBusca').value,
+                'Info Busca': document.getElementById('infoBusca').value,
+                'Resultado Busca': document.getElementById('resBusca').value
+            };
 
-function showTab(i) {
-  document.querySelectorAll('.tab-content').forEach((t, idx) => {
-    t.classList.toggle('active', idx === i);
-  });
-  document.querySelectorAll('.tab-btn').forEach((b, idx) => {
-    b.classList.toggle('active', idx === i);
-  });
-}
+            try {
+                const r = await fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(p) }).then(res => res.json());
+                if (r.success) { alert("✅ Atendimento salvo com sucesso!"); location.reload(); }
+                else { alert("❌ Erro ao salvar: " + (r.error || r.message)); }
+            } catch (e) { alert("❌ Erro de conexão."); }
+        }
 
-function setVal(btn, id) {
-  const atual = document.getElementById(id).value;
-  const v = prompt('Informe a porcentagem para ' + btn.textContent.trim() + ':', atual || '');
-  if (v !== null) {
-    document.getElementById(id).value = v;
-    btn.classList.add('selected');
-    btn.textContent = btn.textContent.trim().split(' (')[0] + ' (' + v + '%)';
-  }
-}
-
-function buscarClientes() {
-  const q = document.getElementById('clienteBusca').value.toLowerCase().trim();
-  const list = document.getElementById('autocompleteList');
-  list.innerHTML = '';
-  if (!q) { list.style.display = 'none'; return; }
-  const filtrados = listaClientes.filter(c => {
-    const nome = extrairNome(c).toLowerCase();
-    const id = extrairId(c).toLowerCase();
-    return nome.includes(q) || id.includes(q);
-  });
-  if (!filtrados.length) { list.style.display = 'none'; return; }
-  filtrados.forEach(c => {
-    const div = document.createElement('div');
-    div.textContent = extrairNome(c) + ' - ' + extrairId(c);
-    div.onclick = function() {
-      document.getElementById('clienteBusca').value = extrairNome(c);
-      document.getElementById('clienteId').value = extrairId(c);
-      document.getElementById('clienteWhats').value = extrairWhats(c);
-      list.style.display = 'none';
-    };
-    list.appendChild(div);
-  });
-  list.style.display = 'block';
-}
-
-function buscarAtendimentos() {
-  const q = document.getElementById('buscaAtend').value.toLowerCase().trim();
-  const list = document.getElementById('autocompleteAtend');
-  list.innerHTML = '';
-  if (!q) { list.style.display = 'none'; return; }
-  const filtrados = listaAtendimentos.filter(a => {
-    const cli = extrairValor(a, 'Cliente', 'Nome', 'cliente').toLowerCase();
-    const id = extrairValor(a, 'ID Atendimento', 'ID', 'id').toLowerCase();
-    return cli.includes(q) || id.includes(q);
-  });
-  if (!filtrados.length) { list.style.display = 'none'; return; }
-  filtrados.slice(0, 10).forEach(a => {
-    const div = document.createElement('div');
-    div.textContent = extrairValor(a, 'ID Atendimento', 'ID', 'id') + ' - ' + extrairValor(a, 'Cliente', 'Nome', 'cliente');
-    div.onclick = function() {
-      document.getElementById('buscaAtend').value = div.textContent;
-      list.style.display = 'none';
-    };
-    list.appendChild(div);
-  });
-  list.style.display = 'block';
-}
-
-const CORES_DISPONIVEIS = [
-  {nome:'Vermelho', cor:'#e60000'},
-  {nome:'Laranja', cor:'#ff8c00'},
-  {nome:'Amarelo', cor:'#ffd700'},
-  {nome:'Verde', cor:'#32cd32'},
-  {nome:'Azul', cor:'#1e90ff'},
-  {nome:'Anil', cor:'#6a5acd'},
-  {nome:'Violeta', cor:'#9b30ff'},
-  {nome:'Branco', cor:'#cccccc'},
-  {nome:'Rosa', cor:'#ff69b4'},
-  {nome:'Dourado', cor:'#d4af37'}
-];
-
-function montarCores() {
-  const box = document.getElementById('coresBox');
-  box.innerHTML = '';
-  CORES_DISPONIVEIS.forEach(c => {
-    const chip = document.createElement('div');
-    chip.className = 'color-chip';
-    chip.style.background = c.cor;
-    chip.textContent = c.nome;
-    chip.dataset.nome = c.nome;
-    chip.onclick = function() {
-      const i = coresSelecionadas.indexOf(c.nome);
-      if (i >= 0) {
-        coresSelecionadas.splice(i, 1);
-        chip.classList.remove('selected');
-      } else {
-        coresSelecionadas.push(c.nome);
-        chip.classList.add('selected');
-      }
-    };
-    box.appendChild(chip);
-  });
-}
-
-function preencherSelect(id, opcoes) {
-  const sel = document.getElementById(id);
-  if (!sel) return;
-  const atual = sel.value;
-  sel.innerHTML = '<option value="">Selecione...</option>';
-  opcoes.forEach(o => {
-    const opt = document.createElement('option');
-    opt.value = o;
-    opt.textContent = o;
-    sel.appendChild(opt);
-  });
-  sel.value = atual;
-}
-
-async function carregarTudo() {
-  try {
-    const r1 = await fetch(URL_CLIENTES);
-    const d1 = await r1.json();
-    listaClientes = Array.isArray(d1) ? d1 : (d1.dados || d1.data || []);
-  } catch(e) { console.error('Erro clientes:', e); }
-
-  try {
-    const r2 = await fetch(URL_ATEND);
-    const d2 = await r2.json();
-    listaAtendimentos = Array.isArray(d2) ? d2 : (d2.dados || d2.data || []);
-  } catch(e) { console.error('Erro atendimentos:', e); }
-
-  const essencias = ['Bach - Rescue', 'Bach - Star of Bethlehem', 'Bach - Mimulus', 'Florais da Califórnia', 'Florais de Minas'];
-  const florais = ['Rescue Remedy', 'Wild Rose', 'Cherry Plum', 'Aspen', 'Larch'];
-  const cristais = ['Quartzo Cristal', 'Ametista', 'Citrino', 'Rosa Quartzo', 'Turmalina Negra'];
-  const aromas = ['Lavanda', 'Eucalipto', 'Alecrim', 'Sândalo', 'Ylang Ylang'];
-  const musicas = ['Mantras', 'Música Clássica', 'Sons da Natureza', 'Tibetanos', 'Silêncio'];
-  const incensos = ['Sândalo', 'Lavanda', 'Palo Santo', 'Nag Champa', 'Sálvia'];
-
-  preencherSelect('essencia', essencias);
-  preencherSelect('floral', florais);
-  preencherSelect('cristal', cristais);
-  preencherSelect('aromaterapia', aromas);
-  preencherSelect('musica', musicas);
-  preencherSelect('incenso', incensos);
-}
-
-function mostrarStatus(msg, tipo) {
-  const el = document.getElementById('statusMsg');
-  el.textContent = msg;
-  el.className = tipo;
-  setTimeout(() => { el.className = ''; el.textContent = ''; }, 5000);
-}
-
-async function enviarDados() {
-  const payload = {
-    'ID Atendimento': document.getElementById('idAtendimento').value,
-    'Data': document.getElementById('data').value,
-    'Cliente': document.getElementById('clienteBusca').value,
-    'ID Cliente': document.getElementById('clienteId').value,
-    'WhatsApp': document.getElementById('clienteWhats').value,
-    'Terapeuta': document.getElementById('terapeuta').value,
-    'Tipo de Atendimento': document.getElementById('tipoAtendimento').value,
-    'Chakra Coronário': document.getElementById('chCoronario').value,
-    'Chakra Frontal': document.getElementById('chFrontal').value,
-    'Chakra Laríngeo': document.getElementById('chLaringeo').value,
-    'Chakra Cardíaco': document.getElementById('chCardiaco').value,
-    'Chakra Umbilical': document.getElementById('chUmbilical').value,
-    'Chakra Sacro': document.getElementById('chSacro').value,
-    'Chakra Básico': document.getElementById('chBasico').value,
-    'Campo Mental': document.getElementById('dMental').value,
-    'Campo Emocional': document.getElementById('dEmocional').value,
-    'Campo Espiritual': document.getElementById('dEspiritual').value,
-    'Campo Físico': document.getElementById('dFisico').value,
-    'Bovis': document.getElementById('bovis').value,
-    'Queixa Principal': document.getElementById('queixa').value,
-    'Observações Iniciais': document.getElementById('obsInicial').value,
-    'Cores': coresSelecionadas.join(', '),
-    'Essência': document.getElementById('essencia').value,
-    'Floral': document.getElementById('floral').value,
-    'Cristal': document.getElementById('cristal').value,
-    'Aromaterapia': document.getElementById('aromaterapia').value,
-    'Procedimento Específico': document.getElementById('procEspecifico').value,
-    'Música': document.getElementById('musica').value,
-    'Incenso': document.getElementById('incenso').value,
-    'Temperatura': document.getElementById('temperatura').value,
-    'Iluminação': document.getElementById('iluminacao').value,
-    'Observações do Ambiente': document.getElementById('obsAmbiente').value,
-    'Resumo': document.getElementById('resumo').value,
-    'Status': document.getElementById('status').value,
-    'Próximo Retorno': document.getElementById('retorno').value
-  };
-
-  mostrarStatus('Enviando...', 'ok');
-  try {
-    await fetch(URL_ATEND, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(payload)
-    });
-    mostrarStatus('✅ Atendimento salvo com sucesso! ID: ' + payload['ID Atendimento'], 'ok');
-  } catch(e) {
-    mostrarStatus('❌ Erro ao salvar: ' + e.message, 'err');
-  }
-}
-
-window.onload = function() {
-  document.getElementById('idAtendimento').value = gerarIdAtendimento();
-  const hoje = new Date().toISOString().split('T')[0];
-  document.getElementById('data').value = hoje;
-  montarCores();
-  carregarTudo();
-};
-</script>
+        window.onload = carregarTudo;
+    </script>
 </body>
 </html>
