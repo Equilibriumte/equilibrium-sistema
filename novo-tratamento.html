@@ -153,9 +153,8 @@
 const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
 const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
 const URL_WEBHOOK = 'https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec';
-const STATUS_OPCOES = ['Agendado', 'Em Andamento', 'Concluido', 'Adiado', 'Cancelado'];
-const STATUS_COR_MAP = { agendado: 5, em_andamento: 1, concluido: 2, adiado: 4, cancelado: 8 };
-const GRAFICOS_FALLBACK = ['Avaliacao Postural', 'Avaliacao Muscular', 'Treino Postural', 'Treino Muscular', 'Reavaliacao Postural', 'Reavaliacao Muscular'];
+const STATUS_OPCOES = ['Agendado', 'Em Andamento', 'Concluído', 'Adiado', 'Cancelado'];
+const GRAFICOS_FALLBACK = ['Avaliação Postural', 'Avaliação Muscular', 'Treino Postural', 'Treino Muscular', 'Reavaliação Postural', 'Reavaliação Muscular'];
 let listaClientes = [];
 let graficosPredef = [];
 let graficos = [];
@@ -177,22 +176,6 @@ function getVal(obj) {
     }
   }
   return '';
-}
-function statusKey(s) {
-  return String(s || '').toLowerCase().replace(/\s+/g, '_').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-}
-function statusColor(s) {
-  var k = statusKey(s);
-  var colors = { 1:'#ffc107', 2:'#28a745', 4:'#fd7e14', 5:'#17a2b8', 8:'#dc3545' };
-  var code = STATUS_COR_MAP[k];
-  return colors[code] || '#6c757d';
-}
-function gerarTratamentoId() {
-  var ultimoId = parseInt(localStorage.getItem('ultimoIdTratamento') || '0');
-  ultimoId++;
-  var novoId = String(ultimoId).padStart(7, '0');
-  localStorage.setItem('ultimoIdTratamento', ultimoId.toString());
-  return 'TRAT-' + novoId;
 }
 function hojeISO() {
   var d = new Date();
@@ -226,15 +209,13 @@ function onClienteInput() {
     var nome = getVal(c, 'nome', 'name', 'nomecliente', 'cliente') || 'Sem nome';
     var id = getVal(c, 'id', 'idcliente', 'clienteid', 'codigo', 'cod') || '';
     var extra = getVal(c, 'telefone', 'celular', 'fone', 'email') || '';
-    html += '<div class="autocomplete-item" onclick="selecionarCliente(\'' + nome.replace(/'/g, "\\'") + '\', \'' + String(id).replace(/'/g, "\\'") + '\')">' + nome + '<small>' + extra + '</small></div>';
+    html += '<div class="autocomplete-item" onclick="selecionarCliente(\'' + nome.replace(/'/g, "\'") + '\', \'' + String(id).replace(/'/g, "\'") + '\')">' + nome + '<small>' + extra + '</small></div>';
   }
   dd.innerHTML = html;
   dd.style.display = 'block';
 }
 document.addEventListener('click', function(e) {
-  if (!e.target.closest('.autocomplete-wrap')) {
-    document.getElementById('autocompleteDropdown').style.display = 'none';
-  }
+  if (!e.target.closest('.autocomplete-wrap')) { document.getElementById('autocompleteDropdown').style.display = 'none'; }
 });
 function selecionarCliente(nome, id) {
   selecionandoCliente = true;
@@ -247,7 +228,6 @@ function selecionarCliente(nome, id) {
   carregarTratamentosAnteriores(id);
   carregarAtendimentosCliente(id);
 }
-
 function carregarAtendimentosCliente(clienteId) {
   var select = document.getElementById('idAtendimentoSelect');
   select.innerHTML = '<option value="">Carregando...</option>';
@@ -262,14 +242,9 @@ function carregarAtendimentosCliente(clienteId) {
         var a = arr[i];
         var aId = String(getVal(a, 'idcliente', 'clienteid', 'ID Cliente', 'id') || '');
         var aNome = String(getVal(a, 'nomecliente', 'nome', 'Nome Cliente', 'cliente') || '').toLowerCase();
-        if (aId === String(clienteId) || aNome.indexOf(clienteNome) !== -1) {
-          filtrados.push(a);
-        }
+        if (aId === String(clienteId) || aNome.indexOf(clienteNome) !== -1) filtrados.push(a);
       }
-      if (!filtrados.length) {
-        select.innerHTML = '<option value="">Nenhum atendimento encontrado</option>';
-        return;
-      }
+      if (!filtrados.length) { select.innerHTML = '<option value="">Nenhum atendimento encontrado</option>'; return; }
       select.innerHTML = '<option value="">Selecione um atendimento...</option>';
       for (var i = 0; i < filtrados.length; i++) {
         var a = filtrados[i];
@@ -282,11 +257,8 @@ function carregarAtendimentosCliente(clienteId) {
         }
       }
     })
-    .catch(function() {
-      select.innerHTML = '<option value="">Erro ao carregar atendimentos</option>';
-    });
+    .catch(function() { select.innerHTML = '<option value="">Erro ao carregar atendimentos</option>'; });
 }
-
 function carregarTratamentosAnteriores(id) {
   var tbody = document.querySelector('#tratamentosAnteriores tbody');
   tratamentoSelecionadoId = null;
@@ -296,10 +268,7 @@ function carregarTratamentosAnteriores(id) {
     .then(function(text) {
       var data = JSON.parse(text);
       var arr = Array.isArray(data) ? data : (data.data || data.dados || []);
-      if (!arr.length) {
-        tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Nenhum tratamento anterior.</td></tr>';
-        return;
-      }
+      if (!arr.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Nenhum tratamento anterior.</td></tr>'; return; }
       var html = '';
       for (var i = 0; i < arr.length; i++) {
         var t = arr[i];
@@ -307,19 +276,16 @@ function carregarTratamentosAnteriores(id) {
         var dt = getVal(t, 'datainicio', 'data', 'inicio', 'data_inicio') || '-';
         var graf = getVal(t, 'graficos', 'grafico', 'quantidade', 'qtd') || '-';
         var st = getVal(t, 'status', 'situacao') || 'Agendado';
-        html += '<tr class="trat-row-selectable" onclick="selecionarTratamento(\'' + tid.replace(/'/g, "\\'") + '\')" data-trat-id="' + tid.replace(/'/g, "\\'") + '">';
+        html += '<tr class="trat-row-selectable" onclick="selecionarTratamento(\'' + tid.replace(/'/g, "\'") + '\')" data-trat-id="' + tid.replace(/'/g, "\'") + '">';
         html += '<td><strong>' + tid + '</strong></td><td>' + dt + '</td><td>' + graf + '</td>';
-        html += '<td><span class="status-badge" style="background:' + statusColor(st) + '">' + st + '</span></td></tr>';
+        html += '<td><span style="color:#fff;background:#6a0dad;padding:3px 10px;border-radius:12px;font-size:11px;">' + st + '</span></td></tr>';
       }
       tbody.innerHTML = html;
     })
-    .catch(function() {
-      tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Nenhum tratamento anterior.</td></tr>';
-    });
+    .catch(function() { tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Nenhum tratamento anterior.</td></tr>'; });
 }
 function selecionarTratamento(tid) {
-  var linhas = document.querySelectorAll('.trat-row-selectable');
-  for (var i = 0; i < linhas.length; i++) { linhas[i].classList.remove('selected'); }
+  document.querySelectorAll('.trat-row-selectable').forEach(function(r) { r.classList.remove('selected'); });
   var linha = document.querySelector('.trat-row-selectable[data-trat-id="' + tid + '"]');
   if (linha) {
     linha.classList.add('selected');
@@ -329,35 +295,32 @@ function selecionarTratamento(tid) {
   }
 }
 function carregarClientes() {
-  fetch(URL_CLIENTES)
-    .then(function(r) { return r.text(); })
-    .then(function(text) { var data = JSON.parse(text); listaClientes = Array.isArray(data) ? data : (data.dados || data.clientes || data.lista || []); })
-    .catch(function() { listaClientes = []; });
+  fetch(URL_CLIENTES).then(function(r) { return r.text(); }).then(function(text) {
+    var data = JSON.parse(text);
+    listaClientes = Array.isArray(data) ? data : (data.dados || data.clientes || data.lista || []);
+  }).catch(function() { listaClientes = []; });
 }
 function carregarGraficosPredef() {
-  fetch(URL_ATEND + '?_=' + Date.now())
-    .then(function(r) { return r.text(); })
-    .then(function(text) {
-      var data = JSON.parse(text);
-      var config = data.configuracoes || data.Configuracoes || null;
-      if (!config) { var vals = Object.values(data); if (vals.some(function(v) { return Array.isArray(v) && v.length > 1; })) config = data; }
-      var found = null;
-      if (config && typeof config === 'object') {
-        for (var k in config) {
-          if (config.hasOwnProperty(k)) {
-            var keyNorm = k.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-            if (keyNorm.indexOf('grafico') !== -1) {
-              var v = config[k];
-              if (Array.isArray(v) && v.length) { found = v; break; }
-              if (typeof v === 'string' && v.trim()) { found = v.split(',').map(function(s) { return s.trim(); }).filter(Boolean); break; }
-            }
+  fetch(URL_ATEND + '?_=' + Date.now()).then(function(r) { return r.text(); }).then(function(text) {
+    var data = JSON.parse(text);
+    var config = data.configuracoes || data.Configuracoes || null;
+    if (!config) { var vals = Object.values(data); if (vals.some(function(v) { return Array.isArray(v) && v.length > 1; })) config = data; }
+    var found = null;
+    if (config && typeof config === 'object') {
+      for (var k in config) {
+        if (config.hasOwnProperty(k)) {
+          var keyNorm = k.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          if (keyNorm.indexOf('grafico') !== -1) {
+            var v = config[k];
+            if (Array.isArray(v) && v.length) { found = v; break; }
+            if (typeof v === 'string' && v.trim()) { found = v.split(',').map(function(s) { return s.trim(); }).filter(Boolean); break; }
           }
         }
       }
-      graficosPredef = (found && found.length) ? found : GRAFICOS_FALLBACK.slice();
-      renderGraficos();
-    })
-    .catch(function() { graficosPredef = GRAFICOS_FALLBACK.slice(); renderGraficos(); });
+    }
+    graficosPredef = (found && found.length) ? found : GRAFICOS_FALLBACK.slice();
+    renderGraficos();
+  }).catch(function() { graficosPredef = GRAFICOS_FALLBACK.slice(); renderGraficos(); });
 }
 function adicionarGrafico() {
   graficos.push({ grafico: '', data_inicio: hojeISO(), data_fim: '', status: 'Agendado' });
@@ -415,18 +378,29 @@ function salvarTratamento() {
   };
   for (var i = 0; i < graficos.length; i++) { var g = graficos[i]; payload.graficos.push({ ordem: i + 1, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status }); }
   mostrarMsg('Salvando...', 'success');
-  fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(payload) })
+  fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(payload), redirect: 'follow' })
     .then(function(r) { return r.text(); })
     .then(function(text) {
-      var res = JSON.parse(text);
       var webhooks = [];
-      for (var i = 0; i < graficos.length; i++) { var g = graficos[i]; if (g.data_fim && g.grafico) { var wh = { action: 'criar', calendario: 'graficos', cliente: clienteNome, cliente_id: clienteId, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status, tratamento_id: payload.tratamento_id }; webhooks.push(fetch(URL_WEBHOOK, { method: 'POST', body: JSON.stringify(wh) }).then(function(r2) { return r2.text(); }).catch(function() {})); } }
-      Promise.all(webhooks).then(function() { mostrarMsg('Tratamento salvo! ID: ' + payload.tratamento_id, 'success'); setTimeout(function() { window.location.href = 'lista-tratamentos.html'; }, 1500); });
+      for (var i = 0; i < graficos.length; i++) {
+        var g = graficos[i];
+        if (g.data_fim && g.grafico) {
+          var wh = { action: 'criar', calendario: 'graficos', cliente: clienteNome, cliente_id: clienteId, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status, tratamento_id: payload.tratamento_id };
+          webhooks.push(fetch(URL_WEBHOOK, { method: 'POST', body: JSON.stringify(wh), redirect: 'follow' }).then(function(r2) { return r2.text(); }).catch(function() {}));
+        }
+      }
+      Promise.all(webhooks).then(function() {
+        mostrarMsg('Tratamento salvo! ID: ' + payload.tratamento_id, 'success');
+        setTimeout(function() { window.location.href = 'lista-tratamentos.html'; }, 1500);
+      });
     })
     .catch(function(err) { mostrarMsg('Erro: ' + err.message, 'error'); });
 }
 function init() {
-  document.getElementById('tratamentoId').value = gerarTratamentoId();
+  var ultimoId = parseInt(localStorage.getItem('ultimoIdTratamento') || '0');
+  ultimoId++;
+  document.getElementById('tratamentoId').value = 'TRAT-' + String(ultimoId).padStart(7, '0');
+  localStorage.setItem('ultimoIdTratamento', ultimoId.toString());
   document.getElementById('dataInicio').value = hojeISO();
   carregarClientes();
   carregarGraficosPredef();
@@ -436,4 +410,3 @@ window.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
-
