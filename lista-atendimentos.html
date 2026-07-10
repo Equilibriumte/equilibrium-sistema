@@ -12,47 +12,11 @@
     color: #333;
     min-height: 100vh;
   }
+  .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
+  .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
+  .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
+  .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
 
-  /* Sidebar */
-  .sidebar {
-    width: 250px;
-    position: fixed;
-    top: 0; left: 0;
-    height: 100vh;
-    background: linear-gradient(180deg, #4b0082, #6a0dad);
-    color: #fff;
-    padding: 24px 0;
-    overflow-y: auto;
-    box-shadow: 2px 0 12px rgba(0,0,0,0.15);
-  }
-  .sidebar h2 {
-    text-align: center;
-    font-size: 22px;
-    padding-bottom: 14px;
-    margin-bottom: 18px;
-    border-bottom: 2px solid #d4af37;
-    letter-spacing: 1px;
-  }
-  .sidebar nav { display: flex; flex-direction: column; }
-  .sidebar nav a {
-    color: #f0e6ff;
-    text-decoration: none;
-    padding: 12px 22px;
-    font-size: 15px;
-    transition: background 0.2s, padding-left 0.2s;
-    border-left: 4px solid transparent;
-  }
-  .sidebar nav a:hover {
-    background: rgba(255,255,255,0.08);
-    padding-left: 28px;
-  }
-  .sidebar nav a.active {
-    background: rgba(255,255,255,0.15);
-    border-left-color: #d4af37;
-    font-weight: 600;
-  }
-
-  /* Main */
   .main {
     margin-left: 250px;
     padding: 32px;
@@ -74,16 +38,12 @@
     font-size: 14px;
     margin-top: 4px;
   }
-
-  /* Card */
   .card {
     background: #fff;
     border-radius: 16px;
     padding: 24px;
     box-shadow: 0 6px 20px rgba(75,0,130,0.08);
   }
-
-  /* Toolbar */
   .toolbar {
     display: flex;
     gap: 12px;
@@ -120,15 +80,12 @@
   .btn-secondary { background: #e0d4f0; color: #4b0082; }
   .btn-secondary:hover { background: #d0c0e8; }
   .btn:active { transform: translateY(1px); }
-
   #status {
     font-size: 13px;
     color: #6a0dad;
     margin-bottom: 14px;
     min-height: 18px;
   }
-
-  /* Table */
   .table-wrap {
     overflow-x: auto;
     border-radius: 10px;
@@ -168,12 +125,9 @@
     padding: 28px;
     font-style: italic;
   }
-
-  /* Colunas fixas (destaque visual sutil) */
   .col-fixed { background: #efe6fa; font-weight: 600; color: #4b0082; }
   .col-fixed-2 { background: #f3ecfb; font-weight: 600; color: #4b0082; }
   thead .col-fixed, thead .col-fixed-2 { background: #3a0066; color: #fff; }
-
   @media (max-width: 768px) {
     .sidebar { width: 200px; }
     .main { margin-left: 200px; padding: 20px; }
@@ -185,22 +139,21 @@
 </style>
 </head>
 <body>
-
-<div class="sidebar">
-  <h2>Equilibrium</h2>
-  <nav>
-    <a href="index.html">🏠 Home</a>
-    <a href="agenda.html">📅 Agenda</a>
-    <a href="novo-cliente.html">👤 Novo Cliente</a>
-    <a href="clientes.html">📋 Lista de Clientes</a>
-    <a href="atendimentos.html">✨ Novo Atendimento</a>
-    <a href="lista-atendimentos.html" class="active">📜 Lista de Atendimento</a>
-    <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
-    <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
-    <a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
-    <a href="financeiro.html">💰 Financeiro</a>
-  </nav>
-</div>
+    <div class="sidebar">
+        <h2>Equilibrium</h2>
+        <nav>
+             <a href="index.html">🏠 Home</a>
+            <a href="agenda.html">📅 Agenda</a>
+            <a href="novo-cliente.html">👤 Novo Cliente</a>
+            <a href="clientes.html">📋 Lista de Clientes</a>
+            <a href="atendimentos.html">✨ Novo Atendimento</a>
+            <a href="lista-atendimentos.html" class="active">📜 Lista de Atendimento</a>
+            <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
+            <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
+            <a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
+            <a href="financeiro.html">💰 Financeiro</a>
+        </nav>
+    </div>
 
 <div class="main">
   <div class="header">
@@ -210,7 +163,6 @@
     </div>
     <button class="btn btn-primary" onclick="carregar()">🔄 Atualizar</button>
   </div>
-
   <div class="card">
     <div class="toolbar">
       <input type="text" id="search" class="search-input" placeholder="🔍 Buscar em todas as colunas..." oninput="filtrar(this.value)">
@@ -226,30 +178,25 @@
     </div>
   </div>
 </div>
-
 <script>
   const URL = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
   let colunas = [];        // nomes das colunas (vindas da API)
   let dadosOriginais = []; // todos os registros
-
   async function carregar() {
     const status = document.getElementById('status');
     status.textContent = 'Carregando...';
     try {
       const resp = await fetch(URL + '?read=true');
       const json = await resp.json();
-
       if (json && json.success && Array.isArray(json.columns)) {
         colunas = json.columns;
       } else {
         colunas = [];
       }
-
       let data = [];
       if (json && Array.isArray(json.data)) {
         data = json.data;
       }
-
       dadosOriginais = data;
       renderizarTabela(data);
       status.textContent = data.length + ' registro(s) carregado(s).';
@@ -259,14 +206,11 @@
       renderizarTabela([]);
     }
   }
-
   function renderizarTabela(dados) {
     const theadRow = document.getElementById('thead-row');
     const tbody = document.getElementById('tbody');
     theadRow.innerHTML = '';
     tbody.innerHTML = '';
-
-    // Cabeçalhos usando as colunas da API
     colunas.forEach(function(nome, idx) {
       const th = document.createElement('th');
       th.textContent = nome;
@@ -274,7 +218,6 @@
       if (idx === 3) th.classList.add('col-fixed-2');
       theadRow.appendChild(th);
     });
-
     if (!dados || dados.length === 0) {
       const tr = document.createElement('tr');
       const td = document.createElement('td');
@@ -285,17 +228,14 @@
       tbody.appendChild(tr);
       return;
     }
-
     dados.forEach(function(linha) {
       const tr = document.createElement('tr');
       colunas.forEach(function(nomeCol, idx) {
         const td = document.createElement('td');
-        // Acesso direto pelo nome da coluna
         let valor = '';
         if (linha && typeof linha === 'object' && nomeCol in linha) {
           valor = linha[nomeCol];
         }
-        // Formatar
         if (valor === null || valor === undefined) valor = '';
         else if (typeof valor === 'object') {
           try { valor = JSON.stringify(valor); } catch(e) { valor = ''; }
@@ -311,7 +251,6 @@
       tbody.appendChild(tr);
     });
   }
-
   function filtrar(termo) {
     const t = termo.toLowerCase().trim();
     if (!t) { renderizarTabela(dadosOriginais); return; }
@@ -323,10 +262,7 @@
     });
     renderizarTabela(filtrados);
   }
-
-  // Inicializa ao carregar a página
   document.addEventListener('DOMContentLoaded', carregar);
 </script>
-
 </body>
 </html>
