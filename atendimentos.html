@@ -67,7 +67,7 @@
                 <div class="form-grid">
                     <div class="form-group full">
                         <label>Nome do Cliente</label>
-                        <input type="text" id="Nome Cliente" list="Nome Cliente" placeholder="Digite para buscar..." required autocomplete="off">
+                        <input type="text" id="nomeCliente" list="listaClientes" placeholder="Digite para buscar..." required autocomplete="off">
                         <datalist id="listaClientes"></datalist>
                         <input type="hidden" id="idCliente">
                     </div>
@@ -121,6 +121,32 @@
         const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
         let listaGlobalClientes = [];
 
+        function extrairNomeCliente(obj) {
+            if (!obj) return '';
+            const alvos = ['nome', 'cliente', 'nomecliente', 'nome_cliente', 'nome completo', 'nomecompleto'];
+            const chaves = Object.keys(obj);
+            for (const chave of chaves) {
+                const norm = chave.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '');
+                for (const alvo of alvos) {
+                    if (norm === alvo) return obj[chave];
+                }
+            }
+            return '';
+        }
+
+        function extrairIdCliente(obj) {
+            if (!obj) return '';
+            const alvos = ['id', 'idcliente', 'clienteid', 'codigo', 'código'];
+            const chaves = Object.keys(obj);
+            for (const chave of chaves) {
+                const norm = chave.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '');
+                for (const alvo of alvos) {
+                    if (norm === alvo) return obj[chave];
+                }
+            }
+            return '';
+        }
+
         function showTab(i) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -143,7 +169,7 @@
                 dl.innerHTML = "";
                 listaGlobalClientes.forEach(c => {
                     let o = document.createElement('option');
-                    o.value = c.nome || c.Nome || c['Nome Cliente'] || c[2];
+                    o.value = extrairNomeCliente(c);
                     dl.appendChild(o);
                 });
 
@@ -184,8 +210,8 @@
 
         document.getElementById('nomeCliente').oninput = (e) => {
             const digitado = e.target.value;
-            const c = listaGlobalClientes.find(x => (x.nome || x.Nome || x['Nome Cliente'] || x[2]) === digitado);
-            if (c) document.getElementById('idCliente').value = c.id || c.ID || c['ID Cliente'] || c[1];
+            const c = listaGlobalClientes.find(x => extrairNomeCliente(x) === digitado);
+            if (c) document.getElementById('idCliente').value = extrairIdCliente(c);
         };
 
         async function enviarDados() {
@@ -193,7 +219,7 @@
             const p = {
                 'Data do Atendimento': document.getElementById('dataAtend').value,
                 'ID Cliente': document.getElementById('idCliente').value,
-                'Nome Cliente': document.getElementById('Nome Cliente').value,
+                'Nome Cliente': document.getElementById('nomeCliente').value,
                 'Status': document.getElementById('statusSelect').value,
                 'Queixa Principal': document.getElementById('queixaP').value,
                 'Queixa Secundária': document.getElementById('queixaS').value,
