@@ -88,6 +88,8 @@
   }
   .table-wrap {
     overflow-x: auto;
+    overflow-y: auto;
+    max-height: 600px;
     border-radius: 10px;
     border: 1px solid #eee;
   }
@@ -128,6 +130,21 @@
   .col-fixed { background: #efe6fa; font-weight: 600; color: #4b0082; }
   .col-fixed-2 { background: #f3ecfb; font-weight: 600; color: #4b0082; }
   thead .col-fixed, thead .col-fixed-2 { background: #3a0066; color: #fff; }
+  .table-wrap::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .table-wrap::-webkit-scrollbar-track {
+    background: #f0e8fa;
+    border-radius: 4px;
+  }
+  .table-wrap::-webkit-scrollbar-thumb {
+    background: #c4b0d8;
+    border-radius: 4px;
+  }
+  .table-wrap::-webkit-scrollbar-thumb:hover {
+    background: #a080c0;
+  }
   @media (max-width: 768px) {
     .sidebar { width: 200px; }
     .main { margin-left: 200px; padding: 20px; }
@@ -241,12 +258,10 @@
           try { valor = JSON.stringify(valor); } catch(e) { valor = ''; }
         } else {
           valor = String(valor);
-          // Formatar ISO datetime "2026-07-07T00:00:00.000Z" para "07/07/2026"
           if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(valor)) {
             const p = valor.split('T')[0].split('-');
             valor = p[2] + '/' + p[1] + '/' + p[0];
           }
-          // Formatar ISO date "2026-07-07" para "07/07/2026"
           else if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) {
             const p = valor.split('-');
             valor = p[2] + '/' + p[1] + '/' + p[0];
