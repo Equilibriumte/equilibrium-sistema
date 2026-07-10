@@ -7,18 +7,37 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { display: flex; background-color: #f4f0fa; min-height: 100vh; }
-        
-        /* Sidebar */
         .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
         .sidebar h2 { margin-bottom: 30px; text-align: center; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; font-size: 22px; }
         .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
         .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
-        /* Content */
         .content { margin-left: 250px; flex: 1; padding: 40px; width: calc(100% - 250px); }
         .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow-x: auto; }
+        .table-wrap {
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: 600px;
+            border-radius: 12px;
+            border: 1px solid #e8dff0;
+        }
+        .table-wrap::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .table-wrap::-webkit-scrollbar-track {
+            background: #f0e8fa;
+            border-radius: 4px;
+        }
+        .table-wrap::-webkit-scrollbar-thumb {
+            background: #c4b0d8;
+            border-radius: 4px;
+        }
+        .table-wrap::-webkit-scrollbar-thumb:hover {
+            background: #a080c0;
+        }
         table { width: 100%; border-collapse: collapse; min-width: 1600px; }
         th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 13px; white-space: nowrap; }
-        th { background-color: #f8f5ff; color: #4b0082; font-weight: 600; text-transform: uppercase; font-size: 11px; position: sticky; top: 0; }
+        th { background-color: #4b0082; color: #fff; font-weight: 600; text-transform: uppercase; font-size: 11px; position: sticky; top: 0; z-index: 2; }
         .id-cell { font-family: monospace; color: #888; font-weight: bold; }
         .loading { text-align: center; padding: 40px; color: #6a0dad; font-style: italic; }
     </style>
@@ -37,7 +56,6 @@
             <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
             <a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
             <a href="financeiro.html">💰 Financeiro</a>
->
         </nav>
     </div>
     <div class="content">
@@ -46,6 +64,7 @@
             <div id="status-container">
                 <div class="loading">🔍 Buscando dados na planilha de CLIENTES...</div>
             </div>
+            <div class="table-wrap">
             <table id="tabela-clientes" style="display:none;">
                 <thead>
                     <tr>
@@ -65,6 +84,7 @@
                 </thead>
                 <tbody id="corpo-tabela"></tbody>
             </table>
+            </div>
         </div>
     </div>
     <script>
