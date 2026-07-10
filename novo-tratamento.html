@@ -7,146 +7,61 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
   body { display: flex; min-height: 100vh; background: #f4f1f8; }
-
   /* SIDEBAR */
   .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
   .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
   .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
   .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
-
   /* MAIN */
   .main { margin-left: 250px; padding: 30px; flex: 1; }
   .header { margin-bottom: 25px; }
   .header h1 { color: #4b0082; font-size: 26px; }
   .header p { color: #666; font-size: 14px; margin-top: 5px; }
-
-  .card {
-    background: #fff;
-    border-radius: 10px;
-    padding: 25px;
-    margin-bottom: 25px;
-    box-shadow: 0 2px 8px rgba(75,0,130,0.08);
-  }
-  .card h2 {
-    color: #4b0082;
-    font-size: 18px;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #ede4f7;
-  }
-
+  .card { background: #fff; border-radius: 10px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(75,0,130,0.08); }
+  .card h2 { color: #4b0082; font-size: 18px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #ede4f7; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
   .form-group { display: flex; flex-direction: column; }
   .form-group label { font-size: 13px; color: #555; margin-bottom: 6px; font-weight: 600; }
-  .form-group input, .form-group select {
-    padding: 10px 12px;
-    border: 1px solid #d8cce8;
-    border-radius: 6px;
-    font-size: 14px;
-    background: #fff;
-    color: #333;
-  }
-  .form-group input:focus, .form-group select:focus {
-    outline: none; border-color: #6a0dad;
-    box-shadow: 0 0 0 2px rgba(106,13,173,0.15);
-  }
+  .form-group input, .form-group select { padding: 10px 12px; border: 1px solid #d8cce8; border-radius: 6px; font-size: 14px; background: #fff; color: #333; }
+  .form-group input:focus, .form-group select:focus { outline: none; border-color: #6a0dad; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
   .form-group input[readonly] { background: #f4f1f8; color: #777; }
-
-  /* Autocomplete */
   .autocomplete-wrap { position: relative; }
-  .autocomplete-dropdown {
-    position: absolute;
-    top: 100%; left: 0; right: 0;
-    background: #fff;
-    border: 1px solid #d8cce8;
-    border-top: none;
-    border-radius: 0 0 6px 6px;
-    max-height: 220px;
-    overflow-y: auto;
-    z-index: 100;
-    display: none;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  }
-  .autocomplete-item {
-    padding: 10px 12px;
-    cursor: pointer;
-    font-size: 14px;
-    border-bottom: 1px solid #f0ebf7;
-  }
+  .autocomplete-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #d8cce8; border-top: none; border-radius: 0 0 6px 6px; max-height: 220px; overflow-y: auto; z-index: 100; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+  .autocomplete-item { padding: 10px 12px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #f0ebf7; }
   .autocomplete-item:hover { background: #f4f1f8; }
   .autocomplete-item small { color: #888; display: block; font-size: 11px; }
-
-  /* Client box */
-  .client-box {
-    margin-top: 18px;
-    padding: 15px;
-    background: linear-gradient(135deg, #f4f1f8, #ede4f7);
-    border-left: 4px solid #6a0dad;
-    border-radius: 6px;
-    display: none;
-  }
+  .client-box { margin-top: 18px; padding: 15px; background: linear-gradient(135deg, #f4f1f8, #ede4f7); border-left: 4px solid #6a0dad; border-radius: 6px; display: none; }
   .client-box .cb-title { color: #4b0082; font-weight: 700; font-size: 15px; }
   .client-box .cb-id { color: #666; font-size: 12px; margin-top: 3px; }
   .client-box h3 { color: #4b0082; font-size: 14px; margin: 12px 0 8px; }
-
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   table th, table td { padding: 9px 10px; text-align: left; border-bottom: 1px solid #ede4f7; }
   table th { color: #4b0082; font-weight: 600; background: #f8f5fc; }
   table tr:hover td { background: #faf8fe; }
-
   .graficos-table th, .graficos-table td { text-align: center; }
-  .graficos-table input, .graficos-table select {
-    padding: 7px 8px; border: 1px solid #d8cce8; border-radius: 5px;
-    font-size: 13px; width: 100%;
-  }
+  .graficos-table input, .graficos-table select { padding: 7px 8px; border: 1px solid #d8cce8; border-radius: 5px; font-size: 13px; width: 100%; }
   .graficos-table .col-num { width: 40px; }
   .graficos-table .col-acoes { width: 90px; }
-
-  .btn {
-    padding: 10px 18px;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
+  .btn { padding: 10px 18px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
   .btn-green { background: #28a745; color: #fff; }
   .btn-green:hover { background: #218838; }
   .btn-purple { background: #6a0dad; color: #fff; }
   .btn-purple:hover { background: #5a0a91; }
   .btn-red { background: #dc3545; color: #fff; padding: 6px 10px; font-size: 12px; }
   .btn-red:hover { background: #c82333; }
-
   .actions-row { margin-top: 18px; display: flex; gap: 12px; justify-content: flex-end; }
-
-  .status-badge {
-    display: inline-block; padding: 3px 10px; border-radius: 12px;
-    font-size: 11px; font-weight: 600; color: #fff;
-  }
-
+  .status-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; color: #fff; }
   .empty-row td { text-align: center; color: #999; font-style: italic; padding: 18px; }
-
   .msg { padding: 12px; border-radius: 6px; margin: 15px 0; font-size: 14px; display: none; }
   .msg.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
   .msg.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-
-  /* MUDANÇA 1 - Linhas clicáveis */
   .trat-row-selectable { cursor: pointer; transition: background 0.2s; }
   .trat-row-selectable:hover { background: #ede4f7 !important; }
-  .trat-row-selectable.selected { background: #d4c8ec !important; border-left: 4px solid #6a0dad; }
-  .trat-row-selectable.selected td:first-child { padding-left: 6px; }
-  .btn-continuar { display: none; margin-top: 10px; }
-
-  @media (max-width: 768px) {
-    .grid-2 { grid-template-columns: 1fr; }
-    .sidebar { width: 100%; height: auto; position: relative; }
-    .main { margin-left: 0; padding: 20px; }
-  }
+  .trat-row-selectable.selected { background: #d4c8ec !important; }
+  @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } .sidebar { width: 100%; height: auto; position: relative; } .main { margin-left: 0; padding: 20px; } }
 </style>
 </head>
 <body>
-
 <div class="sidebar">
     <h2>Equilibrium</h2>
     <nav>
@@ -162,16 +77,12 @@
         <a href="financeiro.html">💰 Financeiro</a>
     </nav>
 </div>
-
 <main class="main">
   <div class="header">
     <h1>Novo Tratamento</h1>
     <p>Cadastre um novo tratamento e seus gráficos associados.</p>
   </div>
-
   <div id="msg" class="msg"></div>
-
-  <!-- CARD 1 -->
   <div class="card">
     <h2>Dados do Tratamento</h2>
     <div class="grid-2">
@@ -193,7 +104,6 @@
       </div>
       <div class="form-group"></div>
     </div>
-
     <div id="clientBox" class="client-box">
       <div class="cb-title" id="cbNome"></div>
       <div class="cb-id" id="cbId"></div>
@@ -208,13 +118,9 @@
           <tbody><tr class="empty-row"><td colspan="4">Nenhum tratamento anterior.</td></tr></tbody>
         </table>
       </div>
-      <!-- MUDANÇA 2 - Botão e instrução -->
-      <button class="btn btn-purple btn-continuar" id="btnContinuarTrat" onclick="continuarTratamento()">▶ Continuar Tratamento Selecionado</button>
-      <div style="margin-top:10px;font-size:12px;color:#888;">Clique em um tratamento acima para continuar adicionando gráficos, ou deixe sem seleção para criar um NOVO tratamento.</div>
+      <div style="margin-top:10px;font-size:12px;color:#888;">Clique em um tratamento para selecioná-lo e usar o mesmo ID, ou deixe como está para criar um NOVO tratamento.</div>
     </div>
   </div>
-
-  <!-- CARD 2 -->
   <div class="card">
     <h2>Gráficos do Tratamento</h2>
     <div style="overflow-x:auto;">
@@ -240,26 +146,17 @@
     </div>
   </div>
 </main>
-
 <script>
 const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
 const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
 const URL_WEBHOOK = 'https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec';
-
 const STATUS_OPCOES = ['Agendado', 'Em Andamento', 'Concluído', 'Adiado', 'Cancelado'];
 const STATUS_COR_MAP = { agendado: 5, em_andamento: 1, concluido: 2, adiado: 4, cancelado: 8 };
-
-const GRAFICOS_FALLBACK = [
-  'Avaliação Postural', 'Avaliação Muscular', 'Treino Postural',
-  'Treino Muscular', 'Reavaliação Postural', 'Reavaliação Muscular'
-];
-
+const GRAFICOS_FALLBACK = ['Avaliação Postural', 'Avaliação Muscular', 'Treino Postural', 'Treino Muscular', 'Reavaliação Postural', 'Reavaliação Muscular'];
 let listaClientes = [];
 let graficosPredef = [];
 let graficos = [];
-let selecionandoCliente = false; // FLAG para evitar loop de input
-
-// MUDANÇA 3 - Variável global
+let selecionandoCliente = false;
 let tratamentoSelecionadoId = null;
 
 function getVal(obj) {
@@ -277,21 +174,15 @@ function getVal(obj) {
   }
   return '';
 }
-
 function statusKey(s) {
-  return String(s || '').toLowerCase()
-    .replace('á','a').replace('é','e').replace('í','i').replace('ó','o').replace('ú','u')
-    .replace('ç','c').replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g,'');
+  return String(s || '').toLowerCase().replace('á','a').replace('é','e').replace('í','i').replace('ó','o').replace('ú','u').replace('ç','c').replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g,'');
 }
-
 function statusColor(s) {
   const k = statusKey(s);
-  const map = { '#5':5, '#1':1, '#2':2, '#4':4, '#8':8 };
   const colors = { 1:'#ffc107', 2:'#28a745', 4:'#fd7e14', 5:'#17a2b8', 8:'#dc3545' };
   const code = STATUS_COR_MAP[k];
   return colors[code] || '#6c757d';
 }
-
 function gerarTratamentoId() {
   let ultimoId = parseInt(localStorage.getItem('ultimoIdTratamento') || '0');
   ultimoId++;
@@ -299,14 +190,12 @@ function gerarTratamentoId() {
   localStorage.setItem('ultimoIdTratamento', ultimoId.toString());
   return 'TRAT-' + novoId;
 }
-
 function hojeISO() {
   const d = new Date();
   const off = d.getTimezoneOffset();
   const local = new Date(d.getTime() - off * 60000);
   return local.toISOString().split('T')[0];
 }
-
 function mostrarMsg(txt, tipo) {
   const m = document.getElementById('msg');
   m.textContent = txt;
@@ -314,75 +203,58 @@ function mostrarMsg(txt, tipo) {
   m.style.display = 'block';
   setTimeout(() => { m.style.display = 'none'; }, 4000);
 }
-
-/* ============ AUTOCOMPLETE CLIENTE ============ */
 function onClienteInput() {
   if (selecionandoCliente) { selecionandoCliente = false; return; }
   const val = document.getElementById('clienteInput').value.trim();
-  // Só limpa o ID se for digitação do usuário, não seleção programática
   document.getElementById('clienteId').value = '';
   document.getElementById('clientBox').style.display = 'none';
-
   const dd = document.getElementById('autocompleteDropdown');
   if (val.length < 1) { dd.style.display = 'none'; return; }
-
   const filtrados = listaClientes.filter(c => {
     const nome = String(getVal(c, 'nome', 'name', 'nomecliente', 'cliente') || '').toLowerCase();
     return nome.includes(val.toLowerCase());
   }).slice(0, 15);
-
   if (!filtrados.length) { dd.style.display = 'none'; return; }
-
   dd.innerHTML = filtrados.map(c => {
     const nome = getVal(c, 'nome', 'name', 'nomecliente', 'cliente') || 'Sem nome';
     const id = getVal(c, 'id', 'idcliente', 'clienteid', 'codigo', 'cod') || '';
     const extra = getVal(c, 'telefone', 'celular', 'fone', 'email') || '';
-    return `<div class="autocomplete-item" onclick="selecionarCliente('${nome.replace(/'/g, "\\'")}', '${String(id).replace(/'/g, "\\'")}')">
-      ${nome}<small>${extra}</small>
-    </div>`;
+    return `<div class="autocomplete-item" onclick="selecionarCliente('${nome.replace(/'/g, "\\'")}', '${String(id).replace(/'/g, "\\'")}')">${nome}<small>${extra}</small></div>`;
   }).join('');
   dd.style.display = 'block';
 }
-
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.autocomplete-wrap')) {
     document.getElementById('autocompleteDropdown').style.display = 'none';
   }
 });
-
 function selecionarCliente(nome, id) {
   selecionandoCliente = true;
   document.getElementById('clienteInput').value = nome;
   document.getElementById('clienteId').value = id;
   document.getElementById('autocompleteDropdown').style.display = 'none';
-  mostrarClientBox(nome, id);
-  carregarTratamentosAnteriores(id, nome);
-}
-
-function mostrarClientBox(nome, id) {
   document.getElementById('cbNome').textContent = 'Cliente: ' + nome;
   document.getElementById('cbId').textContent = 'ID: ' + id;
   document.getElementById('clientBox').style.display = 'block';
+  carregarTratamentosAnteriores(id);
 }
-
-// MUDANÇA 4 - Função carregarTratamentosAnteriores modificada
-function carregarTratamentosAnteriores(id, nome) {
+function carregarTratamentosAnteriores(id) {
   const tbody = document.querySelector('#tratamentosAnteriores tbody');
-  document.getElementById('btnContinuarTrat').style.display = 'none';
   tratamentoSelecionadoId = null;
-  tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Carregando tratamentos...</td></tr>';
-  fetch(URL_ATEND + '?action=tratamentos&clienteId=' + encodeURIComponent(id))
+  tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Carregando...</td></tr>';
+  fetch(URL_ATEND + '?action=tratamentos')
     .then(r => r.json())
     .then(data => {
-      const arr = Array.isArray(data) ? data : (data.dados || data.tratamentos || data.lista || []);
+      // CORREÇÃO: data.data é o formato que o Apps Script retorna
+      const arr = Array.isArray(data) ? data : (data.data || data.dados || data.tratamentos || data.lista || []);
       if (!arr.length) {
         tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Nenhum tratamento anterior.</td></tr>';
         return;
       }
       tbody.innerHTML = arr.map(t => {
-        const tid = getVal(t, 'id', 'idtratamento', 'tratamentoid', 'codigo') || '-';
+        const tid = getVal(t, 'id', 'idtratamento', 'tratamentoid') || '-';
         const dt = getVal(t, 'datainicio', 'data', 'inicio', 'data_inicio') || '-';
-        const graf = getVal(t, 'graficos', 'grafico', 'quantidade', 'qtd') || '-';
+        const graf = getVal(t, 'graficos', 'grafico', 'quantidade', 'qtd', 'quantidadede', 'quant') || '-';
         const st = getVal(t, 'status', 'situacao') || 'Agendado';
         return `<tr class="trat-row-selectable" onclick="selecionarTratamento('${tid}')" data-trat-id="${tid}">
           <td><strong>${tid}</strong></td><td>${dt}</td><td>${graf}</td>
@@ -394,203 +266,88 @@ function carregarTratamentosAnteriores(id, nome) {
       tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Nenhum tratamento anterior.</td></tr>';
     });
 }
-
-// MUDANÇA 5 - Novas funções
 function selecionarTratamento(tid) {
-  // Remove seleção anterior
   document.querySelectorAll('.trat-row-selectable').forEach(r => r.classList.remove('selected'));
-  // Seleciona a linha clicada
   const linha = document.querySelector(`.trat-row-selectable[data-trat-id="${tid}"]`);
   if (linha) {
     linha.classList.add('selected');
     tratamentoSelecionadoId = tid;
-    document.getElementById('btnContinuarTrat').style.display = 'inline-block';
+    document.getElementById('tratamentoId').value = tid;
+    mostrarMsg('Tratamento ' + tid + ' selecionado. Adicione gráficos a ele.', 'success');
   }
 }
-
-function continuarTratamento() {
-  if (!tratamentoSelecionadoId) return;
-  // Preenche o ID do tratamento com o selecionado
-  document.getElementById('tratamentoId').value = tratamentoSelecionadoId;
-  mostrarMsg('Tratamento ' + tratamentoSelecionadoId + ' selecionado. Adicione os gráficos.', 'success');
-  // Rola para a seção de gráficos
-  document.querySelector('.card:last-child').scrollIntoView({ behavior: 'smooth' });
-}
-
-/* ============ CARREGAR CLIENTES ============ */
 function carregarClientes() {
-  fetch(URL_CLIENTES)
-    .then(r => r.json())
-    .then(data => {
-      listaClientes = Array.isArray(data) ? data : (data.dados || data.clientes || data.lista || []);
-    })
-    .catch(() => { listaClientes = []; });
+  fetch(URL_CLIENTES).then(r => r.json()).then(data => {
+    listaClientes = Array.isArray(data) ? data : (data.dados || data.clientes || data.lista || []);
+  }).catch(() => { listaClientes = []; });
 }
-
-/* ============ CARREGAR GRÁFICOS PREDEF ============ */
 function carregarGraficosPredef() {
-  fetch(URL_ATEND + '?_=' + Date.now())
-    .then(r => r.json())
-    .then(data => {
-      let config = data.configuracoes || data.Configuracoes || null;
-      if (!config) {
-        const vals = Object.values(data);
-        if (vals.some(v => Array.isArray(v) && v.length > 1)) config = data;
-      }
-      let found = null;
-      if (config && typeof config === 'object') {
-        for (const k of Object.keys(config)) {
-          // 🔥 CORREÇÃO: remove acentos antes de comparar
-          const keyNorm = k.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-          if (keyNorm.indexOf('grafico') !== -1) {
-            const v = config[k];
-            if (Array.isArray(v) && v.length) { found = v; break; }
-            if (typeof v === 'string' && v.trim()) {
-              found = v.split(',').map(s => s.trim()).filter(Boolean);
-              break;
-            }
-          }
+  fetch(URL_ATEND + '?_=' + Date.now()).then(r => r.json()).then(data => {
+    let config = data.configuracoes || data.Configuracoes || null;
+    if (!config) { const vals = Object.values(data); if (vals.some(v => Array.isArray(v) && v.length > 1)) config = data; }
+    let found = null;
+    if (config && typeof config === 'object') {
+      for (const k of Object.keys(config)) {
+        const keyNorm = k.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        if (keyNorm.indexOf('grafico') !== -1) {
+          const v = config[k];
+          if (Array.isArray(v) && v.length) { found = v; break; }
+          if (typeof v === 'string' && v.trim()) { found = v.split(',').map(s => s.trim()).filter(Boolean); break; }
         }
       }
-      graficosPredef = (found && found.length) ? found : GRAFICOS_FALLBACK.slice();
-      renderGraficos();
-    })
-    .catch(() => { graficosPredef = GRAFICOS_FALLBACK.slice(); renderGraficos(); });
+    }
+    graficosPredef = (found && found.length) ? found : GRAFICOS_FALLBACK.slice();
+    renderGraficos();
+  }).catch(() => { graficosPredef = GRAFICOS_FALLBACK.slice(); renderGraficos(); });
 }
-
-/* ============ GRÁFICOS TABLE ============ */
 function adicionarGrafico() {
-  graficos.push({
-    grafico: '',
-    data_inicio: hojeISO(),
-    data_fim: '',
-    status: 'Agendado'
-  });
+  graficos.push({ grafico: '', data_inicio: hojeISO(), data_fim: '', status: 'Agendado' });
   renderGraficos();
 }
-
-function removerGrafico(idx) {
-  graficos.splice(idx, 1);
-  renderGraficos();
-}
-
-function atualizarGrafico(idx, campo, valor) {
-  if (!graficos[idx]) return;
-  graficos[idx][campo] = valor;
-}
-
+function removerGrafico(idx) { graficos.splice(idx, 1); renderGraficos(); }
+function atualizarGrafico(idx, campo, valor) { if (!graficos[idx]) return; graficos[idx][campo] = valor; }
 function renderGraficos() {
   const tbody = document.getElementById('graficosBody');
-  if (!graficos.length) {
-    tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Nenhum gráfico adicionado.</td></tr>';
-    return;
-  }
+  if (!graficos.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Nenhum gráfico adicionado.</td></tr>'; return; }
   const opts = graficosPredef.map(g => `<option value="${g}">${g}</option>`).join('');
-  const statusOpts = STATUS_OPCOES.map(s => `<option value="${s}">${s}</option>`).join('');
-
-  tbody.innerHTML = graficos.map((g, i) => `
-    <tr>
-      <td class="col-num">${i + 1}</td>
-      <td>
-        <select onchange="atualizarGrafico(${i}, 'grafico', this.value)">
-          <option value="">Selecione...</option>
-          ${opts}
-        </select>
-      </td>
-      <td><input type="date" value="${g.data_inicio || ''}" onchange="atualizarGrafico(${i}, 'data_inicio', this.value)"></td>
-      <td><input type="date" value="${g.data_fim || ''}" onchange="atualizarGrafico(${i}, 'data_fim', this.value)"></td>
-      <td>
-        <select onchange="atualizarGrafico(${i}, 'status', this.value)">
-          ${STATUS_OPCOES.map(s => `<option value="${s}" ${g.status === s ? 'selected' : ''}>${s}</option>`).join('')}
-        </select>
-      </td>
-      <td class="col-acoes"><button class="btn btn-red" onclick="removerGrafico(${i})">Remover</button></td>
-    </tr>
-  `).join('');
-
-  // Aplica valor selecionado nos selects de gráfico
-  const selects = tbody.querySelectorAll('tr td:nth-child(2) select');
-  selects.forEach((sel, i) => { sel.value = graficos[i].grafico || ''; });
+  tbody.innerHTML = graficos.map((g, i) => `<tr>
+    <td class="col-num">${i + 1}</td>
+    <td><select onchange="atualizarGrafico(${i}, 'grafico', this.value)"><option value="">Selecione...</option>${opts}</select></td>
+    <td><input type="date" value="${g.data_inicio || ''}" onchange="atualizarGrafico(${i}, 'data_inicio', this.value)"></td>
+    <td><input type="date" value="${g.data_fim || ''}" onchange="atualizarGrafico(${i}, 'data_fim', this.value)"></td>
+    <td><select onchange="atualizarGrafico(${i}, 'status', this.value)">${STATUS_OPCOES.map(s => `<option value="${s}" ${g.status === s ? 'selected' : ''}>${s}</option>`).join('')}</select></td>
+    <td class="col-acoes"><button class="btn btn-red" onclick="removerGrafico(${i})">Remover</button></td>
+  </tr>`).join('');
+  tbody.querySelectorAll('tr td:nth-child(2) select').forEach((sel, i) => { sel.value = graficos[i].grafico || ''; });
 }
-
-/* ============ SALVAR TRATAMENTO ============ */
 function salvarTratamento() {
   const clienteNome = document.getElementById('clienteInput').value.trim();
   let clienteId = document.getElementById('clienteId').value.trim();
-
   if (!clienteNome) { mostrarMsg('Selecione um cliente.', 'error'); return; }
-
-  // Se não encontrou ID pelo autocomplete, tenta achar pelo nome
   if (!clienteId) {
-    const c = listaClientes.find(x => {
-      const n = String(getVal(x, 'nome', 'name', 'nomecliente', 'cliente') || '').toLowerCase();
-      return n === clienteNome.toLowerCase();
-    });
+    const c = listaClientes.find(x => { const n = String(getVal(x, 'nome', 'name', 'nomecliente', 'cliente') || '').toLowerCase(); return n === clienteNome.toLowerCase(); });
     if (c) clienteId = getVal(c, 'id', 'idcliente', 'clienteid', 'codigo', 'cod') || '';
   }
-
-  if (!clienteId) { mostrarMsg('Cliente não encontrado. Selecione um cliente da lista.', 'error'); return; }
+  if (!clienteId) { mostrarMsg('Cliente não encontrado. Selecione da lista.', 'error'); return; }
   if (!graficos.length) { mostrarMsg('Adicione ao menos um gráfico.', 'error'); return; }
-
-  // MUDANÇA 6 - Usa tratamento selecionado ou o campo
   const tratamentoId = tratamentoSelecionadoId || document.getElementById('tratamentoId').value;
-
   const payload = {
-    tipo: 'tratamento',
-    action: 'criar_tratamento',
-    cliente_id: clienteId,
-    cliente_nome: clienteNome,
+    tipo: 'tratamento', action: 'criar_tratamento',
+    cliente_id: clienteId, cliente_nome: clienteNome,
     tratamento_id: tratamentoId,
     data_inicio: document.getElementById('dataInicio').value,
-    graficos: graficos.map((g, i) => ({
-      ordem: i + 1,
-      grafico: g.grafico,
-      data_inicio: g.data_inicio,
-      data_fim: g.data_fim,
-      status: g.status
-    }))
+    graficos: graficos.map((g, i) => ({ ordem: i + 1, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status }))
   };
-
-  mostrarMsg('Salvando tratamento...', 'success');
-
-  fetch(URL_ATEND, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: 'dados=' + encodeURIComponent(JSON.stringify(payload))
-  })
-  .then(r => r.json())
-  .then(res => {
-    // Envia webhooks para gráficos com data_fim
-    const webhooks = graficos.filter(g => g.data_fim && g.grafico).map((g, i) => {
-      const wh = {
-        action: 'criar',
-        calendario: 'graficos',
-        cliente: clienteNome,
-        cliente_id: clienteId,
-        grafico: g.grafico,
-        data_inicio: g.data_inicio,
-        data_fim: g.data_fim,
-        status: g.status,
-        tratamento_id: payload.tratamento_id
-      };
-      return fetch(URL_WEBHOOK, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'dados=' + encodeURIComponent(JSON.stringify(wh))
-      }).catch(() => {});
-    });
-
-    Promise.all(webhooks).then(() => {
-      mostrarMsg('Tratamento salvo com sucesso! ID: ' + payload.tratamento_id, 'success');
-      setTimeout(() => { window.location.href = 'lista-tratamentos.html'; }, 1500);
-    });
-  })
-  .catch(err => {
-    mostrarMsg('Erro ao salvar tratamento: ' + err.message, 'error');
-  });
+  mostrarMsg('Salvando...', 'success');
+  fetch(URL_ATEND, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'dados=' + encodeURIComponent(JSON.stringify(payload)) })
+    .then(r => r.json()).then(res => {
+      const webhooks = graficos.filter(g => g.data_fim && g.grafico).map(g => {
+        const wh = { action: 'criar', calendario: 'graficos', cliente: clienteNome, cliente_id: clienteId, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status, tratamento_id: payload.tratamento_id };
+        return fetch(URL_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'dados=' + encodeURIComponent(JSON.stringify(wh)) }).catch(() => {});
+      });
+      Promise.all(webhooks).then(() => { mostrarMsg('Tratamento salvo! ID: ' + payload.tratamento_id, 'success'); setTimeout(() => { window.location.href = 'lista-tratamentos.html'; }, 1500); });
+    }).catch(err => { mostrarMsg('Erro: ' + err.message, 'error'); });
 }
-
-/* ============ INIT ============ */
 window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('tratamentoId').value = gerarTratamentoId();
   document.getElementById('dataInicio').value = hojeISO();
