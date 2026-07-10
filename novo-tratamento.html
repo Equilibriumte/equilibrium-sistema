@@ -7,10 +7,12 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
   body { display: flex; min-height: 100vh; background: #f4f1f8; }
+  /* SIDEBAR */
   .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
   .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
   .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
   .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
+  /* MAIN */
   .main { margin-left: 250px; padding: 30px; flex: 1; }
   .header { margin-bottom: 25px; }
   .header h1 { color: #4b0082; font-size: 26px; }
@@ -78,7 +80,7 @@
 <main class="main">
   <div class="header">
     <h1>Novo Tratamento</h1>
-    <p>Cadastre um novo tratamento e seus gr&aacute;ficos associados.</p>
+    <p>Cadastre um novo tratamento e seus gráficos associados.</p>
   </div>
   <div id="msg" class="msg"></div>
   <div class="card">
@@ -97,7 +99,7 @@
         <input type="text" id="tratamentoId" readonly>
       </div>
       <div class="form-group">
-        <label for="dataInicio">Data In&iacute;cio</label>
+        <label for="dataInicio">Data Início</label>
         <input type="date" id="dataInicio">
       </div>
       <div class="form-group"></div>
@@ -110,48 +112,47 @@
         <table id="tratamentosAnteriores">
           <thead>
             <tr>
-              <th>ID</th><th>Data In&iacute;cio</th><th>Gr&aacute;ficos</th><th>Status</th>
+              <th>ID</th><th>Data Início</th><th>Gráficos</th><th>Status</th>
             </tr>
           </thead>
           <tbody><tr class="empty-row"><td colspan="4">Nenhum tratamento anterior.</td></tr></tbody>
         </table>
       </div>
-      <div style="margin-top:10px;font-size:12px;color:#888;">Clique em um tratamento para selecion&aacute;-lo e usar o mesmo ID, ou deixe como est&aacute; para criar um NOVO tratamento.</div>
+      <div style="margin-top:10px;font-size:12px;color:#888;">Clique em um tratamento para selecioná-lo e usar o mesmo ID, ou deixe como está para criar um NOVO tratamento.</div>
     </div>
   </div>
   <div class="card">
-    <h2>Gr&aacute;ficos do Tratamento</h2>
+    <h2>Gráficos do Tratamento</h2>
     <div style="overflow-x:auto;">
       <table class="graficos-table" id="graficosTable">
         <thead>
           <tr>
             <th class="col-num">#</th>
-            <th>Gr&aacute;fico</th>
-            <th>Data In&iacute;cio</th>
-            <th>Data Finaliza&ccedil;&atilde;o</th>
+            <th>Gráfico</th>
+            <th>Data Início</th>
+            <th>Data Finalização</th>
             <th>Status</th>
-            <th class="col-acoes">A&ccedil;&otilde;es</th>
+            <th class="col-acoes">Ações</th>
           </tr>
         </thead>
         <tbody id="graficosBody">
-          <tr class="empty-row"><td colspan="6">Nenhum gr&aacute;fico adicionado.</td></tr>
+          <tr class="empty-row"><td colspan="6">Nenhum gráfico adicionado.</td></tr>
         </tbody>
       </table>
     </div>
     <div class="actions-row">
-      <button class="btn btn-green" onclick="adicionarGrafico()">+ Adicionar Gr&aacute;fico</button>
+      <button class="btn btn-green" onclick="adicionarGrafico()">+ Adicionar Gráfico</button>
       <button class="btn btn-purple" onclick="salvarTratamento()">Salvar Tratamento</button>
     </div>
   </div>
 </main>
-
 <script>
 const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
 const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
 const URL_WEBHOOK = 'https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec';
-const STATUS_OPCOES = ['Agendado', 'Em Andamento', 'Conclu&iacute;do', 'Adiado', 'Cancelado'];
+const STATUS_OPCOES = ['Agendado', 'Em Andamento', 'Concluído', 'Adiado', 'Cancelado'];
 const STATUS_COR_MAP = { agendado: 5, em_andamento: 1, concluido: 2, adiado: 4, cancelado: 8 };
-const GRAFICOS_FALLBACK = ['Avalia&ccedil;&atilde;o Postural', 'Avalia&ccedil;&atilde;o Muscular', 'Treino Postural', 'Treino Muscular', 'Reavalia&ccedil;&atilde;o Postural', 'Reavalia&ccedil;&atilde;o Muscular'];
+const GRAFICOS_FALLBACK = ['Avaliação Postural', 'Avaliação Muscular', 'Treino Postural', 'Treino Muscular', 'Reavaliação Postural', 'Reavaliação Muscular'];
 let listaClientes = [];
 let graficosPredef = [];
 let graficos = [];
@@ -160,83 +161,69 @@ let tratamentoSelecionadoId = null;
 
 function getVal(obj) {
   if (!obj) return '';
-  var keys = Array.prototype.slice.call(arguments, 1);
+  const keys = Array.prototype.slice.call(arguments, 1);
   if (!keys.length) return '';
-  var objKeys = Object.keys(obj);
-  for (var idx = 0; idx < keys.length; idx++) {
-    var k = keys[idx];
+  const norm = s => String(s || '').toLowerCase().replace(/\s+/g, '');
+  const objKeys = Object.keys(obj);
+  for (const k of keys) {
     if (obj.hasOwnProperty(k) && obj[k] != null && String(obj[k]).trim() !== '') return obj[k];
-    var nk = String(k).toLowerCase().replace(/\s+/g, '');
-    for (var j = 0; j < objKeys.length; j++) {
-      var ok = objKeys[j];
-      if (String(ok).toLowerCase().replace(/\s+/g, '') === nk && obj[ok] != null && String(obj[ok]).trim() !== '') return obj[ok];
+    const nk = norm(k);
+    for (const ok of objKeys) {
+      if (norm(ok) === nk && obj[ok] != null && String(obj[ok]).trim() !== '') return obj[ok];
     }
   }
   return '';
 }
-
 function statusKey(s) {
-  return String(s || '').toLowerCase().replace(/&aacute;/g,'a').replace(/&eacute;/g,'e').replace(/&iacute;/g,'i').replace(/&oacute;/g,'o').replace(/&uacute;/g,'u').replace(/&ccedil;/g,'c').replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g,'');
+  return String(s || '').toLowerCase().replace('á','a').replace('é','e').replace('í','i').replace('ó','o').replace('ú','u').replace('ç','c').replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g,'');
 }
-
 function statusColor(s) {
-  var k = statusKey(s);
-  var colors = { 1:'#ffc107', 2:'#28a745', 4:'#fd7e14', 5:'#17a2b8', 8:'#dc3545' };
-  var code = STATUS_COR_MAP[k];
+  const k = statusKey(s);
+  const colors = { 1:'#ffc107', 2:'#28a745', 4:'#fd7e14', 5:'#17a2b8', 8:'#dc3545' };
+  const code = STATUS_COR_MAP[k];
   return colors[code] || '#6c757d';
 }
-
 function gerarTratamentoId() {
-  var ultimoId = parseInt(localStorage.getItem('ultimoIdTratamento') || '0');
+  let ultimoId = parseInt(localStorage.getItem('ultimoIdTratamento') || '0');
   ultimoId++;
-  var novoId = String(ultimoId).padStart(6, '0');
+  const novoId = String(ultimoId).padStart(6, '0');
   localStorage.setItem('ultimoIdTratamento', ultimoId.toString());
   return 'TRAT-' + novoId;
 }
-
 function hojeISO() {
-  var d = new Date();
-  var off = d.getTimezoneOffset();
-  return new Date(d.getTime() - off * 60000).toISOString().split('T')[0];
+  const d = new Date();
+  const off = d.getTimezoneOffset();
+  const local = new Date(d.getTime() - off * 60000);
+  return local.toISOString().split('T')[0];
 }
-
 function mostrarMsg(txt, tipo) {
-  var m = document.getElementById('msg');
+  const m = document.getElementById('msg');
   m.textContent = txt;
   m.className = 'msg ' + (tipo || 'success');
   m.style.display = 'block';
-  setTimeout(function() { m.style.display = 'none'; }, 4000);
+  setTimeout(() => { m.style.display = 'none'; }, 4000);
 }
-
 function onClienteInput() {
   if (selecionandoCliente) { selecionandoCliente = false; return; }
-  var val = document.getElementById('clienteInput').value.trim();
+  const val = document.getElementById('clienteInput').value.trim();
   document.getElementById('clienteId').value = '';
   document.getElementById('clientBox').style.display = 'none';
-  var dd = document.getElementById('autocompleteDropdown');
+  const dd = document.getElementById('autocompleteDropdown');
   if (val.length < 1) { dd.style.display = 'none'; return; }
-  var filtrados = [];
-  for (var i = 0; i < listaClientes.length; i++) {
-    var c = listaClientes[i];
-    var nome = String(getVal(c, 'nome', 'name', 'nomecliente', 'cliente') || '').toLowerCase();
-    if (nome.indexOf(val.toLowerCase()) !== -1) {
-      filtrados.push(c);
-      if (filtrados.length >= 15) break;
-    }
-  }
+  const filtrados = listaClientes.filter(c => {
+    const nome = String(getVal(c, 'nome', 'name', 'nomecliente', 'cliente') || '').toLowerCase();
+    return nome.includes(val.toLowerCase());
+  }).slice(0, 15);
   if (!filtrados.length) { dd.style.display = 'none'; return; }
-  var html = '';
-  for (var i = 0; i < filtrados.length; i++) {
-    var c = filtrados[i];
-    var nome = getVal(c, 'nome', 'name', 'nomecliente', 'cliente') || 'Sem nome';
-    var id = getVal(c, 'id', 'idcliente', 'clienteid', 'codigo', 'cod') || '';
-    var extra = getVal(c, 'telefone', 'celular', 'fone', 'email') || '';
-    html += '<div class="autocomplete-item" onclick="selecionarCliente(\'' + nome.replace(/'/g, "\\'") + '\', \'' + String(id).replace(/'/g, "\\'") + '\')">' + nome + '<small>' + extra + '</small></div>';
-  }
-  dd.innerHTML = html;
+  dd.innerHTML = filtrados.map(c => {
+    const nome = getVal(c, 'nome', 'name', 'nomecliente', 'cliente') || 'Sem nome';
+    const id = getVal(c, 'id', 'idcliente', 'clienteid', 'codigo', 'cod') || '';
+    const extra = getVal(c, 'telefone', 'celular', 'fone', 'email') || '';
+    return `<div class="autocomplete-item" onclick="selecionarCliente('${nome.replace(/'/g, "\\'")}', '${String(id).replace(/'/g, "\\'")}')">${nome}<small>${extra}</small></div>`;
+  }).join('');
   dd.style.display = 'block';
 }
-document.addEventListener('click', function(e) {
+document.addEventListener('click', (e) => {
   if (!e.target.closest('.autocomplete-wrap')) {
     document.getElementById('autocompleteDropdown').style.display = 'none';
   }
@@ -251,223 +238,117 @@ function selecionarCliente(nome, id) {
   document.getElementById('clientBox').style.display = 'block';
   carregarTratamentosAnteriores(id);
 }
-
-/* ==================================================================
-   FUNÇÃO 1 - carregarTratamentosAnteriores (MODIFICADA)
-   Primeiro busca da aba "Equilibrium - Atendimentos" via ?read=true
-   para mostrar os atendimentos do cliente como tratamentos anteriores,
-   e também tenta carregar da aba "Tratamentos"
-   ================================================================== */
 function carregarTratamentosAnteriores(id) {
-  var tbody = document.querySelector('#tratamentosAnteriores tbody');
+  const tbody = document.querySelector('#tratamentosAnteriores tbody');
   tratamentoSelecionadoId = null;
   tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Carregando...</td></tr>';
-  
-  // Busca TANTO da aba Tratamentos quanto da aba Equilibrium - Atendimentos
-  Promise.all([
-    fetch(URL_ATEND + '?action=tratamentos&_=' + Date.now()).then(function(r) { return r.(); }).catch(function() { return {}; }),
-    fetch(URL_ATEND + '?_=' + Date.now()).then(function(r) { return r.(); }).catch(function() { return {}; })
-  ])
-  .then(function(results) {
-    var tratamentosData = results[0];
-    var atendimentosData = results[1];
-    
-    // Extrai dados da aba Tratamentos
-    var tratamentos = [];
-    if (tratamentosData && tratamentosData.success && Array.isArray(tratamentosData.data)) {
-      tratamentos = tratamentosData.data;
-    } else if (Array.isArray(tratamentosData)) {
-      tratamentos = tratamentosData;
-    } else if (tratamentosData && Array.isArray(tratamentosData.dados)) {
-      tratamentos = tratamentosData.dados;
-    }
-    
-    // Extrai dados da aba Equilibrium - Atendimentos
-    var atendimentos = [];
-    if (atendimentosData && atendimentosData.success && Array.isArray(atendimentosData.data)) {
-      atendimentos = atendimentosData.data;
-    } else if (Array.isArray(atendimentosData)) {
-      atendimentos = atendimentosData;
-    } else if (atendimentosData && Array.isArray(atendimentosData.dados)) {
-      atendimentos = atendimentosData.dados;
-    }
-    
-    // Filtra tratamentos do cliente
-    var doCliente = tratamentos.filter(function(t) {
-      var tCliId = String(getVal(t, 'cliente_id', 'idcliente', 'clienteid', 'ID Cliente') || '');
-      return tCliId === id;
+  fetch(URL_ATEND + '?action=tratamentos')
+    .then(r => r.json())
+    .then(data => {
+      // CORREÇÃO: data.data é o formato que o Apps Script retorna
+      const arr = Array.isArray(data) ? data : (data.data || data.dados || data.tratamentos || data.lista || []);
+      if (!arr.length) {
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Nenhum tratamento anterior.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = arr.map(t => {
+        const tid = getVal(t, 'id', 'idtratamento', 'tratamentoid') || '-';
+        const dt = getVal(t, 'datainicio', 'data', 'inicio', 'data_inicio') || '-';
+        const graf = getVal(t, 'graficos', 'grafico', 'quantidade', 'qtd', 'quantidadede', 'quant') || '-';
+        const st = getVal(t, 'status', 'situacao') || 'Agendado';
+        return `<tr class="trat-row-selectable" onclick="selecionarTratamento('${tid}')" data-trat-id="${tid}">
+          <td><strong>${tid}</strong></td><td>${dt}</td><td>${graf}</td>
+          <td><span class="status-badge" style="background:${statusColor(st)}">${st}</span></td>
+        </tr>`;
+      }).join('');
+    })
+    .catch(() => {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Nenhum tratamento anterior.</td></tr>';
     });
-    
-    // Se tem tratamentos na aba Tratamentos, usa eles
-    if (doCliente.length > 0) {
-      renderTratamentos(doCliente);
-      mostrarMsg('Tratamentos carregados da aba Tratamentos.', 'success');
-      return;
-    }
-    
-    // Fallback: usa atendimentos da aba Equilibrium - Atendimentos
-    // como "tratamentos anteriores" para este cliente
-    var clienteNome = document.getElementById('cbNome').textContent.replace('Cliente: ','').trim().toLowerCase();
-    var atendDoCliente = atendimentos.filter(function(a) {
-      var aCliId = String(getVal(a, 'idcliente', 'clienteid', 'ID Cliente', 'id') || '');
-      var aNome = String(getVal(a, 'nomecliente', 'nome', 'Nome Cliente', 'cliente') || '').toLowerCase();
-      return aCliId === id || aNome.indexOf(clienteNome) !== -1;
-    });
-    
-    if (atendDoCliente.length > 0) {
-      renderTratamentos(atendDoCliente);
-      mostrarMsg('Mostrando atendimentos do cliente. Clique em um para usar como tratamento.', 'success');
-    } else {
-      tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Nenhum atendimento ou tratamento encontrado para este cliente.</td></tr>';
-    }
-  })
-  .catch(function() {
-    tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Erro ao carregar dados.</td></tr>';
-  });
 }
-
-/* ==================================================================
-   FUNÇÃO 2 - renderTratamentos (MODIFICADA)
-   Converte tanto atendimentos quanto tratamentos para exibição
-   ================================================================== */
-function renderTratamentos(arr) {
-  var tbody = document.querySelector('#tratamentosAnteriores tbody');
-  if (!arr || !arr.length) {
-    tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Nenhum registro encontrado.</td></tr>';
-    return;
-  }
-  var html = '';
-  for (var i = 0; i < arr.length; i++) {
-    var item = arr[i];
-    // Tenta extrair como tratamento, se não acha, extrai como atendimento
-    var tid = getVal(item, 'id', 'idtratamento', 'tratamentoid', 'id_tratamento', 'ID Tratamento',
-                     'idatendimento', 'ID Atendimento', 'ID Atendimento') || '-';
-    var dt = getVal(item, 'datainicio', 'data', 'inicio', 'data_inicio', 'Data Inicio', 'Data',
-                     'Data do Atendimento', 'data_do_atendimento') || '-';
-    var graf = getVal(item, 'graficos', 'grafico', 'Gráfico', 'quantidade', 'qtd') || '-';
-    var st = getVal(item, 'status', 'situacao', 'Status') || 'Realizado';
-    
-    // Se veio da aba Equilibrium - Atendimentos (não tem gráfico), coloca "-"
-    if (graf === '0' || graf === '' || graf === '-') {
-      // Verifica se tem campos de chakras para estimar "gráficos"
-      var temChakras = getVal(item, 'coronario', 'Coronário', 'chcoronario');
-      graf = temChakras ? '1 (atendimento)' : '-';
-    }
-    
-    html += '<tr class="trat-row-selectable" onclick="selecionarTratamento(\'' + tid.replace(/'/g, "\\'") + '\')" data-trat-id="' + tid.replace(/'/g, "\\'") + '">';
-    html += '<td><strong>' + tid + '</strong></td><td>' + dt + '</td><td>' + graf + '</td>';
-    html += '<td><span class="status-badge" style="background:' + statusColor(st) + '">' + st + '</span></td></tr>';
-  }
-  tbody.innerHTML = html;
-}
-
 function selecionarTratamento(tid) {
-  var linhas = document.querySelectorAll('.trat-row-selectable');
-  for (var i = 0; i < linhas.length; i++) { linhas[i].classList.remove('selected'); }
-  var linha = document.querySelector('.trat-row-selectable[data-trat-id="' + tid + '"]');
+  document.querySelectorAll('.trat-row-selectable').forEach(r => r.classList.remove('selected'));
+  const linha = document.querySelector(`.trat-row-selectable[data-trat-id="${tid}"]`);
   if (linha) {
     linha.classList.add('selected');
     tratamentoSelecionadoId = tid;
     document.getElementById('tratamentoId').value = tid;
-    mostrarMsg('Registro ' + tid + ' selecionado. Adicione os gr&aacute;ficos.', 'success');
+    mostrarMsg('Tratamento ' + tid + ' selecionado. Adicione gráficos a ele.', 'success');
   }
 }
-
 function carregarClientes() {
-  fetch(URL_CLIENTES).then(function(r) { return r.(); }).then(function(data) {
+  fetch(URL_CLIENTES).then(r => r.json()).then(data => {
     listaClientes = Array.isArray(data) ? data : (data.dados || data.clientes || data.lista || []);
-  }).catch(function() { listaClientes = []; });
+  }).catch(() => { listaClientes = []; });
 }
-
 function carregarGraficosPredef() {
-  fetch(URL_ATEND + '?_=' + Date.now()).then(function(r) { return r.(); }).then(function(data) {
-    var config = data.configuracoes || data.Configuracoes || null;
-    if (!config) { var vals = Object.values(data); if (vals.some(function(v) { return Array.isArray(v) && v.length > 1; })) config = data; }
-    var found = null;
+  fetch(URL_ATEND + '?_=' + Date.now()).then(r => r.json()).then(data => {
+    let config = data.configuracoes || data.Configuracoes || null;
+    if (!config) { const vals = Object.values(data); if (vals.some(v => Array.isArray(v) && v.length > 1)) config = data; }
+    let found = null;
     if (config && typeof config === 'object') {
-      for (var k in config) {
-        if (config.hasOwnProperty(k)) {
-          var keyNorm = k.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '');
-          if (keyNorm.indexOf('grafico') !== -1) {
-            var v = config[k];
-            if (Array.isArray(v) && v.length) { found = v; break; }
-            if (typeof v === 'string' && v.trim()) { found = v.split(',').map(function(s) { return s.trim(); }).filter(Boolean); break; }
-          }
+      for (const k of Object.keys(config)) {
+        const keyNorm = k.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        if (keyNorm.indexOf('grafico') !== -1) {
+          const v = config[k];
+          if (Array.isArray(v) && v.length) { found = v; break; }
+          if (typeof v === 'string' && v.trim()) { found = v.split(',').map(s => s.trim()).filter(Boolean); break; }
         }
       }
     }
     graficosPredef = (found && found.length) ? found : GRAFICOS_FALLBACK.slice();
     renderGraficos();
-  }).catch(function() { graficosPredef = GRAFICOS_FALLBACK.slice(); renderGraficos(); });
+  }).catch(() => { graficosPredef = GRAFICOS_FALLBACK.slice(); renderGraficos(); });
 }
-
 function adicionarGrafico() {
   graficos.push({ grafico: '', data_inicio: hojeISO(), data_fim: '', status: 'Agendado' });
   renderGraficos();
 }
-
 function removerGrafico(idx) { graficos.splice(idx, 1); renderGraficos(); }
-
 function atualizarGrafico(idx, campo, valor) { if (!graficos[idx]) return; graficos[idx][campo] = valor; }
-
 function renderGraficos() {
-  var tbody = document.getElementById('graficosBody');
-  if (!graficos.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Nenhum gr&aacute;fico adicionado.</td></tr>'; return; }
-  var opts = '';
-  for (var i = 0; i < graficosPredef.length; i++) { opts += '<option value="' + graficosPredef[i] + '">' + graficosPredef[i] + '</option>'; }
-  var html = '';
-  for (var i = 0; i < graficos.length; i++) {
-    var g = graficos[i];
-    html += '<tr>';
-    html += '<td class="col-num">' + (i + 1) + '</td>';
-    html += '<td><select onchange="atualizarGrafico(' + i + ', \'grafico\', this.value)"><option value="">Selecione...</option>' + opts + '</select></td>';
-    html += '<td><input type="date" value="' + (g.data_inicio || '') + '" onchange="atualizarGrafico(' + i + ', \'data_inicio\', this.value)"></td>';
-    html += '<td><input type="date" value="' + (g.data_fim || '') + '" onchange="atualizarGrafico(' + i + ', \'data_fim\', this.value)"></td>';
-    html += '<td><select onchange="atualizarGrafico(' + i + ', \'status\', this.value)">';
-    for (var j = 0; j < STATUS_OPCOES.length; j++) { var s = STATUS_OPCOES[j]; html += '<option value="' + s + '" ' + (g.status === s ? 'selected' : '') + '>' + s + '</option>'; }
-    html += '</select></td>';
-    html += '<td class="col-acoes"><button class="btn btn-red" onclick="removerGrafico(' + i + ')">Remover</button></td></tr>';
-  }
-  tbody.innerHTML = html;
-  var selects = tbody.querySelectorAll('tr td:nth-child(2) select');
-  for (var i = 0; i < selects.length; i++) { selects[i].value = graficos[i].grafico || ''; }
+  const tbody = document.getElementById('graficosBody');
+  if (!graficos.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Nenhum gráfico adicionado.</td></tr>'; return; }
+  const opts = graficosPredef.map(g => `<option value="${g}">${g}</option>`).join('');
+  tbody.innerHTML = graficos.map((g, i) => `<tr>
+    <td class="col-num">${i + 1}</td>
+    <td><select onchange="atualizarGrafico(${i}, 'grafico', this.value)"><option value="">Selecione...</option>${opts}</select></td>
+    <td><input type="date" value="${g.data_inicio || ''}" onchange="atualizarGrafico(${i}, 'data_inicio', this.value)"></td>
+    <td><input type="date" value="${g.data_fim || ''}" onchange="atualizarGrafico(${i}, 'data_fim', this.value)"></td>
+    <td><select onchange="atualizarGrafico(${i}, 'status', this.value)">${STATUS_OPCOES.map(s => `<option value="${s}" ${g.status === s ? 'selected' : ''}>${s}</option>`).join('')}</select></td>
+    <td class="col-acoes"><button class="btn btn-red" onclick="removerGrafico(${i})">Remover</button></td>
+  </tr>`).join('');
+  tbody.querySelectorAll('tr td:nth-child(2) select').forEach((sel, i) => { sel.value = graficos[i].grafico || ''; });
 }
-
 function salvarTratamento() {
-  var clienteNome = document.getElementById('clienteInput').value.trim();
-  var clienteId = document.getElementById('clienteId').value.trim();
+  const clienteNome = document.getElementById('clienteInput').value.trim();
+  let clienteId = document.getElementById('clienteId').value.trim();
   if (!clienteNome) { mostrarMsg('Selecione um cliente.', 'error'); return; }
   if (!clienteId) {
-    for (var i = 0; i < listaClientes.length; i++) {
-      var x = listaClientes[i];
-      if ((getVal(x, 'nome', 'name', 'nomecliente', 'cliente') || '').toLowerCase() === clienteNome.toLowerCase()) {
-        clienteId = getVal(x, 'id', 'idcliente', 'clienteid', 'codigo', 'cod') || '';
-        break;
-      }
-    }
+    const c = listaClientes.find(x => { const n = String(getVal(x, 'nome', 'name', 'nomecliente', 'cliente') || '').toLowerCase(); return n === clienteNome.toLowerCase(); });
+    if (c) clienteId = getVal(c, 'id', 'idcliente', 'clienteid', 'codigo', 'cod') || '';
   }
-  if (!clienteId) { mostrarMsg('Cliente n&atilde;o encontrado.', 'error'); return; }
-  if (!graficos.length) { mostrarMsg('Adicione ao menos um gr&aacute;fico.', 'error'); return; }
-  var tratamentoId = tratamentoSelecionadoId || document.getElementById('tratamentoId').value;
-  var payload = {
+  if (!clienteId) { mostrarMsg('Cliente não encontrado. Selecione da lista.', 'error'); return; }
+  if (!graficos.length) { mostrarMsg('Adicione ao menos um gráfico.', 'error'); return; }
+  const tratamentoId = tratamentoSelecionadoId || document.getElementById('tratamentoId').value;
+  const payload = {
     tipo: 'tratamento', action: 'criar_tratamento',
     cliente_id: clienteId, cliente_nome: clienteNome,
     tratamento_id: tratamentoId,
     data_inicio: document.getElementById('dataInicio').value,
-    graficos: []
+    graficos: graficos.map((g, i) => ({ ordem: i + 1, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status }))
   };
-  for (var i = 0; i < graficos.length; i++) { var g = graficos[i]; payload.graficos.push({ ordem: i + 1, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status }); }
-  mostrarMsg('Salvando na aba Tratamentos...', 'success');
+  mostrarMsg('Salvando...', 'success');
   fetch(URL_ATEND, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'dados=' + encodeURIComponent(JSON.stringify(payload)) })
-    .then(function(r) { return r.(); })
-    .then(function(res) {
-      var webhooks = [];
-      for (var i = 0; i < graficos.length; i++) { var g = graficos[i]; if (g.data_fim && g.grafico) { var wh = { action: 'criar', calendario: 'graficos', cliente: clienteNome, cliente_id: clienteId, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status, tratamento_id: payload.tratamento_id }; webhooks.push(fetch(URL_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'dados=' + encodeURIComponent(JSON.stringify(wh)) }).catch(function() {})); } }
-      Promise.all(webhooks).then(function() { mostrarMsg('Tratamento salvo na aba Tratamentos! ID: ' + payload.tratamento_id, 'success'); setTimeout(function() { window.location.href = 'lista-tratamentos.html'; }, 1500); });
-    }).catch(function(err) { mostrarMsg('Erro: ' + err.message, 'error'); });
+    .then(r => r.json()).then(res => {
+      const webhooks = graficos.filter(g => g.data_fim && g.grafico).map(g => {
+        const wh = { action: 'criar', calendario: 'graficos', cliente: clienteNome, cliente_id: clienteId, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status, tratamento_id: payload.tratamento_id };
+        return fetch(URL_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'dados=' + encodeURIComponent(JSON.stringify(wh)) }).catch(() => {});
+      });
+      Promise.all(webhooks).then(() => { mostrarMsg('Tratamento salvo! ID: ' + payload.tratamento_id, 'success'); setTimeout(() => { window.location.href = 'lista-tratamentos.html'; }, 1500); });
+    }).catch(err => { mostrarMsg('Erro: ' + err.message, 'error'); });
 }
-
-window.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('tratamentoId').value = gerarTratamentoId();
   document.getElementById('dataInicio').value = hojeISO();
   carregarClientes();
@@ -477,3 +358,4 @@ window.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+
