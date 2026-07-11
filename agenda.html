@@ -5,224 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agenda - Equilibrium</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background: #f4f0fa;
-      min-height: 100vh;
-    }
-
-    /* SIDEBAR */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+    body { background: #f4f0fa; min-height: 100vh; }
     .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
     .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
     .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
     .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
-
-    /* CONTEÚDO PRINCIPAL */
-    .main {
-      margin-left: 250px;
-      padding: 40px;
-      min-height: 100vh;
-    }
-
-    .header h1 {
-      color: #4b0082;
-      font-size: 32px;
-      margin-bottom: 6px;
-    }
-
-    .header p {
-      color: #6a0dad;
-      font-size: 16px;
-      margin-bottom: 30px;
-      opacity: 0.85;
-    }
-
-    /* CARDS */
-    .cards {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 25px;
-    }
-
-    .card {
-      background: #ffffff;
-      border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(75, 0, 130, 0.12);
-      padding: 25px;
-    }
-
-    .card h2 {
-      color: #4b0082;
-      font-size: 20px;
-      margin-bottom: 18px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid #f4f0fa;
-    }
-
-    .calendar-wrapper {
-      overflow: hidden;
-      border-radius: 12px;
-    }
-
-    #calendarFrame {
-      width: 100%;
-      height: 500px;
-      border: 0;
-      border-radius: 12px;
-      display: block;
-    }
-
-    /* FORMULÁRIO */
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-group label {
-      display: block;
-      color: #4b0082;
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #d9c9e8;
-      border-radius: 8px;
-      font-size: 14px;
-      color: #333;
-      background: #faf8fd;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: #6a0dad;
-      box-shadow: 0 0 0 3px rgba(106, 13, 173, 0.15);
-    }
-
-    .form-group textarea {
-      resize: vertical;
-      min-height: 70px;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .btn {
-      width: 100%;
-      background: linear-gradient(180deg, #4b0082, #6a0dad);
-      color: #ffffff;
-      border: none;
-      padding: 13px;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.2s ease;
-      margin-top: 8px;
-    }
-
-    .btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 15px rgba(75, 0, 130, 0.3);
-    }
-
-    .btn:active {
-      transform: translateY(0);
-    }
-
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .message {
-      padding: 12px 15px;
-      border-radius: 8px;
-      margin-top: 15px;
-      font-size: 14px;
-      display: none;
-    }
-
-    .message.success {
-      background: #e6f9ec;
-      color: #1e7e34;
-      border: 1px solid #b7e2c4;
-      display: block;
-    }
-
-    .message.error {
-      background: #fdecea;
-      color: #a8281c;
-      border: 1px solid #f5c6cb;
-      display: block;
-    }
-
-    /* RESPONSIVO */
-    @media (max-width: 992px) {
-      .cards {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-      }
-
-      .main {
-        margin-left: 0;
-        padding: 25px 18px;
-      }
-
-      .form-row {
-        grid-template-columns: 1fr;
-      }
-
-      #calendarFrame {
-        height: 400px;
-      }
-    }
+    .main { margin-left: 250px; padding: 40px; min-height: 100vh; }
+    .header h1 { color: #4b0082; font-size: 32px; margin-bottom: 6px; }
+    .header p { color: #6a0dad; font-size: 16px; margin-bottom: 30px; opacity: 0.85; }
+    .cards { display: flex; flex-wrap: wrap; gap: 25px; align-items: flex-start; }
+    .card { background: #fff; border-radius: 15px; box-shadow: 0 4px 15px rgba(75,0,130,0.12); padding: 25px; flex: 1 1 480px; min-width: 0; }
+    .card h2 { color: #4b0082; font-size: 20px; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 2px solid #f4f0fa; }
+    #calendarFrame { width: 100%; height: 500px; border: 0; border-radius: 12px; display: block; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; color: #4b0082; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #d9c9e8; border-radius: 8px; font-size: 14px; color: #333; background: #faf8fd; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #6a0dad; box-shadow: 0 0 0 3px rgba(106,13,173,0.15); }
+    .form-group textarea { resize: vertical; min-height: 70px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .btn { width: 100%; background: linear-gradient(180deg, #4b0082, #6a0dad); color: #fff; border: none; padding: 13px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 8px; }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 15px rgba(75,0,130,0.3); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .message { padding: 12px 15px; border-radius: 8px; margin-top: 15px; font-size: 14px; display: none; }
+    .message.success { background: #e6f9ec; color: #1e7e34; border: 1px solid #b7e2c4; display: block; }
+    .message.error { background: #fdecea; color: #a8281c; border: 1px solid #f5c6cb; display: block; }
+    @media (max-width: 992px) { .cards { flex-direction: column; } .card { flex: 1 1 100%; } }
+    @media (max-width: 768px) { .sidebar { width: 100%; height: auto; position: relative; } .main { margin-left: 0; padding: 25px 18px; } .form-row { grid-template-columns: 1fr; } #calendarFrame { height: 400px; } }
   </style>
 </head>
 <body>
+  <div class="sidebar">
+    <h2>Equilibrium</h2>
+    <nav>
+      <a href="index.html">🏠 Home</a>
+      <a href="agenda.html" class="active">📅 Agenda</a>
+      <a href="novo-cliente.html">👤 Novo Cliente</a>
+      <a href="clientes.html">📋 Lista de Clientes</a>
+      <a href="atendimentos.html">✨ Novo Atendimento</a>
+      <a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
+      <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
+      <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
+      <a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
+      <a href="financeiro.html">💰 Financeiro</a>
+    </nav>
+  </div>
 
-  <!-- SIDEBAR -->
-    <div class="sidebar">
-        <h2>Equilibrium</h2>
-        <nav>
-            <a href="index.html">🏠 Home</a>
-            <a href="agenda.html" class="active">📅 Agenda</a>
-            <a href="novo-cliente.html">👤 Novo Cliente</a> 
-            <a href="clientes.html">📋 Lista de Clientes</a>
-            <a href="atendimentos.html">✨ Novo Atendimento</a>
-            <a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
-            <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
-            <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
-            <a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
-            <a href="financeiro.html">💰 Financeiro</a>
-        </nav>
-    </div>
-
-
-  <!-- CONTEÚDO PRINCIPAL -->
   <main class="main">
     <div class="header">
       <h1>Agenda</h1>
@@ -230,82 +58,87 @@
     </div>
 
     <div class="cards">
-
-      <!-- CARD 1: Google Calendar -->
       <section class="card">
         <h2>Calendário Google</h2>
-        <div class="calendar-wrapper">
-          <iframe
-            id="calendarFrame"
-            src="https://calendar.google.com/calendar/embed?src=equilibriumterapiasenergeticas%40gmail.com&ctz=America%2FSao_Paulo"
-            loading="lazy"
-            title="Agenda Google Calendar">
-          </iframe>
-        </div>
+        <iframe id="calendarFrame"
+          src="https://calendar.google.com/calendar/embed?src=equilibriumterapiasenergeticas%40gmail.com&ctz=America%2FSao_Paulo"
+          loading="lazy" title="Agenda Google Calendar">
+        </iframe>
       </section>
 
-      <!-- CARD 2: Formulário Novo Evento -->
       <section class="card">
         <h2>Novo Evento</h2>
         <form id="eventoForm">
           <div class="form-group">
             <label for="titulo">Título do Evento *</label>
-            <input type="text" id="titulo" name="titulo" required placeholder="Ex.: Sessão de Reiki">
+            <input type="text" id="titulo" required placeholder="Ex.: Sessão de Reiki">
           </div>
 
           <div class="form-group">
             <label for="cliente">Cliente</label>
-            <input type="text" id="cliente" name="cliente" placeholder="Nome do cliente (opcional)">
+            <input type="text" id="cliente" list="listaClientes" placeholder="Nome do cliente (com autocomplete)">
+            <datalist id="listaClientes"></datalist>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label for="data_inicio">Data Início *</label>
-              <input type="date" id="data_inicio" name="data_inicio" required>
+              <input type="date" id="data_inicio" required>
             </div>
             <div class="form-group">
               <label for="hora_inicio">Hora Início</label>
-              <input type="time" id="hora_inicio" name="hora_inicio" value="09:00">
+              <input type="time" id="hora_inicio" value="09:00">
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label for="data_fim">Data Fim *</label>
-              <input type="date" id="data_fim" name="data_fim" required>
+              <input type="date" id="data_fim" required>
             </div>
             <div class="form-group">
               <label for="hora_fim">Hora Fim</label>
-              <input type="time" id="hora_fim" name="hora_fim" value="10:00">
+              <input type="time" id="hora_fim" value="10:00">
             </div>
           </div>
 
           <div class="form-group">
             <label for="status">Status</label>
-            <select id="status" name="status">
+            <select id="status">
               <option value="agendado">Agendado</option>
-              <option value="em_andamento">Em Andamento</option>
-              <option value="concluido">Concluído</option>
-              <option value="adiado">Adiado</option>
+              <option value="confirmado">Confirmado</option>
               <option value="cancelado">Cancelado</option>
+              <option value="reagendado">Reagendado</option>
             </select>
           </div>
 
           <div class="form-group">
             <label for="descricao">Descrição</label>
-            <textarea id="descricao" name="descricao" placeholder="Observações sobre o evento (opcional)"></textarea>
+            <textarea id="descricao" placeholder="Observações sobre o evento (opcional)"></textarea>
           </div>
 
           <button type="submit" class="btn" id="btnCriar">Criar Evento</button>
-
           <div class="message" id="messageBox"></div>
         </form>
       </section>
-
     </div>
   </main>
 
   <script>
+    const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
+    const URL_WEBHOOK = 'https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec';
+
+    function carregarClientes() {
+      fetch(URL_CLIENTES).then(function(r){return r.text();}).then(function(text){
+        var data=JSON.parse(text); var clientes=Array.isArray(data)?data:[];
+        var dl=document.getElementById('listaClientes'); dl.innerHTML='';
+        clientes.forEach(function(c){
+          var nome=c.nome||c.Nome||c.name||'';
+          if(nome){ var opt=document.createElement('option'); opt.value=nome; dl.appendChild(opt); }
+        });
+      }).catch(function(){});
+    }
+
     (function () {
       const form = document.getElementById('eventoForm');
       const dataInicio = document.getElementById('data_inicio');
@@ -314,44 +147,27 @@
       const btnCriar = document.getElementById('btnCriar');
       const calendarFrame = document.getElementById('calendarFrame');
 
-      const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec';
-
-      const COR_MAP = {
-        agendado: 5,
-        em_andamento: 1,
-        concluido: 2,
-        adiado: 4,
-        cancelado: 8
-      };
-
-      // Preencher data início e fim com a data atual por padrão
       function todayISO() {
         const d = new Date();
         const y = d.getFullYear();
         const m = String(d.getMonth() + 1).padStart(2, '0');
         const day = String(d.getDate()).padStart(2, '0');
-        return `${y}-${m}-${day}`;
+        return y + '-' + m + '-' + day;
       }
 
       const today = todayISO();
       dataInicio.value = today;
       dataFim.value = today;
 
-      // Quando a data início muda, preencher a data fim igual por padrão
       dataInicio.addEventListener('change', function () {
         if (!dataFim.value || dataFim.value < dataInicio.value) {
           dataFim.value = dataInicio.value;
         }
       });
 
-      function showMessage(text, type) {
+      function showMessage(text, tipo) {
         messageBox.textContent = text;
-        messageBox.className = 'message ' + type;
-      }
-
-      function clearMessage() {
-        messageBox.textContent = '';
-        messageBox.className = 'message';
+        messageBox.className = 'message ' + tipo;
       }
 
       function reloadCalendar() {
@@ -364,7 +180,6 @@
 
       form.addEventListener('submit', function (e) {
         e.preventDefault();
-        clearMessage();
 
         const titulo = document.getElementById('titulo').value.trim();
         const cliente = document.getElementById('cliente').value.trim();
@@ -380,8 +195,6 @@
           return;
         }
 
-        const cor = COR_MAP[status] !== undefined ? COR_MAP[status] : 5;
-
         const params = new URLSearchParams();
         params.append('action', 'criar');
         params.append('calendario', 'agenda');
@@ -392,25 +205,16 @@
         params.append('data_fim', dtFim);
         params.append('hora_fim', hrFim);
         params.append('status', status);
-        params.append('cor', cor);
         params.append('tipo', 'compromisso');
         params.append('descricao', descricao);
 
         btnCriar.disabled = true;
         btnCriar.textContent = 'Criando...';
 
-        fetch(WEBHOOK_URL, {
-          method: 'POST',
-          body: params
-        })
-          .then(function (response) {
-            if (!response.ok) {
-              throw new Error('Erro na resposta do servidor: ' + response.status);
-            }
-            return response.text().catch(function () { return ''; });
-          })
-          .then(function () {
-            showMessage('Evento criado com sucesso! O calendário será recarregado.', 'success');
+        fetch(URL_WEBHOOK, { method: 'POST', body: params, redirect: 'follow' })
+          .then(function(r){return r.text();})
+          .then(function(){
+            showMessage('Evento criado com sucesso!', 'success');
             form.reset();
             dataInicio.value = today;
             dataFim.value = today;
@@ -418,15 +222,14 @@
             document.getElementById('hora_fim').value = '10:00';
             reloadCalendar();
           })
-          .catch(function (err) {
-            console.error(err);
-            showMessage('Erro ao criar evento. Tente novamente.', 'error');
-          })
-          .finally(function () {
+          .catch(function(){})
+          .finally(function(){
             btnCriar.disabled = false;
             btnCriar.textContent = 'Criar Evento';
           });
       });
+
+      carregarClientes();
     })();
   </script>
 </body>
