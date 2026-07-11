@@ -21,7 +21,7 @@
   .form-group { display: flex; flex-direction: column; position: relative; }
   .form-group label { font-size: 13px; color: #555; margin-bottom: 6px; font-weight: 600; }
   .form-group input, .form-group select { padding: 10px 12px; border: 1px solid #d8cce8; border-radius: 6px; font-size: 14px; background: #fff; color: #333; }
-  .form-group input:focus, .form-group select:focus { outline: none; border-color: #6a0dad; }
+  .form-group input:focus, .form-group select:focus { outline: none; border-color: #6a0dad; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
   .form-group input[readonly] { background: #f4f1f8; color: #777; }
   .autocomplete-list { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #d8cce8; border-top: none; border-radius: 0 0 6px 6px; max-height: 220px; overflow-y: auto; z-index: 50; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
   .autocomplete-item { padding: 10px 12px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #f0ebf7; }
@@ -40,8 +40,9 @@
   .actions-row { margin-top: 18px; display: flex; gap: 12px; justify-content: flex-end; }
   .empty-row td { text-align: center; color: #999; font-style: italic; padding: 18px; }
   .msg { padding: 12px; border-radius: 6px; margin: 15px 0; font-size: 14px; display: none; }
-  .msg.success { background: #d4edda; color: #155724; }
-  .msg.error { background: #f8d7da; color: #721c24; }
+  .msg.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+  .msg.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+  @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } .sidebar { width: 100%; height: auto; position: relative; } .main { margin-left: 0; padding: 20px; } }
 </style>
 </head>
 <body>
@@ -63,7 +64,7 @@
 <main class="main">
   <div class="header">
     <h1>Novo Tratamento</h1>
-    <p>Cadastre um novo tratamento e seus gr&aacute;ficos associados.</p>
+    <p>Cadastre um novo tratamento e seus gráficos associados.</p>
   </div>
   <div id="msg" class="msg"></div>
   <div class="card">
@@ -77,34 +78,28 @@
       </div>
       <div class="form-group">
         <label for="idAtendimentoSelect">ID Atendimento</label>
-        <select id="idAtendimentoSelect">
-          <option value="">Selecione um cliente primeiro...</option>
-        </select>
+        <select id="idAtendimentoSelect"><option value="">Selecione um cliente primeiro...</option></select>
       </div>
       <div class="form-group">
         <label for="tratamentoId">ID Tratamento</label>
         <input type="text" id="tratamentoId" readonly>
       </div>
       <div class="form-group">
-        <label for="dataInicio">Data In&iacute;cio</label>
+        <label for="dataInicio">Data Início</label>
         <input type="date" id="dataInicio">
       </div>
     </div>
   </div>
   <div class="card">
-    <h2>Gr&aacute;ficos do Tratamento</h2>
+    <h2>Gráficos do Tratamento</h2>
     <div style="overflow-x:auto;">
       <table class="graficos-table">
-        <thead>
-          <tr><th>#</th><th>Gr&aacute;fico</th><th>Data In&iacute;cio</th><th>Data Finaliza&ccedil;&atilde;o</th><th>Status</th><th>A&ccedil;&otilde;es</th></tr>
-        </thead>
-        <tbody id="graficosBody">
-          <tr class="empty-row"><td colspan="6">Nenhum gr&aacute;fico adicionado.</td></tr>
-        </tbody>
+        <thead><tr><th>#</th><th>Gráfico</th><th>Data Início</th><th>Data Finalização</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody id="graficosBody"><tr class="empty-row"><td colspan="6">Nenhum gráfico adicionado.</td></tr></tbody>
       </table>
     </div>
     <div class="actions-row">
-      <button class="btn btn-green" onclick="adicionarGrafico()">+ Adicionar Gr&aacute;fico</button>
+      <button class="btn btn-green" onclick="adicionarGrafico()">+ Adicionar Gráfico</button>
       <button class="btn btn-purple" onclick="salvarTratamento()">Salvar Tratamento</button>
     </div>
   </div>
@@ -113,128 +108,118 @@
 const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
 const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
 const URL_WEBHOOK = 'https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec';
-const STATUS_OPCOES = ['Agendado', 'Em Andamento', 'Concluido', 'Adiado', 'Cancelado'];
+const STATUS_OPCOES = ['Agendado', 'Em Andamento', 'Concluído', 'Adiado', 'Cancelado'];
 const GRAFICOS_FALLBACK = ['Desimpregnador', 'Desembaracado', 'Alta Vitalidade', 'Autoestima', 'Codigo 21', '9 Circulos'];
 let listaClientes = [];
 let graficosPredef = [];
 let graficos = [];
 let selecionandoCliente = false;
 
+// CORRIGIDO: normaliza espaços para encontrar "nome " (com espaço no final)
 function getVal(obj) {
-  if (!obj) return '';
+  if (!obj || typeof obj !== 'object') return '';
   var keys = Array.prototype.slice.call(arguments, 1);
-  for (var idx = 0; idx &lt; keys.length; idx++) {
+  for (var idx = 0; idx < keys.length; idx++) {
     var k = keys[idx];
-    if (obj.hasOwnProperty(k) && obj[k] !== null && obj[k] !== undefined && String(obj[k]).trim() !== '') return String(obj[k]);
+    // Primeiro tenta match exato
+    if (obj.hasOwnProperty(k)) {
+      var v = obj[k];
+      if (v !== null && v !== undefined && String(v).trim() !== '') return String(v).trim();
+    }
+    // Depois tenta normalizando (remove espaços, lowercase)
     var nk = String(k).toLowerCase().replace(/\s+/g, '');
     var oks = Object.keys(obj);
-    for (var j = 0; j &lt; oks.length; j++) {
-      if (String(oks[j]).toLowerCase().replace(/\s+/g, '') === nk && obj[oks[j]] !== null && obj[oks[j]] !== undefined && String(obj[oks[j]]).trim() !== '') return String(obj[oks[j]]);
+    for (var j = 0; j < oks.length; j++) {
+      var ok = oks[j];
+      if (String(ok).toLowerCase().replace(/\s+/g, '') === nk) {
+        var v = obj[ok];
+        if (v !== null && v !== undefined && String(v).trim() !== '') return String(v).trim();
+      }
     }
   }
   return '';
 }
+
 function hojeISO() {
-  var d = new Date();
-  var off = d.getTimezoneOffset();
+  var d = new Date(); var off = d.getTimezoneOffset();
   return new Date(d.getTime() - off * 60000).toISOString().split('T')[0];
 }
+
 function mostrarMsg(txt, tipo) {
   var m = document.getElementById('msg');
-  m.textContent = txt;
-  m.className = 'msg ' + (tipo || 'success');
-  m.style.display = 'block';
+  m.textContent = txt; m.className = 'msg ' + (tipo || 'success'); m.style.display = 'block';
   setTimeout(function() { m.style.display = 'none'; }, 4000);
 }
 
-// CORRIGIDO: tratar dados como {success, columns, data} onde data é array de arrays
+// CORRIGIDO: API retorna ARRAY DE OBJETOS diretamente
 function carregarClientes() {
   fetch(URL_CLIENTES)
     .then(function(r) { return r.text(); })
     .then(function(text) {
-      var json = JSON.parse(text);
-      listaClientes = [];
-      var cols = json.columns || [];
-      var rows = json.data || [];
-      for (var i = 0; i &lt; rows.length; i++) {
-        var row = rows[i];
-        if (Array.isArray(row) && cols.length) {
-          var obj = {};
-          for (var j = 0; j &lt; cols.length; j++) {
-            obj[cols[j]] = row[j];
-          }
-          listaClientes.push(obj);
-        } else if (row && typeof row === 'object') {
-          listaClientes.push(row);
-        }
-      }
+      var data = JSON.parse(text);
+      listaClientes = Array.isArray(data) ? data : [];
     })
     .catch(function() { listaClientes = []; });
 }
 
-// Autocomplete - agora usa 'Nome Cliente' como nome da coluna
+// Autocomplete - getVal encontra "nome " (com espaço)
 document.getElementById('clienteInput').addEventListener('input', function() {
   if (selecionandoCliente) { selecionandoCliente = false; return; }
   var val = this.value.trim();
   document.getElementById('clienteId').value = '';
   var dd = document.getElementById('autocompleteDropdown');
   dd.innerHTML = '';
-  if (val.length &lt; 1) { dd.style.display = 'none'; return; }
+  if (val.length < 1) { dd.style.display = 'none'; return; }
   var q = val.toLowerCase();
   var filtrados = [];
-  for (var i = 0; i &lt; listaClientes.length && filtrados.length &lt; 15; i++) {
+  for (var i = 0; i < listaClientes.length && filtrados.length < 15; i++) {
     var c = listaClientes[i];
-    var nome = String(getVal(c, 'Nome Cliente', 'Nome', 'nome', 'Cliente', 'cliente') || '').toLowerCase();
+    var nome = getVal(c, 'nome', 'Nome', 'name').toLowerCase();
     if (nome.indexOf(q) !== -1) filtrados.push(c);
   }
   if (!filtrados.length) { dd.style.display = 'none'; return; }
-  for (var i = 0; i &lt; filtrados.length; i++) {
+  for (var i = 0; i < filtrados.length; i++) {
     var c = filtrados[i];
-    var nome = getVal(c, 'Nome Cliente', 'Nome', 'nome', 'Cliente', 'cliente') || 'Sem nome';
-    var id = getVal(c, 'ID', 'id', 'Id', 'ID Cliente', 'idcliente') || '';
+    var nome = getVal(c, 'nome', 'Nome', 'name');
+    var id = getVal(c, 'id', 'ID', 'Id');
     var div = document.createElement('div');
     div.className = 'autocomplete-item';
     div.textContent = nome + (id ? ' (' + id + ')' : '');
-    div.onclick = function(n, i) { return function() { selecionandoCliente = true; document.getElementById('clienteInput').value = n; document.getElementById('clienteId').value = i; dd.style.display = 'none'; carregarAtendimentosCliente(i); }; }(nome, id);
+    div.onclick = function(n, i) { return function() {
+      selecionandoCliente = true;
+      document.getElementById('clienteInput').value = n;
+      document.getElementById('clienteId').value = i;
+      dd.style.display = 'none';
+      carregarAtendimentosCliente(i);
+    }; }(nome, id);
     dd.appendChild(div);
   }
   dd.style.display = 'block';
 });
+
 document.addEventListener('click', function(e) {
-  if (!e.target.closest('.form-group')) { document.getElementById('autocompleteDropdown').style.display = 'none'; }
+  if (!e.target.closest('.form-group')) document.getElementById('autocompleteDropdown').style.display = 'none';
 });
 
 function carregarAtendimentosCliente(clienteId) {
-  var select = document.getElementById('idAtendimentoSelect');
-  select.innerHTML = '<option value="">Carregando...</option>';
-  fetch(URL_ATEND + '?read=true&_=' + Date.now())
+  var sel = document.getElementById('idAtendimentoSelect');
+  sel.innerHTML = '<option value="">Carregando...</option>';
+  fetch(URL_ATEND + '?action=atendimentosCliente&clienteId=' + encodeURIComponent(clienteId))
     .then(function(r) { return r.text(); })
     .then(function(text) {
       var data = JSON.parse(text);
-      var arr = Array.isArray(data) ? data : (data.data || data.dados || []);
+      var arr = (data && Array.isArray(data.data)) ? data.data : (Array.isArray(data) ? data : []);
       var cols = data.columns || [];
-      var rows = data.data || [];
-      // Tenta filtrar pelo cliente
-      var filtrados = [];
-      for (var i = 0; i &lt; rows.length; i++) {
-        var a = Array.isArray(rows[i]) ? (function(){ var o={}; for(var j=0;j&lt;cols.length;j++) o[cols[j]]=rows[i][j]; return o; })() : rows[i];
-        var aNome = String(getVal(a, 'Nome Cliente', 'nomeCliente', 'nome', 'cliente') || '').toLowerCase();
-        var aId = String(getVal(a, 'ID Cliente', 'idCliente', 'clienteId', 'ID') || '');
-        if (aId === String(clienteId) || aNome.indexOf(document.getElementById('clienteInput').value.toLowerCase()) !== -1) filtrados.push(a);
-      }
-      if (!filtrados.length) { select.innerHTML = '<option value="">Nenhum atendimento encontrado</option>'; return; }
-      select.innerHTML = '<option value="">Selecione...</option>';
-      for (var i = 0; i &lt; filtrados.length; i++) {
-        var a = filtrados[i];
-        var aid = getVal(a, 'ID', 'id', 'Id', 'ID Atendimento', 'idAtendimento') || '';
-        if (aid) {
-          var opt = document.createElement('option');
-          opt.value = aid; opt.textContent = aid;
-          select.appendChild(opt);
-        }
+      function getV(r, n) { for(var i=0;i<cols.length;i++){if(String(cols[i]).toLowerCase().trim()===String(n).toLowerCase().trim()){return r[i]||'';}}return''; }
+      if (!arr.length) { sel.innerHTML = '<option value="">Nenhum atendimento encontrado</option>'; return; }
+      sel.innerHTML = '<option value="">Selecione...</option>';
+      for (var i = 0; i < arr.length; i++) {
+        var a = arr[i];
+        var aid = Array.isArray(a) ? getV(a, 'ID') || getV(a, 'id') : (a.ID || a.id || a.Id || '');
+        if (aid) { var o = document.createElement('option'); o.value = aid; o.textContent = aid; sel.appendChild(o); }
       }
     })
-    .catch(function() { select.innerHTML = '<option value="">Erro ao carregar</option>'; });
+    .catch(function() { sel.innerHTML = '<option value="">Erro ao carregar</option>'; });
 }
 
 function carregarGraficosPredef() {
@@ -271,11 +256,11 @@ function removerGrafico(idx) { graficos.splice(idx, 1); renderGraficos(); }
 function atualizarGrafico(idx, campo, valor) { if (graficos[idx]) graficos[idx][campo] = valor; }
 function renderGraficos() {
   var tbody = document.getElementById('graficosBody');
-  if (!graficos.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Nenhum grafico adicionado.</td></tr>'; return; }
+  if (!graficos.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Nenhum gráfico adicionado.</td></tr>'; return; }
   var opts = '';
-  for (var i = 0; i &lt; graficosPredef.length; i++) { opts += '<option value="' + graficosPredef[i] + '">' + graficosPredef[i] + '</option>'; }
+  for (var i = 0; i < graficosPredef.length; i++) { opts += '<option value="' + graficosPredef[i] + '">' + graficosPredef[i] + '</option>'; }
   var html = '';
-  for (var i = 0; i &lt; graficos.length; i++) {
+  for (var i = 0; i < graficos.length; i++) {
     var g = graficos[i];
     html += '<tr>';
     html += '<td>' + (i + 1) + '</td>';
@@ -283,7 +268,7 @@ function renderGraficos() {
     html += '<td><input type="date" value="' + (g.data_inicio || '') + '" onchange="atualizarGrafico(' + i + ',\'data_inicio\',this.value)"></td>';
     html += '<td><input type="date" value="' + (g.data_fim || '') + '" onchange="atualizarGrafico(' + i + ',\'data_fim\',this.value)"></td>';
     html += '<td><select onchange="atualizarGrafico(' + i + ',\'status\',this.value)">';
-    for (var j = 0; j &lt; STATUS_OPCOES.length; j++) { var s = STATUS_OPCOES[j]; html += '<option value="' + s + '" ' + (g.status === s ? 'selected' : '') + '>' + s + '</option>'; }
+    for (var j = 0; j < STATUS_OPCOES.length; j++) { var s = STATUS_OPCOES[j]; html += '<option value="' + s + '" ' + (g.status === s ? 'selected' : '') + '>' + s + '</option>'; }
     html += '</select></td>';
     html += '<td><button class="btn btn-red" onclick="removerGrafico(' + i + ')">Remover</button></td></tr>';
   }
@@ -295,11 +280,9 @@ function salvarTratamento() {
   var clienteId = document.getElementById('clienteId').value.trim();
   if (!clienteNome) { mostrarMsg('Selecione um cliente.', 'error'); return; }
   if (!clienteId) {
-    for (var i = 0; i &lt; listaClientes.length; i++) {
-      var x = listaClientes[i];
-      if ((getVal(x, 'Nome Cliente', 'Nome', 'nome', 'Cliente', 'cliente') || '').toLowerCase() === clienteNome.toLowerCase()) {
-        clienteId = getVal(x, 'ID', 'id', 'Id', 'ID Cliente', 'idcliente') || '';
-        break;
+    for (var i = 0; i < listaClientes.length; i++) {
+      if (getVal(listaClientes[i], 'nome', 'Nome', 'name') === clienteNome) {
+        clienteId = getVal(listaClientes[i], 'id', 'ID', 'Id'); break;
       }
     }
   }
@@ -307,39 +290,31 @@ function salvarTratamento() {
   if (!graficos.length) { mostrarMsg('Adicione ao menos um grafico.', 'error'); return; }
   var tratamentoId = document.getElementById('tratamentoId').value;
   var payload = {
-    tipo: 'tratamento',
-    action: 'criar_tratamento',
-    cliente_id: clienteId,
-    cliente_nome: clienteNome,
+    tipo: 'tratamento', action: 'criar_tratamento',
+    cliente_id: clienteId, cliente_nome: clienteNome,
     tratamento_id: tratamentoId,
     atendimento_id: document.getElementById('idAtendimentoSelect').value || '',
     data_inicio: document.getElementById('dataInicio').value,
     graficos: []
   };
-  for (var i = 0; i &lt; graficos.length; i++) {
+  for (var i = 0; i < graficos.length; i++) {
     var g = graficos[i];
-    payload.graficos.push({ ordem: i + 1, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status });
+    payload.graficos.push({ ordem: i+1, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status });
   }
   mostrarMsg('Salvando...', 'success');
   fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(payload), redirect: 'follow' })
     .then(function(r) { return r.text(); })
-    .then(function() {
-      // Ignora texto - dado já salvo
-      enviaWebhookEConclui(clienteNome, clienteId, tratamentoId);
-    })
-    .catch(function() {
-      // Ignora erro de redirect - dado já foi salvo
-      enviaWebhookEConclui(clienteNome, clienteId, tratamentoId);
-    });
+    .then(function() { enviarWebhooksEConcluir(clienteNome, clienteId, tratamentoId); })
+    .catch(function() { enviarWebhooksEConcluir(clienteNome, clienteId, tratamentoId); });
 }
 
-function enviaWebhookEConclui(clienteNome, clienteId, tratamentoId) {
+function enviarWebhooksEConcluir(clienteNome, clienteId, tratamentoId) {
   var webhooks = [];
-  for (var i = 0; i &lt; graficos.length; i++) {
+  for (var i = 0; i < graficos.length; i++) {
     var g = graficos[i];
     if (g.data_fim && g.grafico) {
       var wh = { action: 'criar', calendario: 'graficos', cliente: clienteNome, cliente_id: clienteId, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status, tratamento_id: tratamentoId };
-      webhooks.push(fetch(URL_WEBHOOK, { method: 'POST', body: JSON.stringify(wh), redirect: 'follow' }).catch(function() {}));
+      webhooks.push(fetch(URL_WEBHOOK, { method: 'POST', body: JSON.stringify(wh), redirect: 'follow' }).catch(function(){}));
     }
   }
   Promise.all(webhooks).then(function() {
