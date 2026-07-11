@@ -32,9 +32,8 @@
   th, td { padding: 8px 8px; text-align: left; border-bottom: 1px solid #ede4f7; white-space: nowrap; }
   th { color: #4b0082; font-weight: 600; background: #f8f5fc; font-size: 12px; }
   td input, td select { padding: 6px 6px; border: 1px solid #d8cce8; border-radius: 4px; font-size: 12px; width: 100%; min-width: 80px; }
-  td input[type=number] { min-width: 55px; }
+  td input[type=number] { min-width: 60px; }
   td input[type=time] { min-width: 70px; }
-  th .num { width: 30px; }
   .btn { padding: 10px 18px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
   .btn-green { background: #28a745; color: #fff; }
   .btn-green:hover { background: #218838; }
@@ -69,11 +68,9 @@
 <main class="main">
   <div class="header">
     <h1>Novo Tratamento</h1>
-    <p>Cadastre um novo tratamento e seus gr&aacute;ficos associados.</p>
+    <p>Cadastre um novo tratamento e seus gráficos associados.</p>
   </div>
   <div id="msg" class="msg"></div>
-
-  <!-- CARD DADOS DO TRATAMENTO (IGUAL AO ANTERIOR) -->
   <div class="card">
     <h2>Dados do Tratamento</h2>
     <div class="grid-2">
@@ -97,8 +94,6 @@
       </div>
     </div>
   </div>
-
-  <!-- CARD GRÁFICOS DO TRATAMENTO (ALTERADO) -->
   <div class="card">
     <h2>Gráficos do Tratamento</h2>
     <div class="table-wrap">
@@ -117,12 +112,12 @@
           </tr>
         </thead>
         <tbody id="graficosBody">
-          <tr class="empty-row"><td colspan="9">Nenhum gr&aacute;fico adicionado.</td></tr>
+          <tr class="empty-row"><td colspan="9">Nenhum gráfico adicionado.</td></tr>
         </tbody>
       </table>
     </div>
     <div class="actions-row">
-      <button class="btn btn-green" onclick="adicionarGrafico()">+ Adicionar Gr&aacute;fico</button>
+      <button class="btn btn-green" onclick="adicionarGrafico()">+ Adicionar Gráfico</button>
       <button class="btn btn-purple" onclick="salvarTratamento()">Salvar Tratamento</button>
     </div>
   </div>
@@ -153,10 +148,9 @@ function getVal(obj) {
   return '';
 }
 function hojeISO() { var d = new Date(); var off = d.getTimezoneOffset(); return new Date(d.getTime() - off * 60000).toISOString().split('T')[0]; }
-function agoraISO() { return new Date().toISOString().slice(0, 16); }
+function agoraISO() { var d = new Date(); var off = d.getTimezoneOffset(); return new Date(d.getTime() - off * 60000).toISOString().slice(0, 16); }
 function mostrarMsg(txt, tipo) { var m = document.getElementById('msg'); m.textContent = txt; m.className = 'msg ' + (tipo || 'success'); m.style.display = 'block'; setTimeout(function(){m.style.display='none';},4000); }
 
-// Funções de cálculo
 function calcularHoraFinalizacao(dataInicio, qtdHoras) {
   if (!dataInicio || !qtdHoras) return '';
   var d = new Date(dataInicio);
@@ -172,14 +166,12 @@ function calcularDataFinalizacao(dataInicio, qtdDias) {
   return d.toISOString().split('T')[0];
 }
 
-// Clientes
 function carregarClientes() {
   fetch(URL_CLIENTES).then(function(r){return r.text();}).then(function(text){
     var data=JSON.parse(text); listaClientes=Array.isArray(data)?data:[];
   }).catch(function(){listaClientes=[];});
 }
 
-// Autocomplete
 document.getElementById('clienteInput').addEventListener('input', function() {
   if (selecionandoCliente) { selecionandoCliente = false; return; }
   var val = this.value.trim();
@@ -249,36 +241,36 @@ function carregarGraficosPredef() {
   }).catch(function(){graficosPredef=GRAFICOS_FALLBACK.slice();renderGraficos();});
 }
 
-// Gráficos - NOVA VERSÃO COM HORAS E DIAS
+// MUDANCA 1: data_inicio com agoraISO(), MUDANCA 2: atualizarGrafico com recalcular
 function adicionarGrafico() {
   graficos.push({
-    grafico: '', data_inicio: '', qtd_horas: '', hora_fim: '', qtd_dias: '', data_fim: '', status: 'Agendado'
+    grafico: '', data_inicio: agoraISO(), qtd_horas: '', hora_fim: '', qtd_dias: '', data_fim: '', status: 'Agendado'
   });
   renderGraficos();
 }
 function removerGrafico(idx) { graficos.splice(idx, 1); renderGraficos(); }
 
-function atualizarGrafico(idx, campo, valor) {
+function atualizarGrafico(idx, campo, valor, recalcular) {
   if (!graficos[idx]) return;
   graficos[idx][campo] = valor;
-  // Auto-calcular hora_fim quando qtd_horas ou data_inicio mudar
-  if (campo === 'qtd_horas' || campo === 'data_inicio') {
-    if (graficos[idx].qtd_horas && graficos[idx].data_inicio) {
-      graficos[idx].hora_fim = calcularHoraFinalizacao(graficos[idx].data_inicio, graficos[idx].qtd_horas);
+  if (recalcular) {
+    if (campo === 'data_inicio' || campo === 'qtd_horas') {
+      if (graficos[idx].qtd_horas && graficos[idx].data_inicio) {
+        graficos[idx].hora_fim = calcularHoraFinalizacao(graficos[idx].data_inicio, graficos[idx].qtd_horas);
+      }
     }
-  }
-  // Auto-calcular data_fim quando qtd_dias ou data_inicio mudar
-  if (campo === 'qtd_dias' || campo === 'data_inicio') {
-    if (graficos[idx].qtd_dias && graficos[idx].data_inicio) {
-      graficos[idx].data_fim = calcularDataFinalizacao(graficos[idx].data_inicio, graficos[idx].qtd_dias);
+    if (campo === 'data_inicio' || campo === 'qtd_dias') {
+      if (graficos[idx].qtd_dias && graficos[idx].data_inicio) {
+        graficos[idx].data_fim = calcularDataFinalizacao(graficos[idx].data_inicio, graficos[idx].qtd_dias);
+      }
     }
+    renderGraficos();
   }
-  renderGraficos();
 }
 
 function renderGraficos() {
   var tbody = document.getElementById('graficosBody');
-  if (!graficos.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="9">Nenhum gráfico adicionado.</td></tr>'; return; }
+  if (!graficos.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="9">Nenhum gr&aacute;fico adicionado.</td></tr>'; return; }
   var grafOpts = '';
   for (var i = 0; i < graficosPredef.length; i++) { grafOpts += '<option value="' + graficosPredef[i] + '">' + graficosPredef[i] + '</option>'; }
   var statOpts = '';
@@ -288,30 +280,30 @@ function renderGraficos() {
     var g = graficos[i];
     html += '<tr>';
     html += '<td>' + (i+1) + '</td>';
-    html += '<td><select onchange="atualizarGrafico(' + i + ',\'grafico\',this.value)"><option value="">Selecione...</option>' + grafOpts + '</select></td>';
-    html += '<td><input type="datetime-local" value="' + (g.data_inicio||'') + '" onchange="atualizarGrafico(' + i + ',\'data_inicio\',this.value)"></td>';
-    html += '<td><input type="number" min="0" placeholder="h" value="' + (g.qtd_horas||'') + '" oninput="atualizarGrafico(' + i + ',\'qtd_horas\',this.value)" style="min-width:55px;"></td>';
-    html += '<td><input type="time" value="' + (g.hora_fim||'') + '" onchange="atualizarGrafico(' + i + ',\'hora_fim\',this.value)"></td>';
-    html += '<td><input type="number" min="0" placeholder="d" value="' + (g.qtd_dias||'') + '" oninput="atualizarGrafico(' + i + ',\'qtd_dias\',this.value)" style="min-width:55px;"></td>';
-    html += '<td><input type="date" value="' + (g.data_fim||'') + '" onchange="atualizarGrafico(' + i + ',\'data_fim\',this.value)"></td>';
-    html += '<td><select onchange="atualizarGrafico(' + i + ',\'status\',this.value)">' + statOpts + '</select></td>';
+    // MUDANCA 3: onkeyup (nao recalcula) + onchange (recalcula) para Qtd Horas e Qtd Dias
+    html += '<td><select onchange="atualizarGrafico(' + i + ',\'grafico\',this.value,false)"><option value="">Selecione...</option>' + grafOpts + '</select></td>';
+    html += '<td><input type="datetime-local" value="' + (g.data_inicio||'') + '" onchange="atualizarGrafico(' + i + ',\'data_inicio\',this.value,true)"></td>';
+    html += '<td><input type="number" min="0" placeholder="h" value="' + (g.qtd_horas||'') + '" onkeyup="atualizarGrafico(' + i + ',\'qtd_horas\',this.value,false)" onchange="atualizarGrafico(' + i + ',\'qtd_horas\',this.value,true)" style="min-width:65px;"></td>';
+    html += '<td><input type="time" value="' + (g.hora_fim||'') + '" onchange="atualizarGrafico(' + i + ',\'hora_fim\',this.value,false)"></td>';
+    html += '<td><input type="number" min="0" placeholder="d" value="' + (g.qtd_dias||'') + '" onkeyup="atualizarGrafico(' + i + ',\'qtd_dias\',this.value,false)" onchange="atualizarGrafico(' + i + ',\'qtd_dias\',this.value,true)" style="min-width:65px;"></td>';
+    html += '<td><input type="date" value="' + (g.data_fim||'') + '" onchange="atualizarGrafico(' + i + ',\'data_fim\',this.value,false)"></td>';
+    html += '<td><select onchange="atualizarGrafico(' + i + ',\'status\',this.value,false)">' + statOpts + '</select></td>';
     html += '<td><button class="btn btn-red" onclick="removerGrafico(' + i + ')">Remover</button></td></tr>';
   }
   tbody.innerHTML = html;
-  // Aplicar valores atuais nos selects
+  // Aplicar valores nos selects
   for (var i = 0; i < graficos.length; i++) {
     var g = graficos[i];
     var tr = tbody.children[i];
     if (tr) {
-      var selGraf = tr.querySelector('td:nth-child(2) select');
-      var selStat = tr.querySelector('td:nth-child(8) select');
-      if (selGraf) { for (var x=0;x<selGraf.options.length;x++){if(selGraf.options[x].value===g.grafico)selGraf.selectedIndex=x;} }
-      if (selStat) { for (var x=0;x<selStat.options.length;x++){if(selStat.options[x].value===g.status)selStat.selectedIndex=x;} }
+      var selG = tr.querySelector('td:nth-child(2) select');
+      var selS = tr.querySelector('td:nth-child(8) select');
+      if (selG) { for (var x=0;x<selG.options.length;x++){if(selG.options[x].value===g.grafico)selG.selectedIndex=x;} }
+      if (selS) { for (var x=0;x<selS.options.length;x++){if(selS.options[x].value===g.status)selS.selectedIndex=x;} }
     }
   }
 }
 
-// Salvar (MANTIDO IGUAL)
 function salvarTratamento() {
   var clienteNome = document.getElementById('clienteInput').value.trim();
   var clienteId = document.getElementById('clienteId').value.trim();
