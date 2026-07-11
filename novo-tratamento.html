@@ -20,28 +20,33 @@
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
   .form-group { display: flex; flex-direction: column; position: relative; }
   .form-group label { font-size: 13px; color: #555; margin-bottom: 6px; font-weight: 600; }
-  .form-group input, .form-group select { padding: 10px 12px; border: 1px solid #d8cce8; border-radius: 6px; font-size: 14px; background: #fff; color: #333; }
-  .form-group input:focus, .form-group select:focus { outline: none; border-color: #6a0dad; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
+  .form-group input, .form-group select { padding: 10px 12px; border: 1px solid #d8cce8; border-radius: 6px; font-size: 14px; background: #fff; color: #333; outline: none; }
+  .form-group input:focus, .form-group select:focus { border-color: #6a0dad; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
   .form-group input[readonly] { background: #f4f1f8; color: #777; }
   .autocomplete-list { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #d8cce8; border-top: none; border-radius: 0 0 6px 6px; max-height: 220px; overflow-y: auto; z-index: 50; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+  .autocomplete-list.show { display: block; }
   .autocomplete-item { padding: 10px 12px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #f0ebf7; }
   .autocomplete-item:hover { background: #f4f1f8; }
+  .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th, td { padding: 9px 10px; text-align: left; border-bottom: 1px solid #ede4f7; }
-  th { color: #4b0082; font-weight: 600; background: #f8f5fc; }
-  td input, td select { padding: 6px 8px; border: 1px solid #d8cce8; border-radius: 4px; font-size: 13px; width: 100%; }
+  th, td { padding: 8px 8px; text-align: left; border-bottom: 1px solid #ede4f7; white-space: nowrap; }
+  th { color: #4b0082; font-weight: 600; background: #f8f5fc; font-size: 12px; }
+  td input, td select { padding: 6px 6px; border: 1px solid #d8cce8; border-radius: 4px; font-size: 12px; width: 100%; min-width: 80px; }
+  td input[type=number] { min-width: 55px; }
+  td input[type=time] { min-width: 70px; }
+  th .num { width: 30px; }
   .btn { padding: 10px 18px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
   .btn-green { background: #28a745; color: #fff; }
   .btn-green:hover { background: #218838; }
   .btn-purple { background: #6a0dad; color: #fff; }
   .btn-purple:hover { background: #5a0a91; }
-  .btn-red { background: #dc3545; color: #fff; padding: 6px 10px; font-size: 12px; }
+  .btn-red { background: #dc3545; color: #fff; padding: 4px 8px; font-size: 11px; }
   .btn-red:hover { background: #c82333; }
-  .actions-row { margin-top: 18px; display: flex; gap: 12px; justify-content: flex-end; }
+  .actions-row { margin-top: 18px; display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap; }
   .empty-row td { text-align: center; color: #999; font-style: italic; padding: 18px; }
   .msg { padding: 12px; border-radius: 6px; margin: 15px 0; font-size: 14px; display: none; }
-  .msg.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-  .msg.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+  .msg.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; display: block; }
+  .msg.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; display: block; }
   @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } .sidebar { width: 100%; height: auto; position: relative; } .main { margin-left: 0; padding: 20px; } }
 </style>
 </head>
@@ -64,9 +69,11 @@
 <main class="main">
   <div class="header">
     <h1>Novo Tratamento</h1>
-    <p>Cadastre um novo tratamento e seus gráficos associados.</p>
+    <p>Cadastre um novo tratamento e seus gr&aacute;ficos associados.</p>
   </div>
   <div id="msg" class="msg"></div>
+
+  <!-- CARD DADOS DO TRATAMENTO (IGUAL AO ANTERIOR) -->
   <div class="card">
     <h2>Dados do Tratamento</h2>
     <div class="grid-2">
@@ -85,21 +92,37 @@
         <input type="text" id="tratamentoId" readonly>
       </div>
       <div class="form-group">
-        <label for="dataInicio">Data Início</label>
-        <input type="date" id="dataInicio">
+        <label for="dataInicioTrat">Data Início</label>
+        <input type="date" id="dataInicioTrat">
       </div>
     </div>
   </div>
+
+  <!-- CARD GRÁFICOS DO TRATAMENTO (ALTERADO) -->
   <div class="card">
     <h2>Gráficos do Tratamento</h2>
-    <div style="overflow-x:auto;">
+    <div class="table-wrap">
       <table class="graficos-table">
-        <thead><tr><th>#</th><th>Gráfico</th><th>Data Início</th><th>Data Finalização</th><th>Status</th><th>Ações</th></tr></thead>
-        <tbody id="graficosBody"><tr class="empty-row"><td colspan="6">Nenhum gráfico adicionado.</td></tr></tbody>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Gráfico</th>
+            <th>Data Início</th>
+            <th>Qtd Horas</th>
+            <th>Hora Finalização</th>
+            <th>Qtd Dias</th>
+            <th>Data Finalização</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="graficosBody">
+          <tr class="empty-row"><td colspan="9">Nenhum gr&aacute;fico adicionado.</td></tr>
+        </tbody>
       </table>
     </div>
     <div class="actions-row">
-      <button class="btn btn-green" onclick="adicionarGrafico()">+ Adicionar Gráfico</button>
+      <button class="btn btn-green" onclick="adicionarGrafico()">+ Adicionar Gr&aacute;fico</button>
       <button class="btn btn-purple" onclick="salvarTratamento()">Salvar Tratamento</button>
     </div>
   </div>
@@ -115,54 +138,48 @@ let graficosPredef = [];
 let graficos = [];
 let selecionandoCliente = false;
 
-// CORRIGIDO: normaliza espaços para encontrar "nome " (com espaço no final)
 function getVal(obj) {
   if (!obj || typeof obj !== 'object') return '';
   var keys = Array.prototype.slice.call(arguments, 1);
   for (var idx = 0; idx < keys.length; idx++) {
     var k = keys[idx];
-    // Primeiro tenta match exato
-    if (obj.hasOwnProperty(k)) {
-      var v = obj[k];
-      if (v !== null && v !== undefined && String(v).trim() !== '') return String(v).trim();
-    }
-    // Depois tenta normalizando (remove espaços, lowercase)
+    if (obj.hasOwnProperty(k)) { var v = obj[k]; if (v !== null && v !== undefined && String(v).trim() !== '') return String(v).trim(); }
     var nk = String(k).toLowerCase().replace(/\s+/g, '');
     var oks = Object.keys(obj);
     for (var j = 0; j < oks.length; j++) {
-      var ok = oks[j];
-      if (String(ok).toLowerCase().replace(/\s+/g, '') === nk) {
-        var v = obj[ok];
-        if (v !== null && v !== undefined && String(v).trim() !== '') return String(v).trim();
-      }
+      if (String(oks[j]).toLowerCase().replace(/\s+/g, '') === nk) { var v = obj[oks[j]]; if (v !== null && v !== undefined && String(v).trim() !== '') return String(v).trim(); }
     }
   }
   return '';
 }
+function hojeISO() { var d = new Date(); var off = d.getTimezoneOffset(); return new Date(d.getTime() - off * 60000).toISOString().split('T')[0]; }
+function agoraISO() { return new Date().toISOString().slice(0, 16); }
+function mostrarMsg(txt, tipo) { var m = document.getElementById('msg'); m.textContent = txt; m.className = 'msg ' + (tipo || 'success'); m.style.display = 'block'; setTimeout(function(){m.style.display='none';},4000); }
 
-function hojeISO() {
-  var d = new Date(); var off = d.getTimezoneOffset();
-  return new Date(d.getTime() - off * 60000).toISOString().split('T')[0];
+// Funções de cálculo
+function calcularHoraFinalizacao(dataInicio, qtdHoras) {
+  if (!dataInicio || !qtdHoras) return '';
+  var d = new Date(dataInicio);
+  if (isNaN(d.getTime())) return '';
+  d.setHours(d.getHours() + parseInt(qtdHoras));
+  return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+}
+function calcularDataFinalizacao(dataInicio, qtdDias) {
+  if (!dataInicio || !qtdDias) return '';
+  var d = new Date(dataInicio);
+  if (isNaN(d.getTime())) return '';
+  d.setDate(d.getDate() + parseInt(qtdDias));
+  return d.toISOString().split('T')[0];
 }
 
-function mostrarMsg(txt, tipo) {
-  var m = document.getElementById('msg');
-  m.textContent = txt; m.className = 'msg ' + (tipo || 'success'); m.style.display = 'block';
-  setTimeout(function() { m.style.display = 'none'; }, 4000);
-}
-
-// CORRIGIDO: API retorna ARRAY DE OBJETOS diretamente
+// Clientes
 function carregarClientes() {
-  fetch(URL_CLIENTES)
-    .then(function(r) { return r.text(); })
-    .then(function(text) {
-      var data = JSON.parse(text);
-      listaClientes = Array.isArray(data) ? data : [];
-    })
-    .catch(function() { listaClientes = []; });
+  fetch(URL_CLIENTES).then(function(r){return r.text();}).then(function(text){
+    var data=JSON.parse(text); listaClientes=Array.isArray(data)?data:[];
+  }).catch(function(){listaClientes=[];});
 }
 
-// Autocomplete - getVal encontra "nome " (com espaço)
+// Autocomplete
 document.getElementById('clienteInput').addEventListener('input', function() {
   if (selecionandoCliente) { selecionandoCliente = false; return; }
   var val = this.value.trim();
@@ -196,7 +213,6 @@ document.getElementById('clienteInput').addEventListener('input', function() {
   }
   dd.style.display = 'block';
 });
-
 document.addEventListener('click', function(e) {
   if (!e.target.closest('.form-group')) document.getElementById('autocompleteDropdown').style.display = 'none';
 });
@@ -204,103 +220,105 @@ document.addEventListener('click', function(e) {
 function carregarAtendimentosCliente(clienteId) {
   var sel = document.getElementById('idAtendimentoSelect');
   sel.innerHTML = '<option value="">Carregando...</option>';
-  fetch(URL_ATEND + '?read=true&_=' + Date.now())
-    .then(function(r) { return r.text(); })
-    .then(function(text) {
-      var json = JSON.parse(text);
-      var dados = json.data || [];
-      // Filtra APENAS atendimentos deste cliente
-      var filtrados = [];
-      var idsJaVistos = {};
-      for (var i = 0; i < dados.length; i++) {
-        var a = dados[i];
-        var idClienteAtend = String(a['ID Cliente'] || '').trim();
-        var idAtend = String(a['ID Atendimento'] || '').trim();
-        if (idClienteAtend === String(clienteId).trim() && idAtend && !idsJaVistos[idAtend]) {
-          idsJaVistos[idAtend] = true;
-          filtrados.push(a);
-        }
-      }
-      if (!filtrados.length) {
-        sel.innerHTML = '<option value="">Nenhum atendimento encontrado p/ este cliente</option>';
-        return;
-      }
-      sel.innerHTML = '<option value="">Selecione um atendimento...</option>';
-      for (var i = 0; i < filtrados.length; i++) {
-        var a = filtrados[i];
-        var opt = document.createElement('option');
-        opt.value = a['ID Atendimento'];
-        opt.textContent = a['ID Atendimento'];
-        sel.appendChild(opt);
-      }
-    })
-    .catch(function() {
-      sel.innerHTML = '<option value="">Erro ao carregar atendimentos</option>';
-    });
+  fetch(URL_ATEND + '?read=true&_=' + Date.now()).then(function(r){return r.text();}).then(function(text){
+    var json=JSON.parse(text); var dados=json.data||[];
+    var filtrados=[]; var idsJaVistos={};
+    for(var i=0;i<dados.length;i++){
+      var a=dados[i]; var idCli=String(a['ID Cliente']||'').trim(); var idAt=String(a['ID Atendimento']||'').trim();
+      if(idCli===String(clienteId).trim() && idAt && !idsJaVistos[idAt]){ idsJaVistos[idAt]=true; filtrados.push(a); }
+    }
+    if(!filtrados.length){ sel.innerHTML='<option value="">Nenhum atendimento encontrado</option>'; return; }
+    sel.innerHTML='<option value="">Selecione...</option>';
+    for(var i=0;i<filtrados.length;i++){ var a=filtrados[i]; var opt=document.createElement('option'); opt.value=a['ID Atendimento']; opt.textContent=a['ID Atendimento']; sel.appendChild(opt); }
+  }).catch(function(){sel.innerHTML='<option value="">Erro ao carregar</option>';});
 }
 
 function carregarGraficosPredef() {
-  fetch(URL_ATEND + '?_=' + Date.now())
-    .then(function(r) { return r.text(); })
-    .then(function(text) {
-      var data = JSON.parse(text);
-      var config = data.configuracoes || data.Configuracoes || null;
-      if (!config) { var vals = Object.values(data); if (vals.some(function(v) { return Array.isArray(v) && v.length > 1; })) config = data; }
-      var found = null;
-      if (config && typeof config === 'object') {
-        for (var k in config) {
-          if (config.hasOwnProperty(k)) {
-            var keyNorm = k.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-            if (keyNorm.indexOf('grafico') !== -1) {
-              var v = config[k];
-              if (Array.isArray(v) && v.length) { found = v; break; }
-              if (typeof v === 'string' && v.trim()) { found = v.split(',').map(function(s){return s.trim();}).filter(Boolean); break; }
-            }
-          }
-        }
-      }
-      graficosPredef = (found && found.length) ? found : GRAFICOS_FALLBACK.slice();
-      renderGraficos();
-    })
-    .catch(function() { graficosPredef = GRAFICOS_FALLBACK.slice(); renderGraficos(); });
+  fetch(URL_ATEND + '?_=' + Date.now()).then(function(r){return r.text();}).then(function(text){
+    var data=JSON.parse(text); var config=data.configuracoes||data.Configuracoes||null;
+    if(!config){var vals=Object.values(data); if(vals.some(function(v){return Array.isArray(v)&&v.length>1;})) config=data;}
+    var found=null;
+    if(config&&typeof config==='object'){
+      for(var k in config){if(config.hasOwnProperty(k)){
+        var keyNorm=k.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+        if(keyNorm.indexOf('grafico')!==-1){var v=config[k]; if(Array.isArray(v)&&v.length){found=v;break;} if(typeof v==='string'&&v.trim()){found=v.split(',').map(function(s){return s.trim();}).filter(Boolean);break;}}
+      }}
+    }
+    graficosPredef=(found&&found.length)?found:GRAFICOS_FALLBACK.slice();
+    renderGraficos();
+  }).catch(function(){graficosPredef=GRAFICOS_FALLBACK.slice();renderGraficos();});
 }
 
+// Gráficos - NOVA VERSÃO COM HORAS E DIAS
 function adicionarGrafico() {
-  graficos.push({ grafico: '', data_inicio: hojeISO(), data_fim: '', status: 'Agendado' });
+  graficos.push({
+    grafico: '', data_inicio: '', qtd_horas: '', hora_fim: '', qtd_dias: '', data_fim: '', status: 'Agendado'
+  });
   renderGraficos();
 }
 function removerGrafico(idx) { graficos.splice(idx, 1); renderGraficos(); }
-function atualizarGrafico(idx, campo, valor) { if (graficos[idx]) graficos[idx][campo] = valor; }
+
+function atualizarGrafico(idx, campo, valor) {
+  if (!graficos[idx]) return;
+  graficos[idx][campo] = valor;
+  // Auto-calcular hora_fim quando qtd_horas ou data_inicio mudar
+  if (campo === 'qtd_horas' || campo === 'data_inicio') {
+    if (graficos[idx].qtd_horas && graficos[idx].data_inicio) {
+      graficos[idx].hora_fim = calcularHoraFinalizacao(graficos[idx].data_inicio, graficos[idx].qtd_horas);
+    }
+  }
+  // Auto-calcular data_fim quando qtd_dias ou data_inicio mudar
+  if (campo === 'qtd_dias' || campo === 'data_inicio') {
+    if (graficos[idx].qtd_dias && graficos[idx].data_inicio) {
+      graficos[idx].data_fim = calcularDataFinalizacao(graficos[idx].data_inicio, graficos[idx].qtd_dias);
+    }
+  }
+  renderGraficos();
+}
+
 function renderGraficos() {
   var tbody = document.getElementById('graficosBody');
-  if (!graficos.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Nenhum gráfico adicionado.</td></tr>'; return; }
-  var opts = '';
-  for (var i = 0; i < graficosPredef.length; i++) { opts += '<option value="' + graficosPredef[i] + '">' + graficosPredef[i] + '</option>'; }
+  if (!graficos.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="9">Nenhum gráfico adicionado.</td></tr>'; return; }
+  var grafOpts = '';
+  for (var i = 0; i < graficosPredef.length; i++) { grafOpts += '<option value="' + graficosPredef[i] + '">' + graficosPredef[i] + '</option>'; }
+  var statOpts = '';
+  for (var i = 0; i < STATUS_OPCOES.length; i++) { var s = STATUS_OPCOES[i]; statOpts += '<option value="' + s + '">' + s + '</option>'; }
   var html = '';
   for (var i = 0; i < graficos.length; i++) {
     var g = graficos[i];
     html += '<tr>';
-    html += '<td>' + (i + 1) + '</td>';
-    html += '<td><select onchange="atualizarGrafico(' + i + ',\'grafico\',this.value)"><option value="">Selecione...</option>' + opts + '</select></td>';
-    html += '<td><input type="date" value="' + (g.data_inicio || '') + '" onchange="atualizarGrafico(' + i + ',\'data_inicio\',this.value)"></td>';
-    html += '<td><input type="date" value="' + (g.data_fim || '') + '" onchange="atualizarGrafico(' + i + ',\'data_fim\',this.value)"></td>';
-    html += '<td><select onchange="atualizarGrafico(' + i + ',\'status\',this.value)">';
-    for (var j = 0; j < STATUS_OPCOES.length; j++) { var s = STATUS_OPCOES[j]; html += '<option value="' + s + '" ' + (g.status === s ? 'selected' : '') + '>' + s + '</option>'; }
-    html += '</select></td>';
+    html += '<td>' + (i+1) + '</td>';
+    html += '<td><select onchange="atualizarGrafico(' + i + ',\'grafico\',this.value)"><option value="">Selecione...</option>' + grafOpts + '</select></td>';
+    html += '<td><input type="datetime-local" value="' + (g.data_inicio||'') + '" onchange="atualizarGrafico(' + i + ',\'data_inicio\',this.value)"></td>';
+    html += '<td><input type="number" min="0" placeholder="h" value="' + (g.qtd_horas||'') + '" oninput="atualizarGrafico(' + i + ',\'qtd_horas\',this.value)" style="min-width:55px;"></td>';
+    html += '<td><input type="time" value="' + (g.hora_fim||'') + '" onchange="atualizarGrafico(' + i + ',\'hora_fim\',this.value)"></td>';
+    html += '<td><input type="number" min="0" placeholder="d" value="' + (g.qtd_dias||'') + '" oninput="atualizarGrafico(' + i + ',\'qtd_dias\',this.value)" style="min-width:55px;"></td>';
+    html += '<td><input type="date" value="' + (g.data_fim||'') + '" onchange="atualizarGrafico(' + i + ',\'data_fim\',this.value)"></td>';
+    html += '<td><select onchange="atualizarGrafico(' + i + ',\'status\',this.value)">' + statOpts + '</select></td>';
     html += '<td><button class="btn btn-red" onclick="removerGrafico(' + i + ')">Remover</button></td></tr>';
   }
   tbody.innerHTML = html;
+  // Aplicar valores atuais nos selects
+  for (var i = 0; i < graficos.length; i++) {
+    var g = graficos[i];
+    var tr = tbody.children[i];
+    if (tr) {
+      var selGraf = tr.querySelector('td:nth-child(2) select');
+      var selStat = tr.querySelector('td:nth-child(8) select');
+      if (selGraf) { for (var x=0;x<selGraf.options.length;x++){if(selGraf.options[x].value===g.grafico)selGraf.selectedIndex=x;} }
+      if (selStat) { for (var x=0;x<selStat.options.length;x++){if(selStat.options[x].value===g.status)selStat.selectedIndex=x;} }
+    }
+  }
 }
 
+// Salvar (MANTIDO IGUAL)
 function salvarTratamento() {
   var clienteNome = document.getElementById('clienteInput').value.trim();
   var clienteId = document.getElementById('clienteId').value.trim();
   if (!clienteNome) { mostrarMsg('Selecione um cliente.', 'error'); return; }
   if (!clienteId) {
     for (var i = 0; i < listaClientes.length; i++) {
-      if (getVal(listaClientes[i], 'nome', 'Nome', 'name') === clienteNome) {
-        clienteId = getVal(listaClientes[i], 'id', 'ID', 'Id'); break;
-      }
+      if (getVal(listaClientes[i], 'nome', 'Nome', 'name') === clienteNome) { clienteId = getVal(listaClientes[i], 'id', 'ID', 'Id'); break; }
     }
   }
   if (!clienteId) { mostrarMsg('Cliente nao encontrado.', 'error'); return; }
@@ -311,18 +329,18 @@ function salvarTratamento() {
     cliente_id: clienteId, cliente_nome: clienteNome,
     tratamento_id: tratamentoId,
     atendimento_id: document.getElementById('idAtendimentoSelect').value || '',
-    data_inicio: document.getElementById('dataInicio').value,
+    data_inicio: document.getElementById('dataInicioTrat').value,
     graficos: []
   };
   for (var i = 0; i < graficos.length; i++) {
     var g = graficos[i];
-    payload.graficos.push({ ordem: i+1, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status });
+    payload.graficos.push({ ordem: i+1, grafico: g.grafico, data_inicio: g.data_inicio, qtd_horas: g.qtd_horas, hora_fim: g.hora_fim, qtd_dias: g.qtd_dias, data_fim: g.data_fim, status: g.status });
   }
   mostrarMsg('Salvando...', 'success');
   fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(payload), redirect: 'follow' })
-    .then(function(r) { return r.text(); })
-    .then(function() { enviarWebhooksEConcluir(clienteNome, clienteId, tratamentoId); })
-    .catch(function() { enviarWebhooksEConcluir(clienteNome, clienteId, tratamentoId); });
+    .then(function(r){return r.text();})
+    .then(function(){ enviarWebhooksEConcluir(clienteNome, clienteId, tratamentoId); })
+    .catch(function(){ enviarWebhooksEConcluir(clienteNome, clienteId, tratamentoId); });
 }
 
 function enviarWebhooksEConcluir(clienteNome, clienteId, tratamentoId) {
@@ -334,9 +352,9 @@ function enviarWebhooksEConcluir(clienteNome, clienteId, tratamentoId) {
       webhooks.push(fetch(URL_WEBHOOK, { method: 'POST', body: JSON.stringify(wh), redirect: 'follow' }).catch(function(){}));
     }
   }
-  Promise.all(webhooks).then(function() {
+  Promise.all(webhooks).then(function(){
     mostrarMsg('Tratamento salvo! ID: ' + tratamentoId, 'success');
-    setTimeout(function() { window.location.href = 'lista-tratamentos.html'; }, 1500);
+    setTimeout(function(){ window.location.href = 'lista-tratamentos.html'; }, 1500);
   });
 }
 
@@ -345,7 +363,7 @@ function init() {
   ultimoId++;
   document.getElementById('tratamentoId').value = 'TRAT-' + String(ultimoId).padStart(7, '0');
   localStorage.setItem('ultimoIdTratamento', ultimoId.toString());
-  document.getElementById('dataInicio').value = hojeISO();
+  document.getElementById('dataInicioTrat').value = hojeISO();
   carregarClientes();
   carregarGraficosPredef();
   renderGraficos();
