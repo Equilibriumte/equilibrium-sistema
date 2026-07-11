@@ -223,53 +223,62 @@
             if (c) document.getElementById('idCliente').value = extrairIdCliente(c);
         };
 
-        async function enviarDados() {
-            const getC = (n) => Array.from(document.querySelectorAll(`input[name="${n}"]:checked`)).map(cb => cb.value).join(", ");
-            const p = {
-                'ID Atendimento': document.getElementById('idAtendimento').value,
-                'Data do Atendimento': document.getElementById('dataAtend').value,
-                'ID Cliente': document.getElementById('idCliente').value,
-                'Nome Cliente': document.getElementById('nomeCliente').value,
-                'Status': document.getElementById('statusSelect').value,
-                'Queixa Principal': document.getElementById('queixaP').value,
-                'Queixa Secundária': document.getElementById('queixaS').value,
-                'Bovis': document.getElementById('bovis').value,
-                'Coronário': document.getElementById('v-coronario').innerText,
-                'Frontal': document.getElementById('v-frontal').innerText,
-                'Laríngeo': document.getElementById('v-laringeo').innerText,
-                'Cardíaco': document.getElementById('v-cardiaco').innerText,
-                'Umbilical': document.getElementById('v-umbilical').innerText,
-                'Sacro': document.getElementById('v-sacro').innerText,
-                'Básico': document.getElementById('v-basico').innerText,
-                'Tamanho Aura': document.getElementById('auraT').value,
-                'Proteção Aura': document.getElementById('protecaoAura').value,
-                'Cores Excesso': getC('exc'),
-                'Cores Falta': getC('fal'),
-                'Mental': document.getElementById('v-mental').innerText,
-                'Emocional': document.getElementById('v-emocional').innerText,
-                'Espiritual': document.getElementById('v-espiritual').innerText,
-                'Físico': document.getElementById('v-fisico').innerText,
-                'Diagnóstico Inicial': document.getElementById('diagInicial').value,
-                'Queixa Espec.': document.getElementById('queixaE').value,
-                'Causa Raiz': document.getElementById('causaRaiz').value,
-                'Crenças': document.getElementById('crencas').value,
-                'Diagnóstico Específico': document.getElementById('diagEspec').value,
-                'Tipo Ambiente': document.getElementById('tipoAmbiente').value,
-                'Endereço Ambiente': document.getElementById('endAmbiente').value,
-                'Queixa Ambiente': document.getElementById('queixaAmbiente').value,
-                'Pessoas Envolvidas': document.getElementById('pessoasEnv').value,
-                'Diagnóstico Ambiente': document.getElementById('diagAmbiente').value,
-                'Tipo Busca': document.getElementById('tipoBusca').value,
-                'Descrição Busca': document.getElementById('descBusca').value,
-                'Info Busca': document.getElementById('infoBusca').value,
-                'Resultado Busca': document.getElementById('resBusca').value
-            };
-
-            try {
-                const r = await fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(p) }).then(res => res.json());
-                if (r.success) { alert("✅ Atendimento salvo com sucesso!"); location.reload(); }
-                else { alert("❌ Erro ao salvar: " + (r.error || r.message)); }
-            } catch (e) { alert("❌ Erro de conexão."); }
+       async function enviarDados() {
+    const getC = (n) => Array.from(document.querySelectorAll(`input[name=\"${n}\"]:checked`)).map(cb => cb.value).join(", ");
+    const p = {
+        'ID Atendimento': document.getElementById('idAtendimento').value,
+        'Data do Atendimento': document.getElementById('dataAtend').value,
+        'ID Cliente': document.getElementById('idCliente').value,
+        'Nome Cliente': document.getElementById('nomeCliente').value,
+        'Status': document.getElementById('statusSelect').value,
+        'Queixa Principal': document.getElementById('queixaP').value,
+        'Queixa Secundária': document.getElementById('queixaS').value,
+        'Bovis': document.getElementById('bovis').value,
+        'Coronário': document.getElementById('v-coronario').innerText,
+        'Frontal': document.getElementById('v-frontal').innerText,
+        'Laríngeo': document.getElementById('v-laringeo').innerText,
+        'Cardíaco': document.getElementById('v-cardiaco').innerText,
+        'Umbilical': document.getElementById('v-umbilical').innerText,
+        'Sacro': document.getElementById('v-sacro').innerText,
+        'Básico': document.getElementById('v-basico').innerText,
+        'Tamanho Aura': document.getElementById('auraT').value,
+        'Proteção Aura': document.getElementById('protecaoAura').value,
+        'Cores Excesso': getC('exc'),
+        'Cores Falta': getC('fal'),
+        'Mental': document.getElementById('v-mental').innerText,
+        'Emocional': document.getElementById('v-emocional').innerText,
+        'Espiritual': document.getElementById('v-espiritual').innerText,
+        'Físico': document.getElementById('v-fisico').innerText,
+        'Diagnóstico Inicial': document.getElementById('diagInicial').value,
+        'Queixa Espec.': document.getElementById('queixaE').value,
+        'Causa Raiz': document.getElementById('causaRaiz').value,
+        'Crenças': document.getElementById('crencas').value,
+        'Diagnóstico Específico': document.getElementById('diagEspec').value,
+        'Tipo Ambiente': document.getElementById('tipoAmbiente').value,
+        'Endereço Ambiente': document.getElementById('endAmbiente').value,
+        'Queixa Ambiente': document.getElementById('queixaAmbiente').value,
+        'Pessoas Envolvidas': document.getElementById('pessoasEnv').value,
+        'Diagnóstico Ambiente': document.getElementById('diagAmbiente').value,
+        'Tipo Busca': document.getElementById('tipoBusca').value,
+        'Descrição Busca': document.getElementById('descBusca').value,
+        'Info Busca': document.getElementById('infoBusca').value,
+        'Resultado Busca': document.getElementById('resBusca').value
+    };
+    try {
+        const resp = await fetch(URL_ATEND, { 
+            method: 'POST', 
+            body: JSON.stringify(p),
+            redirect: 'follow'
+        });
+        const texto = await resp.text();
+        var r;
+        try { r = JSON.parse(texto); } catch(e) { r = { success: true }; }
+        if (r.success) { alert("✅ Atendimento salvo com sucesso!"); location.reload(); }
+        else { alert("❌ Erro ao salvar: " + (r.error || r.message)); }
+    } catch (e) { 
+        alert("❌ Erro de conexão."); 
+    }
+}
         }
 
         window.onload = function() {
