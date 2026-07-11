@@ -128,16 +128,31 @@
     const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
     const URL_WEBHOOK = 'https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec';
 
-    function carregarClientes() {
-      fetch(URL_CLIENTES).then(function(r){return r.text();}).then(function(text){
-        var data=JSON.parse(text); var clientes=Array.isArray(data)?data:[];
-        var dl=document.getElementById('listaClientes'); dl.innerHTML='';
-        clientes.forEach(function(c){
-          var nome=c.nome||c.Nome||c.name||'';
-          if(nome){ var opt=document.createElement('option'); opt.value=nome; dl.appendChild(opt); }
-        });
-      }).catch(function(){});
-    }
+  function carregarClientes() {
+  fetch(URL_CLIENTES).then(function(r){return r.text();}).then(function(text){
+    var data=JSON.parse(text); 
+    var clientes=Array.isArray(data)?data:[];
+    var dl=document.getElementById('listaClientes'); 
+    dl.innerHTML='';
+    clientes.forEach(function(c){
+      // Normaliza: procura pela chave ignorando espaços e maiúsculas
+      var nome = '';
+      var chaves = Object.keys(c);
+      for (var i = 0; i < chaves.length; i++) {
+        var chaveNorm = chaves[i].trim().toLowerCase();
+        if (chaveNorm === 'nome') {
+          nome = c[chaves[i]];
+          break;
+        }
+      }
+      if (nome) { 
+        var opt = document.createElement('option'); 
+        opt.value = nome; 
+        dl.appendChild(opt); 
+      }
+    });
+  }).catch(function(){});
+}
 
     (function () {
       const form = document.getElementById('eventoForm');
