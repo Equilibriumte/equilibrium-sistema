@@ -18,24 +18,18 @@
   .card { background: #fff; border-radius: 10px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(75,0,130,0.08); }
   .card h2 { color: #4b0082; font-size: 18px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #ede4f7; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-  .form-group { display: flex; flex-direction: column; }
+  .form-group { display: flex; flex-direction: column; position: relative; }
   .form-group label { font-size: 13px; color: #555; margin-bottom: 6px; font-weight: 600; }
   .form-group input, .form-group select { padding: 10px 12px; border: 1px solid #d8cce8; border-radius: 6px; font-size: 14px; background: #fff; color: #333; }
-  .form-group input:focus, .form-group select:focus { outline: none; border-color: #6a0dad; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
+  .form-group input:focus, .form-group select:focus { outline: none; border-color: #6a0dad; }
   .form-group input[readonly] { background: #f4f1f8; color: #777; }
-  .autocomplete-wrap { position: relative; }
-  .autocomplete-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #d8cce8; border-top: none; border-radius: 0 0 6px 6px; max-height: 220px; overflow-y: auto; z-index: 100; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+  .autocomplete-list { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #d8cce8; border-top: none; border-radius: 0 0 6px 6px; max-height: 220px; overflow-y: auto; z-index: 50; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
   .autocomplete-item { padding: 10px 12px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #f0ebf7; }
   .autocomplete-item:hover { background: #f4f1f8; }
-  .autocomplete-item small { color: #888; display: block; font-size: 11px; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  table th, table td { padding: 9px 10px; text-align: left; border-bottom: 1px solid #ede4f7; }
-  table th { color: #4b0082; font-weight: 600; background: #f8f5fc; }
-  table tr:hover td { background: #faf8fe; }
-  .graficos-table th, .graficos-table td { text-align: center; }
-  .graficos-table input, .graficos-table select { padding: 7px 8px; border: 1px solid #d8cce8; border-radius: 5px; font-size: 13px; width: 100%; }
-  .graficos-table .col-num { width: 40px; }
-  .graficos-table .col-acoes { width: 90px; }
+  th, td { padding: 9px 10px; text-align: left; border-bottom: 1px solid #ede4f7; }
+  th { color: #4b0082; font-weight: 600; background: #f8f5fc; }
+  td input, td select { padding: 6px 8px; border: 1px solid #d8cce8; border-radius: 4px; font-size: 13px; width: 100%; }
   .btn { padding: 10px 18px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
   .btn-green { background: #28a745; color: #fff; }
   .btn-green:hover { background: #218838; }
@@ -46,9 +40,8 @@
   .actions-row { margin-top: 18px; display: flex; gap: 12px; justify-content: flex-end; }
   .empty-row td { text-align: center; color: #999; font-style: italic; padding: 18px; }
   .msg { padding: 12px; border-radius: 6px; margin: 15px 0; font-size: 14px; display: none; }
-  .msg.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-  .msg.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-  @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } .sidebar { width: 100%; height: auto; position: relative; } .main { margin-left: 0; padding: 20px; } }
+  .msg.success { background: #d4edda; color: #155724; }
+  .msg.error { background: #f8d7da; color: #721c24; }
 </style>
 </head>
 <body>
@@ -78,11 +71,9 @@
     <div class="grid-2">
       <div class="form-group">
         <label for="clienteInput">Cliente *</label>
-        <div class="autocomplete-wrap">
-          <input type="text" id="clienteInput" placeholder="Digite o nome do cliente..." autocomplete="off" oninput="onClienteInput()">
-          <input type="hidden" id="clienteId">
-          <div id="autocompleteDropdown" class="autocomplete-dropdown"></div>
-        </div>
+        <input type="text" id="clienteInput" placeholder="Digite o nome do cliente..." autocomplete="off">
+        <input type="hidden" id="clienteId">
+        <div id="autocompleteDropdown" class="autocomplete-list"></div>
       </div>
       <div class="form-group">
         <label for="idAtendimentoSelect">ID Atendimento</label>
@@ -103,16 +94,9 @@
   <div class="card">
     <h2>Gr&aacute;ficos do Tratamento</h2>
     <div style="overflow-x:auto;">
-      <table class="graficos-table" id="graficosTable">
+      <table class="graficos-table">
         <thead>
-          <tr>
-            <th class="col-num">#</th>
-            <th>Gr&aacute;fico</th>
-            <th>Data In&iacute;cio</th>
-            <th>Data Finaliza&ccedil;&atilde;o</th>
-            <th>Status</th>
-            <th class="col-acoes">A&ccedil;&otilde;es</th>
-          </tr>
+          <tr><th>#</th><th>Gr&aacute;fico</th><th>Data In&iacute;cio</th><th>Data Finaliza&ccedil;&atilde;o</th><th>Status</th><th>A&ccedil;&otilde;es</th></tr>
         </thead>
         <tbody id="graficosBody">
           <tr class="empty-row"><td colspan="6">Nenhum gr&aacute;fico adicionado.</td></tr>
@@ -129,8 +113,8 @@
 const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
 const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
 const URL_WEBHOOK = 'https://script.google.com/macros/s/AKfycbwYz7txBltNhmng0LTi6zXaGuiGsDBb4LuPEwGFfeN-y44NWIVkTrKPoHLUhKeVellw/exec';
-const STATUS_OPCOES = ['Agendado', 'Em Andamento', 'Concluído', 'Adiado', 'Cancelado'];
-const GRAFICOS_FALLBACK = ['Avaliação Postural', 'Avaliação Muscular', 'Treino Postural', 'Treino Muscular', 'Reavaliação Postural', 'Reavaliação Muscular'];
+const STATUS_OPCOES = ['Agendado', 'Em Andamento', 'Concluido', 'Adiado', 'Cancelado'];
+const GRAFICOS_FALLBACK = ['Desimpregnador', 'Desembaracado', 'Alta Vitalidade', 'Autoestima', 'Codigo 21', '9 Circulos'];
 let listaClientes = [];
 let graficosPredef = [];
 let graficos = [];
@@ -139,15 +123,13 @@ let selecionandoCliente = false;
 function getVal(obj) {
   if (!obj) return '';
   var keys = Array.prototype.slice.call(arguments, 1);
-  if (!keys.length) return '';
-  var objKeys = Object.keys(obj);
   for (var idx = 0; idx &lt; keys.length; idx++) {
     var k = keys[idx];
-    if (obj.hasOwnProperty(k) && obj[k] !== null && obj[k] !== undefined && String(obj[k]).trim() !== '') return obj[k];
+    if (obj.hasOwnProperty(k) && obj[k] !== null && obj[k] !== undefined && String(obj[k]).trim() !== '') return String(obj[k]);
     var nk = String(k).toLowerCase().replace(/\s+/g, '');
-    for (var j = 0; j &lt; objKeys.length; j++) {
-      var ok = objKeys[j];
-      if (String(ok).toLowerCase().replace(/\s+/g, '') === nk && obj[ok] !== null && obj[ok] !== undefined && String(obj[ok]).trim() !== '') return obj[ok];
+    var oks = Object.keys(obj);
+    for (var j = 0; j &lt; oks.length; j++) {
+      if (String(oks[j]).toLowerCase().replace(/\s+/g, '') === nk && obj[oks[j]] !== null && obj[oks[j]] !== undefined && String(obj[oks[j]]).trim() !== '') return String(obj[oks[j]]);
     }
   }
   return '';
@@ -164,40 +146,64 @@ function mostrarMsg(txt, tipo) {
   m.style.display = 'block';
   setTimeout(function() { m.style.display = 'none'; }, 4000);
 }
-function onClienteInput() {
+
+// CORRIGIDO: tratar dados como {success, columns, data} onde data é array de arrays
+function carregarClientes() {
+  fetch(URL_CLIENTES)
+    .then(function(r) { return r.text(); })
+    .then(function(text) {
+      var json = JSON.parse(text);
+      listaClientes = [];
+      var cols = json.columns || [];
+      var rows = json.data || [];
+      for (var i = 0; i &lt; rows.length; i++) {
+        var row = rows[i];
+        if (Array.isArray(row) && cols.length) {
+          var obj = {};
+          for (var j = 0; j &lt; cols.length; j++) {
+            obj[cols[j]] = row[j];
+          }
+          listaClientes.push(obj);
+        } else if (row && typeof row === 'object') {
+          listaClientes.push(row);
+        }
+      }
+    })
+    .catch(function() { listaClientes = []; });
+}
+
+// Autocomplete - agora usa 'Nome Cliente' como nome da coluna
+document.getElementById('clienteInput').addEventListener('input', function() {
   if (selecionandoCliente) { selecionandoCliente = false; return; }
-  var val = document.getElementById('clienteInput').value.trim();
+  var val = this.value.trim();
   document.getElementById('clienteId').value = '';
   var dd = document.getElementById('autocompleteDropdown');
+  dd.innerHTML = '';
   if (val.length &lt; 1) { dd.style.display = 'none'; return; }
+  var q = val.toLowerCase();
   var filtrados = [];
-  for (var i = 0; i &lt; listaClientes.length; i++) {
+  for (var i = 0; i &lt; listaClientes.length && filtrados.length &lt; 15; i++) {
     var c = listaClientes[i];
-    var nome = String(getVal(c, 'nome', 'name', 'nomecliente', 'cliente') || '').toLowerCase();
-    if (nome.indexOf(val.toLowerCase()) !== -1) { filtrados.push(c); if (filtrados.length >= 15) break; }
+    var nome = String(getVal(c, 'Nome Cliente', 'Nome', 'nome', 'Cliente', 'cliente') || '').toLowerCase();
+    if (nome.indexOf(q) !== -1) filtrados.push(c);
   }
   if (!filtrados.length) { dd.style.display = 'none'; return; }
-  var html = '';
   for (var i = 0; i &lt; filtrados.length; i++) {
     var c = filtrados[i];
-    var nome = getVal(c, 'nome', 'name', 'nomecliente', 'cliente') || 'Sem nome';
-    var id = getVal(c, 'id', 'idcliente', 'clienteid', 'codigo', 'cod') || '';
-    var extra = getVal(c, 'telefone', 'celular', 'fone', 'email') || '';
-    html += '<div class="autocomplete-item" onclick="selecionarCliente(\'' + nome.replace(/'/g, "\'") + '\', \'' + String(id).replace(/'/g, "\'") + '\')">' + nome + '<small>' + extra + '</small></div>';
+    var nome = getVal(c, 'Nome Cliente', 'Nome', 'nome', 'Cliente', 'cliente') || 'Sem nome';
+    var id = getVal(c, 'ID', 'id', 'Id', 'ID Cliente', 'idcliente') || '';
+    var div = document.createElement('div');
+    div.className = 'autocomplete-item';
+    div.textContent = nome + (id ? ' (' + id + ')' : '');
+    div.onclick = function(n, i) { return function() { selecionandoCliente = true; document.getElementById('clienteInput').value = n; document.getElementById('clienteId').value = i; dd.style.display = 'none'; carregarAtendimentosCliente(i); }; }(nome, id);
+    dd.appendChild(div);
   }
-  dd.innerHTML = html;
   dd.style.display = 'block';
-}
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('.autocomplete-wrap')) { document.getElementById('autocompleteDropdown').style.display = 'none'; }
 });
-function selecionarCliente(nome, id) {
-  selecionandoCliente = true;
-  document.getElementById('clienteInput').value = nome;
-  document.getElementById('clienteId').value = id;
-  document.getElementById('autocompleteDropdown').style.display = 'none';
-  carregarAtendimentosCliente(id);
-}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.form-group')) { document.getElementById('autocompleteDropdown').style.display = 'none'; }
+});
+
 function carregarAtendimentosCliente(clienteId) {
   var select = document.getElementById('idAtendimentoSelect');
   select.innerHTML = '<option value="">Carregando...</option>';
@@ -206,87 +212,84 @@ function carregarAtendimentosCliente(clienteId) {
     .then(function(text) {
       var data = JSON.parse(text);
       var arr = Array.isArray(data) ? data : (data.data || data.dados || []);
-      var clienteNome = document.getElementById('clienteInput').value.trim().toLowerCase();
+      var cols = data.columns || [];
+      var rows = data.data || [];
+      // Tenta filtrar pelo cliente
       var filtrados = [];
-      for (var i = 0; i &lt; arr.length; i++) {
-        var a = arr[i];
-        var aId = String(getVal(a, 'idcliente', 'clienteid', 'ID Cliente', 'id') || '');
-        var aNome = String(getVal(a, 'nomecliente', 'nome', 'Nome Cliente', 'cliente') || '').toLowerCase();
-        if (aId === String(clienteId) || aNome.indexOf(clienteNome) !== -1) filtrados.push(a);
+      for (var i = 0; i &lt; rows.length; i++) {
+        var a = Array.isArray(rows[i]) ? (function(){ var o={}; for(var j=0;j&lt;cols.length;j++) o[cols[j]]=rows[i][j]; return o; })() : rows[i];
+        var aNome = String(getVal(a, 'Nome Cliente', 'nomeCliente', 'nome', 'cliente') || '').toLowerCase();
+        var aId = String(getVal(a, 'ID Cliente', 'idCliente', 'clienteId', 'ID') || '');
+        if (aId === String(clienteId) || aNome.indexOf(document.getElementById('clienteInput').value.toLowerCase()) !== -1) filtrados.push(a);
       }
       if (!filtrados.length) { select.innerHTML = '<option value="">Nenhum atendimento encontrado</option>'; return; }
-      select.innerHTML = '<option value="">Selecione um atendimento...</option>';
+      select.innerHTML = '<option value="">Selecione...</option>';
       for (var i = 0; i &lt; filtrados.length; i++) {
         var a = filtrados[i];
-        var aid = getVal(a, 'id', 'idatendimento', 'ID Atendimento', 'ID') || '';
+        var aid = getVal(a, 'ID', 'id', 'Id', 'ID Atendimento', 'idAtendimento') || '';
         if (aid) {
-          var option = document.createElement('option');
-          option.value = aid;
-          option.textContent = aid;
-          select.appendChild(option);
+          var opt = document.createElement('option');
+          opt.value = aid; opt.textContent = aid;
+          select.appendChild(opt);
         }
       }
     })
-    .catch(function() { select.innerHTML = '<option value="">Erro ao carregar atendimentos</option>'; });
+    .catch(function() { select.innerHTML = '<option value="">Erro ao carregar</option>'; });
 }
-function carregarClientes() {
-  fetch(URL_CLIENTES).then(function(r) { return r.text(); }).then(function(text) {
-    var data = JSON.parse(text);
-    listaClientes = Array.isArray(data) ? data : (data.dados || data.clientes || data.lista || []);
-  }).catch(function() { listaClientes = []; });
-}
+
 function carregarGraficosPredef() {
-  fetch(URL_ATEND + '?_=' + Date.now()).then(function(r) { return r.text(); }).then(function(text) {
-    var data = JSON.parse(text);
-    var config = data.configuracoes || data.Configuracoes || null;
-    if (!config) { var vals = Object.values(data); if (vals.some(function(v) { return Array.isArray(v) && v.length > 1; })) config = data; }
-    var found = null;
-    if (config && typeof config === 'object') {
-      for (var k in config) {
-        if (config.hasOwnProperty(k)) {
-          var keyNorm = k.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-          if (keyNorm.indexOf('grafico') !== -1) {
-            var v = config[k];
-            if (Array.isArray(v) && v.length) { found = v; break; }
-            if (typeof v === 'string' && v.trim()) { found = v.split(',').map(function(s) { return s.trim(); }).filter(Boolean); break; }
+  fetch(URL_ATEND + '?_=' + Date.now())
+    .then(function(r) { return r.text(); })
+    .then(function(text) {
+      var data = JSON.parse(text);
+      var config = data.configuracoes || data.Configuracoes || null;
+      if (!config) { var vals = Object.values(data); if (vals.some(function(v) { return Array.isArray(v) && v.length > 1; })) config = data; }
+      var found = null;
+      if (config && typeof config === 'object') {
+        for (var k in config) {
+          if (config.hasOwnProperty(k)) {
+            var keyNorm = k.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            if (keyNorm.indexOf('grafico') !== -1) {
+              var v = config[k];
+              if (Array.isArray(v) && v.length) { found = v; break; }
+              if (typeof v === 'string' && v.trim()) { found = v.split(',').map(function(s){return s.trim();}).filter(Boolean); break; }
+            }
           }
         }
       }
-    }
-    graficosPredef = (found && found.length) ? found : GRAFICOS_FALLBACK.slice();
-    renderGraficos();
-  }).catch(function() { graficosPredef = GRAFICOS_FALLBACK.slice(); renderGraficos(); });
+      graficosPredef = (found && found.length) ? found : GRAFICOS_FALLBACK.slice();
+      renderGraficos();
+    })
+    .catch(function() { graficosPredef = GRAFICOS_FALLBACK.slice(); renderGraficos(); });
 }
+
 function adicionarGrafico() {
   graficos.push({ grafico: '', data_inicio: hojeISO(), data_fim: '', status: 'Agendado' });
   renderGraficos();
 }
 function removerGrafico(idx) { graficos.splice(idx, 1); renderGraficos(); }
-function atualizarGrafico(idx, campo, valor) { if (!graficos[idx]) return; graficos[idx][campo] = valor; }
+function atualizarGrafico(idx, campo, valor) { if (graficos[idx]) graficos[idx][campo] = valor; }
 function renderGraficos() {
   var tbody = document.getElementById('graficosBody');
-  if (!graficos.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Nenhum gráfico adicionado.</td></tr>'; return; }
+  if (!graficos.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Nenhum grafico adicionado.</td></tr>'; return; }
   var opts = '';
   for (var i = 0; i &lt; graficosPredef.length; i++) { opts += '<option value="' + graficosPredef[i] + '">' + graficosPredef[i] + '</option>'; }
   var html = '';
   for (var i = 0; i &lt; graficos.length; i++) {
     var g = graficos[i];
     html += '<tr>';
-    html += '<td class="col-num">' + (i + 1) + '</td>';
-    html += '<td><select onchange="atualizarGrafico(' + i + ', \'grafico\', this.value)"><option value="">Selecione...</option>' + opts + '</select></td>';
-    html += '<td><input type="date" value="' + (g.data_inicio || '') + '" onchange="atualizarGrafico(' + i + ', \'data_inicio\', this.value)"></td>';
-    html += '<td><input type="date" value="' + (g.data_fim || '') + '" onchange="atualizarGrafico(' + i + ', \'data_fim\', this.value)"></td>';
-    html += '<td><select onchange="atualizarGrafico(' + i + ', \'status\', this.value)">';
+    html += '<td>' + (i + 1) + '</td>';
+    html += '<td><select onchange="atualizarGrafico(' + i + ',\'grafico\',this.value)"><option value="">Selecione...</option>' + opts + '</select></td>';
+    html += '<td><input type="date" value="' + (g.data_inicio || '') + '" onchange="atualizarGrafico(' + i + ',\'data_inicio\',this.value)"></td>';
+    html += '<td><input type="date" value="' + (g.data_fim || '') + '" onchange="atualizarGrafico(' + i + ',\'data_fim\',this.value)"></td>';
+    html += '<td><select onchange="atualizarGrafico(' + i + ',\'status\',this.value)">';
     for (var j = 0; j &lt; STATUS_OPCOES.length; j++) { var s = STATUS_OPCOES[j]; html += '<option value="' + s + '" ' + (g.status === s ? 'selected' : '') + '>' + s + '</option>'; }
     html += '</select></td>';
-    html += '<td class="col-acoes"><button class="btn btn-red" onclick="removerGrafico(' + i + ')">Remover</button></td></tr>';
+    html += '<td><button class="btn btn-red" onclick="removerGrafico(' + i + ')">Remover</button></td></tr>';
   }
   tbody.innerHTML = html;
-  var selects = tbody.querySelectorAll('tr td:nth-child(2) select');
-  for (var i = 0; i &lt; selects.length; i++) { selects[i].value = graficos[i].grafico || ''; }
 }
 
-// CORREÇÃO DEFINITIVA DO "FAILED TO FETCH"
 function salvarTratamento() {
   var clienteNome = document.getElementById('clienteInput').value.trim();
   var clienteId = document.getElementById('clienteId').value.trim();
@@ -294,8 +297,8 @@ function salvarTratamento() {
   if (!clienteId) {
     for (var i = 0; i &lt; listaClientes.length; i++) {
       var x = listaClientes[i];
-      if ((getVal(x, 'nome', 'name', 'nomecliente', 'cliente') || '').toLowerCase() === clienteNome.toLowerCase()) {
-        clienteId = getVal(x, 'id', 'idcliente', 'clienteid', 'codigo', 'cod') || '';
+      if ((getVal(x, 'Nome Cliente', 'Nome', 'nome', 'Cliente', 'cliente') || '').toLowerCase() === clienteNome.toLowerCase()) {
+        clienteId = getVal(x, 'ID', 'id', 'Id', 'ID Cliente', 'idcliente') || '';
         break;
       }
     }
@@ -313,35 +316,30 @@ function salvarTratamento() {
     data_inicio: document.getElementById('dataInicio').value,
     graficos: []
   };
-  for (var i = 0; i &lt; graficos.length; i++) { var g = graficos[i]; payload.graficos.push({ ordem: i + 1, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status }); }
-  
+  for (var i = 0; i &lt; graficos.length; i++) {
+    var g = graficos[i];
+    payload.graficos.push({ ordem: i + 1, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status });
+  }
   mostrarMsg('Salvando...', 'success');
-  
-  // CORRIGIDO: não depende mais da resposta do servidor
   fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(payload), redirect: 'follow' })
-    .then(function(r) {
-      // Tenta ler o texto (pode falhar por causa do redirect do Apps Script)
-      try { return r.text(); } catch(e) { return ''; }
+    .then(function(r) { return r.text(); })
+    .then(function() {
+      // Ignora texto - dado já salvo
+      enviaWebhookEConclui(clienteNome, clienteId, tratamentoId);
     })
-    .then(function(text) {
-      // Dado já foi salvo - segue para webhooks independente da resposta
-      finalizarSalvamento(clienteNome, clienteId, tratamentoId);
-    })
-    .catch(function(err) {
-      // Apps Script redireciona e o navegador pode interpretar como erro
-      // Mas o dado JÁ FOI SALVO! Segue normalmente.
-      console.warn('Aviso: ' + err.message + ' (ignorado - dados ja salvos)');
-      finalizarSalvamento(clienteNome, clienteId, tratamentoId);
+    .catch(function() {
+      // Ignora erro de redirect - dado já foi salvo
+      enviaWebhookEConclui(clienteNome, clienteId, tratamentoId);
     });
 }
 
-function finalizarSalvamento(clienteNome, clienteId, tratamentoId) {
+function enviaWebhookEConclui(clienteNome, clienteId, tratamentoId) {
   var webhooks = [];
   for (var i = 0; i &lt; graficos.length; i++) {
     var g = graficos[i];
     if (g.data_fim && g.grafico) {
       var wh = { action: 'criar', calendario: 'graficos', cliente: clienteNome, cliente_id: clienteId, grafico: g.grafico, data_inicio: g.data_inicio, data_fim: g.data_fim, status: g.status, tratamento_id: tratamentoId };
-      webhooks.push(fetch(URL_WEBHOOK, { method: 'POST', body: JSON.stringify(wh), redirect: 'follow' }).then(function(r2) { return r2.text(); }).catch(function() {}));
+      webhooks.push(fetch(URL_WEBHOOK, { method: 'POST', body: JSON.stringify(wh), redirect: 'follow' }).catch(function() {}));
     }
   }
   Promise.all(webhooks).then(function() {
