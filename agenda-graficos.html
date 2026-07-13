@@ -604,41 +604,37 @@
   }
 
   /* ---------- Carregar Gráficos Predefinidos ---------- */
-  async function carregarGraficosPredef() {
+ async function carregarGraficosPredef() {
     const sel = document.getElementById('graficoSelect');
     try {
-      const r = await fetch(URL_ATEND + '?_=' + Date.now());
+      const r = await fetch(URL_ATEND + '?action=configuracoes&_=' + Date.now());
       const text = await r.text();
       const data = JSON.parse(text);
       let graficos = [];
-      if (data && Array.isArray(data.Graficos)) {
-        graficos = data.Graficos;
+
+      // Procura em qualquer lugar: configuracoes.Gráficos, data.Gráficos, etc.
+      if (data && data.configuracoes && data.configuracoes['Gráficos']) {
+        graficos = data.configuracoes['Gráficos'];
+      } else if (data && Array.isArray(data['Gráficos'])) {
+        graficos = data['Gráficos'];
       } else if (data && Array.isArray(data.graficos)) {
         graficos = data.graficos;
-      } else if (data && data.Configuracoes && Array.isArray(data.Configuracoes.Graficos)) {
-        graficos = data.Configuracoes.Graficos;
-      } else if (data && data.Configuracoes && Array.isArray(data.Configuracoes)) {
-        const cfg = data.Configuracoes.find(c => c.Graficos || c.graficos);
-        if (cfg) graficos = cfg.Graficos || cfg.graficos || [];
       }
-      graficosPredef = graficos;
+
       sel.innerHTML = '';
-      if (graficos.length === 0) {
+      if (!graficos || graficos.length === 0) {
         sel.innerHTML = '<option value="">Nenhum gráfico cadastrado</option>';
         return;
       }
       sel.innerHTML = '<option value="">Selecione um gráfico...</option>';
       graficos.forEach(g => {
-        const nome = typeof g === 'string' ? g : (g.Nome || g.nome || g.name || g.Grupo || g.grupo || '');
-        if (nome) {
-          const opt = document.createElement('option');
-          opt.value = nome;
-          opt.textContent = nome;
-          sel.appendChild(opt);
-        }
+        const opt = document.createElement('option');
+        opt.value = g;
+        opt.textContent = g;
+        sel.appendChild(opt);
       });
     } catch (e) {
-      console.error('Erro ao carregar gráficos predefinidos:', e);
+      console.error('Erro ao carregar gráficos:', e);
       sel.innerHTML = '<option value="">Erro ao carregar gráficos</option>';
     }
   }
