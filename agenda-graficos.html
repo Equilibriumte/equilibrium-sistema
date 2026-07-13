@@ -607,16 +607,16 @@
  async function carregarGraficosPredef() {
     const sel = document.getElementById('graficoSelect');
     try {
-      const r = await fetch(URL_ATEND + '?action=configuracoes&_=' + Date.now());
+      const r = await fetch(URL_ATEND + '?_=' + Date.now());
       const text = await r.text();
       const data = JSON.parse(text);
       let graficos = [];
 
-      // Procura em qualquer lugar: configuracoes.Gráficos, data.Gráficos, etc.
+      // Procura no formato correto que a API retorna
       if (data && data.configuracoes && data.configuracoes['Gráficos']) {
         graficos = data.configuracoes['Gráficos'];
-      } else if (data && Array.isArray(data['Gráficos'])) {
-        graficos = data['Gráficos'];
+      } else if (data && Array.isArray(data.Graficos)) {
+        graficos = data.Graficos;
       } else if (data && Array.isArray(data.graficos)) {
         graficos = data.graficos;
       }
