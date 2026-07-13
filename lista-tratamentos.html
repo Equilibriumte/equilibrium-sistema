@@ -81,13 +81,22 @@ let dadosOriginais = [];
 function formatarData(v) {
   if (!v) return '';
   var s = String(v).trim();
+  // Se for uma data ISO tipo 1899-12-30T14:16:00.000Z, extrai só a HH:mm
+  var mT = s.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2})/);
+  if (mT) {
+    // Se a data for 1899-12-30 (data base do Excel), é uma hora
+    if (mT[1] === '1899' && mT[2] === '12' && mT[3] === '30') {
+      return mT[4]; // Retorna só HH:mm
+    }
+    return mT[3] + '/' + mT[2] + '/' + mT[1]; // dd/mm/aaaa
+  }
   var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (m) return m[3] + '/' + m[2] + '/' + m[1];
   return s;
 }
-
 function ehData(col) {
-  return String(col || '').toLowerCase().indexOf('data') !== -1 || String(col || '').toLowerCase().indexOf('date') !== -1;
+  var c = String(col || '').toLowerCase();
+  return c.indexOf('data') !== -1 || c.indexOf('date') !== -1 || c.indexOf('finalização') !== -1 || c.indexOf('inicio') !== -1;
 }
 
 function carregar() {
