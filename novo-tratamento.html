@@ -317,22 +317,28 @@ function salvarTratamento() {
   if (!graficos.length) { mostrarMsg('Adicione ao menos um grafico.', 'error'); return; }
   var tratamentoId = document.getElementById('tratamentoId').value;
   var payload = {
-    tipo: 'tratamento', action: 'criar_tratamento',
+    tipo: 'tratamento',
     cliente_id: clienteId, cliente_nome: clienteNome,
-    tratamento_id: tratamentoId,
+    id_tratamento: tratamentoId,
     atendimento_id: document.getElementById('idAtendimentoSelect').value || '',
     data_inicio: document.getElementById('dataInicioTrat').value,
     graficos: []
   };
   for (var i = 0; i < graficos.length; i++) {
     var g = graficos[i];
-    payload.graficos.push({ ordem: i+1, grafico: g.grafico, data_inicio: g.data_inicio, qtd_horas: g.qtd_horas, hora_fim: g.hora_fim, qtd_dias: g.qtd_dias, data_fim: g.data_fim, status: g.status });
+    payload.graficos.push({ grafico: g.grafico, data_inicio: g.data_inicio, qtd_horas: g.qtd_horas, hora_fim: g.hora_fim, qtd_dias: g.qtd_dias, data_fim: g.data_fim, status: g.status });
   }
   mostrarMsg('Salvando...', 'success');
   fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(payload), redirect: 'follow' })
     .then(function(r){return r.text();})
-    .then(function(){ enviarWebhooksEConcluir(clienteNome, clienteId, tratamentoId); })
-    .catch(function(){ enviarWebhooksEConcluir(clienteNome, clienteId, tratamentoId); });
+    .then(function(){
+      mostrarMsg('Tratamento salvo! ID: ' + tratamentoId, 'success');
+      setTimeout(function(){ window.location.href = 'lista-tratamentos.html'; }, 1500);
+    })
+    .catch(function(){
+      mostrarMsg('Tratamento salvo! (redirect)', 'success');
+      setTimeout(function(){ window.location.href = 'lista-tratamentos.html'; }, 1500);
+    });
 }
 
 function enviarWebhooksEConcluir(clienteNome, clienteId, tratamentoId) {
