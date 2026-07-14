@@ -548,28 +548,36 @@
   }
 
   /* ---------- Carregar Clientes (autocomplete) ---------- */
-  async function carregarClientes() {
+ async function carregarClientes() {
     try {
-      const r = await fetch(URL_CLIENTES);
+      // Tenta carregar clientes do webapp principal
+      const r = await fetch(URL_ATEND + '?action=clientes&_=' + Date.now());
       const text = await r.text();
       const data = JSON.parse(text);
       let arr = [];
-      if (Array.isArray(data)) {
-        arr = data;
-      } else if (data && Array.isArray(data.data)) {
+      if (data && data.success && Array.isArray(data.data)) {
         arr = data.data;
-      } else if (data && Array.isArray(data.clientes)) {
-        arr = data.clientes;
-      } else if (data && Array.isArray(data.values)) {
-        arr = data.values;
       }
       listaClientes = arr.map(c => {
         if (typeof c === 'string') return c;
+        // Tenta vários campos possíveis para o nome
         return c.Nome || c.nome || c.name || c.Cliente || c.cliente || '';
       }).filter(Boolean);
     } catch (e) {
       console.error('Erro ao carregar clientes:', e);
-      listaClientes = [];
+      // Fallback: tenta URL antiga
+      try {
+        const r2 = await fetch(URL_CLIENTES);
+        const text2 = await r2.text();
+        const data2 = JSON.parse(text2);
+        let arr2 = Array.isArray(data2) ? data2 : (data2.data || []);
+        listaClientes = arr2.map(c => {
+          if (typeof c === 'string') return c;
+          return c.Nome || c.nome || c.name || c.Cliente || c.cliente || '';
+        }).filter(Boolean);
+      } catch (e2) {
+        listaClientes = [];
+      }
     }
   }
 
@@ -607,13 +615,14 @@
  async function carregarGraficosPredef() {
     const sel = document.getElementById('graficoSelect');
     try {
-      const r = await fetch(URL_ATEND + '?_=' + Date.now());
+      // Chama explicitamente a action configuracoes
+      const r = await fetch(URL_ATEND + '?action=configuracoes&_=' + Date.now());
       const text = await r.text();
       const data = JSON.parse(text);
       let graficos = [];
 
-      // Procura no formato correto que a API retorna
-      if (data && data.configuracoes && data.configuracoes['Gráficos']) {
+      // Procura no retorno: configuracoes["Gráficos"]
+      if (data && data.success && data.configuracoes && data.configuracoes['Gráficos']) {
         graficos = data.configuracoes['Gráficos'];
       } else if (data && Array.isArray(data.Graficos)) {
         graficos = data.Graficos;
