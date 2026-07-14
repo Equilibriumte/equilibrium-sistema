@@ -147,14 +147,20 @@
             }
             return '';
         }
-
-        function gerarIdAtendimento() {
-            let ultimoId = parseInt(localStorage.getItem('ultimoIdAtendimento') || '0');
-            ultimoId++;
-            const novoId = String(ultimoId).padStart(7, '0');
-            localStorage.setItem('ultimoIdAtendimento', ultimoId.toString());
-            return 'ATEND-' + novoId;
-        }
+function gerarIdAtendimento() {
+    let ultimoId = parseInt(localStorage.getItem('ultimoIdAtendimento') || '0');
+    // Se já tem um ID salvo, continua dele
+    if (ultimoId > 0) {
+        ultimoId++;
+        const novoId = String(ultimoId).padStart(7, '0');
+        localStorage.setItem('ultimoIdAtendimento', ultimoId.toString());
+        return 'ATEND-' + novoId;
+    }
+    // Se não tem ID salvo, começa do 1
+    localStorage.setItem('ultimoIdAtendimento', '1');
+    return 'ATEND-0000001';
+}
+       
 
         function showTab(i) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
