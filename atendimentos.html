@@ -147,20 +147,26 @@
             }
             return '';
         }
-function gerarIdAtendimento() {
+async function gerarIdAtendimento() {
+    try {
+        const r = await fetch(URL_ATEND + '?action=proximo_id_atendimento&_=' + Date.now());
+        const data = await r.json();
+        if (data && data.id) {
+            return data.id;
+        }
+    } catch (e) {
+        console.warn('Erro ao buscar ID do servidor, usando localStorage', e);
+    }
     let ultimoId = parseInt(localStorage.getItem('ultimoIdAtendimento') || '0');
-    // Se já tem um ID salvo, continua dele
     if (ultimoId > 0) {
         ultimoId++;
-        const novoId = String(ultimoId).padStart(7, '0');
         localStorage.setItem('ultimoIdAtendimento', ultimoId.toString());
-        return 'ATEND-' + novoId;
+    } else {
+        localStorage.setItem('ultimoIdAtendimento', '1');
     }
-    // Se não tem ID salvo, começa do 1
-    localStorage.setItem('ultimoIdAtendimento', '1');
-    return 'ATEND-0000001';
+    const novoId = String(ultimoId || 1).padStart(7, '0');
+    return 'ATEND-' + novoId;
 }
-       
 
         function showTab(i) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -285,8 +291,8 @@ function gerarIdAtendimento() {
     location.reload();
 }
 
-        window.onload = function() {
-            document.getElementById('idAtendimento').value = gerarIdAtendimento();
+       window.onload = async function() {
+            document.getElementById('idAtendimento').value = await gerarIdAtendimento();
             carregarTudo();
         };
     </script>
