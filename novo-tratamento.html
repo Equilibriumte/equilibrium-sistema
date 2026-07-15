@@ -331,11 +331,21 @@ function salvarTratamento() {
   mostrarMsg('Salvando...', 'success');
   fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(payload), redirect: 'follow' })
     .then(function(r){return r.text();})
-    .then(function(){
+       .then(function(){
+      // Gera o próximo ID
+      var num = parseInt(document.getElementById('tratamentoId').value.split('-')[1], 10);
+      num++;
+      localStorage.setItem('atualIdTratamento', 'TRAT-' + num.toString().padStart(7, '0'));
+      
       mostrarMsg('Tratamento salvo! ID: ' + tratamentoId, 'success');
       setTimeout(function(){ window.location.href = 'lista-tratamentos.html'; }, 1500);
     })
     .catch(function(){
+      // Gera o próximo ID também no catch
+      var num = parseInt(document.getElementById('tratamentoId').value.split('-')[1], 10);
+      num++;
+      localStorage.setItem('atualIdTratamento', 'TRAT-' + num.toString().padStart(7, '0'));
+      
       mostrarMsg('Tratamento salvo! (redirect)', 'success');
       setTimeout(function(){ window.location.href = 'lista-tratamentos.html'; }, 1500);
     });
@@ -357,10 +367,12 @@ function enviarWebhooksEConcluir(clienteNome, clienteId, tratamentoId) {
 }
 
 function init() {
-  var ultimoId = parseInt(localStorage.getItem('ultimoIdTratamento') || '0');
-  ultimoId++;
-  document.getElementById('tratamentoId').value = 'TRAT-' + String(ultimoId).padStart(7, '0');
-  localStorage.setItem('ultimoIdTratamento', ultimoId.toString());
+  var idSalvo = localStorage.getItem('atualIdTratamento');
+  if (!idSalvo) {
+    idSalvo = 'TRAT-0000001';
+    localStorage.setItem('atualIdTratamento', idSalvo);
+  }
+  document.getElementById('tratamentoId').value = idSalvo;
   document.getElementById('dataInicioTrat').value = hojeISO();
   carregarClientes();
   carregarGraficosPredef();
