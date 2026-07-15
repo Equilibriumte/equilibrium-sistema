@@ -76,6 +76,7 @@
                     <div class="form-group"><label>Status</label><select id="statusSelect"><option value="">Carregando...</option></select></div>
                     <div class="form-group full"><label>Queixa Principal</label><textarea id="queixaP"></textarea></div>
                     <div class="form-group full"><label>Queixa Secundária</label><textarea id="queixaS"></textarea></div>
+                    <div class="form-group full"><label>Análise Preliminar</label><textarea id="analisePreliminar"></textarea></div>
                 </div>
                 <div class="nav-actions"><button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button><button type="button" class="btn-action btn-next" onclick="showTab(1)">PRÓXIMO ➔</button></div>
             </div>
@@ -240,6 +241,7 @@
         'Status': document.getElementById('statusSelect').value,
         'Queixa Principal': document.getElementById('queixaP').value,
         'Queixa Secundária': document.getElementById('queixaS').value,
+        'Análise Preliminar': document.getElementById('analisePreliminar').value,
         'Bovis': document.getElementById('bovis').value,
         'Coronário': document.getElementById('v-coronario').innerText,
         'Frontal': document.getElementById('v-frontal').innerText,
