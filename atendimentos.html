@@ -149,19 +149,12 @@
             return '';
         }
 
-        function gerarIdAtendimento() {
-    // Remove a chave antiga se existir (com nome diferente)
-    let id = localStorage.getItem('seqAt');
+       function gerarIdAtendimento() {
+    let id = localStorage.getItem('atualIdAtendimento');
     if (!id) {
-        // Primeira vez: começa do 1
-        localStorage.setItem('seqAt', '1');
-        return 'ATEND-0000001';
+        id = 'ATEND-0000001';
     }
-    // Já tem um número: incrementa
-    let num = parseInt(id, 10);
-    num++;
-    localStorage.setItem('seqAt', num.toString());
-    return 'ATEND-' + num.toString().padStart(7, '0');
+    document.getElementById('idAtendimento').value = id;
 }
 
         function showTab(i) {
@@ -231,8 +224,8 @@
             if (c) document.getElementById('idCliente').value = extrairIdCliente(c);
         };
 
-     async function enviarDados() {
-    const getC = (n) => Array.from(document.querySelectorAll(`input[name=\"${n}\"]:checked`)).map(cb => cb.value).join(", ");
+  async function enviarDados() {
+    const getC = (n) => Array.from(document.querySelectorAll(`input[name="${n}"]:checked`)).map(cb => cb.value).join(", ");
     const p = {
         'ID Atendimento': document.getElementById('idAtendimento').value,
         'Data do Atendimento': document.getElementById('dataAtend').value,
@@ -280,10 +273,15 @@
             redirect: 'follow'
         });
     } catch (e) { 
-        // Ignora erro - o dado já foi salvo antes do redirect
         console.warn('Redirect ignorado, dados salvos.');
     }
-    // Dado já foi salvo independente do que aconteceu acima
+    
+    // Gera o próximo ID para a próxima vez que abrir a página
+    let num = parseInt(document.getElementById('idAtendimento').value.split('-')[1], 10);
+    num++;
+    let novo = 'ATEND-' + num.toString().padStart(7, '0');
+    localStorage.setItem('atualIdAtendimento', novo);
+    
     alert("✅ Atendimento salvo com sucesso!");
     location.reload();
 }
