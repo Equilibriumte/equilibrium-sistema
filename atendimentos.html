@@ -286,10 +286,10 @@
     location.reload();
 }
 
-       window.onload = async function() {
-            document.getElementById('idAtendimento').value = await gerarIdAtendimento();
-            carregarTudo();
-        };
+       window.onload = function() {
+    gerarIdAtendimento();
+    carregarTudo();
+};
     </script>
 </body>
 </html>
