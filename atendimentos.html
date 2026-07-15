@@ -147,25 +147,20 @@
             }
             return '';
         }
-async function gerarIdAtendimento() {
-    try {
-        const r = await fetch(URL_ATEND + '?action=proximo_id_atendimento&_=' + Date.now());
-        const data = await r.json();
-        if (data && data.id) {
-            return data.id;
-        }
-    } catch (e) {
-        console.warn('Erro ao buscar ID do servidor, usando localStorage', e);
+
+        function gerarIdAtendimento() {
+    // Remove a chave antiga se existir (com nome diferente)
+    let id = localStorage.getItem('seqAt');
+    if (!id) {
+        // Primeira vez: começa do 1
+        localStorage.setItem('seqAt', '1');
+        return 'ATEND-0000001';
     }
-    let ultimoId = parseInt(localStorage.getItem('ultimoIdAtendimento') || '0');
-    if (ultimoId > 0) {
-        ultimoId++;
-        localStorage.setItem('ultimoIdAtendimento', ultimoId.toString());
-    } else {
-        localStorage.setItem('ultimoIdAtendimento', '1');
-    }
-    const novoId = String(ultimoId || 1).padStart(7, '0');
-    return 'ATEND-' + novoId;
+    // Já tem um número: incrementa
+    let num = parseInt(id, 10);
+    num++;
+    localStorage.setItem('seqAt', num.toString());
+    return 'ATEND-' + num.toString().padStart(7, '0');
 }
 
         function showTab(i) {
