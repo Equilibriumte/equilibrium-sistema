@@ -108,6 +108,7 @@
             <th>Qtd Dias</th>
             <th>Data Finalização</th>
             <th>Status</th>
+            <th>Local</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -244,7 +245,7 @@ function carregarGraficosPredef() {
 // MUDANCA 1: data_inicio com agoraISO(), MUDANCA 2: atualizarGrafico com recalcular
 function adicionarGrafico() {
   graficos.push({
-    grafico: '', data_inicio: agoraISO(), qtd_horas: '', hora_fim: '', qtd_dias: '', data_fim: '', status: 'Agendado'
+    grafico: '', data_inicio: agoraISO(), qtd_horas: '', hora_fim: '', qtd_dias: '', data_fim: '', status: 'Agendado', local:
   });
   renderGraficos();
 }
@@ -288,6 +289,7 @@ function renderGraficos() {
     html += '<td><input type="number" min="0" placeholder="d" value="' + (g.qtd_dias||'') + '" onkeyup="atualizarGrafico(' + i + ',\'qtd_dias\',this.value,false)" onchange="atualizarGrafico(' + i + ',\'qtd_dias\',this.value,true)" style="min-width:65px;"></td>';
     html += '<td><input type="date" value="' + (g.data_fim||'') + '" onchange="atualizarGrafico(' + i + ',\'data_fim\',this.value,false)"></td>';
     html += '<td><select onchange="atualizarGrafico(' + i + ',\'status\',this.value,false)">' + statOpts + '</select></td>';
+    html += '<td><input type="text" placeholder="Onde foi guardado..." value="' + (g.local||'') + '" onchange="atualizarGrafico(' + i + ',\'local\',this.value,false)"></td>';
     html += '<td><button class="btn btn-red" onclick="removerGrafico(' + i + ')">Remover</button></td></tr>';
   }
   tbody.innerHTML = html;
@@ -326,7 +328,8 @@ function salvarTratamento() {
   };
   for (var i = 0; i < graficos.length; i++) {
     var g = graficos[i];
-    payload.graficos.push({ grafico: g.grafico, data_inicio: g.data_inicio, qtd_horas: g.qtd_horas, hora_fim: g.hora_fim, qtd_dias: g.qtd_dias, data_fim: g.data_fim, status: g.status });
+    payload.graficos.push({ grafico: g.grafico, data_inicio: g.data_inicio, qtd_horas: g.qtd_horas, hora_fim: g.hora_fim, qtd_dias: g.qtd_dias, data_fim: g.data_fim, status: g.status,  local: g.local 
+                          });
   }
   mostrarMsg('Salvando...', 'success');
   fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(payload), redirect: 'follow' })
