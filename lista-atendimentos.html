@@ -28,104 +28,26 @@
     flex-wrap: wrap;
     gap: 12px;
   }
-  .header h1 {
-    color: #4b0082;
-    font-size: 26px;
-  }
-  .header .subtitle {
-    color: #6a0dad;
-    font-size: 14px;
-    margin-top: 4px;
-  }
-  .card {
-    background: #fff;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 6px 20px rgba(75,0,130,0.08);
-  }
-  .toolbar {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    margin-bottom: 18px;
-    flex-wrap: wrap;
-  }
+  .header h1 { color: #4b0082; font-size: 26px; }
+  .header .subtitle { color: #6a0dad; font-size: 14px; margin-top: 4px; }
+  .card { background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 6px 20px rgba(75,0,130,0.08); }
+  .toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
   .search-input {
-    flex: 1;
-    min-width: 240px;
-    padding: 12px 16px;
-    border: 2px solid #e0d4f0;
-    border-radius: 10px;
-    font-size: 15px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    background: #faf8ff;
+    flex: 1; min-width: 240px; padding: 12px 16px; border: 2px solid #e0d4f0; border-radius: 10px;
+    font-size: 15px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; background: #faf8ff;
   }
-  .search-input:focus {
-    border-color: #6a0dad;
-    box-shadow: 0 0 0 3px rgba(106,13,173,0.15);
-  }
-  .btn {
-    padding: 11px 18px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
-    transition: background 0.2s, transform 0.05s;
-  }
+  .search-input:focus { border-color: #6a0dad; box-shadow: 0 0 0 3px rgba(106,13,173,0.15); }
+  .btn { padding: 11px 18px; border: none; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; transition: background 0.2s; }
   .btn-primary { background: #4b0082; color: #fff; }
   .btn-primary:hover { background: #6a0dad; }
-  .btn-secondary { background: #e0d4f0; color: #4b0082; }
-  .btn-secondary:hover { background: #d0c0e8; }
-  .btn:active { transform: translateY(1px); }
-  #status {
-    font-size: 13px;
-    color: #6a0dad;
-    margin-bottom: 14px;
-    min-height: 18px;
-  }
-  .table-wrap {
-    overflow-x: auto;
-    overflow-y: auto;
-    max-height: 600px;
-    border-radius: 10px;
-    border: 1px solid #eee;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-    min-width: 700px;
-  }
-  thead th {
-    background: #4b0082;
-    color: #fff;
-    text-align: left;
-    padding: 12px 14px;
-    font-weight: 600;
-    white-space: nowrap;
-    position: sticky;
-    top: 0;
-    z-index: 2;
-  }
-  tbody td {
-    padding: 11px 14px;
-    border-bottom: 1px solid #f0e8fa;
-    white-space: nowrap;
-    max-width: 320px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+  #status { font-size: 13px; color: #6a0dad; margin-bottom: 14px; min-height: 18px; }
+  .table-wrap { overflow-x: auto; overflow-y: auto; max-height: 600px; border-radius: 10px; border: 1px solid #eee; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 700px; }
+  thead th { background: #4b0082; color: #fff; text-align: left; padding: 12px 14px; font-weight: 600; white-space: nowrap; position: sticky; top: 0; z-index: 2; }
+  tbody td { padding: 11px 14px; border-bottom: 1px solid #f0e8fa; white-space: nowrap; max-width: 320px; overflow: hidden; text-overflow: ellipsis; }
   tbody tr:hover { background: #f7f2fc; }
   tbody tr:nth-child(even) { background: #fbf9fe; }
-  tbody tr:nth-child(even):hover { background: #f7f2fc; }
-  td.empty {
-    text-align: center;
-    color: #999;
-    padding: 28px;
-    font-style: italic;
-  }
+  td.empty { text-align: center; color: #999; padding: 28px; font-style: italic; }
   .col-fixed { background: #efe6fa; font-weight: 600; color: #4b0082; }
   .col-fixed-2 { background: #f3ecfb; font-weight: 600; color: #4b0082; }
   thead .col-fixed, thead .col-fixed-2 { background: #3a0066; color: #fff; }
@@ -137,14 +59,8 @@
   .btn-editar:hover { background: #6a0dad; }
   .input-edicao { width: 100%; padding: 4px 6px; border: 2px solid #c4b0d8; border-radius: 4px; font-size: 13px; box-sizing: border-box; }
   .input-edicao:focus { border-color: #6a0dad; outline: none; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
-  @media (max-width: 768px) {
-    .sidebar { width: 200px; }
-    .main { margin-left: 200px; padding: 20px; }
-  }
-  @media (max-width: 560px) {
-    .sidebar { transform: translateX(-100%); }
-    .main { margin-left: 0; padding: 16px; }
-  }
+  @media (max-width: 768px) { .sidebar { width: 200px; } .main { margin-left: 200px; padding: 20px; } }
+  @media (max-width: 560px) { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; padding: 16px; } }
 </style>
 </head>
 <body>
@@ -196,7 +112,7 @@
     const status = document.getElementById('status');
     status.textContent = 'Carregando...';
     try {
-      const resp = await fetch(URL + '?read=true');
+      const resp = await fetch(API_URL + '?read=true');
       const json = await resp.json();
       if (json && json.success && Array.isArray(json.columns)) {
         colunas = json.columns;
@@ -230,7 +146,6 @@
       if (idx === 3) th.classList.add('col-fixed-2');
       theadRow.appendChild(th);
     });
-    // Coluna Ações
     const thAcao = document.createElement('th');
     thAcao.textContent = 'Ações';
     theadRow.appendChild(thAcao);
@@ -271,7 +186,6 @@
           }
         }
 
-        // Primeira coluna (ID) não editável
         if (idx === 0) {
           td.textContent = valor;
           td.classList.add('col-fixed');
@@ -286,7 +200,6 @@
         tr.appendChild(td);
       });
 
-      // Coluna Ações
       const tdAcao = document.createElement('td');
       tdAcao.innerHTML = '<button class="btn-editar" onclick="editarLinha(' + i + ')" id="btn-' + i + '">✏️ Editar</button>';
       tr.appendChild(tdAcao);
@@ -336,7 +249,7 @@
 
     var idLinha = dadosOriginais[idx] ? dadosOriginais[idx][CAMPO_ID] : '';
 
-    fetch(URL, {
+    fetch(API_URL, {
       method: 'POST',
       body: JSON.stringify({
         action: 'atualizar_atendimento',
