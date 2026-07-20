@@ -32,6 +32,10 @@
   .table-wrap::-webkit-scrollbar { width: 8px; height: 8px; }
   .table-wrap::-webkit-scrollbar-track { background: #f0e8fa; border-radius: 4px; }
   .table-wrap::-webkit-scrollbar-thumb { background: #c4b0d8; border-radius: 4px; }
+  .btn-editar { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; background: #4b0082; color: #fff; }
+  .btn-editar:hover { background: #6a0dad; }
+  .input-edicao { width: 100%; padding: 4px 6px; border: 2px solid #c4b0d8; border-radius: 4px; font-size: 13px; box-sizing: border-box; }
+  .input-edicao:focus { border-color: #6a0dad; outline: none; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
   @media (max-width: 768px) { .sidebar { width: 200px; } .main { margin-left: 200px; padding: 20px; } }
   @media (max-width: 560px) { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; padding: 16px; } }
 </style>
@@ -56,7 +60,7 @@
   <div class="header">
     <div>
       <h1>📋 Lista de Tratamentos</h1>
-      <div class="subtitle">Visualize todos os tratamentos cadastrados na aba Tratamentos.</div>
+      <div class="subtitle">Visualize e edite todos os tratamentos cadastrados na aba Tratamentos.</div>
     </div>
     <button class="btn" onclick="carregar()">🔄 Atualizar</button>
   </div>
@@ -77,26 +81,24 @@
 const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
 let colunas = [];
 let dadosOriginais = [];
+const CAMPO_ID = 'ID Tratamento';
 
 function formatarData(v) {
   if (!v) return '';
   var s = String(v).trim();
-  // Se for uma data ISO tipo 1899-12-30T14:16:00.000Z, extrai só a HH:mm
   var mT = s.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2})/);
   if (mT) {
-    // Se a data for 1899-12-30 (data base do Excel), é uma hora
-    if (mT[1] === '1899' && mT[2] === '12' && mT[3] === '30') {
-      return mT[4]; // Retorna só HH:mm
-    }
-    return mT[3] + '/' + mT[2] + '/' + mT[1]; // dd/mm/aaaa
+    if (mT[1] === '1899' && mT[2] === '12' && mT[3] === '30') { return mT[4]; }
+    return mT[3] + '/' + mT[2] + '/' + mT[1];
   }
   var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (m) return m[3] + '/' + m[2] + '/' + m[1];
   return s;
 }
+
 function ehData(col) {
   var c = String(col || '').toLowerCase();
-  return c.indexOf('data') !== -1 || c.indexOf('date') !== -1 || c.indexOf('finalização') !== -1 || c.indexOf('inicio') !== -1;
+  return c.indexOf('data') !== -1 || c.indexOf('date') !== -1 || c.indexOf('finaliza') !== -1 || c.indexOf('inicio') !== -1;
 }
 
 function carregar() {
@@ -127,40 +129,65 @@ function renderizarTabela(dados) {
   var tbody = document.getElementById('tbody');
   theadRow.innerHTML = '';
   tbody.innerHTML = '';
+  
+  // Cabeçalho com coluna Ações
   for (var i = 0; i < colunas.length; i++) {
     var th = document.createElement('th');
     th.textContent = colunas[i];
     theadRow.appendChild(th);
   }
+  var thAcao = document.createElement('th');
+  thAcao.textContent = 'Ações';
+  theadRow.appendChild(thAcao);
+
   if (!dados || dados.length === 0) {
     var tr = document.createElement('tr');
     var td = document.createElement('td');
-    td.colSpan = Math.max(colunas.length, 1);
+    td.colSpan = colunas.length + 1;
     td.className = 'empty';
     td.textContent = 'Nenhum tratamento encontrado.';
     tr.appendChild(td);
     tbody.appendChild(tr);
     return;
   }
+
   for (var i = 0; i < dados.length; i++) {
     var linha = dados[i];
     var tr = document.createElement('tr');
+    tr.id = 'row-' + i;
+    var idValor = '';
+    
     for (var c = 0; c < colunas.length; c++) {
       var td = document.createElement('td');
       var valor = '';
-      if (linha && typeof linha === 'object' && colunas[c] in linha) {
-        valor = linha[colunas[c]];
+      var nomeCol = colunas[c];
+      if (linha && typeof linha === 'object' && nomeCol in linha) {
+        valor = linha[nomeCol];
       }
       if (valor === null || valor === undefined) valor = '';
       else {
         valor = String(valor);
-        if (ehData(colunas[c])) {
-          valor = formatarData(valor);
-        }
+        if (ehData(nomeCol)) { valor = formatarData(valor); }
       }
-      td.textContent = valor;
+      
+      // Primeira coluna = ID (não editável)
+      if (c === 0) {
+        td.textContent = valor;
+        td.className = 'id-cell';
+        idValor = valor;
+      } else {
+        td.className = 'editavel';
+        td.dataset.campo = nomeCol;
+        td.dataset.idx = i;
+        td.textContent = valor;
+      }
       tr.appendChild(td);
     }
+    
+    // Coluna Ações
+    var tdAcao = document.createElement('td');
+    tdAcao.innerHTML = '<button class="btn-editar" onclick="editarLinha(' + i + ')" id="btn-' + i + '">✏️ Editar</button>';
+    tr.appendChild(tdAcao);
     tbody.appendChild(tr);
   }
 }
@@ -180,6 +207,58 @@ function filtrar(termo) {
     if (encontrou) filtrados.push(linha);
   }
   renderizarTabela(filtrados);
+}
+
+function editarLinha(idx) {
+  var linha = document.getElementById('row-' + idx);
+  var botao = document.getElementById('btn-' + idx);
+
+  if (botao.textContent.includes('Salvar')) {
+    salvarLinha(idx);
+    return;
+  }
+
+  var celulas = linha.querySelectorAll('.editavel');
+  celulas.forEach(function(cel) {
+    var texto = cel.textContent.trim();
+    var campo = cel.dataset.campo;
+    cel.innerHTML = '<input type="text" value="' + texto.replace(/"/g, '&quot;') + '" class="input-edicao" data-campo="' + campo + '" data-idx="' + idx + '">';
+  });
+
+  botao.textContent = '💾 Salvar';
+  botao.style.background = '#28a745';
+}
+
+function salvarLinha(idx) {
+  var inputs = document.querySelectorAll('#row-' + idx + ' .input-edicao');
+  var campos = {};
+
+  inputs.forEach(function(inp) {
+    campos[inp.dataset.campo] = inp.value.trim();
+  });
+
+  var idLinha = dadosOriginais[idx] ? dadosOriginais[idx][CAMPO_ID] : '';
+
+  fetch(URL_ATEND, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'atualizar_tratamento',
+      id: idLinha,
+      campos: campos
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(res) {
+    if (res.success || res.status === 'sucesso') {
+      alert('✅ Tratamento atualizado!');
+      carregar();
+    } else {
+      alert('❌ Erro: ' + (res.message || res.error || 'desconhecido'));
+    }
+  })
+  .catch(function() {
+    alert('❌ Erro de conexão ao salvar.');
+  });
 }
 
 document.addEventListener('DOMContentLoaded', carregar);
