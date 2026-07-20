@@ -35,11 +35,15 @@
         .table-wrap::-webkit-scrollbar-thumb:hover {
             background: #a080c0;
         }
-        table { width: 100%; border-collapse: collapse; min-width: 1600px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1700px; }
         th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 13px; white-space: nowrap; }
         th { background-color: #4b0082; color: #fff; font-weight: 600; text-transform: uppercase; font-size: 11px; position: sticky; top: 0; z-index: 2; }
         .id-cell { font-family: monospace; color: #888; font-weight: bold; }
         .loading { text-align: center; padding: 40px; color: #6a0dad; font-style: italic; }
+        .btn-editar { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; background: #4b0082; color: #fff; }
+        .btn-editar:hover { background: #6a0dad; }
+        .input-edicao { width: 100%; padding: 4px 6px; border: 2px solid #c4b0d8; border-radius: 4px; font-size: 13px; box-sizing: border-box; }
+        .input-edicao:focus { border-color: #6a0dad; outline: none; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
     </style>
 </head>
 <body>
@@ -80,6 +84,7 @@
                         <th>Cidade/UF</th>
                         <th>CEP</th>
                         <th>Indicação</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody id="corpo-tabela"></tbody>
@@ -88,11 +93,14 @@
         </div>
     </div>
     <script>
+        const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
+
         function getVal(obj, campo) {
             const keys = Object.keys(obj);
             const keyEncontrada = keys.find(k => k.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === campo.toLowerCase());
             return keyEncontrada ? obj[keyEncontrada] : "-";
         }
+
         function formatarData(valor) {
             if (!valor || valor === "-") return "-";
             let d = String(valor);
@@ -102,6 +110,7 @@
             }
             return d;
         }
+
         function formatarWhats(valor) {
             if (!valor || valor === "-") return "-";
             let tel = String(valor).replace(/\D/g, "");
@@ -109,37 +118,115 @@
             if (tel.length === 11) return "(" + tel.substring(0, 2) + ") " + tel.substring(2, 7) + "-" + tel.substring(7);
             return valor;
         }
+
+        let dadosClientes = [];
+
+        function renderizarTabela(dados) {
+            const corpo = document.getElementById('corpo-tabela');
+            corpo.innerHTML = "";
+            dados.forEach((c, idx) => {
+                const cidade = getVal(c, 'cidade');
+                const estado = getVal(c, 'estado');
+                const cidadeUf = (cidade !== '-' ? cidade : '') + '/' + (estado !== '-' ? estado : '');
+                corpo.innerHTML += `<tr id="row-${idx}">
+                    <td class="id-cell">${getVal(c, 'id')}</td>
+                    <td class="editavel" data-campo="nome" data-idx="${idx}"><strong>${getVal(c, 'nome')}</strong></td>
+                    <td class="editavel" data-campo="nascimento" data-idx="${idx}">${formatarData(getVal(c, 'nascimento'))}</td>
+                    <td class="editavel" data-campo="whatsapp" data-idx="${idx}">${formatarWhats(getVal(c, 'whatsapp'))}</td>
+                    <td class="editavel" data-campo="email" data-idx="${idx}">${getVal(c, 'email')}</td>
+                    <td class="editavel" data-campo="instagram" data-idx="${idx}">${getVal(c, 'instagram')}</td>
+                    <td class="editavel" data-campo="rua" data-idx="${idx}">${getVal(c, 'rua')}</td>
+                    <td class="editavel" data-campo="numero" data-idx="${idx}">${getVal(c, 'numero')}</td>
+                    <td class="editavel" data-campo="bairro" data-idx="${idx}">${getVal(c, 'bairro')}</td>
+                    <td class="editavel" data-campo="cidade" data-idx="${idx}">${cidadeUf}</td>
+                    <td class="editavel" data-campo="cep" data-idx="${idx}">${getVal(c, 'cep')}</td>
+                    <td class="editavel" data-campo="indicacao" data-idx="${idx}">${getVal(c, 'indicacao')}</td>
+                    <td><button class="btn-editar" onclick="editarLinha(${idx})" id="btn-${idx}">✏️ Editar</button></td>
+                </tr>`;
+            });
+        }
+
         async function carregarDados() {
-            const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycby6ijLv0hGmlY561Mn5_4R5XCRTbUsw7JMg5BiqFA3CdMLSfyheFkw2aO4rjHNvFxodAA/exec';
-            
+            document.getElementById('status-container').innerHTML = '<div class="loading">🔍 Buscando dados na planilha de CLIENTES...</div>';
             try {
                 const response = await fetch(URL_CLIENTES);
                 const dados = await response.json();
-                
-                const corpo = document.getElementById('corpo-tabela');
+                dadosClientes = dados;
                 document.getElementById('status-container').style.display = 'none';
                 document.getElementById('tabela-clientes').style.display = 'table';
-                corpo.innerHTML = "";
-                dados.forEach(c => {
-                    corpo.innerHTML += `<tr>
-                        <td class="id-cell">${getVal(c, 'id')}</td>
-                        <td><strong>${getVal(c, 'nome')}</strong></td>
-                        <td>${formatarData(getVal(c, 'nascimento'))}</td>
-                        <td>${formatarWhats(getVal(c, 'whatsapp'))}</td>
-                        <td>${getVal(c, 'email')}</td>
-                        <td>${getVal(c, 'instagram')}</td>
-                        <td>${getVal(c, 'rua')}</td>
-                        <td>${getVal(c, 'numero')}</td>
-                        <td>${getVal(c, 'bairro')}</td>
-                        <td>${getVal(c, 'cidade')}/${getVal(c, 'estado')}</td>
-                        <td>${getVal(c, 'cep')}</td>
-                        <td>${getVal(c, 'indicacao')}</td>
-                    </tr>`;
-                });
+                renderizarTabela(dados);
             } catch (error) {
                 document.getElementById('status-container').innerHTML = '<div style="color:red; padding:20px;">❌ Erro de conexão com a planilha de Clientes.</div>';
             }
         }
+
+        function editarLinha(idx) {
+            const linha = document.getElementById(`row-${idx}`);
+            const botao = document.getElementById(`btn-${idx}`);
+
+            if (botao.textContent.includes('Salvar')) {
+                salvarLinha(idx);
+                return;
+            }
+
+            const celulas = linha.querySelectorAll('.editavel');
+            celulas.forEach(cel => {
+                const texto = cel.textContent.trim();
+                const campo = cel.dataset.campo;
+                if (campo === 'cidade') {
+                    const partes = texto.split('/');
+                    cel.innerHTML = `<input type="text" value="${partes[0].trim()}/${partes.length > 1 ? partes[1].trim() : ''}" class="input-edicao" data-campo="cidade_uf" data-idx="${idx}">`;
+                } else {
+                    cel.innerHTML = `<input type="text" value="${texto}" class="input-edicao" data-campo="${campo}" data-idx="${idx}">`;
+                }
+            });
+
+            botao.textContent = '💾 Salvar';
+            botao.style.background = '#28a745';
+        }
+
+        async function salvarLinha(idx) {
+            const inputs = document.querySelectorAll(`#row-${idx} .input-edicao`);
+            const campos = {};
+
+            inputs.forEach(inp => {
+                const campo = inp.dataset.campo;
+                let valor = inp.value.trim();
+
+                if (campo === 'cidade_uf') {
+                    const partes = valor.split('/');
+                    campos['cidade'] = partes[0].trim();
+                    campos['estado'] = partes.length > 1 ? partes[1].trim() : '';
+                    return;
+                }
+                campos[campo] = valor;
+            });
+
+            const cliente = dadosClientes[idx];
+            const id = getVal(cliente, 'id');
+
+            try {
+                const resp = await fetch(URL_CLIENTES, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'atualizar',
+                        id: id,
+                        campos: campos
+                    })
+                });
+                const resultado = await resp.json();
+
+                if (resultado.status === 'sucesso') {
+                    alert('✅ Cliente atualizado com sucesso!');
+                    carregarDados();
+                } else {
+                    alert('❌ Erro: ' + resultado.message);
+                }
+            } catch (e) {
+                alert('❌ Erro de conexão ao salvar.');
+            }
+        }
+
         window.onload = carregarDados;
     </script>
 </body>
