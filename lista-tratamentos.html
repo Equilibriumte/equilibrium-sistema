@@ -130,7 +130,6 @@ function renderizarTabela(dados) {
   theadRow.innerHTML = '';
   tbody.innerHTML = '';
   
-  // Cabeçalho com coluna Ações
   for (var i = 0; i < colunas.length; i++) {
     var th = document.createElement('th');
     th.textContent = colunas[i];
@@ -170,7 +169,6 @@ function renderizarTabela(dados) {
         if (ehData(nomeCol)) { valor = formatarData(valor); }
       }
       
-      // Primeira coluna = ID (não editável)
       if (c === 0) {
         td.textContent = valor;
         td.className = 'id-cell';
@@ -184,7 +182,6 @@ function renderizarTabela(dados) {
       tr.appendChild(td);
     }
     
-    // Coluna Ações
     var tdAcao = document.createElement('td');
     tdAcao.innerHTML = '<button class="btn-editar" onclick="editarLinha(' + i + ')" id="btn-' + i + '">✏️ Editar</button>';
     tr.appendChild(tdAcao);
@@ -237,7 +234,15 @@ function salvarLinha(idx) {
     campos[inp.dataset.campo] = inp.value.trim();
   });
 
-  var idLinha = dadosOriginais[idx] ? dadosOriginais[idx][CAMPO_ID] : '';
+  // Pega o ID direto da célula da tabela (mais confiável)
+  var linha = document.getElementById('row-' + idx);
+  var idCell = linha.querySelector('.id-cell');
+  var idLinha = idCell ? idCell.textContent.trim() : '';
+
+  if (!idLinha) {
+    alert('❌ Erro: ID não encontrado nesta linha.');
+    return;
+  }
 
   fetch(URL_ATEND, {
     method: 'POST',
