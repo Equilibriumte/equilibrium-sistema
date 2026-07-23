@@ -36,6 +36,8 @@
   .btn-editar:hover { background: #6a0dad; }
   .input-edicao { width: 100%; padding: 4px 6px; border: 2px solid #c4b0d8; border-radius: 4px; font-size: 13px; box-sizing: border-box; }
   .input-edicao:focus { border-color: #6a0dad; outline: none; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
+  .select-edicao { width: 100%; padding: 4px 6px; border: 2px solid #c4b0d8; border-radius: 4px; font-size: 13px; box-sizing: border-box; background: #fff; cursor: pointer; }
+  .select-edicao:focus { border-color: #6a0dad; outline: none; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
   @media (max-width: 768px) { .sidebar { width: 200px; } .main { margin-left: 200px; padding: 20px; } }
   @media (max-width: 560px) { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; padding: 16px; } }
 </style>
@@ -81,6 +83,7 @@
 const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
 let colunas = [];
 let dadosOriginais = [];
+let listaGraficos = []; // Lista de opções para o dropdown Gráfico
 const CAMPO_ID = 'ID Tratamento';
 
 function formatarData(v) {
@@ -101,27 +104,60 @@ function ehData(col) {
   return c.indexOf('data') !== -1 || c.indexOf('date') !== -1 || c.indexOf('finaliza') !== -1 || c.indexOf('inicio') !== -1;
 }
 
+function carregarConfig() {
+  return fetch(URL_ATEND + '?action=configuracoes&_=' + Date.now())
+    .then(function(r) { return r.json(); })
+    .then(function(json) {
+      if (json && json.success && json.configuracoes) {
+        // Procura a lista de gráficos - pode vir como 'Gráficos', 'Gráfico', 'Graficos', etc.
+        var chaves = Object.keys(json.configuracoes);
+        for (var i = 0; i < chaves.length; i++) {
+          var c = chaves[i].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          if (c.indexOf('grafico') !== -1) {
+            listaGraficos = json.configuracoes[chaves[i]] || [];
+            break;
+          }
+        }
+      }
+    })
+    .catch(function() {
+      listaGraficos = [];
+    });
+}
+
 function carregar() {
   var statusEl = document.getElementById('status');
   statusEl.textContent = 'Carregando...';
-  fetch(URL_ATEND + '?action=tratamentos&_=' + Date.now())
-    .then(function(r) { return r.text(); })
-    .then(function(text) {
-      var json = JSON.parse(text);
-      if (json && json.success && Array.isArray(json.columns)) {
-        colunas = json.columns;
-      } else {
-        colunas = [];
-      }
-      var data = (json && Array.isArray(json.data)) ? json.data : [];
-      dadosOriginais = data;
-      renderizarTabela(data);
-      statusEl.textContent = data.length + ' registro(s) carregado(s).';
+  
+  // Carrega config e dados em paralelo
+  Promise.all([
+    carregarConfig(),
+    new Promise(function(resolve) {
+      fetch(URL_ATEND + '?action=tratamentos&_=' + Date.now())
+        .then(function(r) { return r.text(); })
+        .then(function(text) {
+          var json = JSON.parse(text);
+          if (json && json.success && Array.isArray(json.columns)) {
+            colunas = json.columns;
+          } else {
+            colunas = [];
+          }
+          var data = (json && Array.isArray(json.data)) ? json.data : [];
+          dadosOriginais = data;
+          resolve(data);
+        })
+        .catch(function() {
+          resolve([]);
+        });
     })
-    .catch(function() {
-      statusEl.textContent = 'Erro ao carregar dados.';
-      renderizarTabela([]);
-    });
+  ]).then(function(resultados) {
+    var data = resultados[1];
+    renderizarTabela(data);
+    document.getElementById('status').textContent = data.length + ' registro(s) carregado(s).';
+  }).catch(function() {
+    document.getElementById('status').textContent = 'Erro ao carregar dados.';
+    renderizarTabela([]);
+  });
 }
 
 function renderizarTabela(dados) {
@@ -154,7 +190,6 @@ function renderizarTabela(dados) {
     var linha = dados[i];
     var tr = document.createElement('tr');
     tr.id = 'row-' + i;
-    var idValor = '';
     
     for (var c = 0; c < colunas.length; c++) {
       var td = document.createElement('td');
@@ -172,7 +207,6 @@ function renderizarTabela(dados) {
       if (c === 0) {
         td.textContent = valor;
         td.className = 'id-cell';
-        idValor = valor;
       } else {
         td.className = 'editavel';
         td.dataset.campo = nomeCol;
@@ -219,7 +253,20 @@ function editarLinha(idx) {
   celulas.forEach(function(cel) {
     var texto = cel.textContent.trim();
     var campo = cel.dataset.campo;
-    cel.innerHTML = '<input type="text" value="' + texto.replace(/"/g, '&quot;') + '" class="input-edicao" data-campo="' + campo + '" data-idx="' + idx + '">';
+    
+    // Se for a coluna "Gráfico", mostra dropdown
+    if (campo === 'Gráfico' && listaGraficos.length > 0) {
+      var html = '<select class="select-edicao" data-campo="' + campo + '" data-idx="' + idx + '">';
+      html += '<option value="">-- Selecione --</option>';
+      for (var g = 0; g < listaGraficos.length; g++) {
+        var sel = listaGraficos[g] === texto ? ' selected' : '';
+        html += '<option value="' + listaGraficos[g].replace(/"/g, '&quot;') + '"' + sel + '>' + listaGraficos[g] + '</option>';
+      }
+      html += '</select>';
+      cel.innerHTML = html;
+    } else {
+      cel.innerHTML = '<input type="text" value="' + texto.replace(/"/g, '&quot;') + '" class="input-edicao" data-campo="' + campo + '" data-idx="' + idx + '">';
+    }
   });
 
   botao.textContent = '💾 Salvar';
@@ -227,14 +274,13 @@ function editarLinha(idx) {
 }
 
 function salvarLinha(idx) {
-  var inputs = document.querySelectorAll('#row-' + idx + ' .input-edicao');
+  var inputs = document.querySelectorAll('#row-' + idx + ' .input-edicao, #row-' + idx + ' .select-edicao');
   var campos = {};
 
   inputs.forEach(function(inp) {
     campos[inp.dataset.campo] = inp.value.trim();
   });
 
-  // Pega o ID direto da célula da tabela (mais confiável)
   var linha = document.getElementById('row-' + idx);
   var idCell = linha.querySelector('.id-cell');
   var idLinha = idCell ? idCell.textContent.trim() : '';
