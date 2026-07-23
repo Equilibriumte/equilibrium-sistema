@@ -259,6 +259,7 @@ function carregarAtendimentosCliente(clienteId) {
     sel.innerHTML = '<option value="">Erro ao carregar</option>';
   });
 }
+ 
 function carregarGraficosPredef() {
   fetch(URL_ATEND + '?_=' + Date.now()).then(function(r){return r.text();}).then(function(text){
     var data=JSON.parse(text); var config=data.configuracoes||data.Configuracoes||null;
