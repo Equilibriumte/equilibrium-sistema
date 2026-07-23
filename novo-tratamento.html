@@ -213,19 +213,52 @@ document.addEventListener('click', function(e) {
 function carregarAtendimentosCliente(clienteId) {
   var sel = document.getElementById('idAtendimentoSelect');
   sel.innerHTML = '<option value="">Carregando...</option>';
+  
+  var clienteNome = document.getElementById('clienteInput').value.trim();
+  
   fetch(URL_ATEND + '?read=true&_=' + Date.now()).then(function(r){return r.text();}).then(function(text){
-    var json=JSON.parse(text); var dados=json.data||[];
-    var filtrados=[]; var idsJaVistos={};
-    for(var i=0;i<dados.length;i++){
-      var a=dados[i]; var idCli=String(a['ID Cliente']||'').trim(); var idAt=String(a['ID Atendimento']||'').trim();
-      if(idCli===String(clienteId).trim() && idAt && !idsJaVistos[idAt]){ idsJaVistos[idAt]=true; filtrados.push(a); }
+    var json = JSON.parse(text);
+    var dados = json.data || [];
+    var filtrados = [];
+    var idsJaVistos = {};
+    
+    for (var i = 0; i < dados.length; i++) {
+      var a = dados[i];
+      var idCli = String(a['ID Cliente'] || '').trim();
+      var nomeCli = String(a['Nome Cliente'] || '').trim();
+      var idAt = String(a['ID Atendimento'] || '').trim();
+      
+      // Match por ID ou por Nome
+      var match = false;
+      if (idCli && idCli === String(clienteId).trim()) {
+        match = true;
+      }
+      if (!match && clienteNome && nomeCli.toLowerCase() === clienteNome.toLowerCase()) {
+        match = true;
+      }
+      
+      if (match && idAt && !idsJaVistos[idAt]) {
+        idsJaVistos[idAt] = true;
+        filtrados.push(a);
+      }
     }
-    if(!filtrados.length){ sel.innerHTML='<option value="">Nenhum atendimento encontrado</option>'; return; }
-    sel.innerHTML='<option value="">Selecione...</option>';
-    for(var i=0;i<filtrados.length;i++){ var a=filtrados[i]; var opt=document.createElement('option'); opt.value=a['ID Atendimento']; opt.textContent=a['ID Atendimento']; sel.appendChild(opt); }
-  }).catch(function(){sel.innerHTML='<option value="">Erro ao carregar</option>';});
+    
+    if (!filtrados.length) {
+      sel.innerHTML = '<option value="">Nenhum atendimento encontrado</option>';
+      return;
+    }
+    sel.innerHTML = '<option value="">Selecione...</option>';
+    for (var i = 0; i < filtrados.length; i++) {
+      var a = filtrados[i];
+      var opt = document.createElement('option');
+      opt.value = a['ID Atendimento'];
+      opt.textContent = a['ID Atendimento'] + ' - ' + (a['Data do Atendimento'] || '');
+      sel.appendChild(opt);
+    }
+  }).catch(function(){
+    sel.innerHTML = '<option value="">Erro ao carregar</option>';
+  });
 }
-
 function carregarGraficosPredef() {
   fetch(URL_ATEND + '?_=' + Date.now()).then(function(r){return r.text();}).then(function(text){
     var data=JSON.parse(text); var config=data.configuracoes||data.Configuracoes||null;
