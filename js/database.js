@@ -2,15 +2,17 @@ const DATABASE_URL = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl
 
 async function salvarCliente(dados) {
   try {
-    // Adicionamos a ação para o Google Script saber o que fazer
     const payload = { action: 'salvarCliente', ...dados };
     
     const response = await fetch(DATABASE_URL, {
       method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
+      redirect: 'follow',
       body: JSON.stringify(payload)
     });
+    
+    if (!response.ok) {
+      throw new Error('Erro HTTP: ' + response.status);
+    }
     
     return { success: true };
   } catch (error) {
@@ -18,7 +20,6 @@ async function salvarCliente(dados) {
     throw error;
   }
 }
-
 window.salvarCliente = salvarCliente;
 
 // 
@@ -49,6 +50,7 @@ async function excluirEvento(dados) {
   const data = await response.json();
   return data;
 }
+
 window.listarEventos = listarEventos;
 window.editarEvento = editarEvento;
 window.excluirEvento = excluirEvento;
