@@ -25,10 +25,6 @@
   .eventos-table th { background: #4b0082; color: white; padding: 10px 12px; text-align: left; font-size: 13px; }
   .eventos-table td { padding: 10px 12px; border-bottom: 1px solid #eee; font-size: 13px; }
   .eventos-table tr:hover { background: #f9f6ff; }
-  .status-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
-  .status-ok { background: #e8f5e9; color: #2e7d32; }
-  .status-pendente { background: #fff3e0; color: #e65100; }
-  .tag-local { background: #e8eaf6; color: #283593; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
   .btn { padding: 6px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; transition: 0.3s; }
   .btn-sm { padding: 4px 10px; font-size: 11px; }
   .btn-edit { background: #e8eaf6; color: #283593; }
@@ -48,7 +44,6 @@
   .modal input, .modal select { width: 100%; padding: 10px; margin-bottom: 16px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
   .modal input:focus, .modal select:focus { outline: none; border-color: #6a0dad; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
   .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px; }
-  /* Loader */
   .loader { text-align: center; padding: 30px; color: #999; }
   .loader i { font-size: 24px; margin-bottom: 10px; }
   .empty-state { text-align: center; padding: 30px; color: #999; }
@@ -108,7 +103,6 @@
       <input type="hidden" id="edit-eventId">
       <input type="hidden" id="edit-tratamentoId">
       <input type="hidden" id="edit-graficoNome">
-      <input type="hidden" id="edit-tituloAtual">
 
       <label for="edit-data">Data</label>
       <input type="date" id="edit-data" required>
@@ -189,19 +183,14 @@ function renderizarEventos(eventos) {
   for (var i = 0; i < eventos.length; i++) {
     var e = eventos[i];
     var dataFormatada = formatarData(e.data);
-    var localTag = e.titulo && e.titulo.indexOf(' - ') > -1 ? e.titulo.split(' - ')[0] : (e.titulo || '');
-    // Extrai o nome do cliente do título (última parte após " - ")
     var partes = e.titulo ? e.titulo.split(' - ') : [];
     var nomeExibicao = partes.length >= 2 ? partes[partes.length - 1] : (e.cliente_nome || '');
-    // O local é a primeira parte
-    var localExibicao = partes.length >= 3 ? partes[0] : (e.titulo && e.titulo.indexOf(' - ') > -1 ? partes[0] : '');
-    var graficoExibicao = partes.length >= 3 ? partes[1] : (partes.length === 2 ? partes[0] : '');
-    var statusClass = 'status-ok';
-    var statusText = 'Agendado';
+    var localExibicao = partes.length >= 3 ? partes[0] : '';
+    var graficoExibicao = partes.length >= 3 ? partes[1] : (partes.length === 2 ? partes[0] : (e.grafico_nome || ''));
     html += '<tr>';
     html += '<td><strong>' + dataFormatada + '</strong></td>';
     html += '<td>' + e.hora + '</td>';
-    html += '<td>' + (graficoExibicao || e.grafico_nome || e.titulo) + '</td>';
+    html += '<td>' + (graficoExibicao || e.titulo) + '</td>';
     html += '<td>' + (nomeExibicao || e.cliente_nome || '-') + '</td>';
     html += '<td>' + (localExibicao || '-') + '</td>';
     html += '<td>';
@@ -222,7 +211,6 @@ function formatarData(dataStr) {
   return dataStr;
 }
 
-// Modal Editar
 function abrirModalEditar(eventId, tratamentoId, graficoNome, data, hora, local) {
   document.getElementById('edit-eventId').value = eventId;
   document.getElementById('edit-tratamentoId').value = tratamentoId;
@@ -246,10 +234,7 @@ document.getElementById('form-editar').addEventListener('submit', async function
   var novaHora = document.getElementById('edit-hora').value;
   var novoLocal = document.getElementById('edit-local').value;
   var novoStatus = document.getElementById('edit-status').value;
-
-  // Monta o novo título
   var titulo = novoLocal ? novoLocal + ' - ' + graficoNome + ' - ' : graficoNome + ' - ';
-  // Pega o nome do cliente do cache
   var evento = eventosCache.find(function(e) { return e.eventId === eventId; });
   titulo += evento ? evento.cliente_nome : '';
 
@@ -286,7 +271,6 @@ document.getElementById('form-editar').addEventListener('submit', async function
   }
 });
 
-// Modal Excluir
 function abrirModalExcluir(eventId, tratamentoId, graficoNome, info) {
   document.getElementById('excluir-eventId').value = eventId;
   document.getElementById('excluir-tratamentoId').value = tratamentoId;
