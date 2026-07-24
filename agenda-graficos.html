@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agenda de Gráficos - Equilibrium</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
   body { display: flex; min-height: 100vh; background: #f4f1f8; }
@@ -15,15 +16,50 @@
   .header { margin-bottom: 20px; }
   .header h1 { color: #4b0082; font-size: 26px; }
   .header .subtitle { color: #666; font-size: 14px; margin-top: 5px; }
-  .card { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(75,0,130,0.08); }
+  .card { background: #fff; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(75,0,130,0.08); }
   .card h3 { color: #4b0082; margin-bottom: 15px; font-size: 16px; display: flex; align-items: center; gap: 8px; }
   .calendar-wrap { overflow: hidden; border-radius: 8px; border: 1px solid #eee; }
   .calendar-wrap iframe { width: 100%; height: 600px; border: 0; }
+  /* Tabela de eventos */
+  .eventos-table { width: 100%; border-collapse: collapse; }
+  .eventos-table th { background: #4b0082; color: white; padding: 10px 12px; text-align: left; font-size: 13px; }
+  .eventos-table td { padding: 10px 12px; border-bottom: 1px solid #eee; font-size: 13px; }
+  .eventos-table tr:hover { background: #f9f6ff; }
+  .status-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .status-ok { background: #e8f5e9; color: #2e7d32; }
+  .status-pendente { background: #fff3e0; color: #e65100; }
+  .tag-local { background: #e8eaf6; color: #283593; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+  .btn { padding: 6px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; transition: 0.3s; }
+  .btn-sm { padding: 4px 10px; font-size: 11px; }
+  .btn-edit { background: #e8eaf6; color: #283593; }
+  .btn-edit:hover { background: #c5cae9; }
+  .btn-delete { background: #fce4ec; color: #c62828; }
+  .btn-delete:hover { background: #f8bbd0; }
+  .btn-primary { background: #4b0082; color: white; }
+  .btn-primary:hover { background: #6a0dad; }
+  .btn-secondary { background: #e0e0e0; color: #333; }
+  .btn-secondary:hover { background: #bdbdbd; }
+  /* Modal */
+  .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: center; }
+  .modal-overlay.active { display: flex; }
+  .modal { background: white; border-radius: 12px; padding: 30px; width: 420px; max-width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+  .modal h3 { color: #4b0082; margin-bottom: 20px; font-size: 18px; }
+  .modal label { display: block; font-size: 13px; color: #555; margin-bottom: 4px; font-weight: 500; }
+  .modal input, .modal select { width: 100%; padding: 10px; margin-bottom: 16px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+  .modal input:focus, .modal select:focus { outline: none; border-color: #6a0dad; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px; }
+  /* Loader */
+  .loader { text-align: center; padding: 30px; color: #999; }
+  .loader i { font-size: 24px; margin-bottom: 10px; }
+  .empty-state { text-align: center; padding: 30px; color: #999; }
+  .empty-state i { font-size: 40px; margin-bottom: 10px; color: #ddd; }
+  .total-count { font-size: 13px; color: #666; margin-bottom: 10px; }
   @media (max-width: 768px) { .sidebar { width: 200px; } .main { margin-left: 200px; padding: 20px; } }
   @media (max-width: 560px) { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; padding: 16px; } }
 </style>
 </head>
 <body>
+
 <div class="sidebar">
     <h2>Equilibrium</h2>
     <nav>
@@ -39,11 +75,13 @@
         <a href="financeiro.html">💰 Financeiro</a>
     </nav>
 </div>
+
 <div class="main">
   <div class="header">
     <h1>📊 Agenda de Gráficos</h1>
     <div class="subtitle">Gerencie o agendamento e acompanhamento dos gráficos dos clientes.</div>
   </div>
+
   <div class="card">
     <h3>📅 Calendário de Gráficos</h3>
     <div class="calendar-wrap">
@@ -53,6 +91,244 @@
       Eventos mostrados no fuso horário: (GMT-03:00) Horário Padrão de Brasília - São Paulo &nbsp;|&nbsp; <a href="https://calendar.google.com/calendar/u/0/r?cid=3c23c1b339dd330985fe7b0541c3810edc7e38fe93be31181ceb0a0c69d840cd@group.calendar.google.com" target="_blank" style="color:#4b0082;">Adicionar ao Google Agenda</a>
     </div>
   </div>
+
+  <div class="card">
+    <h3>📋 Eventos de Gráficos</h3>
+    <div id="eventos-container">
+      <div class="loader" id="eventos-loader"><i class="fas fa-spinner fa-spin"></i><br>Carregando eventos...</div>
+    </div>
+  </div>
 </div>
+
+<!-- Modal Editar -->
+<div class="modal-overlay" id="modal-editar">
+  <div class="modal">
+    <h3>✏️ Editar Evento</h3>
+    <form id="form-editar">
+      <input type="hidden" id="edit-eventId">
+      <input type="hidden" id="edit-tratamentoId">
+      <input type="hidden" id="edit-graficoNome">
+      <input type="hidden" id="edit-tituloAtual">
+
+      <label for="edit-data">Data</label>
+      <input type="date" id="edit-data" required>
+
+      <label for="edit-hora">Horário</label>
+      <input type="time" id="edit-hora" required>
+
+      <label for="edit-local">Local</label>
+      <input type="text" id="edit-local" placeholder="Ex: Sala 1, Online...">
+
+      <label for="edit-status">Status</label>
+      <select id="edit-status">
+        <option value="Agendado">Agendado</option>
+        <option value="Confirmado">Confirmado</option>
+        <option value="Realizado">Realizado</option>
+        <option value="Reagendado">Reagendado</option>
+        <option value="Cancelado">Cancelado</option>
+      </select>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Confirmar Exclusão -->
+<div class="modal-overlay" id="modal-excluir">
+  <div class="modal" style="width:360px;">
+    <h3>🗑️ Excluir Evento</h3>
+    <p style="color:#555;margin-bottom:6px;">Tem certeza que deseja excluir este evento?</p>
+    <p id="excluir-info" style="font-size:13px;color:#888;margin-bottom:20px;"></p>
+    <input type="hidden" id="excluir-eventId">
+    <input type="hidden" id="excluir-tratamentoId">
+    <input type="hidden" id="excluir-graficoNome">
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="fecharModalExcluir()">Voltar</button>
+      <button class="btn btn-delete" onclick="confirmarExclusao()">Sim, Excluir</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DATABASE_URL = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
+
+let eventosCache = [];
+
+document.addEventListener('DOMContentLoaded', carregarEventos);
+
+async function carregarEventos() {
+  const container = document.getElementById('eventos-container');
+  container.innerHTML = '<div class="loader"><i class="fas fa-spinner fa-spin"></i><br>Carregando eventos...</div>';
+  try {
+    const response = await fetch(DATABASE_URL + '?action=listar_eventos');
+    const result = await response.json();
+    if (result.success) {
+      eventosCache = result.eventos || [];
+      renderizarEventos(eventosCache);
+    } else {
+      container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle" style="color:#e65100;"></i><br>Erro ao carregar: ' + (result.error || 'desconhecido') + '</div>';
+    }
+  } catch (err) {
+    container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle" style="color:#e65100;"></i><br>Erro de conexão: ' + err.message + '</div>';
+  }
+}
+
+function renderizarEventos(eventos) {
+  const container = document.getElementById('eventos-container');
+  if (!eventos || eventos.length === 0) {
+    container.innerHTML = '<div class="empty-state"><i class="fas fa-calendar-check"></i><br>Nenhum evento encontrado nos próximos dias.</div>';
+    return;
+  }
+  let html = '<div class="total-count"><strong>' + eventos.length + '</strong> evento(s) encontrado(s)</div>';
+  html += '<div style="overflow-x:auto;"><table class="eventos-table"><thead><tr>';
+  html += '<th>Data</th><th>Horário</th><th>Título</th><th>Cliente</th><th>Local</th><th>Ações</th>';
+  html += '</tr></thead><tbody>';
+  for (var i = 0; i < eventos.length; i++) {
+    var e = eventos[i];
+    var dataFormatada = formatarData(e.data);
+    var localTag = e.titulo && e.titulo.indexOf(' - ') > -1 ? e.titulo.split(' - ')[0] : (e.titulo || '');
+    // Extrai o nome do cliente do título (última parte após " - ")
+    var partes = e.titulo ? e.titulo.split(' - ') : [];
+    var nomeExibicao = partes.length >= 2 ? partes[partes.length - 1] : (e.cliente_nome || '');
+    // O local é a primeira parte
+    var localExibicao = partes.length >= 3 ? partes[0] : (e.titulo && e.titulo.indexOf(' - ') > -1 ? partes[0] : '');
+    var graficoExibicao = partes.length >= 3 ? partes[1] : (partes.length === 2 ? partes[0] : '');
+    var statusClass = 'status-ok';
+    var statusText = 'Agendado';
+    html += '<tr>';
+    html += '<td><strong>' + dataFormatada + '</strong></td>';
+    html += '<td>' + e.hora + '</td>';
+    html += '<td>' + (graficoExibicao || e.grafico_nome || e.titulo) + '</td>';
+    html += '<td>' + (nomeExibicao || e.cliente_nome || '-') + '</td>';
+    html += '<td>' + (localExibicao || '-') + '</td>';
+    html += '<td>';
+    if (e.eventId) {
+      html += '<button class="btn btn-edit btn-sm" onclick="abrirModalEditar(\'' + e.eventId + '\',\'' + (e.tratamento_id || '') + '\',\'' + (e.grafico_nome || '').replace(/'/g, "\'") + '\',\'' + e.data + '\',\'' + e.hora + '\',\'' + (localExibicao || '').replace(/'/g, "\'") + '\')"><i class="fas fa-edit"></i> Editar</button> ';
+      html += '<button class="btn btn-delete btn-sm" onclick="abrirModalExcluir(\'' + e.eventId + '\',\'' + (e.tratamento_id || '') + '\',\'' + (e.grafico_nome || '').replace(/'/g, "\'") + '\',\'' + dataFormatada + ' ' + e.hora + '\')"><i class="fas fa-trash"></i></button>';
+    }
+    html += '</td></tr>';
+  }
+  html += '</tbody></table></div>';
+  container.innerHTML = html;
+}
+
+function formatarData(dataStr) {
+  if (!dataStr) return '';
+  var partes = dataStr.split('-');
+  if (partes.length === 3) return partes[2] + '/' + partes[1] + '/' + partes[0];
+  return dataStr;
+}
+
+// Modal Editar
+function abrirModalEditar(eventId, tratamentoId, graficoNome, data, hora, local) {
+  document.getElementById('edit-eventId').value = eventId;
+  document.getElementById('edit-tratamentoId').value = tratamentoId;
+  document.getElementById('edit-graficoNome').value = graficoNome;
+  document.getElementById('edit-data').value = data;
+  document.getElementById('edit-hora').value = hora;
+  document.getElementById('edit-local').value = local;
+  document.getElementById('modal-editar').classList.add('active');
+}
+
+function fecharModal() {
+  document.getElementById('modal-editar').classList.remove('active');
+}
+
+document.getElementById('form-editar').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var eventId = document.getElementById('edit-eventId').value;
+  var tratamentoId = document.getElementById('edit-tratamentoId').value;
+  var graficoNome = document.getElementById('edit-graficoNome').value;
+  var novaData = document.getElementById('edit-data').value;
+  var novaHora = document.getElementById('edit-hora').value;
+  var novoLocal = document.getElementById('edit-local').value;
+  var novoStatus = document.getElementById('edit-status').value;
+
+  // Monta o novo título
+  var titulo = novoLocal ? novoLocal + ' - ' + graficoNome + ' - ' : graficoNome + ' - ';
+  // Pega o nome do cliente do cache
+  var evento = eventosCache.find(function(e) { return e.eventId === eventId; });
+  titulo += evento ? evento.cliente_nome : '';
+
+  fecharModal();
+  document.getElementById('eventos-container').innerHTML = '<div class="loader"><i class="fas fa-spinner fa-spin"></i><br>Salvando...</div>';
+
+  try {
+    var response = await fetch(DATABASE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'editar_evento_calendario',
+        eventId: eventId,
+        tratamento_id: tratamentoId,
+        grafico_nome: graficoNome,
+        titulo: titulo,
+        data: novaData,
+        hora: novaHora,
+        local: novoLocal,
+        status: novoStatus
+      })
+    });
+    var result = await response.json();
+    if (result.success) {
+      alert('✅ Evento atualizado com sucesso!');
+      carregarEventos();
+    } else {
+      alert('❌ Erro: ' + (result.error || 'desconhecido'));
+      carregarEventos();
+    }
+  } catch (err) {
+    alert('❌ Erro de conexão: ' + err.message);
+    carregarEventos();
+  }
+});
+
+// Modal Excluir
+function abrirModalExcluir(eventId, tratamentoId, graficoNome, info) {
+  document.getElementById('excluir-eventId').value = eventId;
+  document.getElementById('excluir-tratamentoId').value = tratamentoId;
+  document.getElementById('excluir-graficoNome').value = graficoNome;
+  document.getElementById('excluir-info').textContent = info;
+  document.getElementById('modal-excluir').classList.add('active');
+}
+
+function fecharModalExcluir() {
+  document.getElementById('modal-excluir').classList.remove('active');
+}
+
+async function confirmarExclusao() {
+  var eventId = document.getElementById('excluir-eventId').value;
+  var tratamentoId = document.getElementById('excluir-tratamentoId').value;
+  var graficoNome = document.getElementById('excluir-graficoNome').value;
+  fecharModalExcluir();
+  document.getElementById('eventos-container').innerHTML = '<div class="loader"><i class="fas fa-spinner fa-spin"></i><br>Excluindo...</div>';
+  try {
+    var response = await fetch(DATABASE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'excluir_evento_calendario',
+        eventId: eventId,
+        tratamento_id: tratamentoId,
+        grafico_nome: graficoNome
+      })
+    });
+    var result = await response.json();
+    if (result.success) {
+      alert('✅ Evento excluído com sucesso!');
+      carregarEventos();
+    } else {
+      alert('❌ Erro: ' + (result.error || 'desconhecido'));
+      carregarEventos();
+    }
+  } catch (err) {
+    alert('❌ Erro de conexão: ' + err.message);
+    carregarEventos();
+  }
+}
+</script>
 </body>
 </html>
