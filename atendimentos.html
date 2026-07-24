@@ -271,7 +271,7 @@
                     dl.appendChild(o);
                 });
 
-                const resA = await fetch(URL_ATEND);
+                const resA = await fetch(URL_ATEND + '?action=configuracoes&_=' + new Date().getTime());
                 const jsonA = await resA.json();
                 const config = jsonA.configuracoes || {};
 
