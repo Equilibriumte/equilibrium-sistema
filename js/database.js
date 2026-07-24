@@ -20,3 +20,35 @@ async function salvarCliente(dados) {
 }
 
 window.salvarCliente = salvarCliente;
+
+// 
+// AGENDA DE GRÁFICOS
+// 
+async function listarEventos() {
+  const response = await fetch(DATABASE_URL + '?action=listar_eventos');
+  const data = await response.json();
+  return data;
+}
+
+async function editarEvento(dados) {
+  const response = await fetch(DATABASE_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'editar_evento_calendario', ...dados })
+  });
+  const data = await response.json();
+  return data;
+}
+
+async function excluirEvento(dados) {
+  const response = await fetch(DATABASE_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'excluir_evento_calendario', ...dados })
+  });
+  const data = await response.json();
+  return data;
+}
+window.listarEventos = listarEventos;
+window.editarEvento = editarEvento;
+window.excluirEvento = excluirEvento;
