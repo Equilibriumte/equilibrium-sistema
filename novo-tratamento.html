@@ -261,7 +261,7 @@ function carregarAtendimentosCliente(clienteId) {
 }
  
 function carregarGraficosPredef() {
-  fetch(URL_ATEND + '?_=' + Date.now()).then(function(r){return r.text();}).then(function(text){
+ fetch(URL_ATEND + '?action=configuracoes&_=' + Date.now()).then(function(r){return r.text();}).then(function(text){
     var data=JSON.parse(text); var config=data.configuracoes||data.Configuracoes||null;
     if(!config){var vals=Object.values(data); if(vals.some(function(v){return Array.isArray(v)&&v.length>1;})) config=data;}
     var found=null;
