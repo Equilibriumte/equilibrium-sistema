@@ -26,30 +26,28 @@
         #contador { margin-top: 8px; font-size: 13px; color: #4b0082; font-weight: bold; display: none; }
         #msgErro { display: none; padding: 12px; background: #fde8e8; color: #c0392b; border-radius: 6px; margin-top: 10px; font-size: 14px; }
         #relatorioContainer { display: none; }
-        .document-page { background: #fff; padding: 30px; border-radius: 4px; box-shadow: 0 0 15px rgba(0,0,0,0.1); max-width: 900px; margin: 0 auto; }
+        .document-page { background: #fff; padding: 15px 20px; border-radius: 4px; box-shadow: 0 0 15px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto; }
         .doc-header { 
-            text-align: center; 
+            text-align: center;
             border-bottom: 2px solid #4b0082; 
-            padding-bottom: 8px; 
-            margin-bottom: 12px; 
-            display: flex;
+            padding-bottom: 6px; 
+            margin-bottom: 10px;
+        }
+        .doc-header .header-inner {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 15px;
         }
-        .doc-header .logo {
-            width: 50px;
-            height: 50px;
-            flex-shrink: 0;
+        .doc-header .logo-img {
+            width: 150px;
+            height: auto;
+            filter: brightness(0.5) contrast(1.8);
+            display: block;
         }
-        .doc-header .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-        .doc-header-text { text-align: center; }
-        .doc-header-text h2 { font-size: 20px; color: #4b0082; }
-        .doc-header-text p { font-size: 13px; color: #666; }
+        .doc-header-text { text-align: left; }
+        .doc-header-text h2 { font-size: 20px; color: #4b0082; margin: 0; }
+        .doc-header-text p { font-size: 13px; color: #666; margin: 2px 0 0; }
         .doc-section { margin-bottom: 15px; }
         .doc-section h3 { 
             background: #f8f9fa; 
@@ -108,7 +106,7 @@
             .sidebar, .card, .action-buttons, .header { display: none !important; }
             .main { margin-left: 0; padding: 0; }
             body { background: #fff; }
-            .document-page { box-shadow: none; padding: 20px; max-width: 100%; }
+            .document-page { box-shadow: none; padding: 15px 20px; max-width: 100%; }
             .doc-section h3 { background: #eee !important; -webkit-print-color-adjust: exact; }
         }
     </style>
@@ -149,16 +147,16 @@
     </div>
     <div id="relatorioContainer">
         <div class="document-page">
-           <div class="doc-header" style="display:flex;align-items:center;gap:15px;border-bottom:2px solid #4b0082;padding-bottom:4px;margin-bottom:8px;">
-    <div style="flex-shrink:0;width:200px;text-align:right;">
-        <img src="Logo-fundo-transparente.png" alt="Equilibrium" style="width:200px;height:auto;filter:brightness(0.5) contrast(1.8);display:block;">
-    </div>
-    <div style="flex:1;text-align:left;">
-        <h2 style="font-size:22px;color:#4b0082;margin:0;">RELATÓRIO DO CLIENTE</h2>
-        <p style="font-size:14px;color:#666;margin:3px 0 0;">Equilibrium - Terapias Energéticas</p>
-        <p id="docDataAtual" style="font-size:12px;color:#999;margin:2px 0 0;"></p>
-    </div>
-</div>
+            <div class="doc-header">
+                <div class="header-inner">
+                    <img src="Logo-fundo-transparente.png" alt="Equilibrium" class="logo-img">
+                    <div class="doc-header-text">
+                        <h2>RELATÓRIO DO CLIENTE</h2>
+                        <p>Equilibrium - Terapias Energéticas</p>
+                        <p id="docDataAtual"></p>
+                    </div>
+                </div>
+            </div>
             <div id="conteudoRelatorio"></div>
         </div>
     </div>
@@ -262,7 +260,6 @@ function renderizarRelatorio(data, nomeCliente) {
         return;
     }
     let html = '';
-    // 1. DADOS CADASTRAIS
     html += '<div class="doc-section"><h3>1. Dados Cadastrais</h3><div class="data-grid">';
     const labels = {
         nome: 'Nome', 'id cliente': 'ID', id: 'ID', data: 'Cadastro',
@@ -277,14 +274,11 @@ function renderizarRelatorio(data, nomeCliente) {
     for (let chave in labels) {
         let val = cli[chave] || '';
         if (val) {
-            if (chave === 'data' || chave === 'nascimento') {
-                val = formatarData(val);
-            }
+            if (chave === 'data' || chave === 'nascimento') val = formatarData(val);
             html += '<div class="data-item"><span class="data-label">' + labels[chave] + ':</span> ' + val + '</div>';
         }
     }
     html += '</div></div>';
-    // 2. ATENDIMENTOS
     if (data.atendimentos && data.atendimentos.length > 0) {
         html += '<div class="doc-section"><h3>2. Atendimentos (' + data.atendimentos.length + ')</h3>';
         data.atendimentos.forEach((at, i) => {
@@ -295,57 +289,35 @@ function renderizarRelatorio(data, nomeCliente) {
             if (idAtendimento) html += '<span class="atend-id">' + idAtendimento + '</span>';
             html += '</div>';
             html += '<div class="atendimento-body">';
-            let htmlAtendimento = '<div class="data-grid">';
-            let camposAtendimento = {
-                'data do atendimento': 'Data',
-                'data_atendimento': 'Data',
-                'data': 'Data',
-                'queixa principal': 'Queixa Principal',
-                'queixa_principal': 'Queixa Principal',
-                'status': 'Status'
-            };
+            let htmlAt = '<div class="data-grid">';
+            const camposAt = { 'data do atendimento': 'Data', 'data_atendimento': 'Data', 'data': 'Data', 'queixa principal': 'Queixa Principal', 'queixa_principal': 'Queixa Principal', 'status': 'Status' };
             const atNorm = {};
-            for (let k in at) {
-                atNorm[k.toLowerCase().replace(/[\u0300-\u036f]/g, "")] = at[k];
-            }
-            for (let chave in camposAtendimento) {
+            for (let k in at) atNorm[k.toLowerCase().replace(/[\u0300-\u036f]/g, "")] = at[k];
+            for (let chave in camposAt) {
                 let val = atNorm[chave] || '';
                 if (val) {
                     if (chave.includes('data')) val = formatarData(val);
-                    htmlAtendimento += '<div class="data-item"><span class="data-label">' + camposAtendimento[chave] + ':</span> ' + val + '</div>';
+                    htmlAt += '<div class="data-item"><span class="data-label">' + camposAt[chave] + ':</span> ' + val + '</div>';
                 }
             }
-            htmlAtendimento += '</div>';
-            html += htmlAtendimento;
-            const tratamentosDoAtendimento = (data.tratamentos || []).filter(t => {
+            htmlAt += '</div>';
+            html += htmlAt;
+            const tratDoAt = (data.tratamentos || []).filter(t => {
                 const idAt = (t['id atendimento'] || t['id_atendimento'] || t['idatendimento'] || '').toString().toLowerCase().trim();
                 return idAt === idAtendimento.toString().toLowerCase().trim();
             });
-            if (tratamentosDoAtendimento.length > 0) {
+            if (tratDoAt.length > 0) {
                 html += '<div style="margin-top:12px;"><strong style="font-size:13px;color:#4b0082;">📊 Gráficos deste atendimento:</strong></div>';
-                tratamentosDoAtendimento.forEach(tr => {
+                tratDoAt.forEach(tr => {
                     html += '<div class="tratamento-item"><div class="tratamento-grid">';
-                    const camposTratamento = {
-                        'grafico': 'Gráfico',
-                        'gratico': 'Gráfico',
-                        'data inicio': 'Data Início',
-                        'data_inicio': 'Data Início',
-                        'data finalizacao': 'Data Finalização',
-                        'data_finalizacao': 'Data Finalização',
-                        'status': 'Status',
-                        'local': 'Local'
-                    };
+                    const camposTr = { 'grafico': 'Gráfico', 'gratico': 'Gráfico', 'data inicio': 'Data Início', 'data_inicio': 'Data Início', 'data finalizacao': 'Data Finalização', 'data_finalizacao': 'Data Finalização', 'status': 'Status', 'local': 'Local' };
                     const trNorm = {};
-                    for (let k in tr) {
-                        trNorm[k.toLowerCase().replace(/[\u0300-\u036f]/g, "")] = tr[k];
-                    }
-                    for (let chave in camposTratamento) {
+                    for (let k in tr) trNorm[k.toLowerCase().replace(/[\u0300-\u036f]/g, "")] = tr[k];
+                    for (let chave in camposTr) {
                         let val = trNorm[chave] || '';
                         if (val) {
-                            if (chave.includes('data') || chave.includes('inicio') || chave.includes('finalizacao')) {
-                                val = formatarData(val);
-                            }
-                            html += '<div class="data-item"><span class="data-label">' + camposTratamento[chave] + ':</span> ' + val + '</div>';
+                            if (chave.includes('data') || chave.includes('inicio') || chave.includes('finalizacao')) val = formatarData(val);
+                            html += '<div class="data-item"><span class="data-label">' + camposTr[chave] + ':</span> ' + val + '</div>';
                         }
                     }
                     html += '</div></div>';
@@ -356,39 +328,6 @@ function renderizarRelatorio(data, nomeCliente) {
         html += '</div>';
     } else {
         html += '<div class="doc-section"><h3>2. Atendimentos</h3><p class="sem-dados">Nenhum atendimento encontrado para este cliente.</p></div>';
-    }
-    // 3. TRATAMENTOS (GRÁFICOS) SEM ATENDIMENTO VINCULADO
-    const tratamentosComAtendimento = new Set();
-    (data.tratamentos || []).forEach(t => {
-        const idAt = (t['id atendimento'] || t['id_atendimento'] || t['idatendimento'] || '').toString().toLowerCase().trim();
-        if (idAt) tratamentosComAtendimento.add(idAt);
-    });
-    const tratamentosAvulsos = (data.tratamentos || []).filter(t => {
-        const idAt = (t['id atendimento'] || t['id_atendimento'] || t['idatendimento'] || '').toString().toLowerCase().trim();
-        return !idAt;
-    });
-    if (tratamentosAvulsos.length > 0) {
-        html += '<div class="doc-section"><h3>3. Gráficos (' + tratamentosAvulsos.length + ')</h3>';
-        tratamentosAvulsos.forEach(tr => {
-            html += '<div class="tratamento-item"><div class="tratamento-grid">';
-            const camposTratamento = {
-                'grafico': 'Gráfico', 'gratico': 'Gráfico',
-                'data inicio': 'Data Início', 'data_inicio': 'Data Início',
-                'data finalizacao': 'Data Finalização', 'data_finalizacao': 'Data Finalização',
-                'status': 'Status', 'local': 'Local'
-            };
-            const trNorm = {};
-            for (let k in tr) { trNorm[k.toLowerCase().replace(/[\u0300-\u036f]/g, "")] = tr[k]; }
-            for (let chave in camposTratamento) {
-                let val = trNorm[chave] || '';
-                if (val) {
-                    if (chave.includes('data') || chave.includes('inicio') || chave.includes('finalizacao')) val = formatarData(val);
-                    html += '<div class="data-item"><span class="data-label">' + camposTratamento[chave] + ':</span> ' + val + '</div>';
-                }
-            }
-            html += '</div></div>';
-        });
-        html += '</div>';
     }
     container.innerHTML = html;
     document.getElementById('relatorioContainer').style.display = 'block';
