@@ -8,53 +8,24 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #f4f1f8; display: flex; min-height: 100vh; }
-
         .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082, #6a0dad); color: #ffd700; padding: 20px; position: fixed; height: 100vh; overflow-y: auto; }
         .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
         .sidebar a { display: block; color: #fff; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: .3s; font-size: 14px; }
         .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
-
         .main { margin-left: 250px; padding: 30px; flex: 1; }
         .header { margin-bottom: 25px; }
         .header h1 { color: #4b0082; font-size: 26px; }
         .header .subtitle { color: #666; font-size: 14px; margin-top: 5px; }
-
         .card { background: #fff; border-radius: 10px; padding: 25px; box-shadow: 0 2px 8px rgba(75,0,130,0.08); margin-bottom: 20px; }
-
-        .search-group { position: relative; }
-        #clienteBusca { width: 100%; padding: 14px; border: 2px solid #e0d4f0; border-radius: 8px; font-size: 16px; outline: none; }
-        #clienteBusca:focus { border-color: #6a0dad; }
-
-        .autocomplete-list { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #ddd; border-radius: 0 0 8px 8px; max-height: 200px; overflow-y: auto; z-index: 1000; display: none; }
-        .autocomplete-item { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
-        .autocomplete-item:hover { background: #f7f2fc; color: #4b0082; }
-
-        #debug { display: none; margin-top: 15px; padding: 15px; background: #fff3cd; border-radius: 6px; font-size: 13px; color: #856404; white-space: pre-wrap; word-break: break-all; border: 1px solid #ffc107; }
-        #msgErro { display: none; padding: 12px; background: #fde8e8; color: #c0392b; border-radius: 6px; margin-top: 10px; font-size: 14px; }
-        #msgCarregando { display: none; padding: 10px; color: #666; font-size: 14px; text-align: center; }
-        #contador { display: none; margin-top: 8px; font-size: 13px; color: #4b0082; font-weight: bold; }
-
-        #relatorioContainer { display: none; }
-        .document-page { background: #fff; padding: 50px; border-radius: 4px; box-shadow: 0 0 15px rgba(0,0,0,0.1); max-width: 900px; margin: 0 auto; }
-        .doc-header { text-align: center; border-bottom: 2px solid #4b0082; padding-bottom: 20px; margin-bottom: 30px; }
-        .doc-section { margin-bottom: 25px; }
-        .doc-section h3 { background: #f8f9fa; padding: 8px 15px; color: #4b0082; font-size: 16px; border-left: 4px solid #4b0082; margin-bottom: 15px; text-transform: uppercase; }
-        .data-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 20px; }
-        .data-item { font-size: 14px; border-bottom: 1px solid #f0f0f0; padding: 5px 0; }
-        .data-label { font-weight: 700; color: #555; margin-right: 8px; }
-        .sub-card { border: 1px solid #eee; padding: 15px; margin-bottom: 12px; border-radius: 6px; }
-        .action-buttons { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; display: none; }
-        .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
-        .btn-print { background: #4b0082; color: #fff; }
-        .btn-refresh { background: #6c757d; color: #fff; }
+        #resultadoTeste { margin-top: 20px; padding: 20px; background: #f0f0f0; border-radius: 8px; white-space: pre-wrap; font-size: 13px; max-height: 400px; overflow-y: auto; display: none; }
+        #statusMsg { padding: 15px; border-radius: 8px; margin-top: 15px; font-size: 14px; display: none; }
+        .ok { background: #d4edda; color: #155724; }
+        .erro { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-right: 10px; }
+        .btn-primary { background: #4b0082; color: #fff; }
+        .btn-secondary { background: #6c757d; color: #fff; }
         .btn:hover { opacity: .9; }
-
-        @media print {
-            .sidebar, .card, .action-buttons, .header { display: none !important; }
-            .main { margin-left: 0; padding: 0; }
-            body { background: #fff; }
-            .document-page { box-shadow: none; padding: 20px; max-width: 100%; }
-        }
     </style>
 </head>
 <body>
@@ -79,253 +50,196 @@
 <div class="main">
     <div class="header">
         <h1>📄 Relatório do Cliente</h1>
-        <div class="subtitle">Visualize um relatório completo com dados, atendimentos e tratamentos.</div>
+        <div class="subtitle">Diagnóstico do carregamento de clientes</div>
     </div>
 
     <div class="card">
-        <div class="search-group">
-            <input type="text" id="clienteBusca" placeholder="Carregando clientes..." autocomplete="off">
-            <div id="autocompleteList" class="autocomplete-list"></div>
-            <div id="msgCarregando">⏳ Carregando lista de clientes...</div>
-            <div id="msgErro"></div>
-            <div id="contador"></div>
-            <div id="debug"></div>
-        </div>
+        <h3 style="margin-bottom:15px;color:#4b0082;">🔍 Teste de Conexão com o Apps Script</h3>
+        
+        <button class="btn btn-primary" onclick="testarConexao()">🔄 Testar Conexão</button>
+        <button class="btn btn-secondary" onclick="testarClientes()">👥 Carregar Clientes</button>
+        <button class="btn btn-secondary" onclick="testarRelatorio()">📋 Testar Relatório</button>
+
+        <div id="statusMsg"></div>
+        <div id="resultadoTeste"></div>
     </div>
 
-    <div class="action-buttons" id="btnContainer">
-        <button class="btn btn-print" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
-        <button class="btn btn-refresh" onclick="location.reload()">🔄 Nova Busca</button>
-    </div>
-
-    <div id="relatorioContainer">
-        <div class="document-page">
-            <div class="doc-header">
-                <h2>RELATÓRIO DO CLIENTE</h2>
-                <p>Equilibrium - Terapias Holísticas</p>
-                <p id="docDataAtual"></p>
-            </div>
-            <div id="conteudoRelatorio"></div>
+    <div class="card" id="autocompleteCard" style="display:none;">
+        <h3 style="margin-bottom:15px;color:#4b0082;">🔎 Autocomplete</h3>
+        <div class="search-group" style="position:relative;">
+            <input type="text" id="clienteBusca" placeholder="Digite o nome..." autocomplete="off" style="width:100%;padding:14px;border:2px solid #e0d4f0;border-radius:8px;font-size:16px;outline:none;">
+            <div id="autocompleteList" style="position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #ddd;border-radius:0 0 8px 8px;max-height:200px;overflow-y:auto;z-index:1000;display:none;"></div>
         </div>
+        <p style="margin-top:10px;font-size:13px;color:#666;" id="contadorClientes"></p>
     </div>
 </div>
 
 <script>
 const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
-let listaClientes = [];
+let clientes = [];
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('docDataAtual').innerText = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
-    carregarClientes();
-});
+function mostrarStatus(msg, tipo) {
+    const div = document.getElementById('statusMsg');
+    div.textContent = msg;
+    div.className = tipo;
+    div.style.display = 'block';
+}
 
-async function carregarClientes() {
-    const input = document.getElementById('clienteBusca');
-    const carregando = document.getElementById('msgCarregando');
-    const erro = document.getElementById('msgErro');
-    const debug = document.getElementById('debug');
-    const contador = document.getElementById('contador');
+function mostrarResultado(titulo, dados) {
+    const div = document.getElementById('resultadoTeste');
+    div.innerHTML = '<strong>' + titulo + '</strong>\n\n' + JSON.stringify(dados, null, 2);
+    div.style.display = 'block';
+}
 
-    carregando.style.display = 'block';
-
+async function testarConexao() {
+    mostrarStatus('⏳ Testando conexão...', 'info');
+    document.getElementById('resultadoTeste').style.display = 'none';
+    
     try {
         const res = await fetch(URL_ATEND + '?_=' + Date.now(), { cache: 'no-store' });
         const text = await res.text();
         
-        debug.style.display = 'block';
-        debug.textContent = '📦 Resposta bruta (primeiros 300 caracteres):\n' + text.substring(0, 300) + '...';
+        mostrarResultado('✅ CONEXÃO OK - Resposta bruta (' + text.length + ' chars)', text.substring(0, 500));
+        mostrarStatus('✅ Conexão estabelecida! Resposta recebida.', 'ok');
+    } catch (e) {
+        mostrarResultado('❌ ERRO DE CONEXÃO', e.message);
+        mostrarStatus('❌ Erro: ' + e.message, 'erro');
+    }
+}
 
-        const dados = JSON.parse(text);
-
-        if (!Array.isArray(dados)) {
-            throw new Error('Resposta não é um array. Tipo: ' + typeof dados);
-        }
-
-        listaClientes = dados;
+async function testarClientes() {
+    mostrarStatus('⏳ Carregando clientes...', 'info');
+    document.getElementById('resultadoTeste').style.display = 'none';
+    
+    try {
+        const res = await fetch(URL_ATEND + '?_=' + Date.now(), { cache: 'no-store' });
+        const text = await res.text();
+        let dados;
         
-        contador.style.display = 'block';
-        contador.textContent = '✅ ' + listaClientes.length + ' cliente(s) carregado(s)';
-
-        // Mostra debug do primeiro cliente
-        if (listaClientes.length > 0) {
-            const primeiro = listaClientes[0];
-            debug.textContent += '\n\n🧑 Primeiro cliente:\n' + JSON.stringify(primeiro, null, 2);
-            debug.textContent += '\n\n🔑 Campos disponíveis: ' + Object.keys(primeiro).join(', ');
-        }
-
-        if (listaClientes.length === 0) {
-            input.placeholder = 'Nenhum cliente cadastrado';
-            debug.textContent += '\n\n⚠️ Nenhum cliente encontrado!';
+        try {
+            dados = JSON.parse(text);
+        } catch (e) {
+            mostrarResultado('❌ RESPOSTA NÃO É JSON', text.substring(0, 500));
+            mostrarStatus('❌ Resposta não é JSON válido', 'erro');
             return;
         }
-
-        input.placeholder = 'Digite o nome do cliente...';
+        
+        if (!Array.isArray(dados)) {
+            mostrarResultado('❌ NÃO É UM ARRAY', dados);
+            mostrarStatus('❌ Resposta não é um array. Tipo: ' + typeof dados, 'erro');
+            return;
+        }
+        
+        clientes = dados;
+        
+        if (clientes.length === 0) {
+            mostrarResultado('⚠️ ARRAY VAZIO', 'Nenhum cliente encontrado na aba Clientes.');
+            mostrarStatus('⚠️ Array vazio — a aba Clientes está vazia?', 'info');
+            return;
+        }
+        
+        // Mostra o primeiro cliente
+        const primeiro = clientes[0];
+        const campos = Object.keys(primeiro);
+        
+        let info = 'Total de clientes: ' + clientes.length + '\n\n';
+        info += 'Campos disponíveis: ' + campos.join(', ') + '\n\n';
+        info += 'Primeiro cliente:\n' + JSON.stringify(primeiro, null, 2) + '\n\n';
+        info += 'Últimos 3 clientes:\n';
+        for (let i = Math.max(0, clientes.length - 3); i < clientes.length; i++) {
+            info += '  → ' + (clientes[i].nome || clientes[i].Nome || 'sem nome') + ' (ID: ' + (clientes[i]['id cliente'] || clientes[i].id || '?') + ')\n';
+        }
+        
+        mostrarResultado('✅ CLIENTES CARREGADOS', info);
+        mostrarStatus('✅ ' + clientes.length + ' cliente(s) carregado(s)!', 'ok');
+        
+        // Ativa o autocomplete
+        document.getElementById('autocompleteCard').style.display = 'block';
+        document.getElementById('contadorClientes').textContent = clientes.length + ' cliente(s) disponíveis';
         configurarAutocomplete();
-
+        
     } catch (e) {
-        console.error('Erro:', e);
-        erro.style.display = 'block';
-        erro.textContent = '❌ Erro: ' + e.message;
-        input.placeholder = 'Erro ao carregar';
-        debug.textContent += '\n\n❌ ' + e.message;
-    } finally {
-        carregando.style.display = 'none';
+        mostrarResultado('❌ ERRO', e.message);
+        mostrarStatus('❌ Erro: ' + e.message, 'erro');
+    }
+}
+
+async function testarRelatorio() {
+    if (clientes.length === 0) {
+        mostrarStatus('⚠️ Carregue os clientes primeiro!', 'info');
+        return;
+    }
+    
+    const primeiroId = clientes[0]['id cliente'] || clientes[0].id || '';
+    if (!primeiroId) {
+        mostrarStatus('⚠️ Primeiro cliente não tem ID!', 'erro');
+        return;
+    }
+    
+    mostrarStatus('⏳ Buscando relatório do primeiro cliente...', 'info');
+    document.getElementById('resultadoTeste').style.display = 'none';
+    
+    try {
+        const res = await fetch(URL_ATEND + '?action=relatorio&clienteId=' + encodeURIComponent(primeiroId) + '&_=' + Date.now());
+        const data = await res.json();
+        mostrarResultado('✅ RELATÓRIO DO CLIENTE: ' + (data.cliente?.nome || primeiroId), data);
+        mostrarStatus('✅ Relatório carregado!', 'ok');
+    } catch (e) {
+        mostrarResultado('❌ ERRO NO RELATÓRIO', e.message);
+        mostrarStatus('❌ Erro: ' + e.message, 'erro');
     }
 }
 
 function configurarAutocomplete() {
     const input = document.getElementById('clienteBusca');
     const list = document.getElementById('autocompleteList');
-    const debug = document.getElementById('debug');
 
     input.addEventListener('input', () => {
         const val = input.value.toLowerCase().trim();
         list.innerHTML = '';
-        
-        debug.textContent += '\n\n🔍 Digitou: "' + val + '"';
-
         if (!val) { list.style.display = 'none'; return; }
-
-        // Tenta encontrar o nome em QUALQUER campo do objeto
-        const filtrados = listaClientes.filter(c => {
+        
+        const filtrados = clientes.filter(c => {
             for (let chave in c) {
-                const valor = String(c[chave] || '').toLowerCase();
-                if (valor.includes(val)) return true;
+                if (String(c[chave] || '').toLowerCase().includes(val)) return true;
             }
             return false;
         });
-
-        debug.textContent += '\n📊 Encontrados: ' + filtrados.length;
-
+        
         if (filtrados.length === 0) {
-            list.innerHTML = '<div class="autocomplete-item" style="color:#999">Nenhum cliente encontrado</div>';
+            list.innerHTML = '<div style="padding:12px;color:#999">Nenhum resultado</div>';
             list.style.display = 'block';
             return;
         }
-
-        filtrados.slice(0, 20).forEach(c => {
+        
+        filtrados.slice(0, 15).forEach(c => {
             const div = document.createElement('div');
-            div.className = 'autocomplete-item';
-
-            // Tenta achar nome e ID em qualquer campo
+            div.style.cssText = 'padding:12px 15px;cursor:pointer;border-bottom:1px solid #f0f0f0;font-size:14px';
+            div.onmouseover = () => div.style.background = '#f7f2fc';
+            div.onmouseout = () => div.style.background = '';
+            
             let nome = '', id = '';
             for (let chave in c) {
                 const ch = chave.toLowerCase();
-                if (ch === 'nome' || ch === 'cliente' || ch === 'name') nome = c[chave];
+                if (ch === 'nome' || ch === 'cliente') nome = c[chave];
                 if (ch === 'id' || ch === 'id cliente' || ch === 'id_cliente') id = c[chave];
             }
-
-            div.textContent = nome || 'Sem nome';
-            if (id) div.textContent += ' (' + id + ')';
-
+            
+            div.textContent = (nome || 'Sem nome') + (id ? ' (' + id + ')' : '');
             div.onclick = () => {
                 input.value = nome || '';
                 list.style.display = 'none';
-                buscarRelatorio(id || '', nome || '');
+                mostrarStatus('✅ Cliente selecionado: ' + (nome || '') + ' (ID: ' + id + ')', 'ok');
             };
             list.appendChild(div);
         });
-
+        
         list.style.display = 'block';
     });
 
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.search-group')) list.style.display = 'none';
     });
-}
-
-async function buscarRelatorio(clienteId, nomeCliente) {
-    document.getElementById('relatorioContainer').style.display = 'none';
-    document.getElementById('btnContainer').style.display = 'none';
-
-    if (!clienteId) {
-        alert('ID do cliente não encontrado. Selecione um cliente da lista.');
-        return;
-    }
-
-    try {
-        const res = await fetch(URL_ATEND + '?action=relatorio&clienteId=' + encodeURIComponent(clienteId) + '&_=' + Date.now());
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const data = await res.json();
-        renderizarRelatorio(data, nomeCliente);
-    } catch (e) {
-        alert('Erro ao buscar relatório: ' + e.message);
-    }
-}
-
-function renderizarRelatorio(data, nomeCliente) {
-    const container = document.getElementById('conteudoRelatorio');
-    container.innerHTML = '';
-
-    if (!data.cliente) {
-        container.innerHTML = '<p style="text-align:center;color:#999;padding:40px">Cliente "' + (nomeCliente || '') + '" não encontrado.</p>';
-        document.getElementById('relatorioContainer').style.display = 'block';
-        return;
-    }
-
-    let html = '';
-
-    // 1. DADOS DO CLIENTE
-    html += '<div class="doc-section"><h3>1. Dados Cadastrais</h3><div class="data-grid">';
-    const labels = {
-        nome: 'Nome', 'id cliente': 'ID', id: 'ID', 'data do cadastro': 'Cadastro',
-        data: 'Cadastro', nascimento: 'Nascimento', whatsapp: 'WhatsApp',
-        email: 'E-mail', instagram: 'Instagram', rua: 'Rua', numero: 'Nº',
-        bairro: 'Bairro', cidade: 'Cidade', estado: 'UF', cep: 'CEP',
-        indicacao: 'Indicação'
-    };
-
-    // Normaliza as chaves do cliente para lower case
-    const cli = {};
-    for (let k in data.cliente) {
-        cli[k.toLowerCase().replace(/[\u0300-\u036f]/g, "")] = data.cliente[k];
-    }
-
-    for (let chave in labels) {
-        const val = cli[chave] || '';
-        if (val) {
-            html += '<div class="data-item"><span class="data-label">' + labels[chave] + ':</span> ' + val + '</div>';
-        }
-    }
-    html += '</div></div>';
-
-    // 2. ATENDIMENTOS
-    if (data.atendimentos && data.atendimentos.length > 0) {
-        html += '<div class="doc-section"><h3>2. Atendimentos (' + data.atendimentos.length + ')</h3>';
-        data.atendimentos.forEach((at, i) => {
-            html += '<div class="sub-card"><strong>Atendimento #' + (i + 1) + '</strong><div class="data-grid" style="margin-top:8px">';
-            for (let k in at) {
-                if (at[k]) {
-                    html += '<div class="data-item"><span class="data-label">' + k + ':</span> ' + at[k] + '</div>';
-                }
-            }
-            html += '</div></div>';
-        });
-        html += '</div>';
-    }
-
-    // 3. TRATAMENTOS
-    if (data.tratamentos && data.tratamentos.length > 0) {
-        html += '<div class="doc-section"><h3>3. Tratamentos (' + data.tratamentos.length + ')</h3>';
-        data.tratamentos.forEach((tr, i) => {
-            html += '<div class="sub-card"><strong>Tratamento #' + (i + 1) + '</strong><div class="data-grid" style="margin-top:8px">';
-            for (let k in tr) {
-                if (tr[k]) {
-                    html += '<div class="data-item"><span class="data-label">' + k + ':</span> ' + tr[k] + '</div>';
-                }
-            }
-            html += '</div></div>';
-        });
-        html += '</div>';
-    }
-
-    if ((!data.atendimentos || data.atendimentos.length === 0) && (!data.tratamentos || data.tratamentos.length === 0)) {
-        html += '<p style="text-align:center;color:#999;padding:20px">Nenhum atendimento ou tratamento encontrado para este cliente.</p>';
-    }
-
-    container.innerHTML = html;
-    document.getElementById('relatorioContainer').style.display = 'block';
-    document.getElementById('btnContainer').style.display = 'flex';
 }
 </script>
 </body>
