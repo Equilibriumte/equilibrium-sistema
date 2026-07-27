@@ -27,23 +27,91 @@
         #msgErro { display: none; padding: 12px; background: #fde8e8; color: #c0392b; border-radius: 6px; margin-top: 10px; font-size: 14px; }
         #relatorioContainer { display: none; }
         .document-page { background: #fff; padding: 50px; border-radius: 4px; box-shadow: 0 0 15px rgba(0,0,0,0.1); max-width: 900px; margin: 0 auto; }
-        .doc-header { text-align: center; border-bottom: 2px solid #4b0082; padding-bottom: 20px; margin-bottom: 30px; }
+        
+        .doc-header { 
+            text-align: center; 
+            border-bottom: 2px solid #4b0082; 
+            padding-bottom: 20px; 
+            margin-bottom: 30px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        .doc-header .logo {
+            width: 50px;
+            height: 50px;
+            background: #4b0082;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffd700;
+            font-weight: 700;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .doc-header-text { text-align: center; }
+        .doc-header-text h2 { font-size: 20px; color: #4b0082; }
+        .doc-header-text p { font-size: 13px; color: #666; }
+        
         .doc-section { margin-bottom: 25px; }
-        .doc-section h3 { background: #f8f9fa; padding: 8px 15px; color: #4b0082; font-size: 16px; border-left: 4px solid #4b0082; margin-bottom: 15px; text-transform: uppercase; }
+        .doc-section h3 { 
+            background: #f8f9fa; 
+            padding: 8px 15px; 
+            color: #4b0082; 
+            font-size: 16px; 
+            border-left: 4px solid #4b0082; 
+            margin-bottom: 15px; 
+            text-transform: uppercase; 
+        }
         .data-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 20px; }
         .data-item { font-size: 14px; border-bottom: 1px solid #f0f0f0; padding: 5px 0; }
         .data-label { font-weight: 700; color: #555; margin-right: 8px; }
-        .sub-card { border: 1px solid #eee; padding: 15px; margin-bottom: 12px; border-radius: 6px; }
+        
+        .atendimento-card { 
+            border: 1px solid #e0d4f0; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            overflow: hidden;
+        }
+        .atendimento-header {
+            background: #f7f2fc;
+            padding: 10px 15px;
+            font-weight: 600;
+            color: #4b0082;
+            border-bottom: 1px solid #e0d4f0;
+        }
+        .atendimento-body { padding: 15px; }
+        
+        .tratamento-item {
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+        }
+        .tratamento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 6px 15px;
+        }
+        .tratamento-item .data-item { border: none; padding: 3px 0; font-size: 13px; }
+        
+        .sem-dados { text-align: center; color: #999; padding: 20px; font-size: 14px; }
+        
         .action-buttons { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; display: none; }
         .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
         .btn-print { background: #4b0082; color: #fff; }
         .btn-refresh { background: #6c757d; color: #fff; }
         .btn:hover { opacity: .9; }
+        
         @media print {
             .sidebar, .card, .action-buttons, .header { display: none !important; }
             .main { margin-left: 0; padding: 0; }
             body { background: #fff; }
             .document-page { box-shadow: none; padding: 20px; max-width: 100%; }
+            .doc-section h3 { background: #eee !important; -webkit-print-color-adjust: exact; }
         }
     </style>
 </head>
@@ -89,9 +157,12 @@
     <div id="relatorioContainer">
         <div class="document-page">
             <div class="doc-header">
-                <h2>RELATÓRIO DO CLIENTE</h2>
-                <p>Equilibrium - Terapias Holísticas</p>
-                <p id="docDataAtual"></p>
+                <div class="logo">E</div>
+                <div class="doc-header-text">
+                    <h2>RELATÓRIO DO CLIENTE</h2>
+                    <p>Equilibrium - Terapias Holísticas</p>
+                    <p id="docDataAtual"></p>
+                </div>
             </div>
             <div id="conteudoRelatorio"></div>
         </div>
@@ -115,21 +186,13 @@ async function carregarClientes() {
     try {
         const res = await fetch(URL_ATEND + '?_=' + Date.now(), { cache: 'no-store' });
         const dados = await res.json();
-
         if (!Array.isArray(dados)) throw new Error('Resposta inválida');
-
         clientes = dados;
-
-        if (clientes.length === 0) {
-            input.placeholder = 'Nenhum cliente cadastrado';
-            return;
-        }
-
+        if (clientes.length === 0) { input.placeholder = 'Nenhum cliente cadastrado'; return; }
         contador.style.display = 'block';
         contador.textContent = '✅ ' + clientes.length + ' cliente(s) carregado(s)';
         input.placeholder = 'Digite o nome do cliente...';
         configurarAutocomplete();
-
     } catch (e) {
         erro.style.display = 'block';
         erro.textContent = '❌ Erro ao carregar: ' + e.message;
@@ -162,10 +225,8 @@ function configurarAutocomplete() {
         filtrados.slice(0, 15).forEach(c => {
             const div = document.createElement('div');
             div.className = 'autocomplete-item';
-
             let nome = c.nome || c.Nome || c['nome'] || c.cliente || 'Sem nome';
             let id = c['id cliente'] || c['id_cliente'] || c.id || c.ID || '';
-
             div.textContent = nome + (id ? ' (' + id + ')' : '');
             div.onclick = () => {
                 input.value = nome;
@@ -174,7 +235,6 @@ function configurarAutocomplete() {
             };
             list.appendChild(div);
         });
-
         list.style.display = 'block';
     });
 
@@ -202,19 +262,28 @@ async function buscarRelatorio(clienteId, nomeCliente) {
     }
 }
 
+function formatarData(valor) {
+    if (!valor) return '';
+    // Se for string ISO, extrai só a data
+    if (typeof valor === 'string' && valor.includes('T')) {
+        return valor.split('T')[0];
+    }
+    return valor;
+}
+
 function renderizarRelatorio(data, nomeCliente) {
     const container = document.getElementById('conteudoRelatorio');
     container.innerHTML = '';
 
     if (!data.cliente) {
-        container.innerHTML = '<p style="text-align:center;color:#999;padding:40px">Cliente "' + (nomeCliente || '') + '" não encontrado.</p>';
+        container.innerHTML = '<p class="sem-dados">Cliente "' + (nomeCliente || '') + '" não encontrado.</p>';
         document.getElementById('relatorioContainer').style.display = 'block';
         return;
     }
 
     let html = '';
 
-    // 1. DADOS DO CLIENTE
+    // 1. DADOS CADASTRAIS
     html += '<div class="doc-section"><h3>1. Dados Cadastrais</h3><div class="data-grid">';
     const labels = {
         nome: 'Nome', 'id cliente': 'ID', id: 'ID', data: 'Cadastro',
@@ -229,45 +298,111 @@ function renderizarRelatorio(data, nomeCliente) {
     }
 
     for (let chave in labels) {
-        const val = cli[chave] || '';
+        let val = cli[chave] || '';
         if (val) {
+            // Formata datas para mostrar apenas a data (sem hora)
+            if (chave === 'data' || chave === 'nascimento') {
+                val = formatarData(val);
+            }
             html += '<div class="data-item"><span class="data-label">' + labels[chave] + ':</span> ' + val + '</div>';
         }
     }
     html += '</div></div>';
 
-    // 2. ATENDIMENTOS
+    // 2. ATENDIMENTOS COM TRATAMENTOS AGRUPADOS
     if (data.atendimentos && data.atendimentos.length > 0) {
-        html += '<div class="doc-section"><h3>2. Atendimentos (' + data.atendimentos.length + ')</h3>';
+        html += '<div class="doc-section"><h3>2. Atendimentos e Gráficos</h3>';
+
         data.atendimentos.forEach((at, i) => {
-            html += '<div class="sub-card"><strong>Atendimento #' + (i + 1) + '</strong><div class="data-grid" style="margin-top:8px">';
+            html += '<div class="atendimento-card">';
+            html += '<div class="atendimento-header">📅 Atendimento #' + (i + 1) + '</div>';
+            html += '<div class="atendimento-body">';
+
+            // Mostra dados do atendimento (apenas campos preenchidos)
+            let temDadosAtendimento = false;
+            let htmlAtendimento = '<div class="data-grid">';
             for (let k in at) {
-                if (at[k]) {
-                    html += '<div class="data-item"><span class="data-label">' + formatarLabel(k) + ':</span> ' + at[k] + '</div>';
+                if (at[k] && k !== 'nome' && k !== 'id' && k !== 'id cliente') {
+                    htmlAtendimento += '<div class="data-item"><span class="data-label">' + formatarLabel(k) + ':</span> ' + at[k] + '</div>';
+                    temDadosAtendimento = true;
                 }
             }
-            html += '</div></div>';
-        });
-        html += '</div>';
-    }
+            htmlAtendimento += '</div>';
+            if (temDadosAtendimento) html += htmlAtendimento;
 
-    // 3. TRATAMENTOS
-    if (data.tratamentos && data.tratamentos.length > 0) {
-        html += '<div class="doc-section"><h3>3. Tratamentos (' + data.tratamentos.length + ')</h3>';
-        data.tratamentos.forEach((tr, i) => {
-            html += '<div class="sub-card"><strong>Tratamento #' + (i + 1) + '</strong><div class="data-grid" style="margin-top:8px">';
-            for (let k in tr) {
-                if (tr[k]) {
-                    html += '<div class="data-item"><span class="data-label">' + formatarLabel(k) + ':</span> ' + tr[k] + '</div>';
-                }
+            // Filtra tratamentos deste atendimento
+            const idAtendimento = at['id'] || at['id atendimento'] || at['id_atendimento'] || '';
+            const tratamentosDoAtendimento = (data.tratamentos || []).filter(t => {
+                const idAt = t['id atendimento'] || t['id_atendimento'] || t['idatendimento'] || '';
+                return idAt === idAtendimento;
+            });
+
+            if (tratamentosDoAtendimento.length > 0) {
+                html += '<div style="margin-top:12px;"><strong style="font-size:13px;color:#4b0082;">📊 Gráficos deste atendimento:</strong></div>';
+                tratamentosDoAtendimento.forEach(tr => {
+                    html += '<div class="tratamento-item"><div class="tratamento-grid">';
+                    
+                    const camposTratamento = {
+                        'grafico': 'Gráfico',
+                        'gratico': 'Gráfico',
+                        'data inicio': 'Data Início',
+                        'data_inicio': 'Data Início',
+                        'data finalizacao': 'Data Finalização',
+                        'data_finalizacao': 'Data Finalização',
+                        'status': 'Status',
+                        'local': 'Local'
+                    };
+
+                    const trNorm = {};
+                    for (let k in tr) {
+                        trNorm[k.toLowerCase().replace(/[\u0300-\u036f]/g, "")] = tr[k];
+                    }
+
+                    for (let chave in camposTratamento) {
+                        let val = trNorm[chave] || '';
+                        if (val) {
+                            if (chave.includes('data') || chave.includes('inicio') || chave.includes('finalizacao')) {
+                                val = formatarData(val);
+                            }
+                            html += '<div class="data-item"><span class="data-label">' + camposTratamento[chave] + ':</span> ' + val + '</div>';
+                        }
+                    }
+
+                    html += '</div></div>';
+                });
             }
-            html += '</div></div>';
-        });
-        html += '</div>';
-    }
 
-    if ((!data.atendimentos || data.atendimentos.length === 0) && (!data.tratamentos || data.tratamentos.length === 0)) {
-        html += '<p style="text-align:center;color:#999;padding:20px">Nenhum atendimento ou tratamento encontrado para este cliente.</p>';
+            html += '</div></div>'; // fecha atendimento-body e atendimento-card
+        });
+
+        html += '</div>';
+    } else {
+        // Se não tem atendimentos, mostra tratamentos avulsos
+        if (data.tratamentos && data.tratamentos.length > 0) {
+            html += '<div class="doc-section"><h3>2. Gráficos</h3>';
+            data.tratamentos.forEach(tr => {
+                html += '<div class="tratamento-item"><div class="tratamento-grid">';
+                const camposTratamento = {
+                    'grafico': 'Gráfico', 'gratico': 'Gráfico',
+                    'data inicio': 'Data Início', 'data_inicio': 'Data Início',
+                    'data finalizacao': 'Data Finalização', 'data_finalizacao': 'Data Finalização',
+                    'status': 'Status', 'local': 'Local'
+                };
+                const trNorm = {};
+                for (let k in tr) { trNorm[k.toLowerCase().replace(/[\u0300-\u036f]/g, "")] = tr[k]; }
+                for (let chave in camposTratamento) {
+                    let val = trNorm[chave] || '';
+                    if (val) {
+                        if (chave.includes('data') || chave.includes('inicio') || chave.includes('finalizacao')) val = formatarData(val);
+                        html += '<div class="data-item"><span class="data-label">' + camposTratamento[chave] + ':</span> ' + val + '</div>';
+                    }
+                }
+                html += '</div></div>';
+            });
+            html += '</div>';
+        } else {
+            html += '<p class="sem-dados">Nenhum atendimento ou gráfico encontrado para este cliente.</p>';
+        }
     }
 
     container.innerHTML = html;
