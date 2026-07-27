@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório do Cliente - Equilibrium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4B0082;
+            --secondary-color: #6A5ACD;
+            --accent-color: #FFD700;
+            --bg-light: #F4F7F6;
+            --text-dark: #333;
+            --sidebar-width: 260px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body { background-color: var(--bg-light); display: flex; min-height: 100vh; }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+        }
+
+        .logo-container {
+            padding: 30px 20px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--accent-color);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-menu { flex: 1; padding: 20px 0; overflow-y: auto; }
+
+        .nav-item {
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        /* Main */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 40px;
+        }
+
+        header {
+            background-color: white;
+            padding: 20px 40px;
+            margin: -40px -40px 40px -40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        header h1 { color: var(--primary-color); font-size: 24px; }
+        header p { color: #666; font-size: 14px; }
+
+        /* Search */
+        .search-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .search-group { position: relative; }
+
+        input#clienteBusca {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input#clienteBusca:focus { border-color: var(--secondary-color); }
+
+        .autocomplete-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #DDD;
+            border-radius: 0 0 8px 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .autocomplete-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #F0F0F0;
+        }
+
+        .autocomplete-item:hover { background-color: #F9F9F9; color: var(--primary-color); }
+
+        /* Document */
+        #relatorioContainer { display: none; }
+
+        .document-page {
+            background: white;
+            padding: 60px;
+            border-radius: 4px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .doc-header {
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .doc-section { margin-bottom: 30px; }
+        .doc-section h3 {
+            background: #F8F9FA;
+            padding: 8px 15px;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            font-size: 16px;
+            border-left: 4px solid var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px 20px;
+        }
+
+        .data-item { font-size: 14px; line-height: 1.6; border-bottom: 1px solid #F0F0F0; padding: 5px 0; }
+        .data-label { font-weight: 700; color: #555; margin-right: 8px; }
+
+        .sub-card {
+            border: 1px solid #EEE;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-print { background: var(--primary-color); color: white; }
+        .btn-refresh { background: #6c757d; color: white; }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        @media print {
+            .sidebar, .search-card, .action-buttons, header { display: none !important; }
+            .main-content { margin-left: 0; padding: 0; }
+            body { background: white; }
+            .document-page { box-shadow: none; padding: 0; width: 100%; max-width: 100%; }
+            .doc-section h3 { background: #EEE !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo-container">EQUILIBRIUM</div>
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-item">🏠 Home</a>
+            <a href="agenda.html" class="nav-item">📅 Agenda</a>
+            <a href="novo-cliente.html" class="nav-item">👤 Novo Cliente</a>
+            <a href="clientes.html" class="nav-item">📋 Lista de Clientes</a>
+            <a href="atendimentos.html" class="nav-item">🩺 Novo Atendimento</a>
+            <a href="lista-atendimentos.html" class="nav-item">📝 Lista de Atendimento</a>
+            <a href="novo-tratamento.html" class="nav-item">🧪 Novo Tratamento</a>
+            <a href="lista-tratamentos.html" class="nav-item">📊 Lista de Tratamentos</a>
+            <a href="agenda-graficos.html" class="nav-item">📈 Agenda de Gráficos</a>
+            <a href="financeiro.html" class="nav-item">💰 Financeiro</a>
+            <a href="relatorio-cliente.html" class="nav-item active">📄 Relatório do Cliente</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h1>📄 Relatório do Cliente</h1>
+            <p>Visualize um relatório completo com dados, atendimentos e tratamentos do cliente.</p>
+        </header>
+
+        <div class="search-card">
+            <div class="search-group">
+                <input type="text" id="clienteBusca" placeholder="Digite o nome do cliente para pesquisar..." autocomplete="off">
+                <div id="autocompleteList" class="autocomplete-list"></div>
+            </div>
+        </div>
+
+        <div class="action-buttons" id="btnContainer" style="display: none;">
+            <button class="btn btn-print" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+            <button class="btn btn-refresh" onclick="location.reload()">🔄 Nova Busca</button>
+        </div>
+
+        <div id="relatorioContainer">
+            <div class="document-page" id="printArea">
+                <div class="doc-header">
+                    <h2>RELATÓRIO TERAPÊUTICO CONSOLIDADO</h2>
+                    <p>Equilibrium - Terapias Holísticas</p>
+                    <p id="docDataAtual"></p>
+                </div>
+                <div id="conteudoRelatorio"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
+        let listaClientes = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarClientes();
+            document.getElementById('docDataAtual').innerText = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+        });
+
+        async function carregarClientes() {
+            try {
+                const res = await fetch(URL_ATEND);
+                listaClientes = await res.json();
+                configurarAutocomplete();
+            } catch (e) { console.error("Erro ao carregar clientes", e); }
+        }
+
+        function configurarAutocomplete() {
+            const input = document.getElementById('clienteBusca');
+            const list = document.getElementById('autocompleteList');
+
+            input.addEventListener('input', () => {
+                const val = input.value.toLowerCase();
+                list.innerHTML = '';
+                if (!val) { list.style.display = 'none'; return; }
+
+                const filtrados = listaClientes.filter(c => c.nome && c.nome.toLowerCase().includes(val));
+                filtrados.forEach(c => {
+                    const div = document.createElement('div');
+                    div.className = 'autocomplete-item';
+                    div.innerText = `${c.nome} (${c.id})`;
+                    div.onclick = () => {
+                        input.value = c.nome;
+                        list.style.display = 'none';
+                        buscarRelatorio(c.id);
+                    };
+                    list.appendChild(div);
+                });
+                list.style.display = filtrados.length ? 'block' : 'none';
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.search-group')) list.style.display = 'none';
+            });
+        }
+
+        async function buscarRelatorio(clienteId) {
+            document.getElementById('relatorioContainer').style.display = 'none';
+            document.getElementById('btnContainer').style.display = 'none';
+            try {
+                const res = await fetch(`${URL_ATEND}?action=relatorio&clienteId=${clienteId}`);
+                const data = await res.json();
+                renderizarRelatorio(data);
+            } catch (e) { alert("Erro ao buscar dados do relatório."); }
+        }
+
+        function renderizarRelatorio(data) {
+            const container = document.getElementById('conteudoRelatorio');
+            container.innerHTML = '';
+
+            if (!data.cliente) {
+                container.innerHTML = '<p style="text-align:center; color:#999; padding:40px">Cliente não encontrado.</p>';
+                return;
+            }
+
+            let html = '';
+
+            // 1. Dados do Cliente
+            html += `<div class="doc-section"><h3>1. Dados Cadastrais</h3><div class="data-grid">`;
+            const labelsCliente = {
+                nome: "Nome", id: "ID", data: "Cadastro", nascimento: "Nascimento",
+                whatsapp: "WhatsApp", email: "E-mail", instagram: "Instagram",
+                rua: "Rua", numero: "Nº", bairro: "Bairro", cidade: "Cidade",
+                estado: "UF", cep: "CEP", indicacao: "Indicação"
+            };
+            for (let key in labelsCliente) {
+                if (data.cliente[key]) {
+                    html += `<div class="data-item"><span class="data-label">${labelsCliente[key]}:</span> ${data.cliente[key]}</div>`;
+                }
+            }
+            html += `</div></div>`;
+
+            // 2. Atendimentos
+            if (data.atendimentos && data.atendimentos.length > 0) {
+                html += `<div class="doc-section"><h3>2. Histórico de Atendimentos</h3>`;
+                data.atendimentos.forEach((at, index) => {
+                    html += `<div class="sub-card"><strong>Atendimento #${index + 1}</strong><div class="data-grid" style="margin-top:10px">`;
+                    for (let key in at) {
+                        if (at[key]) {
+                            html += `<div class="data-item"><span class="data-label">${formatarLabel(key)}:</span> ${at[key]}</div>`;
+                        }
+                    }
+                    html += `</div></div>`;
+                });
+                html += `</div>`;
+            }
+
+            // 3. Tratamentos
+            if (data.tratamentos && data.tratamentos.length > 0) {
+                html += `<div class="doc-section"><h3>3. Tratamentos e Gráficos</h3>`;
+                data.tratamentos.forEach((tr, index) => {
+                    html += `<div class="sub-card"><strong>Tratamento #${index + 1}</strong><div class="data-grid" style="margin-top:10px">`;
+                    for (let key in tr) {
+                        if (tr[key]) {
+                            html += `<div class="data-item"><span class="data-label">${formatarLabel(key)}:</span> ${tr[key]}</div>`;
+                        }
+                    }
+                    html += `</div></div>`;
+                });
+                html += `</div>`;
+            }
+
+            if (!data.atendimentos?.length && !data.tratamentos?.length) {
+                html += `<p style="text-align:center; color:#999; padding:20px">Nenhum atendimento ou tratamento encontrado para este cliente.</p>`;
+            }
+
+            container.innerHTML = html;
+            document.getElementById('relatorioContainer').style.display = 'block';
+            document.getElementById('btnContainer').style.display = 'flex';
+        }
+
+        function formatarLabel(str) {
+            return str.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+    </script>
+</body>
+</html>
