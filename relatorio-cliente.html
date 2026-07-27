@@ -41,15 +41,12 @@
         .doc-header .logo {
             width: 50px;
             height: 50px;
-            background: #4b0082;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffd700;
-            font-weight: 700;
-            font-size: 18px;
             flex-shrink: 0;
+        }
+        .doc-header .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
         .doc-header-text { text-align: center; }
         .doc-header-text h2 { font-size: 20px; color: #4b0082; }
@@ -81,6 +78,14 @@
             font-weight: 600;
             color: #4b0082;
             border-bottom: 1px solid #e0d4f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .atendimento-header .atend-id {
+            font-size: 12px;
+            color: #888;
+            font-weight: 400;
         }
         .atendimento-body { padding: 15px; }
         
@@ -157,10 +162,12 @@
     <div id="relatorioContainer">
         <div class="document-page">
             <div class="doc-header">
-                <div class="logo">E</div>
+                <div class="logo">
+                    <img src="Equilibrium.logo.png" alt="Equilibrium" onerror="this.style.display='none'">
+                </div>
                 <div class="doc-header-text">
                     <h2>RELATÓRIO DO CLIENTE</h2>
-                    <p>Equilibrium - Terapias Holísticas</p>
+                    <p>Equilibrium - Terapias Energéticas</p>
                     <p id="docDataAtual"></p>
                 </div>
             </div>
@@ -264,11 +271,14 @@ async function buscarRelatorio(clienteId, nomeCliente) {
 
 function formatarData(valor) {
     if (!valor) return '';
-    // Se for string ISO, extrai só a data
     if (typeof valor === 'string' && valor.includes('T')) {
         return valor.split('T')[0];
     }
     return valor;
+}
+
+function formatarLabel(str) {
+    return str.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 }
 
 function renderizarRelatorio(data, nomeCliente) {
@@ -300,7 +310,6 @@ function renderizarRelatorio(data, nomeCliente) {
     for (let chave in labels) {
         let val = cli[chave] || '';
         if (val) {
-            // Formata datas para mostrar apenas a data (sem hora)
             if (chave === 'data' || chave === 'nascimento') {
                 val = formatarData(val);
             }
@@ -309,32 +318,52 @@ function renderizarRelatorio(data, nomeCliente) {
     }
     html += '</div></div>';
 
-    // 2. ATENDIMENTOS COM TRATAMENTOS AGRUPADOS
+    // 2. ATENDIMENTOS
     if (data.atendimentos && data.atendimentos.length > 0) {
-        html += '<div class="doc-section"><h3>2. Atendimentos e Gráficos</h3>';
+        html += '<div class="doc-section"><h3>2. Atendimentos (' + data.atendimentos.length + ')</h3>';
 
         data.atendimentos.forEach((at, i) => {
+            // Pega o ID do atendimento em qualquer formato
+            let idAtendimento = at['id atendimento'] || at['id_atendimento'] || at['id'] || at['ID'] || '';
+            
             html += '<div class="atendimento-card">';
-            html += '<div class="atendimento-header">📅 Atendimento #' + (i + 1) + '</div>';
+            html += '<div class="atendimento-header">';
+            html += '<span>📅 Atendimento #' + (i + 1) + '</span>';
+            if (idAtendimento) html += '<span class="atend-id">' + idAtendimento + '</span>';
+            html += '</div>';
             html += '<div class="atendimento-body">';
 
-            // Mostra dados do atendimento (apenas campos preenchidos)
-            let temDadosAtendimento = false;
+            // Mostra dados do atendimento (apenas campos relevantes)
             let htmlAtendimento = '<div class="data-grid">';
+            let camposAtendimento = {
+                'data do atendimento': 'Data',
+                'data_atendimento': 'Data',
+                'data': 'Data',
+                'queixa principal': 'Queixa Principal',
+                'queixa_principal': 'Queixa Principal',
+                'status': 'Status'
+            };
+            
+            // Normaliza chaves do atendimento
+            const atNorm = {};
             for (let k in at) {
-                if (at[k] && k !== 'nome' && k !== 'id' && k !== 'id cliente') {
-                    htmlAtendimento += '<div class="data-item"><span class="data-label">' + formatarLabel(k) + ':</span> ' + at[k] + '</div>';
-                    temDadosAtendimento = true;
+                atNorm[k.toLowerCase().replace(/[\u0300-\u036f]/g, "")] = at[k];
+            }
+            
+            for (let chave in camposAtendimento) {
+                let val = atNorm[chave] || '';
+                if (val) {
+                    if (chave.includes('data')) val = formatarData(val);
+                    htmlAtendimento += '<div class="data-item"><span class="data-label">' + camposAtendimento[chave] + ':</span> ' + val + '</div>';
                 }
             }
             htmlAtendimento += '</div>';
-            if (temDadosAtendimento) html += htmlAtendimento;
+            html += htmlAtendimento;
 
-            // Filtra tratamentos deste atendimento
-            const idAtendimento = at['id'] || at['id atendimento'] || at['id_atendimento'] || '';
+            // Filtra tratamentos (gráficos) deste atendimento
             const tratamentosDoAtendimento = (data.tratamentos || []).filter(t => {
-                const idAt = t['id atendimento'] || t['id_atendimento'] || t['idatendimento'] || '';
-                return idAt === idAtendimento;
+                const idAt = (t['id atendimento'] || t['id_atendimento'] || t['idatendimento'] || '').toString().toLowerCase().trim();
+                return idAt === idAtendimento.toString().toLowerCase().trim();
             });
 
             if (tratamentosDoAtendimento.length > 0) {
@@ -372,46 +401,53 @@ function renderizarRelatorio(data, nomeCliente) {
                 });
             }
 
-            html += '</div></div>'; // fecha atendimento-body e atendimento-card
+            html += '</div></div>';
         });
 
         html += '</div>';
     } else {
-        // Se não tem atendimentos, mostra tratamentos avulsos
-        if (data.tratamentos && data.tratamentos.length > 0) {
-            html += '<div class="doc-section"><h3>2. Gráficos</h3>';
-            data.tratamentos.forEach(tr => {
-                html += '<div class="tratamento-item"><div class="tratamento-grid">';
-                const camposTratamento = {
-                    'grafico': 'Gráfico', 'gratico': 'Gráfico',
-                    'data inicio': 'Data Início', 'data_inicio': 'Data Início',
-                    'data finalizacao': 'Data Finalização', 'data_finalizacao': 'Data Finalização',
-                    'status': 'Status', 'local': 'Local'
-                };
-                const trNorm = {};
-                for (let k in tr) { trNorm[k.toLowerCase().replace(/[\u0300-\u036f]/g, "")] = tr[k]; }
-                for (let chave in camposTratamento) {
-                    let val = trNorm[chave] || '';
-                    if (val) {
-                        if (chave.includes('data') || chave.includes('inicio') || chave.includes('finalizacao')) val = formatarData(val);
-                        html += '<div class="data-item"><span class="data-label">' + camposTratamento[chave] + ':</span> ' + val + '</div>';
-                    }
+        html += '<div class="doc-section"><h3>2. Atendimentos</h3><p class="sem-dados">Nenhum atendimento encontrado para este cliente.</p></div>';
+    }
+
+    // 3. TRATAMENTOS (GRÁFICOS) SEM ATENDIMENTO VINCULADO
+    const tratamentosComAtendimento = new Set();
+    (data.tratamentos || []).forEach(t => {
+        const idAt = (t['id atendimento'] || t['id_atendimento'] || t['idatendimento'] || '').toString().toLowerCase().trim();
+        if (idAt) tratamentosComAtendimento.add(idAt);
+    });
+    
+    const tratamentosAvulsos = (data.tratamentos || []).filter(t => {
+        const idAt = (t['id atendimento'] || t['id_atendimento'] || t['idatendimento'] || '').toString().toLowerCase().trim();
+        return !idAt;
+    });
+
+    if (tratamentosAvulsos.length > 0) {
+        html += '<div class="doc-section"><h3>3. Gráficos (' + tratamentosAvulsos.length + ')</h3>';
+        tratamentosAvulsos.forEach(tr => {
+            html += '<div class="tratamento-item"><div class="tratamento-grid">';
+            const camposTratamento = {
+                'grafico': 'Gráfico', 'gratico': 'Gráfico',
+                'data inicio': 'Data Início', 'data_inicio': 'Data Início',
+                'data finalizacao': 'Data Finalização', 'data_finalizacao': 'Data Finalização',
+                'status': 'Status', 'local': 'Local'
+            };
+            const trNorm = {};
+            for (let k in tr) { trNorm[k.toLowerCase().replace(/[\u0300-\u036f]/g, "")] = tr[k]; }
+            for (let chave in camposTratamento) {
+                let val = trNorm[chave] || '';
+                if (val) {
+                    if (chave.includes('data') || chave.includes('inicio') || chave.includes('finalizacao')) val = formatarData(val);
+                    html += '<div class="data-item"><span class="data-label">' + camposTratamento[chave] + ':</span> ' + val + '</div>';
                 }
-                html += '</div></div>';
-            });
-            html += '</div>';
-        } else {
-            html += '<p class="sem-dados">Nenhum atendimento ou gráfico encontrado para este cliente.</p>';
-        }
+            }
+            html += '</div></div>';
+        });
+        html += '</div>';
     }
 
     container.innerHTML = html;
     document.getElementById('relatorioContainer').style.display = 'block';
     document.getElementById('btnContainer').style.display = 'flex';
-}
-
-function formatarLabel(str) {
-    return str.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 }
 </script>
 </body>
