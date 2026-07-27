@@ -109,6 +109,22 @@
   let colunas = [];
   let dadosOriginais = [];
 
+  // 🔧 Campos que devem aparecer como porcentagem (BOVIS não está aqui)
+  const CAMPOS_PORCENTAGEM = ['coronario', 'coronário', 'frontal', 'laringeo', 'laríngeo', 'cardiaco', 'cardíaco', 'umbilical', 'sacro', 'basico', 'básico', 'tamanho aura', 'tamanho_aura'];
+
+  // 🔧 Converte decimal (0.75) para porcentagem (75%) - só nos campos específicos
+  function formatarValor(valor, nomeColuna) {
+    if (valor === null || valor === undefined || valor === '' || valor === '-') return valor;
+    const nomeLower = nomeColuna.toLowerCase().replace(/[\u0300-\u036f]/g, "");
+    if (CAMPOS_PORCENTAGEM.includes(nomeLower)) {
+      let num = parseFloat(String(valor).replace(',', '.'));
+      if (!isNaN(num) && num > 0 && num < 1) {
+        return Math.round(num * 100) + '%';
+      }
+    }
+    return valor;
+  }
+
   async function carregar() {
     const status = document.getElementById('status');
     status.textContent = 'Carregando...';
@@ -133,13 +149,11 @@
       renderizarTabela([]);
     }
   }
-
   function renderizarTabela(dados) {
     const theadRow = document.getElementById('thead-row');
     const tbody = document.getElementById('tbody');
     theadRow.innerHTML = '';
     tbody.innerHTML = '';
-
     colunas.forEach(function(nome, idx) {
       const th = document.createElement('th');
       th.textContent = nome;
@@ -150,7 +164,6 @@
     const thAcao = document.createElement('th');
     thAcao.textContent = 'Ações';
     theadRow.appendChild(thAcao);
-
     if (!dados || dados.length === 0) {
       const tr = document.createElement('tr');
       const td = document.createElement('td');
@@ -161,11 +174,9 @@
       tbody.appendChild(tr);
       return;
     }
-
     dados.forEach(function(linha, i) {
       const tr = document.createElement('tr');
       tr.id = 'row-' + i;
-
       colunas.forEach(function(nomeCol, idx) {
         const td = document.createElement('td');
         let valor = '';
@@ -177,6 +188,8 @@
           try { valor = JSON.stringify(valor); } catch(e) { valor = ''; }
         } else {
           valor = String(valor);
+          // 🔧 Aplica formatação de porcentagem nos campos de chakras/aura
+          valor = formatarValor(valor, nomeCol);
           if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(valor)) {
             const p = valor.split('T')[0].split('-');
             valor = p[2] + '/' + p[1] + '/' + p[0];
@@ -186,7 +199,6 @@
             valor = p[2] + '/' + p[1] + '/' + p[0];
           }
         }
-
         if (idx === 0) {
           td.textContent = valor;
           td.classList.add('col-fixed');
@@ -200,14 +212,12 @@
         if (idx === 3) td.classList.add('col-fixed-2');
         tr.appendChild(td);
       });
-
       const tdAcao = document.createElement('td');
       tdAcao.innerHTML = '<button class="btn-editar" onclick="editarLinha(' + i + ')" id="btn-' + i + '">✏️ Editar</button>';
       tr.appendChild(tdAcao);
       tbody.appendChild(tr);
     });
   }
-
   function filtrar(termo) {
     const t = termo.toLowerCase().trim();
     if (!t) { renderizarTabela(dadosOriginais); return; }
@@ -219,37 +229,29 @@
     });
     renderizarTabela(filtrados);
   }
-
   function editarLinha(idx) {
     const linha = document.getElementById('row-' + idx);
     const botao = document.getElementById('btn-' + idx);
-
     if (botao.textContent.includes('Salvar')) {
       salvarLinha(idx);
       return;
     }
-
     const celulas = linha.querySelectorAll('.editavel');
     celulas.forEach(function(cel) {
       var texto = cel.textContent.trim();
       var campo = cel.dataset.campo;
-      cel.innerHTML = '<input type="text" value="' + texto.replace(/"/g, '&quot;') + '" class="input-edicao" data-campo="' + campo + '" data-idx="' + idx + '">';
+      cel.innerHTML = '<input type="text" value="' + texto.replace(/\"/g, '&quot;') + '" class="input-edicao" data-campo="' + campo + '" data-idx="' + idx + '">';
     });
-
     botao.textContent = '💾 Salvar';
     botao.style.background = '#28a745';
   }
-
   function salvarLinha(idx) {
     var inputs = document.querySelectorAll('#row-' + idx + ' .input-edicao');
     var campos = {};
-
     inputs.forEach(function(inp) {
       campos[inp.dataset.campo] = inp.value.trim();
     });
-
     var idLinha = dadosOriginais[idx] ? dadosOriginais[idx][CAMPO_ID] : '';
-
     fetch(API_URL, {
       method: 'POST',
       body: JSON.stringify({
@@ -271,7 +273,6 @@
       alert('❌ Erro de conexão ao salvar.');
     });
   }
-
   document.addEventListener('DOMContentLoaded', carregar);
 </script>
 </body>
