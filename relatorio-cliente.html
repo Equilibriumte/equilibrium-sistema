@@ -248,6 +248,22 @@ function formatarData(valor) {
     }
     return valor;
 }
+
+// 🔧 Só converte para % os campos de chakras e aura (BOVIS fica como está)
+const CAMPOS_PORCENTAGEM = ['coronario', 'coronário', 'frontal', 'laringeo', 'laríngeo', 'cardiaco', 'cardíaco', 'umbilical', 'sacro', 'basico', 'básico', 'tamanho aura', 'tamanho_aura'];
+
+function formatarValor(valor, nomeCampo) {
+    if (valor === null || valor === undefined || valor === '' || valor === '-') return valor;
+    // Só converte se for um campo de porcentagem
+    if (nomeCampo && CAMPOS_PORCENTAGEM.includes(nomeCampo)) {
+        let num = typeof valor === 'number' ? valor : parseFloat(String(valor).replace(',', '.'));
+        if (!isNaN(num) && num > 0 && num < 1) {
+            return Math.round(num * 100) + '%';
+        }
+    }
+    return valor;
+}
+
 function formatarLabel(str) {
     return str.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 }
@@ -280,7 +296,7 @@ function renderizarRelatorio(data, nomeCliente) {
         }
     }
     html += '</div></div>';
-    // 2. ATENDIMENTOS - AGORA COM TODOS OS CAMPOS
+    // 2. ATENDIMENTOS - TODOS OS CAMPOS
     if (data.atendimentos && data.atendimentos.length > 0) {
         html += '<div class="doc-section"><h3>2. Atendimentos (' + data.atendimentos.length + ')</h3>';
         data.atendimentos.forEach((at, i) => {
@@ -291,9 +307,7 @@ function renderizarRelatorio(data, nomeCliente) {
             if (idAtendimento) html += '<span class="atend-id">' + idAtendimento + '</span>';
             html += '</div>';
             html += '<div class="atendimento-body">';
-            // TODOS OS CAMPOS DO ATENDIMENTO - dinâmico
             let htmlAt = '<div class="data-grid">';
-            // Mapeamento de campos conhecidos para labels em português
             const mapaLabels = {
                 'data do atendimento': 'Data do Atendimento',
                 'data_atendimento': 'Data do Atendimento',
@@ -332,29 +346,24 @@ function renderizarRelatorio(data, nomeCliente) {
                 'observações': 'Observações',
                 'obs': 'Observações'
             };
-            // Normalizar chaves do objeto
             const atNorm = {};
             for (let k in at) {
                 atNorm[k.toLowerCase().replace(/[\u0300-\u036f]/g, "")] = at[k];
             }
-            // Campos a EXCLUIR (não mostrar como item avulso)
             const excluir = ['id atendimento', 'id_atendimento', 'id', 'id cliente', 'id_cliente', 'nome cliente', 'nome_cliente', 'nome'];
             for (let chave in atNorm) {
                 let chaveSemAcento = chave;
-                // Pular campos que já aparecem no cabeçalho
                 if (excluir.includes(chaveSemAcento)) continue;
-                // Pular campos vazios
                 let val = atNorm[chaveSemAcento];
                 if (!val || val === '' || val === '-' || val === null || val === undefined) continue;
-                // Encontrar label
                 let label = mapaLabels[chaveSemAcento] || formatarLabel(chaveSemAcento);
-                // Formatar data se for campo de data
                 if (chaveSemAcento.includes('data')) val = formatarData(val);
+                // 🔧 Aplica formatação de porcentagem apenas nos campos de chakras/aura
+                val = formatarValor(val, chaveSemAcento);
                 htmlAt += '<div class="data-item"><span class="data-label">' + label + ':</span> ' + val + '</div>';
             }
             htmlAt += '</div>';
             html += htmlAt;
-            // GRÁFICOS DO ATENDIMENTO (mantido como está - satisfatório)
             const tratDoAt = (data.tratamentos || []).filter(t => {
                 const idAt = (t['id atendimento'] || t['id_atendimento'] || t['idatendimento'] || '').toString().toLowerCase().trim();
                 return idAt === idAtendimento.toString().toLowerCase().trim();
