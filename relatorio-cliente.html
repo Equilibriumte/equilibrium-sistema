@@ -23,6 +23,8 @@
         .autocomplete-list { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #ddd; border-radius: 0 0 8px 8px; max-height: 200px; overflow-y: auto; z-index: 1000; display: none; }
         .autocomplete-item { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
         .autocomplete-item:hover { background: #f7f2fc; color: #4b0082; }
+        #contador { margin-top: 8px; font-size: 13px; color: #4b0082; font-weight: bold; display: none; }
+        #msgErro { display: none; padding: 12px; background: #fde8e8; color: #c0392b; border-radius: 6px; margin-top: 10px; font-size: 14px; }
         #relatorioContainer { display: none; }
         .document-page { background: #fff; padding: 50px; border-radius: 4px; box-shadow: 0 0 15px rgba(0,0,0,0.1); max-width: 900px; margin: 0 auto; }
         .doc-header { text-align: center; border-bottom: 2px solid #4b0082; padding-bottom: 20px; margin-bottom: 30px; }
@@ -50,55 +52,4 @@
 <div class="sidebar">
     <h2>Equilibrium</h2>
     <nav>
-        <a href="index.html">🏠 Home</a>
-        <a href="agenda.html">📅 Agenda</a>
-        <a href="novo-cliente.html">👤 Novo Cliente</a>
-        <a href="clientes.html">📋 Lista de Clientes</a>
-        <a href="atendimentos.html">✨ Novo Atendimento</a>
-        <a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
-        <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
-        <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
-        <a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
-        <a href="financeiro.html">💰 Financeiro</a>
-        <a href="relatorio-cliente.html" class="active">📄 Relatório do Cliente</a>
-    </nav>
-</div>
-
-<div class="main">
-    <div class="header">
-        <h1>📄 Relatório do Cliente</h1>
-        <div class="subtitle">Visualize um relatório completo com dados, atendimentos e tratamentos.</div>
-    </div>
-
-    <div class="card">
-        <div class="search-group">
-            <input type="text" id="clienteBusca" placeholder="Carregando clientes..." autocomplete="off">
-            <div id="autocompleteList" class="autocomplete-list"></div>
-            <div id="contador" style="margin-top:8px;font-size:13px;color:#4b0082;font-weight:bold;display:none;"></div>
-            <div id="msgErro" style="display:none;padding:12px;background:#fde8e8;color:#c0392b;border-radius:6px;margin-top:10px;font-size:14px;"></div>
-        </div>
-    </div>
-
-    <div class="action-buttons" id="btnContainer">
-        <button class="btn btn-print" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
-        <button class="btn btn-refresh" onclick="location.reload()">🔄 Nova Busca</button>
-    </div>
-
-    <div id="relatorioContainer">
-        <div class="document-page">
-            <div class="doc-header">
-                <h2>RELATÓRIO DO CLIENTE</h2>
-                <p>Equilibrium - Terapias Holísticas</p>
-                <p id="docDataAtual"></p>
-            </div>
-            <div id="conteudoRelatorio"></div>
-        </div>
-    </div>
-</div>
-
-<script>
-const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
-let clientes = [];
-
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('docDataAtual').innerText = new
+        <a
