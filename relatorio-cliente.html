@@ -6,180 +6,88 @@
     <title>Relatório do Cliente - Equilibrium</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #4B0082;
-            --secondary-color: #6A5ACD;
-            --accent-color: #FFD700;
-            --bg-light: #F4F7F6;
-            --text-dark: #333;
-            --sidebar-width: 260px;
-        }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-light); display: flex; min-height: 100vh; }
-
-        .sidebar {
-            width: var(--sidebar-width);
-            background-color: var(--primary-color);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            height: 100vh;
-        }
-        .logo-container {
-            padding: 30px 20px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 24px;
-            color: var(--accent-color);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .nav-menu { flex: 1; padding: 20px 0; overflow-y: auto; }
-        .nav-item {
-            padding: 12px 25px;
-            display: flex;
-            align-items: center;
-            color: rgba(255,255,255,0.7);
-            text-decoration: none;
-            transition: 0.3s;
-            font-size: 14px;
-        }
-        .nav-item:hover, .nav-item.active {
-            background-color: rgba(255,255,255,0.1);
-            color: white;
-            border-left: 4px solid var(--accent-color);
-        }
-
-        .main-content {
-            margin-left: var(--sidebar-width);
-            flex: 1;
-            padding: 40px;
-        }
-        header {
-            background: white;
-            padding: 20px 40px;
-            margin: -40px -40px 40px -40px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        header h1 { color: var(--primary-color); font-size: 24px; }
-        header p { color: #666; font-size: 14px; }
-
-        .search-card {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            margin-bottom: 30px;
-        }
+        body { background: #f4f1f8; display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; overflow-y: auto; }
+        .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
+        .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
+        
+        .main { margin-left: 250px; padding: 30px; flex: 1; }
+        .header { margin-bottom: 25px; }
+        .header h1 { color: #4b0082; font-size: 26px; }
+        .header .subtitle { color: #666; font-size: 14px; margin-top: 5px; }
+        
+        .card { background: #fff; border-radius: 10px; padding: 25px; box-shadow: 0 2px 8px rgba(75,0,130,0.08); margin-bottom: 20px; }
+        
         .search-group { position: relative; }
-        input#clienteBusca {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #E0E0E0;
-            border-radius: 8px;
-            font-size: 16px;
-            outline: none;
-            transition: 0.3s;
-        }
-        input#clienteBusca:focus { border-color: var(--secondary-color); }
-
-        .autocomplete-list {
-            position: absolute;
-            top: 100%; left: 0; right: 0;
-            background: white;
-            border: 1px solid #DDD;
-            border-radius: 0 0 8px 8px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
-        }
-        .autocomplete-item {
-            padding: 12px 15px;
-            cursor: pointer;
-            border-bottom: 1px solid #F0F0F0;
-        }
-        .autocomplete-item:hover { background: #F9F9F9; color: var(--primary-color); }
-
+        #clienteBusca { width: 100%; padding: 14px; border: 2px solid #e0d4f0; border-radius: 8px; font-size: 16px; outline: none; }
+        #clienteBusca:focus { border-color: #6a0dad; }
+        
+        .autocomplete-list { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; border-radius: 0 0 8px 8px; max-height: 200px; overflow-y: auto; z-index: 1000; display: none; }
+        .autocomplete-item { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #f0f0f0; }
+        .autocomplete-item:hover { background: #f7f2fc; color: #4b0082; }
+        
+        #msgErro { display: none; padding: 12px; background: #fde8e8; color: #c0392b; border-radius: 6px; margin-top: 10px; font-size: 14px; }
+        #msgCarregando { display: none; padding: 10px; color: #666; font-size: 14px; text-align: center; }
+        
         #relatorioContainer { display: none; }
-        .document-page {
-            background: white;
-            padding: 60px;
-            border-radius: 4px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        .doc-header {
-            text-align: center;
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-        }
-        .doc-section { margin-bottom: 30px; }
-        .doc-section h3 {
-            background: #F8F9FA;
-            padding: 8px 15px;
-            color: var(--primary-color);
-            text-transform: uppercase;
-            font-size: 16px;
-            border-left: 4px solid var(--primary-color);
-            margin-bottom: 15px;
-        }
-        .data-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 20px; }
-        .data-item { font-size: 14px; line-height: 1.6; border-bottom: 1px solid #F0F0F0; padding: 5px 0; }
+        .document-page { background: white; padding: 50px; border-radius: 4px; box-shadow: 0 0 15px rgba(0,0,0,0.1); max-width: 900px; margin: 0 auto; }
+        .doc-header { text-align: center; border-bottom: 2px solid #4b0082; padding-bottom: 20px; margin-bottom: 30px; }
+        .doc-section { margin-bottom: 25px; }
+        .doc-section h3 { background: #f8f9fa; padding: 8px 15px; color: #4b0082; font-size: 16px; border-left: 4px solid #4b0082; margin-bottom: 15px; text-transform: uppercase; }
+        .data-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 20px; }
+        .data-item { font-size: 14px; border-bottom: 1px solid #f0f0f0; padding: 5px 0; }
         .data-label { font-weight: 700; color: #555; margin-right: 8px; }
-        .sub-card { border: 1px solid #EEE; padding: 15px; margin-bottom: 15px; border-radius: 6px; }
-
+        .sub-card { border: 1px solid #eee; padding: 15px; margin-bottom: 12px; border-radius: 6px; }
+        
         .action-buttons { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
-        .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
-        .btn-print { background: var(--primary-color); color: white; }
+        .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-print { background: #4b0082; color: white; }
         .btn-refresh { background: #6c757d; color: white; }
-        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
-
-        #loadingMsg { display: none; text-align: center; padding: 10px; color: #666; font-size: 14px; }
-        #errorMsg { display: none; text-align: center; padding: 10px; color: #c0392b; font-size: 14px; background: #fde8e8; border-radius: 6px; margin-top: 10px; }
-
+        .btn:hover { opacity: 0.9; }
+        
         @media print {
-            .sidebar, .search-card, .action-buttons, header { display: none !important; }
-            .main-content { margin-left: 0; padding: 0; }
+            .sidebar, .card, .action-buttons, .header { display: none !important; }
+            .main { margin-left: 0; padding: 0; }
             body { background: white; }
-            .document-page { box-shadow: none; padding: 0; width: 100%; max-width: 100%; }
-            .doc-section h3 { background: #EEE !important; -webkit-print-color-adjust: exact; }
+            .document-page { box-shadow: none; padding: 20px; max-width: 100%; }
+            .doc-section h3 { background: #eee !important; -webkit-print-color-adjust: exact; }
         }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <div class="logo-container">EQUILIBRIUM</div>
-    <nav class="nav-menu">
-        <a href="index.html" class="nav-item">🏠 Home</a>
-        <a href="agenda.html" class="nav-item">📅 Agenda</a>
-        <a href="novo-cliente.html" class="nav-item">👤 Novo Cliente</a>
-        <a href="clientes.html" class="nav-item">📋 Lista de Clientes</a>
-        <a href="atendimentos.html" class="nav-item">🩺 Novo Atendimento</a>
-        <a href="lista-atendimentos.html" class="nav-item">📝 Lista de Atendimento</a>
-        <a href="novo-tratamento.html" class="nav-item">🧪 Novo Tratamento</a>
-        <a href="lista-tratamentos.html" class="nav-item">📊 Lista de Tratamentos</a>
-        <a href="agenda-graficos.html" class="nav-item">📈 Agenda de Gráficos</a>
-        <a href="financeiro.html" class="nav-item">💰 Financeiro</a>
-        <a href="relatorio-cliente.html" class="nav-item active">📄 Relatório do Cliente</a>
+    <h2>Equilibrium</h2>
+    <nav>
+        <a href="index.html">🏠 Home</a>
+        <a href="agenda.html">📅 Agenda</a>
+        <a href="novo-cliente.html">👤 Novo Cliente</a>
+        <a href="clientes.html">📋 Lista de Clientes</a>
+        <a href="atendimentos.html">✨ Novo Atendimento</a>
+        <a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
+        <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
+        <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
+        <a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
+        <a href="financeiro.html">💰 Financeiro</a>
+        <a href="relatorio-cliente.html" class="active">📄 Relatório do Cliente</a>
     </nav>
 </div>
 
-<div class="main-content">
-    <header>
+<div class="main">
+    <div class="header">
         <h1>📄 Relatório do Cliente</h1>
-        <p>Visualize um relatório completo com dados, atendimentos e tratamentos do cliente.</p>
-    </header>
+        <div class="subtitle">Visualize um relatório completo com dados, atendimentos e tratamentos.</div>
+    </div>
 
-    <div class="search-card">
+    <div class="card">
         <div class="search-group">
             <input type="text" id="clienteBusca" placeholder="Carregando clientes..." autocomplete="off">
             <div id="autocompleteList" class="autocomplete-list"></div>
-            <div id="loadingMsg">⏳ Carregando lista de clientes...</div>
-            <div id="errorMsg"></div>
+            <div id="msgCarregando">⏳ Carregando lista de clientes...</div>
+            <div id="msgErro"></div>
         </div>
     </div>
 
@@ -189,9 +97,9 @@
     </div>
 
     <div id="relatorioContainer">
-        <div class="document-page" id="printArea">
+        <div class="document-page">
             <div class="doc-header">
-                <h2>RELATÓRIO TERAPÊUTICO CONSOLIDADO</h2>
+                <h2>RELATÓRIO DO CLIENTE</h2>
                 <p>Equilibrium - Terapias Holísticas</p>
                 <p id="docDataAtual"></p>
             </div>
@@ -201,216 +109,195 @@
 </div>
 
 <script>
-    const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
-    let listaClientes = [];
-    let clientesCarregados = false;
+const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
+let listaClientes = [];
 
-    document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('docDataAtual').innerText = new Date().toLocaleDateString('pt-BR', { 
-            day: '2-digit', month: 'long', year: 'numeric' 
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('docDataAtual').innerText = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+    carregarClientes();
+});
+
+async function carregarClientes() {
+    const input = document.getElementById('clienteBusca');
+    const erro = document.getElementById('msgErro');
+    const loading = document.getElementById('msgCarregando');
+    
+    loading.style.display = 'block';
+    erro.style.display = 'none';
+    
+    try {
+        const res = await fetch(URL_ATEND + '?_=' + Date.now(), { cache: 'no-store' });
+        const text = await res.text();
+        const dados = JSON.parse(text);
+        
+        if (!Array.isArray(dados)) {
+            throw new Error('Resposta não é uma lista. Verifique se o doGet retorna array de clientes.');
+        }
+        
+        listaClientes = dados;
+        
+        if (listaClientes.length === 0) {
+            input.placeholder = 'Nenhum cliente encontrado';
+            return;
+        }
+        
+        // Mostra o primeiro cliente no console para debug
+        console.log('✅ Clientes carregados:', listaClientes.length);
+        console.log('▶️ Primeiro cliente:', JSON.stringify(listaClientes[0]));
+        console.log('🏷️ Campos disponíveis:', Object.keys(listaClientes[0]));
+        
+        input.placeholder = 'Digite o nome do cliente...';
+        configurarAutocomplete();
+        
+    } catch (e) {
+        console.error('❌ Erro:', e);
+        erro.textContent = '❌ Erro ao carregar clientes: ' + e.message + '. Verifique o deploy do Apps Script.';
+        erro.style.display = 'block';
+        input.placeholder = 'Erro ao carregar';
+    } finally {
+        loading.style.display = 'none';
+    }
+}
+
+function configurarAutocomplete() {
+    const input = document.getElementById('clienteBusca');
+    const list = document.getElementById('autocompleteList');
+
+    input.addEventListener('input', () => {
+        const val = input.value.toLowerCase().trim();
+        list.innerHTML = '';
+        
+        if (!val) { list.style.display = 'none'; return; }
+        
+        const filtrados = listaClientes.filter(c => {
+            // Tenta várias formas de acessar o nome
+            const nome = c.nome || c.Nome || c['Nome'] || c.nome_cliente || c.cliente || '';
+            return nome.toString().toLowerCase().includes(val);
         });
-        carregarClientes();
+
+        if (filtrados.length === 0) {
+            list.innerHTML = '<div class="autocomplete-item" style="color:#999">Nenhum cliente encontrado</div>';
+            list.style.display = 'block';
+            return;
+        }
+
+        filtrados.slice(0, 15).forEach(c => {
+            const div = document.createElement('div');
+            div.className = 'autocomplete-item';
+            
+            // Tenta achar o nome e o ID em qualquer formato
+            const nome = c.nome || c.Nome || c['Nome'] || c.nome_cliente || c.cliente || 'Sem nome';
+            const idCliente = c['id cliente'] || c['ID Cliente'] || c.id || c.ID || c.id_cliente || '';
+            
+            div.textContent = nome + (idCliente ? ' (' + idCliente + ')' : '');
+            div.onclick = () => {
+                input.value = nome;
+                list.style.display = 'none';
+                buscarRelatorio(idCliente, nome);
+            };
+            list.appendChild(div);
+        });
+        
+        list.style.display = 'block';
     });
 
-    async function carregarClientes() {
-        const input = document.getElementById('clienteBusca');
-        const loading = document.getElementById('loadingMsg');
-        const errorDiv = document.getElementById('errorMsg');
-        
-        loading.style.display = 'block';
-        errorDiv.style.display = 'none';
-        input.placeholder = 'Carregando clientes...';
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-group')) list.style.display = 'none';
+    });
+}
 
-        try {
-            const res = await fetch(URL_ATEND, { cache: 'no-store' });
-            
-            if (!res.ok) throw new Error('Erro HTTP: ' + res.status);
-            
-            const text = await res.text();
-            let data;
-            try {
-                data = JSON.parse(text);
-            } catch (e) {
-                throw new Error('Resposta não é JSON válido: ' + text.substring(0, 200));
-            }
-            
-            if (!Array.isArray(data)) {
-                throw new Error('Formato inesperado: a resposta não é uma lista');
-            }
-            
-            listaClientes = data;
-            clientesCarregados = true;
-            
-            if (listaClientes.length === 0) {
-                input.placeholder = 'Nenhum cliente cadastrado';
-                errorDiv.textContent = '⚠️ Nenhum cliente encontrado na planilha. Cadastre clientes primeiro.';
-                errorDiv.style.display = 'block';
-            } else {
-                // Log para debug - mostra o primeiro cliente e os campos disponíveis
-                console.log('✅ Clientes carregados:', listaClientes.length);
-                console.log('▶️ Primeiro cliente:', JSON.stringify(listaClientes[0]));
-                console.log('🏷️ Campos:', Object.keys(listaClientes[0]).join(', '));
-                
-                input.placeholder = 'Digite o nome do cliente para pesquisar...';
-                configurarAutocomplete();
-            }
-        } catch (e) {
-            console.error('❌ Erro ao carregar clientes:', e);
-            input.placeholder = 'Erro ao carregar clientes';
-            errorDiv.textContent = '❌ ' + e.message + '. Verifique se o Apps Script está implantado e a URL correta.';
-            errorDiv.style.display = 'block';
-        } finally {
-            loading.style.display = 'none';
-        }
+async function buscarRelatorio(clienteId, nomeCliente) {
+    document.getElementById('relatorioContainer').style.display = 'none';
+    document.getElementById('btnContainer').style.display = 'none';
+    
+    if (!clienteId) {
+        alert('ID do cliente não encontrado. Selecione um cliente da lista.');
+        return;
     }
-
-    function configurarAutocomplete() {
-        const input = document.getElementById('clienteBusca');
-        const list = document.getElementById('autocompleteList');
-
-        input.addEventListener('input', () => {
-            const val = input.value.toLowerCase().trim();
-            list.innerHTML = '';
-            
-            if (!val || val.length < 1) { 
-                list.style.display = 'none'; 
-                return; 
-            }
-
-            // Filtra tentando vários nomes de campo possíveis
-            const filtrados = listaClientes.filter(c => {
-                const nome = c.nome || c.Nome || c.nome_cliente || c.cliente || c.CLIENTE || '';
-                return nome.toString().toLowerCase().includes(val);
-            });
-
-            // Limita a 20 resultados para não travar
-            const resultados = filtrados.slice(0, 20);
-
-            if (resultados.length === 0) {
-                list.innerHTML = '<div class="autocomplete-item" style="color:#999">Nenhum cliente encontrado</div>';
-                list.style.display = 'block';
-                return;
-            }
-
-            resultados.forEach(c => {
-                const div = document.createElement('div');
-                div.className = 'autocomplete-item';
-                
-                // Tenta encontrar o nome e ID em vários formatos possíveis
-                const nome = c.nome || c.Nome || c.nome_cliente || c.cliente || c.CLIENTE || 'Sem nome';
-                const id = c.id || c.ID || c.id_cliente || c['ID Cliente'] || c['id cliente'] || c.ID_CLIENTE || '';
-                
-                div.innerText = `${nome} ${id ? '(' + id + ')' : ''}`;
-                div.onclick = () => {
-                    input.value = nome;
-                    list.style.display = 'none';
-                    // Usa o ID encontrado para buscar o relatório
-                    const clienteId = id || c.id || c.ID || c.id_cliente || c['ID Cliente'] || c['id cliente'] || '';
-                    buscarRelatorio(clienteId, nome);
-                };
-                list.appendChild(div);
-            });
-
-            list.style.display = 'block';
-        });
-
-        // Fecha o autocomplete ao clicar fora
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.search-group')) {
-                list.style.display = 'none';
-            }
-        });
+    
+    try {
+        const res = await fetch(URL_ATEND + '?action=relatorio&clienteId=' + encodeURIComponent(clienteId) + '&_=' + Date.now());
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        renderizarRelatorio(data, nomeCliente);
+    } catch (e) {
+        alert('Erro ao buscar relatório: ' + e.message);
     }
+}
 
-    async function buscarRelatorio(clienteId, nomeCliente) {
-        document.getElementById('relatorioContainer').style.display = 'none';
-        document.getElementById('btnContainer').style.display = 'none';
-        
-        if (!clienteId) {
-            alert('ID do cliente não encontrado. Selecione um cliente da lista.');
-            return;
-        }
+function renderizarRelatorio(data, nomeCliente) {
+    const container = document.getElementById('conteudoRelatorio');
+    container.innerHTML = '';
 
-        try {
-            const res = await fetch(`${URL_ATEND}?action=relatorio&clienteId=${encodeURIComponent(clienteId)}&_=${Date.now()}`);
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            const data = await res.json();
-            renderizarRelatorio(data, nomeCliente);
-        } catch (e) {
-            alert('Erro ao buscar relatório: ' + e.message);
-        }
-    }
-
-    function renderizarRelatorio(data, nomeCliente) {
-        const container = document.getElementById('conteudoRelatorio');
-        container.innerHTML = '';
-
-        if (!data.cliente) {
-            container.innerHTML = `<p style="text-align:center;color:#999;padding:40px">Cliente "${nomeCliente}" não encontrado nos registros.</p>`;
-            document.getElementById('relatorioContainer').style.display = 'block';
-            return;
-        }
-
-        let html = '';
-
-        // 1. Dados do Cliente
-        html += `<div class="doc-section"><h3>1. Dados Cadastrais</h3><div class="data-grid">`;
-        const labelsCliente = {
-            nome: 'Nome', id: 'ID', data: 'Cadastro', nascimento: 'Nascimento',
-            whatsapp: 'WhatsApp', email: 'E-mail', instagram: 'Instagram',
-            rua: 'Rua', numero: 'Nº', bairro: 'Bairro', cidade: 'Cidade',
-            estado: 'UF', cep: 'CEP', indicacao: 'Indicação'
-        };
-        for (let key in labelsCliente) {
-            const val = data.cliente[key] || data.cliente[key.toLowerCase()] || data.cliente[key.toUpperCase()] || '';
-            if (val) {
-                html += `<div class="data-item"><span class="data-label">${labelsCliente[key]}:</span> ${val}</div>`;
-            }
-        }
-        html += `</div></div>`;
-
-        // 2. Atendimentos
-        if (data.atendimentos && data.atendimentos.length > 0) {
-            html += `<div class="doc-section"><h3>2. Histórico de Atendimentos</h3>`;
-            data.atendimentos.forEach((at, i) => {
-                html += `<div class="sub-card"><strong>Atendimento #${i+1}</strong><div class="data-grid" style="margin-top:10px">`;
-                for (let key in at) {
-                    if (at[key]) {
-                        html += `<div class="data-item"><span class="data-label">${formatarLabel(key)}:</span> ${at[key]}</div>`;
-                    }
-                }
-                html += `</div></div>`;
-            });
-            html += `</div>`;
-        }
-
-        // 3. Tratamentos
-        if (data.tratamentos && data.tratamentos.length > 0) {
-            html += `<div class="doc-section"><h3>3. Tratamentos e Gráficos</h3>`;
-            data.tratamentos.forEach((tr, i) => {
-                html += `<div class="sub-card"><strong>Tratamento #${i+1}</strong><div class="data-grid" style="margin-top:10px">`;
-                for (let key in tr) {
-                    if (tr[key]) {
-                        html += `<div class="data-item"><span class="data-label">${formatarLabel(key)}:</span> ${tr[key]}</div>`;
-                    }
-                }
-                html += `</div></div>`;
-            });
-            html += `</div>`;
-        }
-
-        if (!data.atendimentos?.length && !data.tratamentos?.length) {
-            html += `<p style="text-align:center;color:#999;padding:20px">Nenhum atendimento ou tratamento encontrado para este cliente.</p>`;
-        }
-
-        container.innerHTML = html;
+    if (!data.cliente) {
+        container.innerHTML = '<p style="text-align:center;color:#999;padding:40px">Cliente "' + nomeCliente + '" não encontrado.</p>';
         document.getElementById('relatorioContainer').style.display = 'block';
-        document.getElementById('btnContainer').style.display = 'flex';
+        return;
     }
 
-    function formatarLabel(str) {
-        return str.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    let html = '';
+
+    // 1. DADOS DO CLIENTE
+    html += '<div class="doc-section"><h3>1. Dados Cadastrais</h3><div class="data-grid">';
+    const labels = {
+        nome: 'Nome', 'id cliente': 'ID', id: 'ID', 'data do cadastro': 'Cadastro',
+        nascimento: 'Nascimento', whatsapp: 'WhatsApp', email: 'E-mail',
+        instagram: 'Instagram', rua: 'Rua', numero: 'Nº', bairro: 'Bairro',
+        cidade: 'Cidade', estado: 'Estado', cep: 'CEP', indicacao: 'Indicação'
+    };
+    
+    // Pega o cliente e já tenta lowercase nas chaves
+    const cli = {};
+    for (let k in data.cliente) {
+        cli[k.toLowerCase()] = data.cliente[k];
     }
+    
+    for (let chave in labels) {
+        const val = cli[chave.toLowerCase()] || '';
+        if (val) {
+            html += '<div class="data-item"><span class="data-label">' + labels[chave] + ':</span> ' + val + '</div>';
+        }
+    }
+    html += '</div></div>';
+
+    // 2. ATENDIMENTOS
+    if (data.atendimentos && data.atendimentos.length > 0) {
+        html += '<div class="doc-section"><h3>2. Atendimentos (' + data.atendimentos.length + ')</h3>';
+        data.atendimentos.forEach((at, i) => {
+            html += '<div class="sub-card"><strong>Atendimento #' + (i+1) + '</strong><div class="data-grid" style="margin-top:8px">';
+            for (let k in at) {
+                if (at[k]) {
+                    html += '<div class="data-item"><span class="data-label">' + k + ':</span> ' + at[k] + '</div>';
+                }
+            }
+            html += '</div></div>';
+        });
+        html += '</div>';
+    }
+
+    // 3. TRATAMENTOS
+    if (data.tratamentos && data.tratamentos.length > 0) {
+        html += '<div class="doc-section"><h3>3. Tratamentos (' + data.tratamentos.length + ')</h3>';
+        data.tratamentos.forEach((tr, i) => {
+            html += '<div class="sub-card"><strong>Tratamento #' + (i+1) + '</strong><div class="data-grid" style="margin-top:8px">';
+            for (let k in tr) {
+                if (tr[k]) {
+                    html += '<div class="data-item"><span class="data-label">' + k + ':</span> ' + tr[k] + '</div>';
+                }
+            }
+            html += '</div></div>';
+        });
+        html += '</div>';
+    }
+
+    if ((!data.atendimentos || data.atendimentos.length === 0) && (!data.tratamentos || data.tratamentos.length === 0)) {
+        html += '<p style="text-align:center;color:#999;padding:20px">Nenhum atendimento ou tratamento encontrado para este cliente.</p>';
+    }
+
+    container.innerHTML = html;
+    document.getElementById('relatorioContainer').style.display = 'block';
+    document.getElementById('btnContainer').style.display = 'flex';
+}
 </script>
 </body>
 </html>
