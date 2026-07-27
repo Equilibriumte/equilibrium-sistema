@@ -30,24 +30,24 @@
         .doc-header { 
             text-align: center;
             border-bottom: 2px solid #4b0082; 
-            padding-bottom: 6px; 
-            margin-bottom: 10px;
+            padding-bottom: 4px; 
+            margin-bottom: 6px;
         }
         .doc-header .header-inner {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
+            gap: 20px;
         }
         .doc-header .logo-img {
-            width: 150px;
+            width: 225px;
             height: auto;
             filter: brightness(0.5) contrast(1.8);
             display: block;
         }
         .doc-header-text { text-align: left; }
-        .doc-header-text h2 { font-size: 20px; color: #4b0082; margin: 0; }
-        .doc-header-text p { font-size: 13px; color: #666; margin: 2px 0 0; }
+        .doc-header-text h2 { font-size: 30px; color: #4b0082; margin: 0; }
+        .doc-header-text p { font-size: 15px; color: #666; margin: 2px 0 0; }
         .doc-section { margin-bottom: 15px; }
         .doc-section h3 { 
             background: #f8f9fa; 
@@ -260,6 +260,7 @@ function renderizarRelatorio(data, nomeCliente) {
         return;
     }
     let html = '';
+    // 1. DADOS CADASTRAIS
     html += '<div class="doc-section"><h3>1. Dados Cadastrais</h3><div class="data-grid">';
     const labels = {
         nome: 'Nome', 'id cliente': 'ID', id: 'ID', data: 'Cadastro',
@@ -279,6 +280,7 @@ function renderizarRelatorio(data, nomeCliente) {
         }
     }
     html += '</div></div>';
+    // 2. ATENDIMENTOS - AGORA COM TODOS OS CAMPOS
     if (data.atendimentos && data.atendimentos.length > 0) {
         html += '<div class="doc-section"><h3>2. Atendimentos (' + data.atendimentos.length + ')</h3>';
         data.atendimentos.forEach((at, i) => {
@@ -289,19 +291,70 @@ function renderizarRelatorio(data, nomeCliente) {
             if (idAtendimento) html += '<span class="atend-id">' + idAtendimento + '</span>';
             html += '</div>';
             html += '<div class="atendimento-body">';
+            // TODOS OS CAMPOS DO ATENDIMENTO - dinâmico
             let htmlAt = '<div class="data-grid">';
-            const camposAt = { 'data do atendimento': 'Data', 'data_atendimento': 'Data', 'data': 'Data', 'queixa principal': 'Queixa Principal', 'queixa_principal': 'Queixa Principal', 'status': 'Status' };
+            // Mapeamento de campos conhecidos para labels em português
+            const mapaLabels = {
+                'data do atendimento': 'Data do Atendimento',
+                'data_atendimento': 'Data do Atendimento',
+                'data': 'Data do Atendimento',
+                'id atendimento': 'ID Atendimento',
+                'id_atendimento': 'ID Atendimento',
+                'id': 'ID Atendimento',
+                'id cliente': 'ID Cliente',
+                'id_cliente': 'ID Cliente',
+                'nome cliente': 'Nome Cliente',
+                'nome_cliente': 'Nome Cliente',
+                'nome': 'Nome Cliente',
+                'queixa principal': 'Queixa Principal',
+                'queixa_principal': 'Queixa Principal',
+                'queixa secundaria': 'Queixa Secundária',
+                'queixa_secundaria': 'Queixa Secundária',
+                'queixa secundária': 'Queixa Secundária',
+                'analise preliminar': 'Análise Preliminar',
+                'analise_preliminar': 'Análise Preliminar',
+                'status': 'Status',
+                'bovis': 'Bovis',
+                'coronario': 'Coronário',
+                'coronário': 'Coronário',
+                'frontal': 'Frontal',
+                'laringeo': 'Laríngeo',
+                'laríngeo': 'Laríngeo',
+                'cardiaco': 'Cardíaco',
+                'cardíaco': 'Cardíaco',
+                'umbilical': 'Umbilical',
+                'sacro': 'Sacro',
+                'basico': 'Básico',
+                'básico': 'Básico',
+                'tamanho aura': 'Tamanho Aura',
+                'tamanho_aura': 'Tamanho Aura',
+                'observacoes': 'Observações',
+                'observações': 'Observações',
+                'obs': 'Observações'
+            };
+            // Normalizar chaves do objeto
             const atNorm = {};
-            for (let k in at) atNorm[k.toLowerCase().replace(/[\u0300-\u036f]/g, "")] = at[k];
-            for (let chave in camposAt) {
-                let val = atNorm[chave] || '';
-                if (val) {
-                    if (chave.includes('data')) val = formatarData(val);
-                    htmlAt += '<div class="data-item"><span class="data-label">' + camposAt[chave] + ':</span> ' + val + '</div>';
-                }
+            for (let k in at) {
+                atNorm[k.toLowerCase().replace(/[\u0300-\u036f]/g, "")] = at[k];
+            }
+            // Campos a EXCLUIR (não mostrar como item avulso)
+            const excluir = ['id atendimento', 'id_atendimento', 'id', 'id cliente', 'id_cliente', 'nome cliente', 'nome_cliente', 'nome'];
+            for (let chave in atNorm) {
+                let chaveSemAcento = chave;
+                // Pular campos que já aparecem no cabeçalho
+                if (excluir.includes(chaveSemAcento)) continue;
+                // Pular campos vazios
+                let val = atNorm[chaveSemAcento];
+                if (!val || val === '' || val === '-' || val === null || val === undefined) continue;
+                // Encontrar label
+                let label = mapaLabels[chaveSemAcento] || formatarLabel(chaveSemAcento);
+                // Formatar data se for campo de data
+                if (chaveSemAcento.includes('data')) val = formatarData(val);
+                htmlAt += '<div class="data-item"><span class="data-label">' + label + ':</span> ' + val + '</div>';
             }
             htmlAt += '</div>';
             html += htmlAt;
+            // GRÁFICOS DO ATENDIMENTO (mantido como está - satisfatório)
             const tratDoAt = (data.tratamentos || []).filter(t => {
                 const idAt = (t['id atendimento'] || t['id_atendimento'] || t['idatendimento'] || '').toString().toLowerCase().trim();
                 return idAt === idAtendimento.toString().toLowerCase().trim();
