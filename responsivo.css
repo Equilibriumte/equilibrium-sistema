@@ -1,15 +1,46 @@
 /* Menu Hambúrguer - escondido */
 .menu-toggle, .sidebar-overlay { display: none !important; }
 
-/* Tablets e Celular (<= 992px) */
+/* Tablets e Celular (<= 992px) - FORÇA SIDEBAR NO TOPO */
 @media (max-width: 992px) {
 body { display: block !important; }
-.sidebar { width: 100% !important; height: auto !important; position: relative !important; top: auto !important; left: auto !important; transform: none !important; padding: 8px 15px !important; float: none !important; }
-.sidebar h2 { font-size: 16px; margin-bottom: 5px; text-align: left; display: inline-block; }
-.sidebar nav { display: flex; flex-wrap: wrap; gap: 3px; }
-.sidebar a { display: inline-block; padding: 5px 10px !important; font-size: 12px !important; margin-bottom: 0 !important; white-space: nowrap; }
-.main-content, .content, .main { margin-left: 0 !important; padding: 15px 12px !important; width: 100% !important; }
-.form-grid, .form-row { grid-template-columns: 1fr !important; gap: 12px !important; }
+.sidebar {
+width: 100% !important;
+height: auto !important;
+position: relative !important;
+top: auto !important;
+left: auto !important;
+transform: none !important;
+padding: 8px 15px !important;
+float: none !important;
+}
+.sidebar h2 {
+font-size: 16px;
+margin-bottom: 5px;
+text-align: left;
+display: inline-block;
+}
+.sidebar nav {
+display: flex;
+flex-wrap: wrap;
+gap: 3px;
+}
+.sidebar a {
+display: inline-block;
+padding: 5px 10px !important;
+font-size: 12px !important;
+margin-bottom: 0 !important;
+white-space: nowrap;
+}
+.main-content, .content, .main {
+margin-left: 0 !important;
+padding: 15px 12px !important;
+width: 100% !important;
+}
+.form-grid, .form-row {
+grid-template-columns: 1fr !important;
+gap: 12px !important;
+}
 .full-width { grid-column: span 1 !important; }
 }
 
@@ -21,10 +52,12 @@ h1 { font-size: 20px; text-align: center; margin-top: 8px; }
 .btn { width: 100%; margin-bottom: 8px; padding: 12px !important; font-size: 14px !important; }
 .document-page { padding: 10px !important; }
 .header-inner { flex-direction: column !important; text-align: center; }
+.logo-img { width: 100px !important; margin-bottom: 8px; }
+.doc-header-text h2 { font-size: 16px !important; }
 .data-grid { grid-template-columns: 1fr !important; }
 #calendarFrame { height: 350px !important; }
 
-/* CABEÇALHO RELATÓRIO - SÓ CELULAR */
+/* CABEÇALHO DO RELATÓRIO - REDUZIDO SÓ NO CELULAR */
 .doc-header .logo-img { width: 80px !important; }
 .doc-header-text h2 { font-size: 14px !important; margin: 0 !important; }
 .doc-header-text p { font-size: 10px !important; margin: 0 !important; line-height: 1.1 !important; }
