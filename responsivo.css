@@ -56,11 +56,11 @@ h1 { font-size: 20px; text-align: center; margin-top: 8px; }
 .doc-header-text h2 { font-size: 16px !important; }
 .data-grid { grid-template-columns: 1fr !important; }
 #calendarFrame { height: 350px !important; }
-}
 
-/* CABEÇALHO DO RELATÓRIO - REDUZIDO MÁXIMO */
-.doc-header .logo-img { width: 100px !important; }
-.doc-header-text h2 { font-size: 16px !important; margin: 0 !important; }
-.doc-header-text p { font-size: 11px !important; margin: 0 !important; line-height: 1.2 !important; }
-.doc-header .header-inner { gap: 6px !important; }
-.doc-header { padding-top: 2px !important; padding-bottom: 2px !important; margin-bottom: 0 !important; border-bottom-width: 1px !important; }
+/* CABEÇALHO DO RELATÓRIO - REDUZIDO SÓ NO CELULAR */
+.doc-header .logo-img { width: 80px !important; }
+.doc-header-text h2 { font-size: 14px !important; margin: 0 !important; }
+.doc-header-text p { font-size: 10px !important; margin: 0 !important; line-height: 1.1 !important; }
+.doc-header .header-inner { gap: 4px !important; }
+.doc-header { padding-top: 0 !important; padding-bottom: 0 !important; margin-bottom: 0 !important; border-bottom-width: 1px !important; }
+}
