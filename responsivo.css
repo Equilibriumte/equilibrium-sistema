@@ -1,4 +1,6 @@
-/* Menu Hambúrguer - escondido */
+/* EQUILIBRIUM - RESPONSIVO MOBILE */
+
+/* Menu Hambúrguer - escondido (não vamos usar) */
 .menu-toggle, .sidebar-overlay { display: none !important; }
 
 /* Tablets e Celular (<= 992px) */
@@ -9,6 +11,7 @@
     position: relative !important;
     transform: none !important;
     padding: 10px 20px !important;
+    box-shadow: none !important;
   }
   .sidebar h2 {
     font-size: 18px;
@@ -38,6 +41,7 @@
     gap: 15px !important;
   }
   .full-width { grid-column: span 1 !important; }
+  body { display: block !important; }
 }
 
 /* Celular (< 768px) */
