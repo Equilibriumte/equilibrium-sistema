@@ -59,7 +59,7 @@ h1 { font-size: 20px; text-align: center; margin-top: 8px; }
 }
 
 /* CABEÇALHO DO RELATÓRIO - REDUZIDO MÁXIMO */
-.doc-header .logo-img { width: 100px !important; }
+.doc-header .logo-img { width: 200px !important; }
 .doc-header-text h2 { font-size: 16px !important; margin: 0 !important; }
 .doc-header-text p { font-size: 11px !important; margin: 0 !important; line-height: 1.2 !important; }
 .doc-header .header-inner { gap: 6px !important; }
