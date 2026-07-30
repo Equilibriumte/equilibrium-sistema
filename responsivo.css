@@ -1,14 +1,18 @@
 /* Menu Hambúrguer - escondido */
 .menu-toggle, .sidebar-overlay { display: none !important; }
 
-/* Tablets e Celular (<= 992px) */
+/* Tablets e Celular (<= 992px) - FORÇA SIDEBAR NO TOPO */
 @media (max-width: 992px) {
+body { display: block !important; }
 .sidebar {
 width: 100% !important;
 height: auto !important;
 position: relative !important;
+top: auto !important;
+left: auto !important;
 transform: none !important;
 padding: 8px 15px !important;
+float: none !important;
 }
 .sidebar h2 {
 font-size: 16px;
@@ -54,9 +58,9 @@ h1 { font-size: 20px; text-align: center; margin-top: 8px; }
 #calendarFrame { height: 350px !important; }
 }
 
-/* ⬇️ CABEÇALHO DO RELATÓRIO - REDUZIDO (computador e celular) */
-.doc-header .logo-img { width: 120px !important; }
-.doc-header-text h2 { font-size: 18px !important; }
-.doc-header-text p { font-size: 11px !important; margin: 0 !important; }
-.doc-header .header-inner { gap: 8px !important; }
-.doc-header { padding-bottom: 2px !important; margin-bottom: 0 !important; border-bottom-width: 1px !important; }
+/* CABEÇALHO DO RELATÓRIO - REDUZIDO MÁXIMO */
+.doc-header .logo-img { width: 100px !important; }
+.doc-header-text h2 { font-size: 16px !important; margin: 0 !important; }
+.doc-header-text p { font-size: 11px !important; margin: 0 !important; line-height: 1.2 !important; }
+.doc-header .header-inner { gap: 6px !important; }
+.doc-header { padding-top: 2px !important; padding-bottom: 2px !important; margin-bottom: 0 !important; border-bottom-width: 1px !important; }
