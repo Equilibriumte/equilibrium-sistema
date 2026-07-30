@@ -38,6 +38,7 @@ grid-template-columns: 1fr !important;
 gap: 15px !important;
 }
 .full-width { grid-column: span 1 !important; }
+body { display: block !important; }
 }
 
 /* Celular (< 768px) */
