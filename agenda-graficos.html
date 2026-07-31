@@ -51,6 +51,15 @@
   .total-count { font-size: 13px; color: #666; margin-bottom: 10px; }
   @media (max-width: 768px) { .sidebar { width: 200px; } .main { margin-left: 200px; padding: 20px; } }
   @media (max-width: 560px) { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; padding: 16px; } }
+ .evento-rapido-form { background: #f9f7fc; padding: 20px; border-radius: 10px; }
+.evento-rapido-form .form-row { display: flex; gap: 15px; margin-bottom: 15px; }
+.evento-rapido-form .form-group { flex: 1; display: flex; flex-direction: column; }
+.evento-rapido-form label { font-size: 13px; color: #4b0082; font-weight: 600; margin-bottom: 4px; }
+.evento-rapido-form input { padding: 10px; border: 2px solid #e0d0f0; border-radius: 8px; font-size: 14px; outline: none; }
+.evento-rapido-form input:focus { border-color: #4b0082; }
+.btn-criar-evento { width: 100%; padding: 12px; background: #4b0082; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 5px; }
+.btn-criar-evento:hover { background: #6a0dad; }
+@media (max-width: 600px) { .evento-rapido-form .form-row { flex-direction: column; gap: 10px; } }
 </style>
  <link rel="stylesheet" href="responsivo.css">
 </head>
@@ -89,6 +98,44 @@
     </div>
   </div>
 
+ <div class="card">
+<h3>➕ Novo Evento Rápido</h3>
+<div class="evento-rapido-form">
+  <div class="form-row">
+    <div class="form-group">
+      <label>Cliente</label>
+      <input type="text" id="rapidoCliente" placeholder="Nome do cliente" list="clientesList">
+      <datalist id="clientesList"></datalist>
+    </div>
+    <div class="form-group">
+      <label>Gráfico</label>
+      <input type="text" id="rapidoGrafico" placeholder="Ex: Cruz Ansata, Luxor...">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label>Local</label>
+      <input type="text" id="rapidoLocal" placeholder="Ex: Sala 1, Online...">
+    </div>
+    <div class="form-group">
+      <label>Data</label>
+      <input type="date" id="rapidoData">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label>Qtd Dias</label>
+      <input type="number" id="rapidoDias" min="0" value="0" placeholder="0 = só a data">
+    </div>
+    <div class="form-group">
+      <label>Data Final (automática)</label>
+      <input type="date" id="rapidoDataFim" readonly style="background:#f0ecf5;color:#4b0082;font-weight:600;">
+    </div>
+  </div>
+  <button class="btn-criar-evento" onclick="criarEventoRapido()">➕ Adicionar à Agenda de Gráficos</button>
+</div>
+</div>
+ 
   <div class="card">
     <h3>📋 Eventos de Gráficos</h3>
     <div id="eventos-container">
@@ -317,5 +364,101 @@ async function confirmarExclusao() {
 }
 </script>
  <script src="js/menu.js"></script>
+
+ <script>
+// Autocomplete de clientes
+function carregarClientesRapido() {
+    fetch(DATABASE_URL + '?action=listar_clientes')
+        .then(function(r){ return r.json(); })
+        .then(function(result){
+            if (result.success && result.clientes) {
+                var datalist = document.getElementById('clientesList');
+                datalist.innerHTML = '';
+                result.clientes.forEach(function(c){
+                    var opt = document.createElement('option');
+                    opt.value = c.nome || c.cliente_nome || '';
+                    datalist.appendChild(opt);
+                });
+            }
+        })
+        .catch(function(){});
+}
+
+// Calcula data final automaticamente
+document.addEventListener('DOMContentLoaded', function(){
+    carregarClientesRapido();
+    
+    var dataInput = document.getElementById('rapidoData');
+    var diasInput = document.getElementById('rapidoDias');
+    var dataFimInput = document.getElementById('rapidoDataFim');
+    
+    // Preenche data de hoje
+    var hoje = new Date();
+    dataInput.value = hoje.toISOString().split('T')[0];
+    
+    function calcularDataFinal() {
+        var dataInicio = dataInput.value;
+        var qtdDias = parseInt(diasInput.value) || 0;
+        if (!dataInicio || qtdDias === 0) {
+            dataFimInput.value = dataInicio;
+            return;
+        }
+        var d = new Date(dataInicio + 'T12:00:00');
+        d.setDate(d.getDate() + qtdDias);
+        dataFimInput.value = d.toISOString().split('T')[0];
+    }
+    
+    dataInput.addEventListener('change', calcularDataFinal);
+    diasInput.addEventListener('input', calcularDataFinal);
+    calcularDataFinal();
+});
+
+// Cria evento na agenda de gráficos
+async function criarEventoRapido() {
+    var cliente = document.getElementById('rapidoCliente').value.trim();
+    var grafico = document.getElementById('rapidoGrafico').value.trim();
+    var local = document.getElementById('rapidoLocal').value.trim();
+    var data = document.getElementById('rapidoData').value;
+    var dataFim = document.getElementById('rapidoDataFim').value;
+
+    if (!cliente || !grafico || !data) {
+        alert('Preencha pelo menos Cliente, Gráfico e Data.');
+        return;
+    }
+
+    var titulo = (local ? local + ' - ' : '') + grafico + ' - ' + cliente;
+
+    var params = new URLSearchParams();
+    params.append('action', 'criar');
+    params.append('calendario', 'graficos');
+    params.append('titulo', titulo);
+    params.append('cliente', cliente);
+    params.append('grafico', grafico);
+    params.append('data_inicio', data);
+    params.append('data_fim', dataFim || data);
+    params.append('status', 'Agendado');
+    params.append('local', local);
+
+    try {
+        var response = await fetch(URL_WEBHOOK, {
+            method: 'POST',
+            body: params,
+            redirect: 'follow'
+        });
+        alert('✅ Evento adicionado à Agenda de Gráficos!');
+        document.getElementById('rapidoCliente').value = '';
+        document.getElementById('rapidoGrafico').value = '';
+        document.getElementById('rapidoLocal').value = '';
+        var hoje = new Date().toISOString().split('T')[0];
+        document.getElementById('rapidoData').value = hoje;
+        document.getElementById('rapidoDias').value = 0;
+        document.getElementById('rapidoDataFim').value = hoje;
+        carregarEventos();
+    } catch (err) {
+        alert('❌ Erro de conexão: ' + err.message);
+    }
+}
+</script>
+ 
 </body>
 </html>
