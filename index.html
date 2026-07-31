@@ -21,11 +21,25 @@
         <img src="Equilibrium.logo.png" alt="Logo Equilibrium" class="logo">
         <h1>Sistema Interno</h1>
         <p>Acesso Restrito</p>
-        <form onsubmit="event.preventDefault(); window.location.href='novo-cliente.html';">
-            <input type="text" placeholder="Usuário" required>
-            <input type="password" placeholder="Senha" required>
+        <form onsubmit="event.preventDefault(); validarLogin();">
+            <input type="text" id="usuario" placeholder="Usuário" required>
+            <input type="password" id="senha" placeholder="Senha" required>
             <button type="submit" class="btn-login">ENTRAR</button>
         </form>
+
+        <script>
+        function validarLogin() {
+            var usuario = document.getElementById('usuario').value;
+            var senha = document.getElementById('senha').value;
+            
+            // ALTERE AQUI o usuário e senha que você quer usar
+            if (usuario === 'equilibriumte' && senha === 'Frederico123$') {
+                window.location.href = 'novo-cliente.html';
+            } else {
+                alert('Usuário ou senha incorretos!');
+            }
+        }
+        </script>
     </div>
 </body>
 </html>
