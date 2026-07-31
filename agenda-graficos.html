@@ -368,25 +368,63 @@ async function confirmarExclusao() {
  <script>
 // Autocomplete de clientes
 function carregarClientesRapido() {
-    fetch(DATABASE_URL + '?action=listar_clientes')
+    fetch(DATABASE_URL + '?_=' + Date.now())
         .then(function(r){ return r.json(); })
-        .then(function(result){
-            if (result.success && result.clientes) {
-                var datalist = document.getElementById('clientesList');
-                datalist.innerHTML = '';
-                result.clientes.forEach(function(c){
+        .then(function(data){
+            var lista = Array.isArray(data) ? data : (data.data || data.dados || []);
+            var datalist = document.getElementById('clientesList');
+            datalist.innerHTML = '';
+            lista.forEach(function(c){
+                var nome = '';
+                var chaves = Object.keys(c);
+                for (var i = 0; i < chaves.length; i++) {
+                    var chaveNorm = chaves[i].trim().toLowerCase().replace(/[^a-z ]/g, '');
+                    if (chaveNorm === 'nome' || chaveNorm === 'nome completo' || chaveNorm === 'cliente') {
+                        nome = c[chaves[i]];
+                        break;
+                    }
+                }
+                if (nome) {
                     var opt = document.createElement('option');
-                    opt.value = c.nome || c.cliente_nome || '';
+                    opt.value = nome;
                     datalist.appendChild(opt);
-                });
-            }
+                }
+            });
         })
         .catch(function(){});
 }
 
+function carregarGraficosRapido() {
+    fetch(DATABASE_URL + '?action=configuracoes&_=' + Date.now())
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+            var config = data.configuracoes || data.Configuracoes || data;
+            var lista = [];
+            if (config && typeof config === 'object') {
+                for (var k in config) {
+                    if (!config.hasOwnProperty(k)) continue;
+                    var keyNorm = k.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    if (keyNorm.indexOf('grafico') !== -1) {
+                        var v = config[k];
+                        if (Array.isArray(v) && v.length) { lista = v; break; }
+                        if (typeof v === 'string' && v.trim()) { lista = v.split(',').map(function(s){ return s.trim(); }).filter(Boolean); break; }
+                    }
+                }
+            }
+            var datalist = document.getElementById('graficosList');
+            datalist.innerHTML = '';
+            lista.forEach(function(g){
+                var opt = document.createElement('option');
+                opt.value = g;
+                datalist.appendChild(opt);
+            });
+        })
+        .catch(function(){});
+}
 // Calcula data final automaticamente
 document.addEventListener('DOMContentLoaded', function(){
-    carregarClientesRapido();
+   carregarClientesRapido();
+   carregarGraficosRapido();
     
     var dataInput = document.getElementById('rapidoData');
     var diasInput = document.getElementById('rapidoDias');
