@@ -64,6 +64,9 @@
  /* ... outros estilos ... */
 .btn-editar { background:#4b0082; color:#fff; padding:8px 16px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; font-size:13px; transition:0.3s; }
 .btn-editar:hover { background:#6a0dad; transform:scale(1.05); }
+ .btn-editar-selecionado { background:#4b0082; color:#fff; padding:11px 18px; border:none; border-radius:10px; cursor:pointer; font-size:14px; font-weight:600; transition:background 0.2s; }
+.btn-editar-selecionado:hover { background:#6a0dad; }
+.linha-selecionada { background:#f0e6fa !important; }
 </style>
 </style>
  <link rel="stylesheet" href="responsivo.css">
@@ -94,9 +97,10 @@
     <button class="btn btn-primary" onclick="carregar()">🔄 Atualizar</button>
   </div>
   <div class="card">
-    <div class="toolbar">
-      <input type="text" id="search" class="search-input" placeholder="🔍 Buscar em todas as colunas..." oninput="filtrar(this.value)">
-    </div>
+   <div class="toolbar">
+<input type="text" id="search" class="search-input" placeholder="🔍 Buscar em todas as colunas..." oninput="filtrar(this.value)">
+<button class="btn btn-editar-selecionado" onclick="editarSelecionado()" id="btn-editar-selecionado" style="display:none;">✏️ Editar Selecionado</button>
+</div>
     <div id="status">Carregando...</div>
     <div class="table-wrap">
       <table>
@@ -154,75 +158,88 @@
       renderizarTabela([]);
     }
   }
-  function renderizarTabela(dados) {
-    const theadRow = document.getElementById('thead-row');
-    const tbody = document.getElementById('tbody');
-    theadRow.innerHTML = '';
-    tbody.innerHTML = '';
-    colunas.forEach(function(nome, idx) {
-      const th = document.createElement('th');
-      th.textContent = nome;
-      if (idx === 0) th.classList.add('col-fixed');
-      if (idx === 3) th.classList.add('col-fixed-2');
-      theadRow.appendChild(th);
-    });
-    const thAcao = document.createElement('th');
-    thAcao.textContent = 'Ações';
-    theadRow.appendChild(thAcao);
-    if (!dados || dados.length === 0) {
-      const tr = document.createElement('tr');
-      const td = document.createElement('td');
-      td.colSpan = colunas.length + 1;
-      td.className = 'empty';
-      td.textContent = 'Nenhum atendimento encontrado.';
-      tr.appendChild(td);
-      tbody.appendChild(tr);
-      return;
-    }
-    dados.forEach(function(linha, i) {
-      const tr = document.createElement('tr');
-      tr.id = 'row-' + i;
-      colunas.forEach(function(nomeCol, idx) {
-        const td = document.createElement('td');
-        let valor = '';
-        if (linha && typeof linha === 'object' && nomeCol in linha) {
-          valor = linha[nomeCol];
-        }
-        if (valor === null || valor === undefined) valor = '';
-        else if (typeof valor === 'object') {
-          try { valor = JSON.stringify(valor); } catch(e) { valor = ''; }
-        } else {
-          valor = String(valor);
-          // 🔧 Aplica formatação de porcentagem nos campos de chakras/aura
-          valor = formatarValor(valor, nomeCol);
-          if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(valor)) {
-            const p = valor.split('T')[0].split('-');
-            valor = p[2] + '/' + p[1] + '/' + p[0];
-          }
-          else if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) {
-            const p = valor.split('-');
-            valor = p[2] + '/' + p[1] + '/' + p[0];
-          }
-        }
-        if (idx === 0) {
-          td.textContent = valor;
-          td.classList.add('col-fixed');
-        } else {
-          td.className = 'editavel';
-          td.dataset.campo = nomeCol;
-          td.dataset.idx = i;
-          td.textContent = valor;
-        }
-        td.title = valor;
-        if (idx === 3) td.classList.add('col-fixed-2');
-        tr.appendChild(td);
-      });
-      const tdAcao = document.createElement('td');
-     tdAcao.innerHTML = '<button class="btn-editar" onclick="editarLinha(' + i + ')" id="btn-' + i + '" style="background:#4b0082;color:#fff;padding:8px 16px;border:none;border-radius:6px;font-weight:bold;cursor:pointer;font-size:13px;">✏️ Editar</button>';
-      tr.appendChild(tdAcao);
-      tbody.appendChild(tr);
-    });
-  }
+ function renderizarTabela(dados) {
+const theadRow = document.getElementById('thead-row');
+const tbody = document.getElementById('tbody');
+theadRow.innerHTML = '';
+tbody.innerHTML = '';
+// Coluna de seleção
+const thSel = document.createElement('th');
+thSel.textContent = 'Sel.';
+theadRow.appendChild(thSel);
+colunas.forEach(function(nome, idx) {
+const th = document.createElement('th');
+th.textContent = nome;
+if (idx === 0) th.classList.add('col-fixed');
+if (idx === 3) th.classList.add('col-fixed-2');
+theadRow.appendChild(th);
+});
+if (!dados || dados.length === 0) {
+const tr = document.createElement('tr');
+const td = document.createElement('td');
+td.colSpan = colunas.length + 1;
+td.className = 'empty';
+td.textContent = 'Nenhum atendimento encontrado.';
+tr.appendChild(td);
+tbody.appendChild(tr);
+return;
+}
+dados.forEach(function(linha, i) {
+const tr = document.createElement('tr');
+tr.id = 'row-' + i;
+// Célula de seleção
+const tdSel = document.createElement('td');
+tdSel.innerHTML = '<input type="radio" name="selAtendimento" value="' + i + '" onclick="selecionarLinha(' + i + ')">';
+tr.appendChild(tdSel);
+colunas.forEach(function(nomeCol, idx) {
+const td = document.createElement('td');
+let valor = '';
+if (linha && typeof linha === 'object' && nomeCol in linha) {
+valor = linha[nomeCol];
+}
+if (valor === null || valor === undefined) valor = '';
+else if (typeof valor === 'object') {
+try { valor = JSON.stringify(valor); } catch(e) { valor = ''; }
+} else {
+valor = String(valor);
+valor = formatarValor(valor, nomeCol);
+if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(valor)) {
+const p = valor.split('T')[0].split('-');
+valor = p[2] + '/' + p[1] + '/' + p[0];
+}
+else if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) {
+const p = valor.split('-');
+valor = p[2] + '/' + p[1] + '/' + p[0];
+}
+}
+if (idx === 0) {
+td.textContent = valor;
+td.classList.add('col-fixed');
+} else {
+td.className = 'editavel';
+td.dataset.campo = nomeCol;
+td.dataset.idx = i;
+td.textContent = valor;
+}
+td.title = valor;
+if (idx === 3) td.classList.add('col-fixed-2');
+tr.appendChild(td);
+});
+tbody.appendChild(tr);
+});
+}
+
+// Seleciona uma linha (radio)
+function selecionarLinha(idx) {
+// Remove destaque de todas
+var linhas = document.querySelectorAll('#tbody tr');
+linhas.forEach(function(l) { l.classList.remove('linha-selecionada'); });
+// Destaque a selecionada
+var linha = document.getElementById('row-' + idx);
+if (linha) linha.classList.add('linha-selecionada');
+// Mostra o botão de editar
+document.getElementById('btn-editar-selecionado').style.display = 'inline-block';
+}
   function filtrar(termo) {
     const t = termo.toLowerCase().trim();
     if (!t) { renderizarTabela(dadosOriginais); return; }
@@ -234,29 +251,41 @@
     });
     renderizarTabela(filtrados);
   }
-  function editarLinha(idx) {
-    const linha = document.getElementById('row-' + idx);
-    const botao = document.getElementById('btn-' + idx);
-    if (botao.textContent.includes('Salvar')) {
-      salvarLinha(idx);
-      return;
-    }
-    const celulas = linha.querySelectorAll('.editavel');
-    celulas.forEach(function(cel) {
-      var texto = cel.textContent.trim();
-      var campo = cel.dataset.campo;
-      cel.innerHTML = '<input type="text" value="' + texto.replace(/\"/g, '&quot;') + '" class="input-edicao" data-campo="' + campo + '" data-idx="' + idx + '">';
-    });
-    botao.textContent = '💾 Salvar';
-    botao.style.background = '#28a745';
-  }
+ function editarSelecionado() {
+// Descobre qual linha está selecionada
+var radio = document.querySelector('input[name="selAtendimento"]:checked');
+if (!radio) {
+alert('Selecione um atendimento primeiro.');
+return;
+}
+var idx = parseInt(radio.value, 10);
+var linha = document.getElementById('row-' + idx);
+var botao = document.getElementById('btn-editar-selecionado');
+if (botao.textContent.includes('Salvar')) {
+salvarLinha(idx);
+return;
+}
+var celulas = linha.querySelectorAll('.editavel');
+celulas.forEach(function(cel) {
+var texto = cel.textContent.trim();
+var campo = cel.dataset.campo;
+cel.innerHTML = '<input type="text" value="' + texto.replace(/"/g, '"') + '" class="input-edicao" data-campo="' + campo + '" data-idx="' + idx + '">';
+});
+botao.textContent = '💾 Salvar';
+botao.style.background = '#28a745';
+}
   function salvarLinha(idx) {
     var inputs = document.querySelectorAll('#row-' + idx + ' .input-edicao');
     var campos = {};
     inputs.forEach(function(inp) {
       campos[inp.dataset.campo] = inp.value.trim();
     });
-    var idLinha = dadosOriginais[idx] ? dadosOriginais[idx][CAMPO_ID] : '';
+   var linhaDados = dadosOriginais[idx] || {};
+var idLinha = linhaDados[CAMPO_ID] || '';
+if (!idLinha) {
+alert('❌ Não foi possível identificar o ID do atendimento para editar.');
+return;
+}
     fetch(API_URL, {
       method: 'POST',
       body: JSON.stringify({
