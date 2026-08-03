@@ -21,6 +21,9 @@
   .search-input:focus { border-color: #6a0dad; box-shadow: 0 0 0 3px rgba(106,13,173,0.15); }
   .btn { padding: 11px 18px; border: none; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; background: #4b0082; color: #fff; }
   .btn:hover { background: #6a0dad; }
+  .btn-editar-selecionado { padding: 11px 18px; border: none; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; background: #4b0082; color: #fff; white-space: nowrap; transition: background 0.2s; }
+  .btn-editar-selecionado:hover { background: #6a0dad; }
+  .btn-editar-selecionado.salvando { background: #28a745; }
   #status { font-size: 13px; color: #6a0dad; margin-bottom: 14px; min-height: 18px; }
   .table-wrap { overflow-x: auto; overflow-y: auto; max-height: 65vh; border-radius: 10px; border: 1px solid #eee; }
   table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 800px; }
@@ -28,12 +31,12 @@
   tbody td { padding: 11px 14px; border-bottom: 1px solid #f0e8fa; white-space: nowrap; }
   tbody tr:hover { background: #f7f2fc; }
   tbody tr:nth-child(even) { background: #fbf9fe; }
+  .linha-selecionada { background: #f0e6fa !important; }
   td.empty { text-align: center; color: #999; padding: 28px; font-style: italic; }
+  .id-cell { font-weight: 600; color: #4b0082; }
   .table-wrap::-webkit-scrollbar { width: 8px; height: 8px; }
   .table-wrap::-webkit-scrollbar-track { background: #f0e8fa; border-radius: 4px; }
   .table-wrap::-webkit-scrollbar-thumb { background: #c4b0d8; border-radius: 4px; }
-  .btn-editar { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; background: #4b0082; color: #fff; }
-  .btn-editar:hover { background: #6a0dad; }
   .input-edicao { width: 100%; padding: 4px 6px; border: 2px solid #c4b0d8; border-radius: 4px; font-size: 13px; box-sizing: border-box; }
   .input-edicao:focus { border-color: #6a0dad; outline: none; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
   .select-edicao { width: 100%; padding: 4px 6px; border: 2px solid #c4b0d8; border-radius: 4px; font-size: 13px; box-sizing: border-box; background: #fff; cursor: pointer; }
@@ -71,6 +74,7 @@
   <div class="card">
     <div class="toolbar">
       <input type="text" id="search" class="search-input" placeholder="🔍 Buscar em todas as colunas..." oninput="filtrar(this.value)">
+      <button class="btn-editar-selecionado" id="btn-editar-selecionado" onclick="editarSelecionado()">✏️ Editar Selecionado</button>
     </div>
     <div id="status">Carregando...</div>
     <div class="table-wrap">
@@ -86,7 +90,6 @@ const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mj
 let colunas = [];
 let dadosOriginais = [];
 let listaGraficos = []; // Lista de opções para o dropdown Gráfico
-const CAMPO_ID = 'ID Tratamento';
 
 function formatarData(v) {
   if (!v) return '';
@@ -111,7 +114,6 @@ function carregarConfig() {
     .then(function(r) { return r.json(); })
     .then(function(json) {
       if (json && json.success && json.configuracoes) {
-        // Procura a lista de gráficos - pode vir como 'Gráficos', 'Gráfico', 'Graficos', etc.
         var chaves = Object.keys(json.configuracoes);
         for (var i = 0; i < chaves.length; i++) {
           var c = chaves[i].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -130,8 +132,6 @@ function carregarConfig() {
 function carregar() {
   var statusEl = document.getElementById('status');
   statusEl.textContent = 'Carregando...';
-  
-  // Carrega config e dados em paralelo
   Promise.all([
     carregarConfig(),
     new Promise(function(resolve) {
@@ -163,20 +163,22 @@ function carregar() {
 }
 
 function renderizarTabela(dados) {
+  // Volta a rolagem para o início
+  var wrap = document.querySelector('.table-wrap');
+  if (wrap) { wrap.scrollLeft = 0; wrap.scrollTop = 0; }
   var theadRow = document.getElementById('thead-row');
   var tbody = document.getElementById('tbody');
   theadRow.innerHTML = '';
   tbody.innerHTML = '';
-  
+  // Coluna de seleção
+  var thSel = document.createElement('th');
+  thSel.textContent = 'Sel.';
+  theadRow.appendChild(thSel);
   for (var i = 0; i < colunas.length; i++) {
     var th = document.createElement('th');
     th.textContent = colunas[i];
     theadRow.appendChild(th);
   }
-  var thAcao = document.createElement('th');
-  thAcao.textContent = 'Ações';
-  theadRow.appendChild(thAcao);
-
   if (!dados || dados.length === 0) {
     var tr = document.createElement('tr');
     var td = document.createElement('td');
@@ -187,12 +189,21 @@ function renderizarTabela(dados) {
     tbody.appendChild(tr);
     return;
   }
-
   for (var i = 0; i < dados.length; i++) {
     var linha = dados[i];
+    var idTrat = (linha && typeof linha === 'object' && colunas.length > 0) ? String(linha[colunas[0]] || '') : '';
     var tr = document.createElement('tr');
     tr.id = 'row-' + i;
-    
+    tr.setAttribute('data-id', idTrat);
+    // Célula de seleção (radio)
+    var tdSel = document.createElement('td');
+    var radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.name = 'selTratamento';
+    radio.value = idTrat;
+    radio.onclick = function() { selecionarLinha(this); };
+    tdSel.appendChild(radio);
+    tr.appendChild(tdSel);
     for (var c = 0; c < colunas.length; c++) {
       var td = document.createElement('td');
       var valor = '';
@@ -205,24 +216,27 @@ function renderizarTabela(dados) {
         valor = String(valor);
         if (ehData(nomeCol)) { valor = formatarData(valor); }
       }
-      
       if (c === 0) {
         td.textContent = valor;
         td.className = 'id-cell';
       } else {
         td.className = 'editavel';
         td.dataset.campo = nomeCol;
-        td.dataset.idx = i;
         td.textContent = valor;
       }
       tr.appendChild(td);
     }
-    
-    var tdAcao = document.createElement('td');
-    tdAcao.innerHTML = '<button class="btn-editar" onclick="editarLinha(' + i + ')" id="btn-' + i + '">✏️ Editar</button>';
-    tr.appendChild(tdAcao);
     tbody.appendChild(tr);
   }
+}
+
+// Seleciona a linha pelo ID (radio)
+function selecionarLinha(radio) {
+  var idTrat = radio.value;
+  var linhas = document.querySelectorAll('#tbody tr');
+  linhas.forEach(function(l) { l.classList.remove('linha-selecionada'); });
+  var linha = document.querySelector('#tbody tr[data-id="' + idTrat + '"]');
+  if (linha) linha.classList.add('linha-selecionada');
 }
 
 function filtrar(termo) {
@@ -242,23 +256,27 @@ function filtrar(termo) {
   renderizarTabela(filtrados);
 }
 
-function editarLinha(idx) {
-  var linha = document.getElementById('row-' + idx);
-  var botao = document.getElementById('btn-' + idx);
-
-  if (botao.textContent.includes('Salvar')) {
-    salvarLinha(idx);
+function editarSelecionado() {
+  var botao = document.getElementById('btn-editar-selecionado');
+  if (botao.textContent.indexOf('Salvar') !== -1) {
+    salvarLinha();
     return;
   }
-
+  var radio = document.querySelector('input[name="selTratamento"]:checked');
+  if (!radio) {
+    alert('Selecione um tratamento primeiro.');
+    return;
+  }
+  var idTrat = radio.value;
+  var linha = document.querySelector('#tbody tr[data-id="' + idTrat + '"]');
+  if (!linha) { alert('Tratamento não encontrado.'); return; }
   var celulas = linha.querySelectorAll('.editavel');
   celulas.forEach(function(cel) {
     var texto = cel.textContent.trim();
     var campo = cel.dataset.campo;
-    
     // Se for a coluna "Gráfico", mostra dropdown
     if (campo === 'Gráfico' && listaGraficos.length > 0) {
-      var html = '<select class="select-edicao" data-campo="' + campo + '" data-idx="' + idx + '">';
+      var html = '<select class="select-edicao" data-campo="' + campo + '">';
       html += '<option value="">-- Selecione --</option>';
       for (var g = 0; g < listaGraficos.length; g++) {
         var sel = listaGraficos[g] === texto ? ' selected' : '';
@@ -267,36 +285,33 @@ function editarLinha(idx) {
       html += '</select>';
       cel.innerHTML = html;
     } else {
-      cel.innerHTML = '<input type="text" value="' + texto.replace(/"/g, '&quot;') + '" class="input-edicao" data-campo="' + campo + '" data-idx="' + idx + '">';
+      cel.innerHTML = '<input type="text" value="' + texto.replace(/"/g, '&quot;') + '" class="input-edicao" data-campo="' + campo + '">';
     }
   });
-
-  botao.textContent = '💾 Salvar';
-  botao.style.background = '#28a745';
+  botao.textContent = '💾 Salvar Alterações';
+  botao.classList.add('salvando');
 }
 
-function salvarLinha(idx) {
-  var inputs = document.querySelectorAll('#row-' + idx + ' .input-edicao, #row-' + idx + ' .select-edicao');
+function salvarLinha() {
+  var radio = document.querySelector('input[name="selTratamento"]:checked');
+  if (!radio) { alert('Selecione um tratamento primeiro.'); return; }
+  var idTrat = radio.value;
+  var linha = document.querySelector('#tbody tr[data-id="' + idTrat + '"]');
+  if (!linha) { alert('Tratamento não encontrado.'); return; }
+  if (!idTrat) {
+    alert('❌ Erro: ID do tratamento não encontrado.');
+    return;
+  }
+  var inputs = linha.querySelectorAll('.input-edicao, .select-edicao');
   var campos = {};
-
   inputs.forEach(function(inp) {
     campos[inp.dataset.campo] = inp.value.trim();
   });
-
-  var linha = document.getElementById('row-' + idx);
-  var idCell = linha.querySelector('.id-cell');
-  var idLinha = idCell ? idCell.textContent.trim() : '';
-
-  if (!idLinha) {
-    alert('❌ Erro: ID não encontrado nesta linha.');
-    return;
-  }
-
   fetch(URL_ATEND, {
     method: 'POST',
     body: JSON.stringify({
       action: 'atualizar_tratamento',
-      id: idLinha,
+      id: idTrat,
       campos: campos
     })
   })
@@ -304,6 +319,7 @@ function salvarLinha(idx) {
   .then(function(res) {
     if (res.success || res.status === 'sucesso') {
       alert('✅ Tratamento atualizado!');
+      resetarEstado();
       carregar();
     } else {
       alert('❌ Erro: ' + (res.message || res.error || 'desconhecido'));
@@ -312,6 +328,18 @@ function salvarLinha(idx) {
   .catch(function() {
     alert('❌ Erro de conexão ao salvar.');
   });
+}
+
+function resetarEstado() {
+  var botao = document.getElementById('btn-editar-selecionado');
+  if (botao) {
+    botao.textContent = '✏️ Editar Selecionado';
+    botao.classList.remove('salvando');
+  }
+  var radios = document.querySelectorAll('input[name="selTratamento"]');
+  radios.forEach(function(r) { r.checked = false; });
+  var linhas = document.querySelectorAll('#tbody tr');
+  linhas.forEach(function(l) { l.classList.remove('linha-selecionada'); });
 }
 
 document.addEventListener('DOMContentLoaded', carregar);
