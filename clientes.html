@@ -8,29 +8,27 @@
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
 body { display: flex; background-color: #f4f0fa; min-height: 100vh; }
 .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
-.sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
+.sidebar h2 { margin-bottom: 30px; text-align: center; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; font-size: 22px; }
 .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
 .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
-.content { margin-left: 250px; padding: 32px; width: 100%; }
+.content { margin-left: 250px; flex: 1; padding: 40px; width: calc(100% - 250px); }
 .content h1 { color: #4b0082; margin-bottom: 20px; }
-.card { background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 6px 20px rgba(75,0,130,0.08); }
 .toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
-.search-input { flex: 1; min-width: 220px; padding: 12px 16px; border: 2px solid #e0d4f0; border-radius: 10px; font-size: 15px; outline: none; }
-.search-input:focus { border-color: #6a0dad; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
-.table-wrap { overflow-x: auto; overflow-y: auto; max-height: 600px; border-radius: 10px; border: 1px solid #eee; }
-table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 1700px; }
-th { background-color: #4b0082; color: #fff; font-weight: 600; text-transform: uppercase; font-size: 11px; position: sticky; top: 0; z-index: 2; padding: 12px 14px; text-align: left; white-space: nowrap; }
-tbody td { padding: 11px 14px; border-bottom: 1px solid #f0e8fa; white-space: nowrap; }
-tbody tr:hover { background: #f7f2fc; }
+.search-input { flex: 1; min-width: 220px; padding: 12px 16px; border: 2px solid #e0d4f0; border-radius: 10px; font-size: 15px; outline: none; background: #faf8ff; }
+.search-input:focus { border-color: #6a0dad; box-shadow: 0 0 0 3px rgba(106,13,173,0.15); }
+.btn-editar-selecionado { background: #4b0082; color: #fff; padding: 13px 24px; border: 2px solid #ffd700; border-radius: 12px; cursor: pointer; font-size: 15px; font-weight: 700; transition: 0.2s; box-shadow: 0 4px 12px rgba(75,0,130,0.35); white-space: nowrap; }
+.btn-editar-selecionado:hover { background: #6a0dad; transform: scale(1.02); }
+.btn-editar-selecionado.salvando { background: #28a745; border-color: #28a745; }
+.card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+.table-wrap { overflow-x: auto; overflow-y: auto; max-height: 600px; border-radius: 12px; border: 1px solid #e8dff0; }
+table { width: 100%; border-collapse: collapse; min-width: 1700px; }
+th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 13px; white-space: nowrap; }
+th { background-color: #4b0082; color: #fff; font-weight: 600; text-transform: uppercase; font-size: 11px; position: sticky; top: 0; z-index: 2; }
 .id-cell { font-family: monospace; color: #888; font-weight: bold; }
 .loading { text-align: center; padding: 40px; color: #6a0dad; font-style: italic; }
 .input-edicao { width: 100%; padding: 4px 6px; border: 2px solid #c4b0d8; border-radius: 4px; font-size: 13px; box-sizing: border-box; }
 .input-edicao:focus { border-color: #6a0dad; outline: none; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
-.btn-editar-selecionado { background: #4b0082; color: #fff; padding: 11px 18px; border: none; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; transition: background 0.2s; }
-.btn-editar-selecionado:hover { background: #6a0dad; }
 .linha-selecionada { background: #f0e6fa !important; }
-.header-lista { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
-.header-lista h1 { margin-bottom: 0; }
 </style>
 <link rel="stylesheet" href="responsivo.css">
 </head>
@@ -52,14 +50,12 @@ tbody tr:hover { background: #f7f2fc; }
 </nav>
 </div>
 <div class="content">
-<div class="header-lista">
 <h1>Lista de Clientes</h1>
-<button class="btn-editar-selecionado" onclick="editarSelecionado()" id="btn-editar-selecionado" style="display:none;">✏️ Editar Selecionado</button>
-</div>
-<div class="card">
 <div class="toolbar">
 <input type="text" id="buscaCliente" class="search-input" placeholder="🔍 Buscar cliente por nome, ID, WhatsApp, cidade..." oninput="filtrarClientes(this.value)">
+<button class="btn-editar-selecionado" id="btn-editar-selecionado" onclick="editarSelecionado()">✏️ Editar Selecionado</button>
 </div>
+<div class="card">
 <div id="status-container">
 <div class="loading">🔍 Buscando dados na planilha de CLIENTES...</div>
 </div>
@@ -91,10 +87,24 @@ tbody tr:hover { background: #f7f2fc; }
 const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
 let dadosClientes = [];
 
+function normKey(k) { return String(k || '').toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
+
 function getVal(obj, campo) {
+    if (!obj || typeof obj !== 'object') return "-";
     const keys = Object.keys(obj);
-    const keyEncontrada = keys.find(k => k.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === campo.toLowerCase());
+    const alvo = normKey(campo);
+    const keyEncontrada = keys.find(k => normKey(k) === alvo);
     return keyEncontrada ? obj[keyEncontrada] : "-";
+}
+
+function getIdCliente(obj) {
+    if (!obj || typeof obj !== 'object') return '-';
+    const keys = Object.keys(obj);
+    const found = keys.find(k => {
+        const n = normKey(k);
+        return n === 'id' || n === 'idcliente';
+    });
+    return found ? obj[found] : '-';
 }
 
 function formatarData(valor) {
@@ -126,7 +136,7 @@ function renderizarTabela(dados) {
         const cidadeUf = (cidade !== '-' ? cidade : '') + '/' + (estado !== '-' ? estado : '');
         corpo.innerHTML += `<tr id="row-${idx}">
             <td><input type="radio" name="selCliente" value="${idx}" onclick="selecionarLinha(${idx})"></td>
-            <td class="id-cell">${getVal(c, 'id')}</td>
+            <td class="id-cell">${getIdCliente(c)}</td>
             <td class="editavel" data-campo="nome" data-idx="${idx}"><strong>${getVal(c, 'nome')}</strong></td>
             <td class="editavel" data-campo="nascimento" data-idx="${idx}">${formatarData(getVal(c, 'nascimento'))}</td>
             <td class="editavel" data-campo="whatsapp" data-idx="${idx}">${formatarWhats(getVal(c, 'whatsapp'))}</td>
@@ -147,19 +157,19 @@ function selecionarLinha(idx) {
     linhas.forEach(function(l) { l.classList.remove('linha-selecionada'); });
     var linha = document.getElementById('row-' + idx);
     if (linha) linha.classList.add('linha-selecionada');
-    document.getElementById('btn-editar-selecionado').style.display = 'inline-block';
 }
 
 async function carregarDados() {
     document.getElementById('status-container').innerHTML = '<div class="loading">🔍 Buscando dados na planilha de CLIENTES...</div>';
     try {
-        const response = await fetch(URL_CLIENTES);
+        const response = await fetch(URL_CLIENTES + '?_=' + Date.now());
         const dados = await response.json();
         dadosClientes = dados;
         document.getElementById('status-container').style.display = 'none';
         document.getElementById('tabela-clientes').style.display = 'table';
         renderizarTabela(dados);
     } catch (error) {
+        console.error('Erro ao carregar:', error);
         document.getElementById('status-container').innerHTML = '<div style="color:red; padding:20px;">❌ Erro de conexão com a planilha de Clientes.</div>';
     }
 }
@@ -177,17 +187,17 @@ function filtrarClientes(termo) {
 
 function editarSelecionado() {
     var radio = document.querySelector('input[name="selCliente"]:checked');
+    var botao = document.getElementById('btn-editar-selecionado');
+    if (botao.textContent.includes('Salvar')) {
+        salvarLinha(parseInt(radio ? radio.value : '0', 10));
+        return;
+    }
     if (!radio) {
         alert('Selecione um cliente primeiro.');
         return;
     }
     var idx = parseInt(radio.value, 10);
     var linha = document.getElementById('row-' + idx);
-    var botao = document.getElementById('btn-editar-selecionado');
-    if (botao.textContent.includes('Salvar')) {
-        salvarLinha(idx);
-        return;
-    }
     var celulas = linha.querySelectorAll('.editavel');
     celulas.forEach(cel => {
         const texto = cel.textContent.trim();
@@ -199,8 +209,8 @@ function editarSelecionado() {
             cel.innerHTML = `<input type="text" value="${texto}" class="input-edicao" data-campo="${campo}" data-idx="${idx}">`;
         }
     });
-    botao.textContent = '💾 Salvar';
-    botao.style.background = '#28a745';
+    botao.textContent = '💾 Salvar Alterações';
+    botao.classList.add('salvando');
 }
 
 async function salvarLinha(idx) {
@@ -218,7 +228,7 @@ async function salvarLinha(idx) {
         campos[campo] = valor;
     });
     const cliente = dadosClientes[idx] || {};
-    const id = getVal(cliente, 'id');
+    const id = getIdCliente(cliente);
     if (!id || id === '-') {
         alert('❌ Não foi possível identificar o ID do cliente para salvar.');
         return;
@@ -233,24 +243,23 @@ async function salvarLinha(idx) {
             })
         });
         const resultado = await resp.json();
-        if (resultado.status === 'sucesso') {
+        console.log('Resposta do script:', resultado);
+        if (resultado.status === 'sucesso' || resultado.success) {
             alert('✅ Cliente atualizado com sucesso!');
             var botao = document.getElementById('btn-editar-selecionado');
-            if (botao) {
-                botao.textContent = '✏️ Editar Selecionado';
-                botao.style.background = '#4b0082';
-                botao.style.display = 'none';
-            }
+            botao.textContent = '✏️ Editar Selecionado';
+            botao.classList.remove('salvando');
             var radios = document.querySelectorAll('input[name="selCliente"]');
             radios.forEach(function(r) { r.checked = false; });
             var linhas = document.querySelectorAll('#corpo-tabela tr');
             linhas.forEach(function(l) { l.classList.remove('linha-selecionada'); });
             carregarDados();
         } else {
-            alert('❌ Erro: ' + resultado.message);
+            alert('❌ Erro: ' + (resultado.message || resultado.error || 'resposta inesperada do script'));
         }
     } catch (e) {
-        alert('❌ Erro de conexão ao salvar.');
+        console.error('Erro ao salvar:', e);
+        alert('❌ Erro de conexão ao salvar. Veja o console (F12) para detalhes.');
     }
 }
 
