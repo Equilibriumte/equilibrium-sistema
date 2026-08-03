@@ -1,197 +1,170 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Clientes - Equilibrium</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { display: flex; background-color: #f4f0fa; min-height: 100vh; }
-        .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
-        .sidebar h2 { margin-bottom: 30px; text-align: center; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; font-size: 22px; }
-        .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
-        .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
-        .content { margin-left: 250px; flex: 1; padding: 40px; width: calc(100% - 250px); }
-        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow-x: auto; }
-        .table-wrap {
-            overflow-x: auto;
-            overflow-y: auto;
-            max-height: 600px;
-            border-radius: 12px;
-            border: 1px solid #e8dff0;
-        }
-        .table-wrap::-webkit-scrollbar { width: 8px; height: 8px; }
-        .table-wrap::-webkit-scrollbar-track { background: #f0e8fa; border-radius: 4px; }
-        .table-wrap::-webkit-scrollbar-thumb { background: #c4b0d8; border-radius: 4px; }
-        .table-wrap::-webkit-scrollbar-thumb:hover { background: #a080c0; }
-        table { width: 100%; border-collapse: collapse; min-width: 1700px; }
-        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 13px; white-space: nowrap; }
-        th { background-color: #4b0082; color: #fff; font-weight: 600; text-transform: uppercase; font-size: 11px; position: sticky; top: 0; z-index: 2; }
-        .id-cell { font-family: monospace; color: #888; font-weight: bold; }
-        .loading { text-align: center; padding: 40px; color: #6a0dad; font-style: italic; }
-        .btn-editar { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; background: #4b0082; color: #fff; }
-        .btn-editar:hover { background: #6a0dad; }
-        .input-edicao { width: 100%; padding: 4px 6px; border: 2px solid #c4b0d8; border-radius: 4px; font-size: 13px; box-sizing: border-box; }
-        .input-edicao:focus { border-color: #6a0dad; outline: none; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
-        .btn-editar-selecionado { background:#4b0082; color:#fff; padding:11px 18px; border:none; border-radius:10px; cursor:pointer; font-size:14px; font-weight:600; transition:background 0.2s; margin-left:12px; }
-        .btn-editar-selecionado:hover { background:#6a0dad; }
-        .linha-selecionada { background:#f0e6fa !important; }
-    </style>
-    <link rel="stylesheet" href="responsivo.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lista de Clientes - Equilibrium</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+body { display: flex; background-color: #f4f0fa; min-height: 100vh; }
+.sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; }
+.sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
+.sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
+.sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
+.content { margin-left: 250px; padding: 32px; width: 100%; }
+.content h1 { color: #4b0082; margin-bottom: 20px; }
+.card { background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 6px 20px rgba(75,0,130,0.08); }
+.toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
+.search-input { flex: 1; min-width: 220px; padding: 12px 16px; border: 2px solid #e0d4f0; border-radius: 10px; font-size: 15px; outline: none; }
+.search-input:focus { border-color: #6a0dad; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
+.table-wrap { overflow-x: auto; overflow-y: auto; max-height: 600px; border-radius: 10px; border: 1px solid #eee; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 1700px; }
+th { background-color: #4b0082; color: #fff; font-weight: 600; text-transform: uppercase; font-size: 11px; position: sticky; top: 0; z-index: 2; padding: 12px 14px; text-align: left; white-space: nowrap; }
+tbody td { padding: 11px 14px; border-bottom: 1px solid #f0e8fa; white-space: nowrap; }
+tbody tr:hover { background: #f7f2fc; }
+.id-cell { font-family: monospace; color: #888; font-weight: bold; }
+.loading { text-align: center; padding: 40px; color: #6a0dad; font-style: italic; }
+.input-edicao { width: 100%; padding: 4px 6px; border: 2px solid #c4b0d8; border-radius: 4px; font-size: 13px; box-sizing: border-box; }
+.input-edicao:focus { border-color: #6a0dad; outline: none; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
+.btn-editar-selecionado { background: #4b0082; color: #fff; padding: 11px 18px; border: none; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; transition: background 0.2s; }
+.btn-editar-selecionado:hover { background: #6a0dad; }
+.linha-selecionada { background: #f0e6fa !important; }
+.header-lista { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+.header-lista h1 { margin-bottom: 0; }
+</style>
+<link rel="stylesheet" href="responsivo.css">
 </head>
 <body>
-    <div class="sidebar">
-        <h2>Equilibrium</h2>
-        <nav>
-             <a href="index.html">🏠 Home</a>
-            <a href="agenda.html">📅 Agenda</a>
-            <a href="novo-cliente.html">👤 Novo Cliente</a>
-            <a href="clientes.html" class="active">📋 Lista de Clientes</a>
-            <a href="atendimentos.html">✨ Novo Atendimento</a>
-            <a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
-            <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
-            <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
-            <a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
-            <a href="financeiro.html">💰 Financeiro</a>
-            <a href="relatorio-cliente.html" class="nav-item active">📄 Relatório do Cliente</a>
-        </nav>
-    </div>
-    <div class="content">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-            <h1>Lista de Clientes</h1>
-            <button class="btn-editar-selecionado" onclick="editarSelecionado()" id="btn-editar-selecionado" style="display:none;">✏️ Editar Selecionado</button>
-        </div>
-        <div class="card">
-    <div style="margin-bottom:15px;">
-        <input type="text" id="buscaCliente" class="search-input" placeholder="🔍 Buscar cliente por nome, ID, WhatsApp, cidade..." oninput="filtrarClientes(this.value)" style="width:100%;padding:12px 16px;border:2px solid #e0d4f0;border-radius:10px;font-size:15px;outline:none;">
-    </div>
-    <div id="status-container">
-            <div id="status-container">
-                <div class="loading">🔍 Buscando dados na planilha de CLIENTES...</div>
-            </div>
-            <div class="table-wrap">
-            <table id="tabela-clientes" style="display:none;">
-                <thead>
-                    <tr>
-                        <th>Sel.</th>
-                        <th>ID</th>
-                        <th>Nome</th>
-                        <th>Nascimento</th>
-                        <th>WhatsApp</th>
-                        <th>Email</th>
-                        <th>Instagram</th>
-                        <th>Rua</th>
-                        <th>Nº</th>
-                        <th>Bairro</th>
-                        <th>Cidade/UF</th>
-                        <th>CEP</th>
-                        <th>Indicação</th>
-                    </tr>
-                </thead>
-                <tbody id="corpo-tabela"></tbody>
-            </table>
-            </div>
-        </div>
-    </div>
-    <script>
-        const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
-        function getVal(obj, campo) {
-            const keys = Object.keys(obj);
-            const keyEncontrada = keys.find(k => k.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === campo.toLowerCase());
-            return keyEncontrada ? obj[keyEncontrada] : "-";
-        }
-        function formatarData(valor) {
-            if (!valor || valor === "-") return "-";
-            let d = String(valor);
-            if (d.includes("-") && d.length >= 10) {
-                let partes = d.split("T")[0].split("-");
-                if (partes[0].length === 4) return partes[2]+"-"+partes[1]+"-"+partes[0];
-            }
-            return d;
-        }
-        function formatarWhats(valor) {
-            if (!valor || valor === "-") return "-";
-            let tel = String(valor).replace(/\D/g, "");
-            if (tel.startsWith("55")) tel = tel.substring(2);
-            if (tel.length === 11) return "(" + tel.substring(0, 2) + ") " + tel.substring(2, 7) + "-" + tel.substring(7);
-            return valor;
-        }
-        let dadosClientes = [];
-        function renderizarTabela(dados) {
-            // Volta a rolagem para o início
-            var wrap = document.querySelector('.table-wrap');
-            if (wrap) { wrap.scrollLeft = 0; wrap.scrollTop = 0; }
-            const corpo = document.getElementById('corpo-tabela');
-            corpo.innerHTML = "";
-            dados.forEach((c, idx) => {
-                const cidade = getVal(c, 'cidade');
-                const estado = getVal(c, 'estado');
-                const cidadeUf = (cidade !== '-' ? cidade : '') + '/' + (estado !== '-' ? estado : '');
-                corpo.innerHTML += `<tr id="row-${idx}">
-                    <td><input type="radio" name="selCliente" value="${idx}" onclick="selecionarLinha(${idx})"></td>
-                    <td class="id-cell">${getVal(c, 'id')}</td>
-                    <td class="editavel" data-campo="nome" data-idx="${idx}"><strong>${getVal(c, 'nome')}</strong></td>
-                    <td class="editavel" data-campo="nascimento" data-idx="${idx}">${formatarData(getVal(c, 'nascimento'))}</td>
-                    <td class="editavel" data-campo="whatsapp" data-idx="${idx}">${formatarWhats(getVal(c, 'whatsapp'))}</td>
-                    <td class="editavel" data-campo="email" data-idx="${idx}">${getVal(c, 'email')}</td>
-                    <td class="editavel" data-campo="instagram" data-idx="${idx}">${getVal(c, 'instagram')}</td>
-                    <td class="editavel" data-campo="rua" data-idx="${idx}">${getVal(c, 'rua')}</td>
-                    <td class="editavel" data-campo="numero" data-idx="${idx}">${getVal(c, 'numero')}</td>
-                    <td class="editavel" data-campo="bairro" data-idx="${idx}">${getVal(c, 'bairro')}</td>
-                    <td class="editavel" data-campo="cidade_uf" data-idx="${idx}">${cidadeUf}</td>
-                    <td class="editavel" data-campo="cep" data-idx="${idx}">${getVal(c, 'cep')}</td>
-                    <td class="editavel" data-campo="indicacao" data-idx="${idx}">${getVal(c, 'indicacao')}</td>
-                </tr>`;
-            });
-        }
-        function selecionarLinha(idx) {
-            var linhas = document.querySelectorAll('#corpo-tabela tr');
-            linhas.forEach(function(l) { l.classList.remove('linha-selecionada'); });
-            var linha = document.getElementById('row-' + idx);
-            if (linha) linha.classList.add('linha-selecionada');
-            document.getElementById('btn-editar-selecionado').style.display = 'inline-block';
-        }
-        async function carregarDados() {
-            document.getElementById('status-container').innerHTML = '<div class="loading">🔍 Buscando dados na planilha de CLIENTES...</div>';
-            try {
-                const response = await fetch(URL_CLIENTES);
-                const dados = await response.json();
-                dadosClientes = dados;
-                document.getElementById('status-container').style.display = 'none';
-                document.getElementById('tabela-clientes').style.display = 'table';
-                renderizarTabela(dados);
-            } catch (error) {
-                document.getElementById('status-container').innerHTML = '<div style="color:red; padding:20px;">❌ Erro de conexão com a planilha de Clientes.</div>';
-            }
-        }
-        function editarSelecionado() {
-            var radio = document.querySelector('input[name="selCliente"]:checked');
-            if (!radio) {
-                alert('Selecione um cliente primeiro.');
-                return;
-            }
-            var idx = parseInt(radio.value, 10);
-            var linha = document.getElementById('row-' + idx);
-            var botao = document.getElementById('btn-editar-selecionado');
-            if (botao.textContent.includes('Salvar')) {
-                salvarLinha(idx);
-                return;
-            }
-            var celulas = linha.querySelectorAll('.editavel');
-            celulas.forEach(cel => {
-                const texto = cel.textContent.trim();
-                const campo = cel.dataset.campo;
-                if (campo === 'cidade_uf') {
-                    const partes = texto.split('/');
-                    cel.innerHTML = `<input type="text" value="${partes[0].trim()}/${partes.length > 1 ? partes[1].trim() : ''}" class="input-edicao" data-campo="cidade_uf" data-idx="${idx}">`;
-                } else {
-                    cel.innerHTML = `<input type="text" value="${texto}" class="input-edicao" data-campo="${campo}" data-idx="${idx}">`;
-                }
-            });
-            botao.textContent = '💾 Salvar';
-            botao.style.background = '#28a745';
-        }
-      function filtrarClientes(termo) {
+<div class="sidebar">
+<h2>Equilibrium</h2>
+<nav>
+<a href="index.html">🏠 Home</a>
+<a href="agenda.html">📅 Agenda</a>
+<a href="novo-cliente.html">👤 Novo Cliente</a>
+<a href="clientes.html" class="active">📋 Lista de Clientes</a>
+<a href="atendimentos.html">✨ Novo Atendimento</a>
+<a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
+<a href="novo-tratamento.html">🩺 Novo Tratamento</a>
+<a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
+<a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
+<a href="financeiro.html">💰 Financeiro</a>
+<a href="relatorio-cliente.html">📄 Relatório do Cliente</a>
+</nav>
+</div>
+<div class="content">
+<div class="header-lista">
+<h1>Lista de Clientes</h1>
+<button class="btn-editar-selecionado" onclick="editarSelecionado()" id="btn-editar-selecionado" style="display:none;">✏️ Editar Selecionado</button>
+</div>
+<div class="card">
+<div class="toolbar">
+<input type="text" id="buscaCliente" class="search-input" placeholder="🔍 Buscar cliente por nome, ID, WhatsApp, cidade..." oninput="filtrarClientes(this.value)">
+</div>
+<div id="status-container">
+<div class="loading">🔍 Buscando dados na planilha de CLIENTES...</div>
+</div>
+<div class="table-wrap">
+<table id="tabela-clientes" style="display:none;">
+<thead>
+<tr>
+<th>Sel.</th>
+<th>ID</th>
+<th>Nome</th>
+<th>Nascimento</th>
+<th>WhatsApp</th>
+<th>Email</th>
+<th>Instagram</th>
+<th>Rua</th>
+<th>Nº</th>
+<th>Bairro</th>
+<th>Cidade/UF</th>
+<th>CEP</th>
+<th>Indicação</th>
+</tr>
+</thead>
+<tbody id="corpo-tabela"></tbody>
+</table>
+</div>
+</div>
+</div>
+<script>
+const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
+let dadosClientes = [];
+
+function getVal(obj, campo) {
+    const keys = Object.keys(obj);
+    const keyEncontrada = keys.find(k => k.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === campo.toLowerCase());
+    return keyEncontrada ? obj[keyEncontrada] : "-";
+}
+
+function formatarData(valor) {
+    if (!valor || valor === "-") return "-";
+    let d = String(valor);
+    if (d.includes("-") && d.length >= 10) {
+        let partes = d.split("T")[0].split("-");
+        if (partes[0].length === 4) return partes[2] + "-" + partes[1] + "-" + partes[0];
+    }
+    return d;
+}
+
+function formatarWhats(valor) {
+    if (!valor || valor === "-") return "-";
+    let tel = String(valor).replace(/\D/g, "");
+    if (tel.startsWith("55")) tel = tel.substring(2);
+    if (tel.length === 11) return "(" + tel.substring(0, 2) + ") " + tel.substring(2, 7) + "-" + tel.substring(7);
+    return valor;
+}
+
+function renderizarTabela(dados) {
+    var wrap = document.querySelector('.table-wrap');
+    if (wrap) { wrap.scrollLeft = 0; wrap.scrollTop = 0; }
+    const corpo = document.getElementById('corpo-tabela');
+    corpo.innerHTML = "";
+    dados.forEach((c, idx) => {
+        const cidade = getVal(c, 'cidade');
+        const estado = getVal(c, 'estado');
+        const cidadeUf = (cidade !== '-' ? cidade : '') + '/' + (estado !== '-' ? estado : '');
+        corpo.innerHTML += `<tr id="row-${idx}">
+            <td><input type="radio" name="selCliente" value="${idx}" onclick="selecionarLinha(${idx})"></td>
+            <td class="id-cell">${getVal(c, 'id')}</td>
+            <td class="editavel" data-campo="nome" data-idx="${idx}"><strong>${getVal(c, 'nome')}</strong></td>
+            <td class="editavel" data-campo="nascimento" data-idx="${idx}">${formatarData(getVal(c, 'nascimento'))}</td>
+            <td class="editavel" data-campo="whatsapp" data-idx="${idx}">${formatarWhats(getVal(c, 'whatsapp'))}</td>
+            <td class="editavel" data-campo="email" data-idx="${idx}">${getVal(c, 'email')}</td>
+            <td class="editavel" data-campo="instagram" data-idx="${idx}">${getVal(c, 'instagram')}</td>
+            <td class="editavel" data-campo="rua" data-idx="${idx}">${getVal(c, 'rua')}</td>
+            <td class="editavel" data-campo="numero" data-idx="${idx}">${getVal(c, 'numero')}</td>
+            <td class="editavel" data-campo="bairro" data-idx="${idx}">${getVal(c, 'bairro')}</td>
+            <td class="editavel" data-campo="cidade_uf" data-idx="${idx}">${cidadeUf}</td>
+            <td class="editavel" data-campo="cep" data-idx="${idx}">${getVal(c, 'cep')}</td>
+            <td class="editavel" data-campo="indicacao" data-idx="${idx}">${getVal(c, 'indicacao')}</td>
+        </tr>`;
+    });
+}
+
+function selecionarLinha(idx) {
+    var linhas = document.querySelectorAll('#corpo-tabela tr');
+    linhas.forEach(function(l) { l.classList.remove('linha-selecionada'); });
+    var linha = document.getElementById('row-' + idx);
+    if (linha) linha.classList.add('linha-selecionada');
+    document.getElementById('btn-editar-selecionado').style.display = 'inline-block';
+}
+
+async function carregarDados() {
+    document.getElementById('status-container').innerHTML = '<div class="loading">🔍 Buscando dados na planilha de CLIENTES...</div>';
+    try {
+        const response = await fetch(URL_CLIENTES);
+        const dados = await response.json();
+        dadosClientes = dados;
+        document.getElementById('status-container').style.display = 'none';
+        document.getElementById('tabela-clientes').style.display = 'table';
+        renderizarTabela(dados);
+    } catch (error) {
+        document.getElementById('status-container').innerHTML = '<div style="color:red; padding:20px;">❌ Erro de conexão com a planilha de Clientes.</div>';
+    }
+}
+
+function filtrarClientes(termo) {
     const t = termo.toLowerCase().trim();
     if (!t) { renderizarTabela(dadosClientes); return; }
     const filtrados = dadosClientes.filter(function(c) {
@@ -201,53 +174,88 @@
     });
     renderizarTabela(filtrados);
 }
-        async function salvarLinha(idx) {
-            const inputs = document.querySelectorAll(`#row-${idx} .input-edicao`);
-            const campos = {};
-            inputs.forEach(inp => {
-                const campo = inp.dataset.campo;
-                let valor = inp.value.trim();
-                if (campo === 'cidade_uf') {
-                    const partes = valor.split('/');
-                    campos['cidade'] = partes[0].trim();
-                    campos['estado'] = partes.length > 1 ? partes[1].trim() : '';
-                    return;
-                }
-                campos[campo] = valor;
-            });
-            const cliente = dadosClientes[idx];
-            const id = getVal(cliente, 'id');
-            try {
-                const resp = await fetch(URL_CLIENTES, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'atualizar',
-                        id: id,
-                        campos: campos
-                    })
-                });
-                const resultado = await resp.json();
-                if (resultado.status === 'sucesso') {
-                    alert('✅ Cliente atualizado com sucesso!');
-                    var botao = document.getElementById('btn-editar-selecionado');
-                    if (botao) {
-                        botao.textContent = '✏️ Editar Selecionado';
-                        botao.style.background = '#4b0082';
-                    }
-                    var radios = document.querySelectorAll('input[name="selCliente"]');
-                    radios.forEach(function(r) { r.checked = false; });
-                    var linhas = document.querySelectorAll('#corpo-tabela tr');
-                    linhas.forEach(function(l) { l.classList.remove('linha-selecionada'); });
-                    carregarDados();
-                } else {
-                    alert('❌ Erro: ' + resultado.message);
-                }
-            } catch (e) {
-                alert('❌ Erro de conexão ao salvar.');
-            }
+
+function editarSelecionado() {
+    var radio = document.querySelector('input[name="selCliente"]:checked');
+    if (!radio) {
+        alert('Selecione um cliente primeiro.');
+        return;
+    }
+    var idx = parseInt(radio.value, 10);
+    var linha = document.getElementById('row-' + idx);
+    var botao = document.getElementById('btn-editar-selecionado');
+    if (botao.textContent.includes('Salvar')) {
+        salvarLinha(idx);
+        return;
+    }
+    var celulas = linha.querySelectorAll('.editavel');
+    celulas.forEach(cel => {
+        const texto = cel.textContent.trim();
+        const campo = cel.dataset.campo;
+        if (campo === 'cidade_uf') {
+            const partes = texto.split('/');
+            cel.innerHTML = `<input type="text" value="${partes[0].trim()}/${partes.length > 1 ? partes[1].trim() : ''}" class="input-edicao" data-campo="cidade_uf" data-idx="${idx}">`;
+        } else {
+            cel.innerHTML = `<input type="text" value="${texto}" class="input-edicao" data-campo="${campo}" data-idx="${idx}">`;
         }
-        window.onload = carregarDados;
-    </script>
-    <script src="js/menu.js"></script>
+    });
+    botao.textContent = '💾 Salvar';
+    botao.style.background = '#28a745';
+}
+
+async function salvarLinha(idx) {
+    const inputs = document.querySelectorAll(`#row-${idx} .input-edicao`);
+    const campos = {};
+    inputs.forEach(inp => {
+        const campo = inp.dataset.campo;
+        let valor = inp.value.trim();
+        if (campo === 'cidade_uf') {
+            const partes = valor.split('/');
+            campos['cidade'] = partes[0].trim();
+            campos['estado'] = partes.length > 1 ? partes[1].trim() : '';
+            return;
+        }
+        campos[campo] = valor;
+    });
+    const cliente = dadosClientes[idx] || {};
+    const id = getVal(cliente, 'id');
+    if (!id || id === '-') {
+        alert('❌ Não foi possível identificar o ID do cliente para salvar.');
+        return;
+    }
+    try {
+        const resp = await fetch(URL_CLIENTES, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'atualizar',
+                id: id,
+                campos: campos
+            })
+        });
+        const resultado = await resp.json();
+        if (resultado.status === 'sucesso') {
+            alert('✅ Cliente atualizado com sucesso!');
+            var botao = document.getElementById('btn-editar-selecionado');
+            if (botao) {
+                botao.textContent = '✏️ Editar Selecionado';
+                botao.style.background = '#4b0082';
+                botao.style.display = 'none';
+            }
+            var radios = document.querySelectorAll('input[name="selCliente"]');
+            radios.forEach(function(r) { r.checked = false; });
+            var linhas = document.querySelectorAll('#corpo-tabela tr');
+            linhas.forEach(function(l) { l.classList.remove('linha-selecionada'); });
+            carregarDados();
+        } else {
+            alert('❌ Erro: ' + resultado.message);
+        }
+    } catch (e) {
+        alert('❌ Erro de conexão ao salvar.');
+    }
+}
+
+window.onload = carregarDados;
+</script>
+<script src="js/menu.js"></script>
 </body>
 </html>
