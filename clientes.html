@@ -62,6 +62,10 @@
             <button class="btn-editar-selecionado" onclick="editarSelecionado()" id="btn-editar-selecionado" style="display:none;">✏️ Editar Selecionado</button>
         </div>
         <div class="card">
+    <div style="margin-bottom:15px;">
+        <input type="text" id="buscaCliente" class="search-input" placeholder="🔍 Buscar cliente por nome, ID, WhatsApp, cidade..." oninput="filtrarClientes(this.value)" style="width:100%;padding:12px 16px;border:2px solid #e0d4f0;border-radius:10px;font-size:15px;outline:none;">
+    </div>
+    <div id="status-container">
             <div id="status-container">
                 <div class="loading">🔍 Buscando dados na planilha de CLIENTES...</div>
             </div>
@@ -187,6 +191,16 @@
             botao.textContent = '💾 Salvar';
             botao.style.background = '#28a745';
         }
+      function filtrarClientes(termo) {
+    const t = termo.toLowerCase().trim();
+    if (!t) { renderizarTabela(dadosClientes); return; }
+    const filtrados = dadosClientes.filter(function(c) {
+        return Object.values(c).some(function(v) {
+            return String(v || '').toLowerCase().indexOf(t) !== -1;
+        });
+    });
+    renderizarTabela(filtrados);
+}
         async function salvarLinha(idx) {
             const inputs = document.querySelectorAll(`#row-${idx} .input-edicao`);
             const campos = {};
