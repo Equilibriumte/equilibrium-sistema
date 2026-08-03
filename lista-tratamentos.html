@@ -5,91 +5,118 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lista de Tratamentos - Equilibrium</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
-  body { display: flex; min-height: 100vh; background: #f4f1f8; }
-  .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; overflow-y: auto; }
-  .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
-  .sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
-  .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
-  .main { margin-left: 250px; padding: 30px; flex: 1; }
-  .header { margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
-  .header h1 { color: #4b0082; font-size: 26px; }
-  .header .subtitle { color: #666; font-size: 14px; margin-top: 5px; }
-  .card { background: #fff; border-radius: 10px; padding: 25px; box-shadow: 0 2px 8px rgba(75,0,130,0.08); }
-  .toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
-  .search-input { flex: 1; min-width: 240px; padding: 12px 16px; border: 2px solid #e0d4f0; border-radius: 10px; font-size: 15px; outline: none; background: #faf8ff; }
-  .search-input:focus { border-color: #6a0dad; box-shadow: 0 0 0 3px rgba(106,13,173,0.15); }
-  .btn { padding: 11px 18px; border: none; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; background: #4b0082; color: #fff; }
-  .btn:hover { background: #6a0dad; }
-  .btn-editar-selecionado { padding: 11px 18px; border: none; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; background: #4b0082; color: #fff; white-space: nowrap; transition: background 0.2s; }
-  .btn-editar-selecionado:hover { background: #6a0dad; }
-  .btn-editar-selecionado.salvando { background: #28a745; }
-  #status { font-size: 13px; color: #6a0dad; margin-bottom: 14px; min-height: 18px; }
-  .table-wrap { overflow-x: auto; overflow-y: auto; max-height: 65vh; border-radius: 10px; border: 1px solid #eee; }
-  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 800px; }
-  thead th { background: #4b0082; color: #fff; text-align: left; padding: 12px 14px; font-weight: 600; white-space: nowrap; position: sticky; top: 0; z-index: 2; }
-  tbody td { padding: 11px 14px; border-bottom: 1px solid #f0e8fa; white-space: nowrap; }
-  tbody tr:hover { background: #f7f2fc; }
-  tbody tr:nth-child(even) { background: #fbf9fe; }
-  .linha-selecionada { background: #f0e6fa !important; }
-  td.empty { text-align: center; color: #999; padding: 28px; font-style: italic; }
-  .id-cell { font-weight: 600; color: #4b0082; }
-  .table-wrap::-webkit-scrollbar { width: 8px; height: 8px; }
-  .table-wrap::-webkit-scrollbar-track { background: #f0e8fa; border-radius: 4px; }
-  .table-wrap::-webkit-scrollbar-thumb { background: #c4b0d8; border-radius: 4px; }
-  .input-edicao { width: 100%; padding: 4px 6px; border: 2px solid #c4b0d8; border-radius: 4px; font-size: 13px; box-sizing: border-box; }
-  .input-edicao:focus { border-color: #6a0dad; outline: none; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
-  .select-edicao { width: 100%; padding: 4px 6px; border: 2px solid #c4b0d8; border-radius: 4px; font-size: 13px; box-sizing: border-box; background: #fff; cursor: pointer; }
-  .select-edicao:focus { border-color: #6a0dad; outline: none; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
-  @media (max-width: 768px) { .sidebar { width: 200px; } .main { margin-left: 200px; padding: 20px; } }
-  @media (max-width: 560px) { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; padding: 16px; } }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+body { display: flex; min-height: 100vh; background: #f4f1f8; overflow-x: hidden; }
+.sidebar { width: 250px; background: linear-gradient(180deg, #4b0082 0%, #6a0dad 100%); color: #ffd700; padding: 20px; position: fixed; height: 100vh; z-index: 100; overflow-y: auto; }
+.sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
+.sidebar a { display: block; color: white; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
+.sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
+.main { margin-left: 250px; padding: 24px; flex: 1; min-width: 0; }
+.header { margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.header h1 { color: #4b0082; font-size: 24px; }
+.header .subtitle { color: #666; font-size: 13px; margin-top: 4px; }
+.card { background: #fff; border-radius: 10px; padding: 18px; box-shadow: 0 2px 8px rgba(75,0,130,0.08); min-width: 0; }
+.toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; flex-wrap: nowrap; }
+.search-input { flex: 1; min-width: 150px; padding: 10px 14px; border: 2px solid #e0d4f0; border-radius: 10px; font-size: 14px; outline: none; background: #faf8ff; }
+.search-input:focus { border-color: #6a0dad; box-shadow: 0 0 0 3px rgba(106,13,173,0.15); }
+.btn { padding: 10px 16px; border: none; border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 600; background: #4b0082; color: #fff; white-space: nowrap; }
+.btn:hover { background: #6a0dad; }
+.btn-editar-selecionado { padding: 10px 16px; border: none; border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 600; background: #4b0082; color: #fff; white-space: nowrap; flex-shrink: 0; transition: background 0.2s; }
+.btn-editar-selecionado:hover { background: #6a0dad; }
+.btn-editar-selecionado.salvando { background: #28a745; }
+#status { font-size: 13px; color: #6a0dad; margin-bottom: 10px; min-height: 16px; }
+.table-wrap { overflow-x: auto; overflow-y: auto; max-height: 60vh; border-radius: 10px; border: 1px solid #eee; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 640px; }
+thead th { background: #4b0082; color: #fff; text-align: left; padding: 9px 10px; font-weight: 600; white-space: nowrap; position: sticky; top: 0; z-index: 2; }
+tbody td { padding: 8px 10px; border-bottom: 1px solid #f0e8fa; white-space: nowrap; }
+tbody tr:hover { background: #f7f2fc; }
+tbody tr:nth-child(even) { background: #fbf9fe; }
+.linha-selecionada { background: #f0e6fa !important; }
+td.empty { text-align: center; color: #999; padding: 28px; font-style: italic; }
+.id-cell { font-weight: 600; color: #4b0082; }
+th.sel-col, td.sel-col { width: 36px; text-align: center; }
+.table-wrap::-webkit-scrollbar { width: 8px; height: 8px; }
+.table-wrap::-webkit-scrollbar-track { background: #f0e8fa; border-radius: 4px; }
+.table-wrap::-webkit-scrollbar-thumb { background: #c4b0d8; border-radius: 4px; }
+.table-wrap::-webkit-scrollbar-thumb:hover { background: #a080c0; }
+.input-edicao { width: 100%; padding: 4px 6px; border: 2px solid #c4b0d8; border-radius: 4px; font-size: 13px; box-sizing: border-box; }
+.input-edicao:focus { border-color: #6a0dad; outline: none; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
+.select-edicao { width: 100%; padding: 4px 6px; border: 2px solid #c4b0d8; border-radius: 4px; font-size: 13px; box-sizing: border-box; background: #fff; cursor: pointer; }
+.select-edicao:focus { border-color: #6a0dad; outline: none; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
+@media (max-width: 768px) { .sidebar { width: 200px; } .main { margin-left: 200px; padding: 16px; } }
+@media (max-width: 560px) { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; padding: 12px; } }
 </style>
- <link rel="stylesheet" href="responsivo.css">
+<link rel="stylesheet" href="responsivo.css">
 </head>
 <body>
 <div class="sidebar">
-    <h2>Equilibrium</h2>
-    <nav>
-        <a href="index.html">🏠 Home</a>
-        <a href="agenda.html">📅 Agenda</a>
-        <a href="novo-cliente.html">👤 Novo Cliente</a>
-        <a href="clientes.html">📋 Lista de Clientes</a>
-        <a href="atendimentos.html">✨ Novo Atendimento</a>
-        <a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
-        <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
-        <a href="lista-tratamentos.html" class="active">📋 Lista de Tratamentos</a>
-        <a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
-        <a href="financeiro.html">💰 Financeiro</a>
-        <a href="relatorio-cliente.html">📄 Relatório do Cliente</a>
-    </nav>
+<h2>Equilibrium</h2>
+<nav>
+<a href="index.html">🏠 Home</a>
+<a href="agenda.html">📅 Agenda</a>
+<a href="novo-cliente.html">👤 Novo Cliente</a>
+<a href="clientes.html">📋 Lista de Clientes</a>
+<a href="atendimentos.html">✨ Novo Atendimento</a>
+<a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
+<a href="novo-tratamento.html">🩺 Novo Tratamento</a>
+<a href="lista-tratamentos.html" class="active">📋 Lista de Tratamentos</a>
+<a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
+<a href="financeiro.html">💰 Financeiro</a>
+<a href="relatorio-cliente.html">📄 Relatório do Cliente</a>
+</nav>
 </div>
 <div class="main">
-  <div class="header">
-    <div>
-      <h1>📋 Lista de Tratamentos</h1>
-      <div class="subtitle">Visualize e edite todos os tratamentos cadastrados na aba Tratamentos.</div>
-    </div>
-    <button class="btn" onclick="carregar()">🔄 Atualizar</button>
-  </div>
-  <div class="card">
-    <div class="toolbar">
-      <input type="text" id="search" class="search-input" placeholder="🔍 Buscar em todas as colunas..." oninput="filtrar(this.value)">
-      <button class="btn-editar-selecionado" id="btn-editar-selecionado" onclick="editarSelecionado()">✏️ Editar Selecionado</button>
-    </div>
-    <div id="status">Carregando...</div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr id="thead-row"></tr></thead>
-        <tbody id="tbody"></tbody>
-      </table>
-    </div>
-  </div>
+<div class="header">
+<div>
+<h1>📋 Lista de Tratamentos</h1>
+<div class="subtitle">Visualize e edite todos os tratamentos cadastrados na aba Tratamentos.</div>
+</div>
+<button class="btn" onclick="carregar()">🔄 Atualizar</button>
+</div>
+<div class="card">
+<div class="toolbar">
+<input type="text" id="search" class="search-input" placeholder="🔍 Buscar em todas as colunas..." oninput="filtrar(this.value)">
+<button class="btn-editar-selecionado" id="btn-editar-selecionado" onclick="editarSelecionado()">✏️ Editar Selecionado</button>
+</div>
+<div id="status">Carregando...</div>
+<div class="table-wrap">
+<table>
+<thead><tr id="thead-row"></tr></thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+</div>
 </div>
 <script>
 const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
 let colunas = [];
 let dadosOriginais = [];
-let listaGraficos = []; // Lista de opções para o dropdown Gráfico
+let listaGraficos = [];
+
+function normKey(s) {
+  return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\s\-_]/g, '').trim();
+}
+
+function getCampo(obj, nome) {
+  if (!obj || typeof obj !== 'object') return '';
+  var alvo = normKey(nome);
+  var chaves = Object.keys(obj);
+  for (var i = 0; i < chaves.length; i++) {
+    if (normKey(chaves[i]) === alvo) return obj[chaves[i]];
+  }
+  return '';
+}
+
+function acharColunaId() {
+  for (var i = 0; i < colunas.length; i++) {
+    var n = normKey(colunas[i]);
+    if (n.indexOf('idtratamento') !== -1 || n.indexOf('idtrat') !== -1) return i;
+  }
+  for (var i = 0; i < colunas.length; i++) {
+    if (normKey(colunas[i]).indexOf('id') !== -1) return i;
+  }
+  return 0;
+}
 
 function formatarData(v) {
   if (!v) return '';
@@ -116,7 +143,7 @@ function carregarConfig() {
       if (json && json.success && json.configuracoes) {
         var chaves = Object.keys(json.configuracoes);
         for (var i = 0; i < chaves.length; i++) {
-          var c = chaves[i].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          var c = normKey(chaves[i]);
           if (c.indexOf('grafico') !== -1) {
             listaGraficos = json.configuracoes[chaves[i]] || [];
             break;
@@ -124,9 +151,7 @@ function carregarConfig() {
         }
       }
     })
-    .catch(function() {
-      listaGraficos = [];
-    });
+    .catch(function() { listaGraficos = []; });
 }
 
 function carregar() {
@@ -148,9 +173,7 @@ function carregar() {
           dadosOriginais = data;
           resolve(data);
         })
-        .catch(function() {
-          resolve([]);
-        });
+        .catch(function() { resolve([]); });
     })
   ]).then(function(resultados) {
     var data = resultados[1];
@@ -163,16 +186,15 @@ function carregar() {
 }
 
 function renderizarTabela(dados) {
-  // Volta a rolagem para o início
   var wrap = document.querySelector('.table-wrap');
   if (wrap) { wrap.scrollLeft = 0; wrap.scrollTop = 0; }
   var theadRow = document.getElementById('thead-row');
   var tbody = document.getElementById('tbody');
   theadRow.innerHTML = '';
   tbody.innerHTML = '';
-  // Coluna de seleção
   var thSel = document.createElement('th');
   thSel.textContent = 'Sel.';
+  thSel.className = 'sel-col';
   theadRow.appendChild(thSel);
   for (var i = 0; i < colunas.length; i++) {
     var th = document.createElement('th');
@@ -189,14 +211,15 @@ function renderizarTabela(dados) {
     tbody.appendChild(tr);
     return;
   }
+  var colId = acharColunaId();
   for (var i = 0; i < dados.length; i++) {
     var linha = dados[i];
-    var idTrat = (linha && typeof linha === 'object' && colunas.length > 0) ? String(linha[colunas[0]] || '') : '';
+    var idTrat = String(getCampo(linha, colunas[colId]) || '');
     var tr = document.createElement('tr');
     tr.id = 'row-' + i;
     tr.setAttribute('data-id', idTrat);
-    // Célula de seleção (radio)
     var tdSel = document.createElement('td');
+    tdSel.className = 'sel-col';
     var radio = document.createElement('input');
     radio.type = 'radio';
     radio.name = 'selTratamento';
@@ -208,15 +231,13 @@ function renderizarTabela(dados) {
       var td = document.createElement('td');
       var valor = '';
       var nomeCol = colunas[c];
-      if (linha && typeof linha === 'object' && nomeCol in linha) {
-        valor = linha[nomeCol];
-      }
+      valor = getCampo(linha, nomeCol);
       if (valor === null || valor === undefined) valor = '';
       else {
         valor = String(valor);
         if (ehData(nomeCol)) { valor = formatarData(valor); }
       }
-      if (c === 0) {
+      if (c === colId) {
         td.textContent = valor;
         td.className = 'id-cell';
       } else {
@@ -230,12 +251,10 @@ function renderizarTabela(dados) {
   }
 }
 
-// Seleciona a linha pelo ID (radio)
 function selecionarLinha(radio) {
-  var idTrat = radio.value;
   var linhas = document.querySelectorAll('#tbody tr');
   linhas.forEach(function(l) { l.classList.remove('linha-selecionada'); });
-  var linha = document.querySelector('#tbody tr[data-id="' + idTrat + '"]');
+  var linha = radio.closest('tr');
   if (linha) linha.classList.add('linha-selecionada');
 }
 
@@ -247,8 +266,8 @@ function filtrar(termo) {
     var linha = dadosOriginais[i];
     var encontrou = false;
     for (var c = 0; c < colunas.length; c++) {
-      var v = String(linha[colunas[c]] || '').toLowerCase();
-      if (ehData(colunas[c])) v = formatarData(linha[colunas[c]] || '').toLowerCase();
+      var v = String(getCampo(linha, colunas[c]) || '').toLowerCase();
+      if (ehData(colunas[c])) v = formatarData(getCampo(linha, colunas[c]) || '').toLowerCase();
       if (v.indexOf(t) !== -1) { encontrou = true; break; }
     }
     if (encontrou) filtrados.push(linha);
@@ -267,25 +286,23 @@ function editarSelecionado() {
     alert('Selecione um tratamento primeiro.');
     return;
   }
-  var idTrat = radio.value;
-  var linha = document.querySelector('#tbody tr[data-id="' + idTrat + '"]');
+  var linha = radio.closest('tr');
   if (!linha) { alert('Tratamento não encontrado.'); return; }
   var celulas = linha.querySelectorAll('.editavel');
   celulas.forEach(function(cel) {
     var texto = cel.textContent.trim();
     var campo = cel.dataset.campo;
-    // Se for a coluna "Gráfico", mostra dropdown
     if (campo === 'Gráfico' && listaGraficos.length > 0) {
       var html = '<select class="select-edicao" data-campo="' + campo + '">';
       html += '<option value="">-- Selecione --</option>';
       for (var g = 0; g < listaGraficos.length; g++) {
         var sel = listaGraficos[g] === texto ? ' selected' : '';
-        html += '<option value="' + listaGraficos[g].replace(/"/g, '&quot;') + '"' + sel + '>' + listaGraficos[g] + '</option>';
+        html += '<option value="' + String(listaGraficos[g]).replace(/"/g, '&quot;') + '"' + sel + '>' + listaGraficos[g] + '</option>';
       }
       html += '</select>';
       cel.innerHTML = html;
     } else {
-      cel.innerHTML = '<input type="text" value="' + texto.replace(/"/g, '&quot;') + '" class="input-edicao" data-campo="' + campo + '">';
+      cel.innerHTML = '<input type="text" value="' + String(texto).replace(/"/g, '&quot;') + '" class="input-edicao" data-campo="' + campo + '">';
     }
   });
   botao.textContent = '💾 Salvar Alterações';
@@ -295,9 +312,9 @@ function editarSelecionado() {
 function salvarLinha() {
   var radio = document.querySelector('input[name="selTratamento"]:checked');
   if (!radio) { alert('Selecione um tratamento primeiro.'); return; }
-  var idTrat = radio.value;
-  var linha = document.querySelector('#tbody tr[data-id="' + idTrat + '"]');
+  var linha = radio.closest('tr');
   if (!linha) { alert('Tratamento não encontrado.'); return; }
+  var idTrat = linha.getAttribute('data-id');
   if (!idTrat) {
     alert('❌ Erro: ID do tratamento não encontrado.');
     return;
@@ -344,6 +361,6 @@ function resetarEstado() {
 
 document.addEventListener('DOMContentLoaded', carregar);
 </script>
- <script src="js/menu.js"></script>
+<script src="js/menu.js"></script>
 </body>
 </html>
