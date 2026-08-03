@@ -274,39 +274,51 @@ cel.innerHTML = '<input type="text" value="' + texto.replace(/"/g, '"') + '" cla
 botao.textContent = '💾 Salvar';
 botao.style.background = '#28a745';
 }
-  function salvarLinha(idx) {
-    var inputs = document.querySelectorAll('#row-' + idx + ' .input-edicao');
-    var campos = {};
-    inputs.forEach(function(inp) {
-      campos[inp.dataset.campo] = inp.value.trim();
-    });
-   var linhaDados = dadosOriginais[idx] || {};
+ function salvarLinha(idx) {
+var inputs = document.querySelectorAll('#row-' + idx + ' .input-edicao');
+var campos = {};
+inputs.forEach(function(inp) {
+campos[inp.dataset.campo] = inp.value.trim();
+});
+var linhaDados = dadosOriginais[idx] || {};
 var idLinha = linhaDados[CAMPO_ID] || '';
 if (!idLinha) {
 alert('❌ Não foi possível identificar o ID do atendimento para editar.');
 return;
 }
-    fetch(API_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        action: 'atualizar_atendimento',
-        id: idLinha,
-        campos: campos
-      })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(res) {
-      if (res.success || res.status === 'sucesso') {
-        alert('✅ Atendimento atualizado!');
-        carregar();
-      } else {
-        alert('❌ Erro: ' + (res.message || res.error || 'desconhecido'));
-      }
-    })
-    .catch(function() {
-      alert('❌ Erro de conexão ao salvar.');
-    });
-  }
+fetch(API_URL, {
+method: 'POST',
+body: JSON.stringify({
+action: 'atualizar_atendimento',
+id: idLinha,
+campos: campos
+})
+})
+.then(function(r) { return r.json(); })
+.then(function(res) {
+if (res.success || res.status === 'sucesso') {
+alert('✅ Atendimento atualizado!');
+// Reseta o botão externo "Editar Selecionado"
+var botao = document.getElementById('btn-editar-selecionado');
+if (botao) {
+botao.textContent = '✏️ Editar Selecionado';
+botao.style.background = '#4b0082';
+}
+// Remove o destaque da linha e desmarca a seleção
+var radios = document.querySelectorAll('input[name="selAtendimento"]');
+radios.forEach(function(r) { r.checked = false; });
+var linhas = document.querySelectorAll('#tbody tr');
+linhas.forEach(function(l) { l.classList.remove('linha-selecionada'); });
+// Recarrega a tabela (volta ao estado normal)
+carregar();
+} else {
+alert('❌ Erro: ' + (res.message || res.error || 'desconhecido'));
+}
+})
+.catch(function() {
+alert('❌ Erro de conexão ao salvar.');
+});
+}
   document.addEventListener('DOMContentLoaded', carregar);
 </script>
  <script src="js/menu.js"></script>
