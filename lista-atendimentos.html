@@ -159,6 +159,16 @@
     }
   }
  function renderizarTabela(dados) {
+// Volta a rolagem horizontal e vertical para o início
+var wrap = document.querySelector('.table-wrap');
+if (wrap) {
+    wrap.scrollLeft = 0;
+    wrap.scrollTop = 0;
+}
+const theadRow = document.getElementById('thead-row');
+const tbody = document.getElementById('tbody');
+theadRow.innerHTML = '';
+tbody.innerHTML = '';
 const theadRow = document.getElementById('thead-row');
 const tbody = document.getElementById('tbody');
 theadRow.innerHTML = '';
