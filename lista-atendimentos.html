@@ -61,6 +61,10 @@
   .input-edicao:focus { border-color: #6a0dad; outline: none; box-shadow: 0 0 0 2px rgba(106,13,173,0.15); }
   @media (max-width: 768px) { .sidebar { width: 200px; } .main { margin-left: 200px; padding: 20px; } }
   @media (max-width: 560px) { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; padding: 16px; } }
+ /* ... outros estilos ... */
+.btn-editar { background:#4b0082; color:#fff; padding:8px 16px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; font-size:13px; transition:0.3s; }
+.btn-editar:hover { background:#6a0dad; transform:scale(1.05); }
+</style>
 </style>
  <link rel="stylesheet" href="responsivo.css">
 </head>
@@ -214,7 +218,7 @@
         tr.appendChild(td);
       });
       const tdAcao = document.createElement('td');
-      tdAcao.innerHTML = '<button class="btn-editar" onclick="editarLinha(' + i + ')" id="btn-' + i + '">✏️ Editar</button>';
+     tdAcao.innerHTML = '<button class="btn-editar" onclick="editarLinha(' + i + ')" id="btn-' + i + '" style="background:#4b0082;color:#fff;padding:8px 16px;border:none;border-radius:6px;font-weight:bold;cursor:pointer;font-size:13px;">✏️ Editar</button>';
       tr.appendChild(tdAcao);
       tbody.appendChild(tr);
     });
