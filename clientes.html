@@ -123,7 +123,13 @@
 
         let dadosClientes = [];
 
-        function renderizarTabela(dados) {
+       
+       function renderizarTabela(dados) {
+// Volta a rolagem para o início
+var wrap = document.querySelector('.table-wrap');
+if (wrap) { wrap.scrollLeft = 0; wrap.scrollTop = 0; }
+const corpo = document.getElementById('corpo-tabela');
+corpo.innerHTML = "";
             const corpo = document.getElementById('corpo-tabela');
             corpo.innerHTML = "";
             dados.forEach((c, idx) => {
@@ -218,16 +224,27 @@
                 });
                 const resultado = await resp.json();
 
-                if (resultado.status === 'sucesso') {
-                    alert('✅ Cliente atualizado com sucesso!');
-                    carregarDados();
-                } else {
-                    alert('❌ Erro: ' + resultado.message);
-                }
-            } catch (e) {
-                alert('❌ Erro de conexão ao salvar.');
-            }
-        }
+               if (resultado.status === 'sucesso') {
+    alert('✅ Cliente atualizado com sucesso!');
+    // Reseta o botão externo "Editar Selecionado"
+    var botao = document.getElementById('btn-editar-selecionado');
+    if (botao) {
+        botao.textContent = '✏️ Editar Selecionado';
+        botao.style.background = '#4b0082';
+    }
+    // Desmarca seleção e remove destaque
+    var radios = document.querySelectorAll('input[name="selCliente"]');
+    radios.forEach(function(r) { r.checked = false; });
+    var linhas = document.querySelectorAll('#corpo-tabela tr');
+    linhas.forEach(function(l) { l.classList.remove('linha-selecionada'); });
+    carregarDados();
+} else {
+    alert('❌ Erro: ' + resultado.message);
+}
+} catch (e) {
+    alert('❌ Erro de conexão ao salvar.');
+}
+}
 
         window.onload = carregarDados;
     </script>
