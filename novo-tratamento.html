@@ -406,17 +406,19 @@ function enviarWebhooksEConcluir(clienteNome, clienteId, tratamentoId) {
 }
 
 function init() {
-  var idSalvo = localStorage.getItem('atualIdTratamento');
-  if (!idSalvo) {
-    idSalvo = 'TRAT-0000001';
-    localStorage.setItem('atualIdTratamento', idSalvo);
-  }
-  document.getElementById('tratamentoId').value = idSalvo;
+  fetch(URL_ATEND + '?action=proximo_id_tratamento&_=' + Date.now())
+    .then(function(r) { return r.json(); })
+    .then(function(json) {
+      document.getElementById('tratamentoId').value =
+        (json && json.success && json.proximoId) ? json.proximoId : 'TRAT-0000001';
+    })
+    .catch(function() { document.getElementById('tratamentoId').value = 'TRAT-0000001'; });
   document.getElementById('dataInicioTrat').value = hojeISO();
   carregarClientes();
   carregarGraficosPredef();
   renderGraficos();
 }
+  
 window.addEventListener('DOMContentLoaded', init);
 </script>
  <script src="js/menu.js"></script>
