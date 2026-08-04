@@ -290,10 +290,10 @@ function editarSelecionado() {
   var linha = radio.closest('tr');
   if (!linha) { alert('Tratamento não encontrado.'); return; }
   var celulas = linha.querySelectorAll('.editavel');
-  celulas.forEach(function(cel) {
+   celulas.forEach(function(cel) {
     var texto = cel.textContent.trim();
     var campo = cel.dataset.campo;
-      var campoNorm = String(campo).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    var campoNorm = String(campo).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     // Se for a coluna "Gráfico", mostra dropdown
     if (campoNorm === 'grafico' && listaGraficos.length > 0) {
       var html = '<select class="select-edicao" data-campo="' + campo + '">';
@@ -304,22 +304,23 @@ function editarSelecionado() {
       }
       html += '</select>';
       cel.innerHTML = html;
-          // Se for a coluna "Status", mostra dropdown com os status
-    else if (campoNorm === 'status') {
-        var html2 = '<select class="select-edicao" data-campo="' + campo + '">';
-        var achou = false;
-        for (var s = 0; s < listaStatus.length; s++) {
-            var sel2 = listaStatus[s] === texto ? ' selected' : '';
-            if (listaStatus[s] === texto) achou = true;
-            html2 += '<option value="' + String(listaStatus[s]).replace(/"/g, '&quot;') + '"' + sel2 + '>' + listaStatus[s] + '</option>';
-        }
-        if (!achou && texto) {
-            html2 += '<option value="' + String(texto).replace(/"/g, '&quot;') + '" selected>' + texto + '</option>';
-        }
-        html2 += '</select>';
-        cel.innerHTML = html2;
     }
-    } else {
+    // Se for a coluna "Status", mostra dropdown com os status
+    else if (campoNorm === 'status') {
+      var html2 = '<select class="select-edicao" data-campo="' + campo + '">';
+      var achou = false;
+      for (var s = 0; s < listaStatus.length; s++) {
+        var sel2 = listaStatus[s] === texto ? ' selected' : '';
+        if (listaStatus[s] === texto) achou = true;
+        html2 += '<option value="' + String(listaStatus[s]).replace(/"/g, '&quot;') + '"' + sel2 + '>' + listaStatus[s] + '</option>';
+      }
+      if (!achou && texto) {
+        html2 += '<option value="' + String(texto).replace(/"/g, '&quot;') + '" selected>' + texto + '</option>';
+      }
+      html2 += '</select>';
+      cel.innerHTML = html2;
+    }
+    else {
       cel.innerHTML = '<input type="text" value="' + String(texto).replace(/"/g, '&quot;') + '" class="input-edicao" data-campo="' + campo + '">';
     }
   });
