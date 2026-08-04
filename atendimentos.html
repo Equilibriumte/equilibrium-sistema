@@ -330,6 +330,7 @@
             const getC = (n) => Array.from(document.querySelectorAll(`input[name="${n}"]:checked`)).map(cb => cb.value).join(", ");
 
             const p = {
+                   'action': 'salvar_atendimento',
                 'ID Atendimento': document.getElementById('idAtendimento').value,
                 'Data do Atendimento': document.getElementById('dataAtend').value,
                 'ID Cliente': document.getElementById('idCliente').value,
@@ -381,21 +382,25 @@
                 'Divórcio Energético Observação': document.getElementById('divorcioObs').value
             };
 
-            try {
-                await fetch(URL_ATEND, { 
-                    method: 'POST', 
-                    body: JSON.stringify(p),
-                    redirect: 'follow'
-                });
-            } catch (e) { 
-                console.warn('Redirect ignorado, dados salvos.');
+                 try {
+            const resp = await fetch(URL_ATEND, {
+                method: 'POST',
+                body: JSON.stringify(p),
+                redirect: 'follow'
+            });
+            const res = await resp.json().catch(function() { return {}; });
+            if (res && res.success) {
+                localStorage.setItem('atualIdAtendimento', document.getElementById('idAtendimento').value);
+                alert("✅ Atendimento salvo com sucesso!");
+            } else {
+                alert("❌ Erro ao salvar: " + (res.error || 'resposta inesperada do script'));
+                return;
             }
-
-            // Gera o próximo ID para a próxima vez que abrir a página
-          
-            alert("✅ Atendimento salvo com sucesso!");
-            location.reload();
+        } catch (e) {
+            alert("❌ Erro de conexão ao salvar. Tente novamente.");
+            return;
         }
+        location.reload();
 
         window.onload = function() {
             gerarIdAtendimento();
