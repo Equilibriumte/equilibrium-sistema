@@ -369,25 +369,19 @@ function salvarTratamento() {
   }
   mostrarMsg('Salvando...', 'success');
   fetch(URL_ATEND, { method: 'POST', body: JSON.stringify(payload), redirect: 'follow' })
-    .then(function(r){return r.text();})
-       .then(function(){
-      // Gera o próximo ID
-      var num = parseInt(document.getElementById('tratamentoId').value.split('-')[1], 10);
-      num++;
-      localStorage.setItem('atualIdTratamento', 'TRAT-' + num.toString().padStart(7, '0'));
-      
-      mostrarMsg('Tratamento salvo! ID: ' + tratamentoId, 'success');
+    .then(function(r){ return r.json().catch(function(){ return {}; }); })
+    .then(function(res){
+      if (res && res.success) {
+        mostrarMsg('Tratamento salvo! ID: ' + tratamentoId, 'success');
+      } else {
+        mostrarMsg('❌ Erro ao salvar: ' + (res.error || 'resposta inesperada do script'), 'error');
+        return;
+      }
       setTimeout(function(){ window.location.href = 'lista-tratamentos.html'; }, 1500);
     })
     .catch(function(){
-      // Gera o próximo ID também no catch
-      var num = parseInt(document.getElementById('tratamentoId').value.split('-')[1], 10);
-      num++;
-      localStorage.setItem('atualIdTratamento', 'TRAT-' + num.toString().padStart(7, '0'));
-      
-      mostrarMsg('Tratamento salvo! (redirect)', 'success');
-      setTimeout(function(){ window.location.href = 'lista-tratamentos.html'; }, 1500);
-    });
+      mostrarMsg('❌ Erro de conexão ao salvar. Tente novamente.', 'error');
+    }); 
 }
 
 function enviarWebhooksEConcluir(clienteNome, clienteId, tratamentoId) {
