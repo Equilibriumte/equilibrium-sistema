@@ -105,7 +105,7 @@ function getIdCliente(obj) {
     const keys = Object.keys(obj);
     const found = keys.find(k => {
         const n = normKey(k);
-        return n === 'id' || n === 'idcliente';
+        return n === 'id' || n === 'idcliente' || n === 'id cliente';
     });
     return found ? obj[found] : '-';
 }
