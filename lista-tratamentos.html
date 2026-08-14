@@ -222,6 +222,7 @@ function renderizarTabela(dados) {
     var tr = document.createElement('tr');
     tr.id = 'row-' + i;
     tr.setAttribute('data-id', idTrat);
+    tr.setAttribute('data-id-linha', linha.idLinha); 
     var tdSel = document.createElement('td');
     tdSel.className = 'sel-col';
     var radio = document.createElement('input');
@@ -337,6 +338,7 @@ function salvarLinha() {
   var linha = radio.closest('tr');
   if (!linha) { alert('Tratamento não encontrado.'); return; }
   var idTrat = linha.getAttribute('data-id');
+  var idLinha = linha.getAttribute('data-id-linha');  
   if (!idTrat) {
     alert('❌ Erro: ID do tratamento não encontrado.');
     return;
@@ -351,6 +353,7 @@ function salvarLinha() {
     body: JSON.stringify({
       action: 'atualizar_tratamento',
       id: idTrat,
+       idLinha: idLinha,  
       campos: campos
     })
   })
