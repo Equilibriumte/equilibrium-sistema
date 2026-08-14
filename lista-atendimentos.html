@@ -196,6 +196,7 @@ return;
 dados.forEach(function(linha, i) {
 const tr = document.createElement('tr');
 tr.id = 'row-' + i;
+tr.setAttribute('data-id-linha', linha.idLinha);
 // Célula de seleção
 const tdSel = document.createElement('td');
 tdSel.innerHTML = '<input type="radio" name="selAtendimento" value="' + i + '" onclick="selecionarLinha(' + i + ')">';
@@ -291,6 +292,7 @@ campos[inp.dataset.campo] = inp.value.trim();
 });
 var linhaDados = dadosOriginais[idx] || {};
 var idLinha = linhaDados[CAMPO_ID] || '';
+var idLinhaNum = linhaDados.idLinha || '';
 if (!idLinha) {
 alert('❌ Não foi possível identificar o ID do atendimento para editar.');
 return;
@@ -300,6 +302,7 @@ method: 'POST',
 body: JSON.stringify({
 action: 'atualizar_atendimento',
 id: idLinha,
+idLinha: idLinhaNum,
 campos: campos
 })
 })
