@@ -334,5 +334,24 @@ alert('❌ Erro de conexão ao salvar.');
   document.addEventListener('DOMContentLoaded', carregar);
 </script>
  <script src="js/menu.js"></script>
+ // Esconde a coluna "ID Linha" (chave técnica, não deve aparecer)
+document.addEventListener('DOMContentLoaded', function() {
+  var tabela = document.querySelector('table');
+  if (!tabela) return;
+  var cabecalhos = tabela.querySelectorAll('thead th');
+  var indice = -1;
+  cabecalhos.forEach(function(th, i) {
+    if (th.textContent.trim().toLowerCase().replace(/\s+/g, '') === 'idlinha') {
+      indice = i;
+    }
+  });
+  if (indice === -1) return;
+  tabela.querySelectorAll('tr').forEach(function(tr) {
+    var celulas = tr.querySelectorAll('td, th');
+    if (celulas[indice]) {
+      celulas[indice].style.display = 'none';
+    }
+  });
+});
 </body>
 </html>
