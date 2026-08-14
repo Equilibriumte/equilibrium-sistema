@@ -137,7 +137,7 @@ function renderizarTabela(dados) {
         const cidade = getVal(c, 'cidade');
         const estado = getVal(c, 'estado');
         const cidadeUf = (cidade !== '-' ? cidade : '') + '/' + (estado !== '-' ? estado : '');
-        corpo.innerHTML += `<tr id="row-${idx}">
+        corpo.innerHTML += `<tr id="row-${idx}" data-id-linha="${c.idlinha}">
             <td><input type="radio" name="selCliente" value="${idx}" onclick="selecionarLinha(${idx})"></td>
             <td class="id-cell">${getIdCliente(c)}</td>
             <td class="editavel" data-campo="nome" data-idx="${idx}"><strong>${getVal(c, 'nome')}</strong></td>
@@ -232,6 +232,7 @@ async function salvarLinha(idx) {
     });
     const cliente = dadosClientes[idx] || {};
     const id = getIdCliente(cliente);
+    const idLinha = cliente.idlinha || '';
     if (!id || id === '-') {
         alert('❌ Não foi possível identificar o ID do cliente para salvar.');
         return;
@@ -242,6 +243,7 @@ async function salvarLinha(idx) {
             body: JSON.stringify({
                 action: 'atualizar',
                 id: id,
+                idLinha: idLinha,
                 campos: campos
             })
         });
