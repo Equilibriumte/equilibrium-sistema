@@ -19,10 +19,10 @@
         .card { background: #fff; border-radius: 10px; padding: 20px 25px; box-shadow: 0 2px 8px rgba(75,0,130,0.08); margin-bottom: 20px; }
         .filtros { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; }
         .filtro-group { display: flex; flex-direction: column; }
-        .filtro-group label { font-size: 12px; color: #4b0082; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .03em; }
+        .filtro-group label { font-size: 12px; color: #4b0082; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
         .filtro-group input[type="date"] { padding: 9px 12px; border: 2px solid #e0d4f0; border-radius: 8px; font-size: 14px; outline: none; background: #faf8ff; }
         .filtro-group input[type="date"]:focus { border-color: #6a0dad; }
-        .atalhos { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+        .atalhos { display: flex; flex-wrap: wrap; gap: 8px; }
         .atalho { padding: 7px 14px; border: 2px solid #e0d4f0; background: #faf8ff; color: #4b0082; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600; transition: .2s; }
         .atalho:hover, .atalho.ativo { background: #4b0082; color: #fff; border-color: #4b0082; }
         .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; }
@@ -44,7 +44,7 @@
         .doc-header-text p:last-child { margin-bottom: 6px; }
         .periodo-info { text-align: center; font-size: 13px; color: #555; margin-bottom: 12px; }
         .relatorio-tabela { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .relatorio-tabela th { background: #4b0082; color: #fff; padding: 8px 10px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .03em; }
+        .relatorio-tabela th { background: #4b0082; color: #fff; padding: 8px 10px; text-align: left; font-size: 12px; text-transform: uppercase; }
         .relatorio-tabela td { padding: 8px 10px; border-bottom: 1px solid #e0d4f0; }
         .relatorio-tabela tbody tr:nth-child(even) { background: #faf8ff; }
         .relatorio-tabela .col-branco { min-width: 90px; height: 34px; }
@@ -89,7 +89,7 @@
 <div class="main">
     <div class="header">
         <h1>📊 Relatório de Gráficos</h1>
-        <div class="subtitle">Selecione os dias ou semanas que desejar para conferir os gráficos agendados.</div>
+        <div class="subtitle">Escolha um dia ou um intervalo de dias e gere o relatório.</div>
     </div>
 
     <div class="card">
@@ -97,8 +97,8 @@
             <div class="filtro-group">
                 <label>Período rápido</label>
                 <div class="atalhos" id="atalhos">
-                    <button class="atalho" onclick="definirPeriodo('hoje')">Hoje</button>
                     <button class="atalho ativo" onclick="definirPeriodo('semana')">Esta semana</button>
+                    <button class="atalho" onclick="definirPeriodo('hoje')">Hoje</button>
                     <button class="atalho" onclick="definirPeriodo('proxima')">Próxima semana</button>
                     <button class="atalho" onclick="definirPeriodo('mes')">Este mês</button>
                     <button class="atalho" onclick="definirPeriodo('tudo')">Todos</button>
@@ -157,7 +157,7 @@
             </div>
             <div class="rodape-info">
                 <span id="totalRelatorio"></span>
-                <span>Legenda: escreva ✓ em Concluído ou ✎ em Adiado.</span>
+                <span>Escreva ✓ em Concluído ou ✎ em Adiado.</span>
             </div>
         </div>
     </div>
@@ -166,8 +166,6 @@
 <script>
 const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
 let dadosBrutos = [];
-let ultimoDe = '';
-let ultimoAte = '';
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('docDataAtual').innerText = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
@@ -226,7 +224,7 @@ function dataLocal(offsetDias) {
 function definirPeriodo(tipo) {
     var de = '', ate = '';
     var hoje = new Date();
-    var diaSemana = hoje.getDay(); // 0 = domingo
+    var diaSemana = hoje.getDay();
     var diffSegunda = (diaSemana === 0) ? -6 : 1 - diaSemana;
     if (tipo === 'hoje') {
         de = dataLocal(0); ate = dataLocal(0);
@@ -280,8 +278,6 @@ function gerarRelatorio() {
     erro.style.display = 'none';
     var de = document.getElementById('filtroDe').value;
     var ate = document.getElementById('filtroAte').value;
-    ultimoDe = de;
-    ultimoAte = ate;
 
     var linhas = [];
     for (var i = 0; i < dadosBrutos.length; i++) {
