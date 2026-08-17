@@ -200,29 +200,31 @@ function renderizarTabela(dados) {
   var tbody = document.getElementById('tbody');
   theadRow.innerHTML = '';
   tbody.innerHTML = '';
+
+  // Monta a lista de colunas visíveis (ignora "ID Linha" e colunas sem nome)
+  var colunasVisiveis = [];
+  for (var i = 0; i < colunas.length; i++) {
+    var nome = String(colunas[i] || '').trim();
+    if (nome === '') continue;
+    if (nome.toLowerCase().replace(/\s+/g, '') === 'idlinha') continue;
+    colunasVisiveis.push(nome);
+  }
+
+  // Cabeçalho
   var thSel = document.createElement('th');
   thSel.textContent = 'Sel.';
   thSel.className = 'sel-col';
   theadRow.appendChild(thSel);
-
-  // Conta quantas colunas serão mostradas (sem ID Linha)
-  var colunasVisiveis = 0;
-  for (var i = 0; i < colunas.length; i++) {
-    if (!ehColIdLinha(colunas[i])) colunasVisiveis++;
-  }
-
-  // Cabeçalho: pula a coluna ID Linha
-  for (var i = 0; i < colunas.length; i++) {
-    if (ehColIdLinha(colunas[i])) continue;
+  for (var i = 0; i < colunasVisiveis.length; i++) {
     var th = document.createElement('th');
-    th.textContent = colunas[i];
+    th.textContent = colunasVisiveis[i];
     theadRow.appendChild(th);
   }
 
   if (!dados || dados.length === 0) {
     var tr = document.createElement('tr');
     var td = document.createElement('td');
-    td.colSpan = colunasVisiveis + 1;
+    td.colSpan = colunasVisiveis.length + 1;
     td.className = 'empty';
     td.textContent = 'Nenhum tratamento encontrado.';
     tr.appendChild(td);
@@ -237,30 +239,29 @@ function renderizarTabela(dados) {
     var tr = document.createElement('tr');
     tr.id = 'row-' + i;
     tr.setAttribute('data-id', idTrat);
-    tr.setAttribute('data-id-linha', linha.idLinha); // continua guardado na linha (não some!)
+    tr.setAttribute('data-id-linha', linha.idLinha);
+
+    // Célula de seleção — agora é CHECKBOX (permite várias linhas)
     var tdSel = document.createElement('td');
     tdSel.className = 'sel-col';
-    var radio = document.createElement('input');
-    radio.type = 'radio';
-    radio.name = 'selTratamento';
-    radio.value = idTrat;
-    radio.onclick = function() { selecionarLinha(this); };
-    tdSel.appendChild(radio);
+    var check = document.createElement('input');
+    check.type = 'checkbox';
+    check.className = 'sel-tratamento';
+    check.value = idTrat;
+    check.onchange = function() { marcarLinha(this); };
+    tdSel.appendChild(check);
     tr.appendChild(tdSel);
 
-    // Células: pula a coluna ID Linha
-    for (var c = 0; c < colunas.length; c++) {
-      var nomeCol = colunas[c];
-      if (ehColIdLinha(nomeCol)) continue;
+    // Células de dados (somente colunas visíveis — sem quadros em branco)
+    for (var c = 0; c < colunasVisiveis.length; c++) {
+      var nomeCol = colunasVisiveis[c];
       var td = document.createElement('td');
-      var valor = '';
-      valor = getCampo(linha, nomeCol);
+      var valor = getCampo(linha, nomeCol);
       if (valor === null || valor === undefined) valor = '';
       else {
         valor = String(valor);
-        if (ehData(nomeCol)) { valor = formatarData(valor); }
+        if (ehData(nomeCol)) valor = formatarData(valor);
       }
-      // Compara pelo NOME (não pelo índice) para o ID Tratamento continuar não-editável
       if (nomeCol === colunas[colId]) {
         td.textContent = valor;
         td.className = 'id-cell';
@@ -275,11 +276,12 @@ function renderizarTabela(dados) {
   }
 }
 
-function selecionarLinha(radio) {
-  var linhas = document.querySelectorAll('#tbody tr');
-  linhas.forEach(function(l) { l.classList.remove('linha-selecionada'); });
-  var linha = radio.closest('tr');
-  if (linha) linha.classList.add('linha-selecionada');
+function marcarLinha(check) {
+  var linha = check.closest('tr');
+  if (linha) {
+    if (check.checked) linha.classList.add('linha-selecionada');
+    else linha.classList.remove('linha-selecionada');
+  }
 }
 
 function filtrar(termo) {
@@ -302,93 +304,110 @@ function filtrar(termo) {
 function editarSelecionado() {
   var botao = document.getElementById('btn-editar-selecionado');
   if (botao.textContent.indexOf('Salvar') !== -1) {
-    salvarLinha();
+    salvarLinhas();
     return;
   }
-  var radio = document.querySelector('input[name="selTratamento"]:checked');
-  if (!radio) {
-    alert('Selecione um tratamento primeiro.');
+  var checks = document.querySelectorAll('input.sel-tratamento:checked');
+  if (!checks.length) {
+    alert('Selecione pelo menos um tratamento.');
     return;
   }
-  var linha = radio.closest('tr');
-  if (!linha) { alert('Tratamento não encontrado.'); return; }
-  var celulas = linha.querySelectorAll('.editavel');
-   celulas.forEach(function(cel) {
-    var texto = cel.textContent.trim();
-    var campo = cel.dataset.campo;
-    var campoNorm = String(campo).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    // Se for a coluna "Gráfico", mostra dropdown
-    if (campoNorm === 'grafico' && listaGraficos.length > 0) {
-      var html = '<select class="select-edicao" data-campo="' + campo + '">';
-      html += '<option value="">-- Selecione --</option>';
-      for (var g = 0; g < listaGraficos.length; g++) {
-        var sel = listaGraficos[g] === texto ? ' selected' : '';
-        html += '<option value="' + String(listaGraficos[g]).replace(/"/g, '&quot;') + '"' + sel + '>' + listaGraficos[g] + '</option>';
+  checks.forEach(function(check) {
+    var linha = check.closest('tr');
+    if (!linha) return;
+    var celulas = linha.querySelectorAll('.editavel');
+    celulas.forEach(function(cel) {
+      var campo = cel.dataset.campo;
+      if (!campo) return;
+      var campoNorm = String(campo).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      if (campoNorm === 'idlinha') return; // pula a coluna técnica (evita quadros em branco)
+      var texto = cel.textContent.trim();
+      if (campoNorm === 'grafico' && listaGraficos.length > 0) {
+        var html = '<select class="select-edicao" data-campo="' + campo + '">';
+        html += '<option value="">-- Selecione --</option>';
+        for (var g = 0; g < listaGraficos.length; g++) {
+          var sel = listaGraficos[g] === texto ? ' selected' : '';
+          html += '<option value="' + String(listaGraficos[g]).replace(/"/g, '&quot;') + '"' + sel + '>' + listaGraficos[g] + '</option>';
+        }
+        html += '</select>';
+        cel.innerHTML = html;
+      } else if (campoNorm === 'status') {
+        var html2 = '<select class="select-edicao" data-campo="' + campo + '">';
+        var achou = false;
+        for (var s = 0; s < listaStatus.length; s++) {
+          var sel2 = listaStatus[s] === texto ? ' selected' : '';
+          if (listaStatus[s] === texto) achou = true;
+          html2 += '<option value="' + String(listaStatus[s]).replace(/"/g, '&quot;') + '"' + sel2 + '>' + listaStatus[s] + '</option>';
+        }
+        if (!achou && texto) {
+          html2 += '<option value="' + String(texto).replace(/"/g, '&quot;') + '" selected>' + texto + '</option>';
+        }
+        html2 += '</select>';
+        cel.innerHTML = html2;
+      } else {
+        cel.innerHTML = '<input type="text" value="' + String(texto).replace(/"/g, '&quot;') + '" class="input-edicao" data-campo="' + campo + '">';
       }
-      html += '</select>';
-      cel.innerHTML = html;
-    }
-    // Se for a coluna "Status", mostra dropdown com os status
-    else if (campoNorm === 'status') {
-      var html2 = '<select class="select-edicao" data-campo="' + campo + '">';
-      var achou = false;
-      for (var s = 0; s < listaStatus.length; s++) {
-        var sel2 = listaStatus[s] === texto ? ' selected' : '';
-        if (listaStatus[s] === texto) achou = true;
-        html2 += '<option value="' + String(listaStatus[s]).replace(/"/g, '&quot;') + '"' + sel2 + '>' + listaStatus[s] + '</option>';
-      }
-      if (!achou && texto) {
-        html2 += '<option value="' + String(texto).replace(/"/g, '&quot;') + '" selected>' + texto + '</option>';
-      }
-      html2 += '</select>';
-      cel.innerHTML = html2;
-    }
-    else {
-      cel.innerHTML = '<input type="text" value="' + String(texto).replace(/"/g, '&quot;') + '" class="input-edicao" data-campo="' + campo + '">';
-    }
+    });
   });
   botao.textContent = '💾 Salvar Alterações';
   botao.classList.add('salvando');
 }
 
-function salvarLinha() {
-  var radio = document.querySelector('input[name="selTratamento"]:checked');
-  if (!radio) { alert('Selecione um tratamento primeiro.'); return; }
-  var linha = radio.closest('tr');
-  if (!linha) { alert('Tratamento não encontrado.'); return; }
-  var idTrat = linha.getAttribute('data-id');
-  var idLinha = linha.getAttribute('data-id-linha');  
-  if (!idTrat) {
-    alert('❌ Erro: ID do tratamento não encontrado.');
+function salvarLinhas() {
+  var linhas = document.querySelectorAll('#tbody tr');
+  var pendentes = [];
+  linhas.forEach(function(linha) {
+    if (linha.querySelectorAll('.input-edicao, .select-edicao').length > 0) {
+      pendentes.push(linha);
+    }
+  });
+  if (pendentes.length === 0) {
+    alert('Nenhuma linha em edição.');
     return;
   }
-  var inputs = linha.querySelectorAll('.input-edicao, .select-edicao');
-  var campos = {};
-  inputs.forEach(function(inp) {
-    campos[inp.dataset.campo] = inp.value.trim();
+  var promessas = [];
+  var ok = 0;
+  pendentes.forEach(function(linha) {
+    var idTrat = linha.getAttribute('data-id');
+    var idLinha = linha.getAttribute('data-id-linha');
+    if (!idTrat) {
+      alert('❌ Erro: ID do tratamento não encontrado em uma das linhas.');
+      return;
+    }
+    var campos = {};
+    linha.querySelectorAll('.input-edicao, .select-edicao').forEach(function(inp) {
+      campos[inp.dataset.campo] = inp.value.trim();
+    });
+    promessas.push(
+      fetch(URL_ATEND, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'atualizar_tratamento',
+          id: idTrat,
+          idLinha: idLinha,
+          campos: campos
+        })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        if (res.success || res.status === 'sucesso') ok++;
+        return res;
+      })
+    );
   });
-  fetch(URL_ATEND, {
-    method: 'POST',
-    body: JSON.stringify({
-      action: 'atualizar_tratamento',
-      id: idTrat,
-       idLinha: idLinha,  
-      campos: campos
-    })
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(res) {
-    if (res.success || res.status === 'sucesso') {
-      alert('✅ Tratamento atualizado!');
+  Promise.all(promessas)
+    .then(function() {
+      if (ok === pendentes.length) {
+        alert('✅ ' + ok + ' tratamento(s) atualizado(s)!');
+      } else {
+        alert('⚠️ ' + ok + ' atualizado(s), ' + (pendentes.length - ok) + ' com erro.');
+      }
       resetarEstado();
       carregar();
-    } else {
-      alert('❌ Erro: ' + (res.message || res.error || 'desconhecido'));
-    }
-  })
-  .catch(function() {
-    alert('❌ Erro de conexão ao salvar.');
-  });
+    })
+    .catch(function() {
+      alert('❌ Erro de conexão ao salvar.');
+    });
 }
 
 function resetarEstado() {
@@ -397,8 +416,8 @@ function resetarEstado() {
     botao.textContent = '✏️ Editar Selecionado';
     botao.classList.remove('salvando');
   }
-  var radios = document.querySelectorAll('input[name="selTratamento"]');
-  radios.forEach(function(r) { r.checked = false; });
+  var checks = document.querySelectorAll('input.sel-tratamento');
+  checks.forEach(function(c) { c.checked = false; });
   var linhas = document.querySelectorAll('#tbody tr');
   linhas.forEach(function(l) { l.classList.remove('linha-selecionada'); });
 }
