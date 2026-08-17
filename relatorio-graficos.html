@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Gráficos - Equilibrium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: #f4f1f8; display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background: linear-gradient(180deg, #4b0082, #6a0dad); color: #ffd700; padding: 20px; position: fixed; height: 100vh; overflow-y: auto; }
+        .sidebar h2 { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
+        .sidebar a { display: block; color: #fff; text-decoration: none; padding: 12px; margin-bottom: 10px; border-radius: 8px; transition: .3s; font-size: 14px; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; }
+        .main { margin-left: 250px; padding: 30px; flex: 1; }
+        .header { margin-bottom: 20px; }
+        .header h1 { color: #4b0082; font-size: 26px; }
+        .header .subtitle { color: #666; font-size: 14px; margin-top: 5px; }
+        .card { background: #fff; border-radius: 10px; padding: 20px 25px; box-shadow: 0 2px 8px rgba(75,0,130,0.08); margin-bottom: 20px; }
+        .filtros { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; }
+        .filtro-group { display: flex; flex-direction: column; }
+        .filtro-group label { font-size: 12px; color: #4b0082; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .03em; }
+        .filtro-group input[type="date"] { padding: 9px 12px; border: 2px solid #e0d4f0; border-radius: 8px; font-size: 14px; outline: none; background: #faf8ff; }
+        .filtro-group input[type="date"]:focus { border-color: #6a0dad; }
+        .atalhos { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+        .atalho { padding: 7px 14px; border: 2px solid #e0d4f0; background: #faf8ff; color: #4b0082; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600; transition: .2s; }
+        .atalho:hover, .atalho.ativo { background: #4b0082; color: #fff; border-color: #4b0082; }
+        .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; }
+        .btn-gerar { background: #4b0082; color: #fff; }
+        .btn-print { background: #4b0082; color: #fff; }
+        .btn-refresh { background: #6c757d; color: #fff; }
+        .btn:hover { opacity: .9; }
+        #msgErro { display: none; padding: 12px; background: #fde8e8; color: #c0392b; border-radius: 6px; margin-top: 10px; font-size: 14px; }
+        #contador { margin-top: 10px; font-size: 13px; color: #4b0082; font-weight: 700; }
+        .action-buttons { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; display: none; }
+        #relatorioContainer { display: none; }
+        .document-page { background: #fff; padding: 2px 20px 20px; border-radius: 4px; box-shadow: 0 0 15px rgba(0,0,0,0.1); max-width: 900px; margin: 0 auto; }
+        .doc-header { text-align: center; border-bottom: 2px solid #4b0082; padding-bottom: 0; margin-bottom: 15px; }
+        .doc-header .header-inner { display: inline-flex; align-items: center; justify-content: center; gap: 40px; }
+        .doc-header .logo-img { width: 140px; height: auto; filter: brightness(0.5) contrast(1.8); display: block; }
+        .doc-header-text { text-align: left; }
+        .doc-header-text h2 { font-size: 28px; color: #4b0082; margin: 0; }
+        .doc-header-text p { font-size: 15px; color: #666; margin: 0; }
+        .doc-header-text p:last-child { margin-bottom: 6px; }
+        .periodo-info { text-align: center; font-size: 13px; color: #555; margin-bottom: 12px; }
+        .relatorio-tabela { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .relatorio-tabela th { background: #4b0082; color: #fff; padding: 8px 10px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .03em; }
+        .relatorio-tabela td { padding: 8px 10px; border-bottom: 1px solid #e0d4f0; }
+        .relatorio-tabela tbody tr:nth-child(even) { background: #faf8ff; }
+        .relatorio-tabela .col-branco { min-width: 90px; height: 34px; }
+        .rodape-info { margin-top: 12px; font-size: 12px; color: #888; display: flex; justify-content: space-between; }
+        @media (max-width: 768px) { .sidebar { width: 200px; } .main { margin-left: 200px; padding: 20px; } }
+        @media (max-width: 560px) { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; padding: 16px; } }
+        @media print {
+            .sidebar, .card, .action-buttons, .header { display: none !important; }
+            .main { margin-left: 0; padding: 0; }
+            body { background: #fff; }
+            .document-page { box-shadow: none; padding: 15px 20px; max-width: 100%; }
+            .doc-header .header-inner { display: inline-flex !important; flex-direction: row !important; align-items: center !important; gap: 40px !important; }
+            .doc-header .logo-img { width: 130px !important; }
+            .doc-header-text h2 { font-size: 22px !important; }
+            .doc-header-text p { font-size: 13px !important; }
+            .relatorio-tabela th { background: #4b0082 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .relatorio-tabela .col-branco { height: 26px; }
+        }
+    </style>
+    <link rel="stylesheet" href="responsivo.css">
+</head>
+<body>
+<div class="sidebar">
+    <h2>Equilibrium</h2>
+    <nav>
+        <a href="index.html">🏠 Home</a>
+        <a href="agenda.html">📅 Agenda</a>
+        <a href="novo-cliente.html">👤 Novo Cliente</a>
+        <a href="clientes.html">📋 Lista de Clientes</a>
+        <a href="atendimentos.html">✨ Novo Atendimento</a>
+        <a href="lista-atendimentos.html">📜 Lista de Atendimento</a>
+        <a href="novo-tratamento.html">🩺 Novo Tratamento</a>
+        <a href="lista-tratamentos.html">📋 Lista de Tratamentos</a>
+        <a href="agenda-graficos.html">📊 Agenda de Gráficos</a>
+        <a href="financeiro.html">💰 Financeiro</a>
+        <a href="relatorio-cliente.html">📄 Relatório do Cliente</a>
+        <a href="relatorio-graficos.html" class="active">📊 Relatório de Gráficos</a>
+        <hr>
+        <a href="https://equilibriumte.com.br" style="color:#ffd700; font-weight:bold;">← Voltar ao site</a>
+    </nav>
+</div>
+<div class="main">
+    <div class="header">
+        <h1>📊 Relatório de Gráficos</h1>
+        <div class="subtitle">Selecione os dias ou semanas que desejar para conferir os gráficos agendados.</div>
+    </div>
+
+    <div class="card">
+        <div class="filtros">
+            <div class="filtro-group">
+                <label>Período rápido</label>
+                <div class="atalhos" id="atalhos">
+                    <button class="atalho" onclick="definirPeriodo('hoje')">Hoje</button>
+                    <button class="atalho ativo" onclick="definirPeriodo('semana')">Esta semana</button>
+                    <button class="atalho" onclick="definirPeriodo('proxima')">Próxima semana</button>
+                    <button class="atalho" onclick="definirPeriodo('mes')">Este mês</button>
+                    <button class="atalho" onclick="definirPeriodo('tudo')">Todos</button>
+                </div>
+            </div>
+            <div class="filtro-group">
+                <label>De</label>
+                <input type="date" id="filtroDe">
+            </div>
+            <div class="filtro-group">
+                <label>Até</label>
+                <input type="date" id="filtroAte">
+            </div>
+            <div class="filtro-group">
+                <label>&nbsp;</label>
+                <button class="btn btn-gerar" onclick="gerarRelatorio()">🔍 Gerar Relatório</button>
+            </div>
+        </div>
+        <div id="msgErro"></div>
+        <div id="contador"></div>
+    </div>
+
+    <div class="action-buttons" id="btnContainer">
+        <button class="btn btn-print" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+        <button class="btn btn-refresh" onclick="location.reload()">🔄 Nova Busca</button>
+    </div>
+
+    <div id="relatorioContainer">
+        <div class="document-page">
+            <div class="doc-header">
+                <div class="header-inner">
+                    <img src="logo5x5semfundo.png" alt="Equilibrium" class="logo-img">
+                    <div class="doc-header-text">
+                        <h2>RELATÓRIO DE GRÁFICOS</h2>
+                        <p>Equilibrium - Terapias Energéticas</p>
+                        <p id="docDataAtual"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="periodo-info" id="periodoInfo"></div>
+            <div style="overflow-x:auto;">
+                <table class="relatorio-tabela" id="tabelaRelatorio">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Hora</th>
+                            <th>Cliente</th>
+                            <th>Gráfico</th>
+                            <th>Local</th>
+                            <th>Concluído</th>
+                            <th>Adiado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoRelatorio"></tbody>
+                </table>
+            </div>
+            <div class="rodape-info">
+                <span id="totalRelatorio"></span>
+                <span>Legenda: escreva ✓ em Concluído ou ✎ em Adiado.</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
+let dadosBrutos = [];
+let ultimoDe = '';
+let ultimoAte = '';
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('docDataAtual').innerText = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+    definirPeriodo('semana');
+    carregarDados();
+});
+
+function normKey(s) {
+    return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\s\-_]/g, '').trim();
+}
+
+function getCampo(obj, nome) {
+    if (!obj || typeof obj !== 'object') return '';
+    var alvo = normKey(nome);
+    var chaves = Object.keys(obj);
+    for (var i = 0; i < chaves.length; i++) {
+        if (normKey(chaves[i]) === alvo) return obj[chaves[i]];
+    }
+    return '';
+}
+
+function paraISO(v) {
+    if (!v) return '';
+    if (v instanceof Date) {
+        return v.getFullYear() + '-' + String(v.getMonth() + 1).padStart(2, '0') + '-' + String(v.getDate()).padStart(2, '0');
+    }
+    var s = String(v);
+    var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (m) return m[1] + '-' + m[2] + '-' + m[3];
+    var m2 = s.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+    if (m2) return m2[3] + '-' + m2[2] + '-' + m2[1];
+    return '';
+}
+
+function formatarExibicao(v) {
+    var iso = paraISO(v);
+    if (!iso) return '';
+    var p = iso.split('-');
+    return p[2] + '/' + p[1] + '/' + p[0];
+}
+
+function formatarHora(v) {
+    if (!v) return '';
+    var s = String(v);
+    var m = s.match(/(\d{1,2}):(\d{2})/);
+    if (m) return m[1].padStart(2, '0') + ':' + m[2];
+    return s;
+}
+
+function dataLocal(offsetDias) {
+    var d = new Date();
+    d.setDate(d.getDate() + offsetDias);
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+function definirPeriodo(tipo) {
+    var de = '', ate = '';
+    var hoje = new Date();
+    var diaSemana = hoje.getDay(); // 0 = domingo
+    var diffSegunda = (diaSemana === 0) ? -6 : 1 - diaSemana;
+    if (tipo === 'hoje') {
+        de = dataLocal(0); ate = dataLocal(0);
+    } else if (tipo === 'semana') {
+        de = dataLocal(diffSegunda);
+        ate = dataLocal(diffSegunda + 6);
+    } else if (tipo === 'proxima') {
+        de = dataLocal(diffSegunda + 7);
+        ate = dataLocal(diffSegunda + 13);
+    } else if (tipo === 'mes') {
+        de = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0') + '-01';
+        var ultimo = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0).getDate();
+        ate = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0') + '-' + String(ultimo).padStart(2, '0');
+    }
+    document.getElementById('filtroDe').value = de;
+    document.getElementById('filtroAte').value = ate;
+    var atalhos = document.querySelectorAll('.atalho');
+    atalhos.forEach(function(b) { b.classList.remove('ativo'); });
+    var alvo = document.querySelector('.atalho[onclick="definirPeriodo(\'' + tipo + '\')"]');
+    if (alvo) alvo.classList.add('ativo');
+    if (dadosBrutos.length > 0) gerarRelatorio();
+}
+
+function carregarDados() {
+    var contador = document.getElementById('contador');
+    var erro = document.getElementById('msgErro');
+    contador.textContent = '⏳ Carregando tratamentos...';
+    fetch(URL_ATEND + '?action=tratamentos&_=' + Date.now(), { cache: 'no-store' })
+        .then(function(r) { return r.text(); })
+        .then(function(text) {
+            var json = JSON.parse(text);
+            if (json && json.success && Array.isArray(json.data)) {
+                dadosBrutos = json.data;
+                contador.textContent = '✅ ' + dadosBrutos.length + ' registro(s) carregado(s)';
+                gerarRelatorio();
+            } else {
+                contador.textContent = '';
+                erro.style.display = 'block';
+                erro.textContent = '❌ Resposta inesperada ao carregar os tratamentos.';
+            }
+        })
+        .catch(function(e) {
+            contador.textContent = '';
+            erro.style.display = 'block';
+            erro.textContent = '❌ Erro de conexão: ' + e.message;
+        });
+}
+
+function gerarRelatorio() {
+    var erro = document.getElementById('msgErro');
+    erro.style.display = 'none';
+    var de = document.getElementById('filtroDe').value;
+    var ate = document.getElementById('filtroAte').value;
+    ultimoDe = de;
+    ultimoAte = ate;
+
+    var linhas = [];
+    for (var i = 0; i < dadosBrutos.length; i++) {
+        var linha = dadosBrutos[i];
+        var cliente = getCampo(linha, 'Nome Cliente');
+        var grafico = getCampo(linha, 'Gráfico');
+        if (!String(cliente || '').trim() && !String(grafico || '').trim()) continue;
+        var local = getCampo(linha, 'Local');
+        var dataFinal = getCampo(linha, 'Data Finalização') || getCampo(linha, 'Data Finalizacao') || '';
+        var hora = formatarHora(getCampo(linha, 'Hora Finalização') || getCampo(linha, 'Hora Finalizacao') || '');
+        var dataISO = paraISO(dataFinal);
+        if (de && (!dataISO || dataISO < de)) continue;
+        if (ate && (!dataISO || dataISO > ate)) continue;
+        linhas.push({
+            dataISO: dataISO,
+            dataExibicao: dataISO ? formatarExibicao(dataISO) : '-',
+            hora: hora || '-',
+            cliente: String(cliente || '').trim() || '-',
+            grafico: String(grafico || '').trim() || '-',
+            local: String(local || '').trim() || '-'
+        });
+    }
+
+    linhas.sort(function(a, b) {
+        if (a.dataISO !== b.dataISO) return a.dataISO < b.dataISO ? -1 : 1;
+        if (a.hora !== b.hora) return a.hora < b.hora ? -1 : 1;
+        return a.cliente.localeCompare(b.cliente);
+    });
+
+    var corpo = document.getElementById('corpoRelatorio');
+    corpo.innerHTML = '';
+    for (var j = 0; j < linhas.length; j++) {
+        var l = linhas[j];
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td><strong>' + l.dataExibicao + '</strong></td>' +
+                       '<td>' + l.hora + '</td>' +
+                       '<td>' + l.cliente + '</td>' +
+                       '<td>' + l.grafico + '</td>' +
+                       '<td>' + l.local + '</td>' +
+                       '<td class="col-branco"></td>' +
+                       '<td class="col-branco"></td>';
+        corpo.appendChild(tr);
+    }
+
+    document.getElementById('totalRelatorio').textContent = 'Total de gráficos no período: ' + linhas.length;
+    document.getElementById('periodoInfo').textContent = 'Período selecionado: ' + (de ? formatarExibicao(de) : 'início') + ' a ' + (ate ? formatarExibicao(ate) : 'fim');
+    document.getElementById('relatorioContainer').style.display = 'block';
+    document.getElementById('btnContainer').style.display = 'flex';
+}
+</script>
+    <script src="js/menu.js"></script>
+</body>
+</html>
