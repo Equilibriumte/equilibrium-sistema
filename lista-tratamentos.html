@@ -32,9 +32,6 @@ tbody td { padding: 8px 10px; border-bottom: 1px solid #f0e8fa; white-space: now
 tbody tr:hover { background: #f7f2fc; }
 tbody tr:nth-child(even) { background: #fbf9fe; }
 .linha-selecionada { background: #f0e6fa !important; }
-  /* Esconde a coluna ID Linha (última coluna) */
-#thead-row th:last-child,
-#tbody td:last-child:not(.empty) { display: none; }
 td.empty { text-align: center; color: #999; padding: 28px; font-style: italic; }
 .id-cell { font-weight: 600; color: #4b0082; }
 th.sel-col, td.sel-col { width: 36px; text-align: center; }
@@ -192,6 +189,10 @@ function carregar() {
   });
 }
 
+function ehColIdLinha(nome) {
+  return String(nome || '').toLowerCase().replace(/\s+/g, '') === 'idlinha';
+}
+
 function renderizarTabela(dados) {
   var wrap = document.querySelector('.table-wrap');
   if (wrap) { wrap.scrollLeft = 0; wrap.scrollTop = 0; }
@@ -203,21 +204,32 @@ function renderizarTabela(dados) {
   thSel.textContent = 'Sel.';
   thSel.className = 'sel-col';
   theadRow.appendChild(thSel);
+
+  // Conta quantas colunas serão mostradas (sem ID Linha)
+  var colunasVisiveis = 0;
   for (var i = 0; i < colunas.length; i++) {
+    if (!ehColIdLinha(colunas[i])) colunasVisiveis++;
+  }
+
+  // Cabeçalho: pula a coluna ID Linha
+  for (var i = 0; i < colunas.length; i++) {
+    if (ehColIdLinha(colunas[i])) continue;
     var th = document.createElement('th');
     th.textContent = colunas[i];
     theadRow.appendChild(th);
   }
+
   if (!dados || dados.length === 0) {
     var tr = document.createElement('tr');
     var td = document.createElement('td');
-    td.colSpan = colunas.length + 1;
+    td.colSpan = colunasVisiveis + 1;
     td.className = 'empty';
     td.textContent = 'Nenhum tratamento encontrado.';
     tr.appendChild(td);
     tbody.appendChild(tr);
     return;
   }
+
   var colId = acharColunaId();
   for (var i = 0; i < dados.length; i++) {
     var linha = dados[i];
@@ -225,7 +237,7 @@ function renderizarTabela(dados) {
     var tr = document.createElement('tr');
     tr.id = 'row-' + i;
     tr.setAttribute('data-id', idTrat);
-    tr.setAttribute('data-id-linha', linha.idLinha); 
+    tr.setAttribute('data-id-linha', linha.idLinha); // continua guardado na linha (não some!)
     var tdSel = document.createElement('td');
     tdSel.className = 'sel-col';
     var radio = document.createElement('input');
@@ -235,17 +247,21 @@ function renderizarTabela(dados) {
     radio.onclick = function() { selecionarLinha(this); };
     tdSel.appendChild(radio);
     tr.appendChild(tdSel);
+
+    // Células: pula a coluna ID Linha
     for (var c = 0; c < colunas.length; c++) {
+      var nomeCol = colunas[c];
+      if (ehColIdLinha(nomeCol)) continue;
       var td = document.createElement('td');
       var valor = '';
-      var nomeCol = colunas[c];
       valor = getCampo(linha, nomeCol);
       if (valor === null || valor === undefined) valor = '';
       else {
         valor = String(valor);
         if (ehData(nomeCol)) { valor = formatarData(valor); }
       }
-      if (c === colId) {
+      // Compara pelo NOME (não pelo índice) para o ID Tratamento continuar não-editável
+      if (nomeCol === colunas[colId]) {
         td.textContent = valor;
         td.className = 'id-cell';
       } else {
