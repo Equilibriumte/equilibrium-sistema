@@ -370,6 +370,10 @@ function salvarLinhas() {
   pendentes.forEach(function(linha) {
     var idTrat = linha.getAttribute('data-id');
     var idLinha = linha.getAttribute('data-id-linha');
+    if (!idLinha || idLinha === 'undefined' || idLinha === 'null') {
+  alert('❌ Esta linha ainda não tem ID único. Clique em "Atualizar", aguarde recarregar e tente de novo.');
+  return;
+}
     if (!idTrat) {
       alert('❌ Erro: ID do tratamento não encontrado em uma das linhas.');
       return;
