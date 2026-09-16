@@ -137,7 +137,7 @@ function renderizarTabela(dados) {
         const cidade = getVal(c, 'cidade');
         const estado = getVal(c, 'estado');
         const cidadeUf = (cidade !== '-' ? cidade : '') + '/' + (estado !== '-' ? estado : '');
-        corpo.innerHTML += `<tr id="row-${idx}" data-id-linha="${c.idlinha}">
+        corpo.innerHTML += `<tr id="row-${idx}" data-id-linha="${c.idlinha}" data-id-cliente="${getIdCliente(c)}">
             <td><input type="radio" name="selCliente" value="${idx}" onclick="selecionarLinha(${idx})"></td>
             <td class="id-cell">${getIdCliente(c)}</td>
             <td class="editavel" data-campo="nome" data-idx="${idx}"><strong>${getVal(c, 'nome')}</strong></td>
@@ -230,10 +230,14 @@ async function salvarLinha(idx) {
         }
         campos[campo] = valor;
     });
-    const cliente = dadosClientes[idx] || {};
-    const id = getIdCliente(cliente);
-    const idLinha = cliente.idlinha || '';
-    if (!id || id === '-') {
+    const linha = document.getElementById('row-' + idx);
+    const idLinha = linha.getAttribute('data-id-linha');
+    const id = linha.getAttribute('data-id-cliente') || '';
+    if (!idLinha || idLinha === 'undefined' || idLinha === 'null') {
+        alert('❌ Esta linha ainda não tem ID único. Clique em "Atualizar", aguarde recarregar e tente de novo.');
+        return;
+    }
+    if (!id || id === '-' || id === 'undefined') {
         alert('❌ Não foi possível identificar o ID do cliente para salvar.');
         return;
     }
