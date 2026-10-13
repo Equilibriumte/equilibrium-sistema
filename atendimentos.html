@@ -65,10 +65,8 @@
             <a href="https://equilibriumte.com.br" style="color:#ffd700; font-weight:bold;">← Voltar ao site</a>
         </nav>
     </div>
-
     <div class="main-content">
         <h1 style="color: #4b0082; margin-bottom: 20px;">Ficha de Atendimento</h1>
-
         <div class="tabs-header">
             <button class="tab-btn active" onclick="showTab(0)">1. Dados</button>
             <button class="tab-btn" onclick="showTab(1)">2. Inicial</button>
@@ -76,10 +74,9 @@
             <button class="tab-btn" onclick="showTab(3)">4. Ambiente</button>
             <button class="tab-btn" onclick="showTab(4)">5. Busca</button>
             <button class="tab-btn" onclick="showTab(5)">6. Divórcio Energético</button>
+            <button class="tab-btn" onclick="showTab(6)">7. Pineal</button>
         </div>
-
         <form id="formAtendimento">
-
             <!-- ==================== TAB 1. DADOS ==================== -->
             <div class="tab-content active">
                 <div class="form-grid">
@@ -101,16 +98,13 @@
                     <button type="button" class="btn-action btn-next" onclick="showTab(1)">PRÓXIMO ➔</button>
                 </div>
             </div>
-
             <!-- ==================== TAB 2. INICIAL ==================== -->
             <div class="tab-content">
-                <!-- Linha superior: Bovis, Tamanho Aura, Proteção Aura (menores, lado a lado) -->
                 <div class="form-grid-3">
                     <div class="form-group"><label>Bovis</label><input type="number" id="bovis" placeholder="4 dígitos"></div>
                     <div class="form-group"><label>Tamanho Aura</label><input type="text" id="auraT" placeholder="Ex: 80%"></div>
                     <div class="form-group"><label>Proteção Aura</label><input type="text" id="protecaoAura" placeholder="Ex: 100%"></div>
                 </div>
-
                 <div class="section-title">🔮 Chakras (%)</div>
                 <div class="btn-grid">
                     <button type="button" class="color-btn c-coronario" onclick="setVal(this, 'v-coronario')">Coronário<span id="v-coronario">-</span></button>
@@ -121,12 +115,10 @@
                     <button type="button" class="color-btn c-sacro" onclick="setVal(this, 'v-sacro')">Sacro<span id="v-sacro">-</span></button>
                     <button type="button" class="color-btn c-basico" onclick="setVal(this, 'v-basico')">Básico<span id="v-basico">-</span></button>
                 </div>
-
                 <div class="form-grid" style="margin-top:15px;">
                     <div class="form-group"><label>Cores em Excesso</label><div id="coresExcesso" class="multi-select-container"></div></div>
                     <div class="form-group"><label>Cores em Falta</label><div id="coresFalta" class="multi-select-container"></div></div>
                 </div>
-
                 <div class="section-title">🌀 Campos (%)</div>
                 <div class="btn-grid">
                     <button type="button" class="color-btn d-mental" onclick="setVal(this, 'v-mental')">Mental<span id="v-mental">-</span></button>
@@ -134,39 +126,30 @@
                     <button type="button" class="color-btn d-espiritual" onclick="setVal(this, 'v-espiritual')">Espiritual<span id="v-espiritual">-</span></button>
                     <button type="button" class="color-btn d-fisico" onclick="setVal(this, 'v-fisico')">Físico<span id="v-fisico">-</span></button>
                 </div>
-
-                <!-- NOVO: Sistemas, Órgãos, Glândulas (multi-select) -->
                 <div class="section-title">🧬 Sistemas, Órgãos e Glândulas</div>
                 <div class="form-grid-3">
                     <div class="form-group"><label>Sistemas</label><div id="sistemas" class="multi-select-container"></div></div>
                     <div class="form-group"><label>Órgãos</label><div id="orgaos" class="multi-select-container"></div></div>
                     <div class="form-group"><label>Glândulas</label><div id="glandulas" class="multi-select-container"></div></div>
                 </div>
-
                 <div class="form-group full" style="margin-top:15px;"><label>Diagnóstico Inicial</label><textarea id="diagInicial" rows="3"></textarea></div>
-
                 <div class="nav-actions">
                     <button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button>
                     <button type="button" class="btn-action btn-next" onclick="showTab(2)">PRÓXIMO ➔</button>
                 </div>
             </div>
-
             <!-- ==================== TAB 3. ESPECÍFICO ==================== -->
             <div class="tab-content">
-                <!-- Renomeado: Queixa Específica → Observações -->
                 <label>Observações</label><textarea id="observacoes" rows="3"></textarea>
                 <label style="margin-top:15px;">Causa Raiz</label><textarea id="causaRaiz" rows="3"></textarea>
                 <label style="margin-top:15px;">Crenças</label><textarea id="crencas" rows="3"></textarea>
                 <label style="margin-top:15px;">Diagnóstico Específico</label><textarea id="diagEspec" rows="3"></textarea>
-                <!-- NOVO: Resultado / Depoimento -->
                 <label style="margin-top:15px;">Resultado / Depoimento</label><textarea id="resultDepoimento" rows="3"></textarea>
-
                 <div class="nav-actions">
                     <button type="button" class="btn-action btn-save" onclick="enviarDados()">SALVAR AGORA</button>
                     <button type="button" class="btn-action btn-next" onclick="showTab(3)">PRÓXIMO ➔</button>
                 </div>
             </div>
-
             <!-- ==================== TAB 4. AMBIENTE ==================== -->
             <div class="tab-content">
                 <div class="form-grid">
@@ -181,7 +164,6 @@
                     <button type="button" class="btn-action btn-next" onclick="showTab(4)">PRÓXIMO ➔</button>
                 </div>
             </div>
-
             <!-- ==================== TAB 5. BUSCA ==================== -->
             <div class="tab-content">
                 <div class="form-grid">
@@ -195,8 +177,7 @@
                     <button type="button" class="btn-action btn-next" onclick="showTab(5)">PRÓXIMO ➔</button>
                 </div>
             </div>
-
-            <!-- ==================== TAB 6. DIVÓRCIO ENERGÉTICO (NOVA) ==================== -->
+            <!-- ==================== TAB 6. DIVÓRCIO ENERGÉTICO ==================== -->
             <div class="tab-content">
                 <div class="form-grid">
                     <div class="form-group full"><label>Diagnóstico</label><textarea id="divorcioDiag" rows="3"></textarea></div>
@@ -205,17 +186,44 @@
                 </div>
                 <div class="nav-actions">
                     <button type="button" class="btn-action btn-save" onclick="enviarDados()">FINALIZAR E SALVAR</button>
+                    <button type="button" class="btn-action btn-next" onclick="showTab(6)">PRÓXIMO ➔</button>
                 </div>
             </div>
-
+            <!-- ==================== TAB 7. PINEAL ==================== -->
+            <div class="tab-content">
+                <div class="section-title" style="margin-top:0;">🧠 1. Vitalidade Física e Energética</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>% de desequilíbrio da Glândula Pineal</label><input type="number" id="pinealDeseq" min="0" max="100" placeholder="Ex: 35"></div>
+                    <div class="form-group"><label>Energia Bovis da Glândula Pineal</label><input type="number" id="pinealBovis" placeholder="Ex: 7260"></div>
+                    <div class="form-group full"><label>Gráfico</label><input type="text" id="pinealGrafVit" placeholder="Nome do gráfico"></div>
+                </div>
+                <div class="section-title">💎 2. Cristais de Apatita</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>% de integridade vibracional dos cristais de apatita</label><input type="number" id="pinealCristais" min="0" max="100" placeholder="Ex: 40"></div>
+                    <div class="form-group"><label>Gráfico</label><input type="text" id="pinealGrafCris" placeholder="Nome do gráfico"></div>
+                </div>
+                <div class="section-title">🌀 3. Conexão com os Chakras</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>% de conexão — Coronário</label><input type="number" id="pinealCoronario" min="0" max="100" placeholder="Ex: 25"></div>
+                    <div class="form-group"><label>% de conexão — Frontal</label><input type="number" id="pinealFrontal" min="0" max="100" placeholder="Ex: 40"></div>
+                    <div class="form-group"><label>% de conexão — Cardíaco</label><input type="number" id="pinealCardiaco" min="0" max="100" placeholder="Ex: 30"></div>
+                    <div class="form-group"><label>Gráfico</label><input type="text" id="pinealGrafChak" placeholder="Nome do gráfico"></div>
+                </div>
+                <div class="section-title">✨ 4. Alinhamento com o TODO</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>% de alinhamento da Glândula Pineal com o TODO</label><input type="number" id="pinealAlinh" min="0" max="100" placeholder="Ex: 25"></div>
+                    <div class="form-group"><label>Gráfico</label><input type="text" id="pinealGrafAli" placeholder="Nome do gráfico"></div>
+                </div>
+                <div class="nav-actions">
+                    <button type="button" class="btn-action btn-save" onclick="enviarDados()">FINALIZAR E SALVAR</button>
+                </div>
+            </div>
         </form>
     </div>
-
     <script>
         const URL_CLIENTES = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
         const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
         let listaGlobalClientes = [];
-
         function extrairNomeCliente(obj) {
             if (!obj) return '';
             const alvos = ['nome', 'cliente', 'nomecliente', 'nome_cliente', 'nome completo', 'nomecompleto'];
@@ -228,7 +236,6 @@
             }
             return '';
         }
-
         function extrairIdCliente(obj) {
             if (!obj) return '';
             const alvos = ['id', 'idcliente', 'clienteid', 'codigo', 'código'];
@@ -241,20 +248,18 @@
             }
             return '';
         }
-
-     async function gerarIdAtendimento() {
-    try {
-        const resp = await fetch(URL_ATEND + '?action=proximo_id_atendimento&_=' + new Date().getTime());
-        const json = await resp.json();
-        if (json && json.success && json.proximoId) {
-            document.getElementById('idAtendimento').value = json.proximoId;
-            return;
+        async function gerarIdAtendimento() {
+            try {
+                const resp = await fetch(URL_ATEND + '?action=proximo_id_atendimento&_=' + new Date().getTime());
+                const json = await resp.json();
+                if (json && json.success && json.proximoId) {
+                    document.getElementById('idAtendimento').value = json.proximoId;
+                    return;
+                }
+            } catch (e) { console.error('Erro ao gerar ID:', e); }
+            let id = localStorage.getItem('atualIdAtendimento') || 'ATEND-0000001';
+            document.getElementById('idAtendimento').value = id;
         }
-    } catch (e) { console.error('Erro ao gerar ID:', e); }
-    // Fallback: se falhar, usa o localStorage
-    let id = localStorage.getItem('atualIdAtendimento') || 'ATEND-0000001';
-    document.getElementById('idAtendimento').value = id;
-}
         function showTab(i) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -262,12 +267,10 @@
             document.querySelectorAll('.tab-btn')[i].classList.add('active');
             window.scrollTo(0,0);
         }
-
         function setVal(btn, id) {
             const v = prompt("Digite a %:");
             if (v) document.getElementById(id).innerText = v + "%";
         }
-
         async function carregarTudo() {
             try {
                 const resC = await fetch(URL_CLIENTES + "?_=" + new Date().getTime());
@@ -280,11 +283,9 @@
                     o.value = extrairNomeCliente(c);
                     dl.appendChild(o);
                 });
-
                 const resA = await fetch(URL_ATEND + '?action=configuracoes&_=' + new Date().getTime());
                 const jsonA = await resA.json();
                 const config = jsonA.configuracoes || {};
-
                 const fillS = (id, list) => {
                     const s = document.getElementById(id);
                     if(!s) return;
@@ -302,36 +303,27 @@
                         c.appendChild(l);
                     });
                 };
-
                 const findKey = (obj, target) => Object.keys(obj).find(k => k.toLowerCase() === target.toLowerCase());
-
                 fillM('coresExcesso', config[findKey(config, 'cores')], 'exc');
                 fillM('coresFalta', config[findKey(config, 'cores')], 'fal');
                 fillS('statusSelect', config[findKey(config, 'status')]);
                 fillS('tipoAmbiente', config[findKey(config, 'ambientes')]);
                 fillS('tipoBusca', config[findKey(config, 'buscaTipos')]);
                 fillS('resBusca', config[findKey(config, 'buscaResultados')]);
-
-                // NOVO: Carrega Sistemas, Órgãos e Glândulas da planilha (colunas G, H, I)
                 fillM('sistemas', config[findKey(config, 'sistemas')], 'sis');
-                // Tenta encontrar como 'órgãos' ou 'orgaos'
                 let orgaosKey = findKey(config, 'órgãos') || findKey(config, 'orgaos') || findKey(config, 'orgãos');
                 fillM('orgaos', config[orgaosKey], 'org');
                 let glandulasKey = findKey(config, 'glândulas') || findKey(config, 'glandulas');
                 fillM('glandulas', config[glandulasKey], 'gla');
-
             } catch (e) { console.error("Erro no carregamento:", e); }
         }
-
         document.getElementById('nomeCliente').oninput = (e) => {
             const digitado = e.target.value;
             const c = listaGlobalClientes.find(x => extrairNomeCliente(x) === digitado);
             if (c) document.getElementById('idCliente').value = extrairIdCliente(c);
         };
-
         async function enviarDados() {
             const getC = (n) => Array.from(document.querySelectorAll(`input[name="${n}"]:checked`)).map(cb => cb.value).join(", ");
-
             const p = {
                    'action': 'salvar_atendimento',
                 'ID Atendimento': document.getElementById('idAtendimento').value,
@@ -359,12 +351,10 @@
                 'Espiritual': document.getElementById('v-espiritual').innerText,
                 'Físico': document.getElementById('v-fisico').innerText,
                 'Diagnóstico Inicial': document.getElementById('diagInicial').value,
-                // Renomeado na interface, mas mantém a chave 'Queixa Espec.' para compatibilidade com a coluna existente
                 'Queixa Espec.': document.getElementById('observacoes').value,
                 'Causa Raiz': document.getElementById('causaRaiz').value,
                 'Crenças': document.getElementById('crencas').value,
                 'Diagnóstico Específico': document.getElementById('diagEspec').value,
-                // NOVO: Resultado / Depoimento
                 'Resultado/Depoimento': document.getElementById('resultDepoimento').value,
                 'Tipo Ambiente': document.getElementById('tipoAmbiente').value,
                 'Endereço Ambiente': document.getElementById('endAmbiente').value,
@@ -375,16 +365,25 @@
                 'Descrição Busca': document.getElementById('descBusca').value,
                 'Info Busca': document.getElementById('infoBusca').value,
                 'Resultado Busca': document.getElementById('resBusca').value,
-                // NOVO: Sistemas, Órgãos, Glândulas
                 'Sistemas': getC('sis'),
                 'Órgãos': getC('org'),
                 'Glândulas': getC('gla'),
-                // NOVO: Divórcio Energético
                 'Divórcio Energético Diagnóstico': document.getElementById('divorcioDiag').value,
                 'Divórcio Energético Tratamento': document.getElementById('divorcioTrat').value,
-                'Divórcio Energético Observação': document.getElementById('divorcioObs').value
+                'Divórcio Energético Observação': document.getElementById('divorcioObs').value,
+                // ===== NOVO: ANÁLISE DA PINEAL (aba 7) =====
+                'Pineal Desequilíbrio %': document.getElementById('pinealDeseq').value,
+                'Pineal Bovis': document.getElementById('pinealBovis').value,
+                'Pineal Gráfico Vitalidade': document.getElementById('pinealGrafVit').value,
+                'Pineal Cristais %': document.getElementById('pinealCristais').value,
+                'Pineal Gráfico Cristais': document.getElementById('pinealGrafCris').value,
+                'Pineal Coronário %': document.getElementById('pinealCoronario').value,
+                'Pineal Frontal %': document.getElementById('pinealFrontal').value,
+                'Pineal Cardíaco %': document.getElementById('pinealCardiaco').value,
+                'Pineal Gráfico Chakras': document.getElementById('pinealGrafChak').value,
+                'Pineal Alinhamento %': document.getElementById('pinealAlinh').value,
+                'Pineal Gráfico Alinhamento': document.getElementById('pinealGrafAli').value
             };
-
                  try {
             const resp = await fetch(URL_ATEND, {
                 method: 'POST',
