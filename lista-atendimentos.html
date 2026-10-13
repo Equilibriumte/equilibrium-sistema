@@ -67,12 +67,11 @@
  .btn-editar-selecionado { background:#4b0082; color:#fff; padding:11px 18px; border:none; border-radius:10px; cursor:pointer; font-size:14px; font-weight:600; transition:background 0.2s; }
 .btn-editar-selecionado:hover { background:#6a0dad; }
 .linha-selecionada { background:#f0e6fa !important; }
- /* Esconde a coluna ID Linha (última coluna) */
-#thead-row th:last-child,
-#tbody td:last-child:not(.empty) { display: none; }
+/* 🔧 CORRIGIDO: a regra que escondia a última coluna foi REMOVIDA.
+   O ID Linha agora é escondido pelo NOME no JavaScript (função renderizarTabela),
+   porque ao esconder pela posição ela passou a ocultar a última coluna da Pineal. */
 </style>
-</style>
- <link rel="stylesheet" href="responsivo.css">
+<link rel="stylesheet" href="responsivo.css">
 </head>
 <body>
     <div class="sidebar">
@@ -123,10 +122,15 @@
   const CAMPO_ID = 'ID Atendimento';
   let colunas = [];
   let dadosOriginais = [];
-
   // 🔧 Campos que devem aparecer como porcentagem (BOVIS não está aqui)
-  const CAMPOS_PORCENTAGEM = ['coronario', 'coronário', 'frontal', 'laringeo', 'laríngeo', 'cardiaco', 'cardíaco', 'umbilical', 'sacro', 'basico', 'básico', 'tamanho aura', 'tamanho_aura'];
-
+  // NOVO: incluídos os campos % da Pineal (proteção: se gravado como 0.65, exibe 65%)
+  const CAMPOS_PORCENTAGEM = ['coronario', 'coronário', 'frontal', 'laringeo', 'laríngeo', 'cardiaco', 'cardíaco', 'umbilical', 'sacro', 'basico', 'básico', 'tamanho aura', 'tamanho_aura', 'pineal desequilibrio %', 'pineal cristais %', 'pineal coronario %', 'pineal frontal %', 'pineal cardiaco %', 'pineal alinhamento %'];
+  // 🔧 NOVO: normaliza o nome da coluna (minúsculo, sem acento, sem espaço)
+  function normalizarColuna(nome) {
+    return String(nome || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '');
+  }
+  // 🔧 NOVO: colunas escondidas pelo NOME (não mais pela posição)
+  const COLUNAS_OCULTAS = ['idlinha'];
   // 🔧 Converte decimal (0.75) para porcentagem (75%) - só nos campos específicos
   function formatarValor(valor, nomeColuna) {
     if (valor === null || valor === undefined || valor === '' || valor === '-') return valor;
@@ -139,7 +143,6 @@
     }
     return valor;
   }
-
   async function carregar() {
     const status = document.getElementById('status');
     status.textContent = 'Carregando...';
@@ -175,11 +178,16 @@ const theadRow = document.getElementById('thead-row');
 const tbody = document.getElementById('tbody');
 theadRow.innerHTML = '';
 tbody.innerHTML = '';
+// 🔧 NOVO: filtra as colunas ocultas pelo NOME (ID Linha deixa de aparecer,
+// e a última coluna da Pineal — Gráfico Alinhamento — volta a ser exibida)
+const colunasVisiveis = colunas.filter(function(nome) {
+    return COLUNAS_OCULTAS.indexOf(normalizarColuna(nome)) === -1;
+});
 // Coluna de seleção
 const thSel = document.createElement('th');
 thSel.textContent = 'Sel.';
 theadRow.appendChild(thSel);
-colunas.forEach(function(nome, idx) {
+colunasVisiveis.forEach(function(nome, idx) {
 const th = document.createElement('th');
 th.textContent = nome;
 if (idx === 0) th.classList.add('col-fixed');
@@ -189,7 +197,7 @@ theadRow.appendChild(th);
 if (!dados || dados.length === 0) {
 const tr = document.createElement('tr');
 const td = document.createElement('td');
-td.colSpan = colunas.length + 1;
+td.colSpan = colunasVisiveis.length + 1;
 td.className = 'empty';
 td.textContent = 'Nenhum atendimento encontrado.';
 tr.appendChild(td);
@@ -205,7 +213,7 @@ tr.setAttribute('data-id-atendimento', (linha && typeof linha === 'object' && li
 const tdSel = document.createElement('td');
 tdSel.innerHTML = '<input type="radio" name="selAtendimento" value="' + i + '" onclick="selecionarLinha(' + i + ')">';
 tr.appendChild(tdSel);
-colunas.forEach(function(nomeCol, idx) {
+colunasVisiveis.forEach(function(nomeCol, idx) {
 const td = document.createElement('td');
 let valor = '';
 if (linha && typeof linha === 'object' && nomeCol in linha) {
@@ -242,7 +250,6 @@ tr.appendChild(td);
 tbody.appendChild(tr);
 });
 }
-
 // Seleciona uma linha (radio)
 function selecionarLinha(idx) {
 // Remove destaque de todas
@@ -295,10 +302,8 @@ function salvarLinha(idx) {
   inputs.forEach(function(inp) {
     campos[inp.dataset.campo] = inp.value.trim();
   });
-
   var idLinha = linha.getAttribute('data-id-linha');
   var idAtend = linha.getAttribute('data-id-atendimento') || '';
-
   if (!idLinha || idLinha === 'undefined' || idLinha === 'null') {
     alert('❌ Esta linha ainda não tem ID único. Clique em "Atualizar", aguarde recarregar e tente de novo.');
     return;
@@ -307,7 +312,6 @@ function salvarLinha(idx) {
     alert('❌ Erro: ID do atendimento não encontrado na linha.');
     return;
   }
-
   fetch(API_URL, {
     method: 'POST',
     body: JSON.stringify({
