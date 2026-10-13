@@ -27,75 +27,24 @@
         #msgErro { display: none; padding: 12px; background: #fde8e8; color: #c0392b; border-radius: 6px; margin-top: 10px; font-size: 14px; }
         #relatorioContainer { display: none; }
         .document-page { background: #fff; padding: 2px 20px; border-radius: 4px; box-shadow: 0 0 15px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto; }
-      .doc-header {
-text-align: center;
-border-bottom: 2px solid #4b0082;
-padding-bottom: 0;
-margin-bottom: 0;
-}
-.doc-header .header-inner {
-display: inline-flex;
-align-items: center;
-justify-content: center;
-gap: 40px;
-}
-.doc-header .logo-img {
-width: 158px;
-height: auto;
-filter: brightness(0.5) contrast(1.8);
-display: block;
-}
-.doc-header-text { text-align: left; }
-.doc-header-text h2 { font-size: 30px; color: #4b0082; margin: 0; }
-.doc-header-text p { font-size: 15px; color: #666; margin: 0; }
-.doc-header-text p:last-child { margin-bottom: 6px; }
+        .doc-header { text-align: center; border-bottom: 2px solid #4b0082; padding-bottom: 0; margin-bottom: 0; }
+        .doc-header .header-inner { display: inline-flex; align-items: center; justify-content: center; gap: 40px; }
+        .doc-header .logo-img { width: 158px; height: auto; filter: brightness(0.5) contrast(1.8); display: block; }
+        .doc-header-text { text-align: left; }
+        .doc-header-text h2 { font-size: 30px; color: #4b0082; margin: 0; }
+        .doc-header-text p { font-size: 15px; color: #666; margin: 0; }
+        .doc-header-text p:last-child { margin-bottom: 6px; }
         .doc-section { margin-bottom: 15px; }
-        .doc-section h3 { 
-            background: #f8f9fa; 
-            padding: 4px 12px; 
-            color: #4b0082; 
-            font-size: 16px; 
-            border-left: 4px solid #4b0082; 
-            margin-bottom: 10px; 
-            text-transform: uppercase; 
-        }
+        .doc-section h3 { background: #f8f9fa; padding: 4px 12px; color: #4b0082; font-size: 16px; border-left: 4px solid #4b0082; margin-bottom: 10px; text-transform: uppercase; }
         .data-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 20px; }
         .data-item { font-size: 14px; border-bottom: 1px solid #f0f0f0; padding: 5px 0; }
         .data-label { font-weight: 700; color: #555; margin-right: 8px; }
-        .atendimento-card { 
-            border: 1px solid #e0d4f0; 
-            border-radius: 8px; 
-            margin-bottom: 20px; 
-            overflow: hidden;
-        }
-        .atendimento-header {
-            background: #f7f2fc;
-            padding: 10px 15px;
-            font-weight: 600;
-            color: #4b0082;
-            border-bottom: 1px solid #e0d4f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .atendimento-header .atend-id {
-            font-size: 12px;
-            color: #888;
-            font-weight: 400;
-        }
+        .atendimento-card { border: 1px solid #e0d4f0; border-radius: 8px; margin-bottom: 20px; overflow: hidden; }
+        .atendimento-header { background: #f7f2fc; padding: 10px 15px; font-weight: 600; color: #4b0082; border-bottom: 1px solid #e0d4f0; display: flex; justify-content: space-between; align-items: center; }
+        .atendimento-header .atend-id { font-size: 12px; color: #888; font-weight: 400; }
         .atendimento-body { padding: 15px; }
-        .tratamento-item {
-            background: #fafafa;
-            border: 1px solid #eee;
-            border-radius: 6px;
-            padding: 12px 15px;
-            margin-bottom: 8px;
-        }
-        .tratamento-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 6px 15px;
-        }
+        .tratamento-item { background: #fafafa; border: 1px solid #eee; border-radius: 6px; padding: 12px 15px; margin-bottom: 8px; }
+        .tratamento-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 6px 15px; }
         .tratamento-item .data-item { border: none; padding: 3px 0; font-size: 13px; }
         .sem-dados { text-align: center; color: #999; padding: 20px; font-size: 14px; }
         .action-buttons { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; display: none; }
@@ -103,14 +52,14 @@ display: block;
         .btn-print { background: #4b0082; color: #fff; }
         .btn-refresh { background: #6c757d; color: #fff; }
         .btn:hover { opacity: .9; }
-        /* ===== NOVO: PINEAL - tabela e gráfico de progressão ===== */
-        .pineal-scroll { overflow-x: auto; margin-bottom: 15px; }
-        .pineal-table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 760px; }
-        .pineal-table th { background: #4b0082; color: #fff; padding: 8px 6px; text-align: left; font-size: 11px; text-transform: uppercase; }
-        .pineal-table td { padding: 8px 6px; border-bottom: 1px solid #eee; }
+        /* ===== PINEAL - tabela e gráfico de progressão (compacto) ===== */
+        .pineal-scroll { overflow-x: auto; margin-bottom: 12px; }
+        .pineal-table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 620px; }
+        .pineal-table th { background: #4b0082; color: #fff; padding: 5px 4px; text-align: left; font-size: 9px; text-transform: uppercase; }
+        .pineal-table td { padding: 5px 4px; border-bottom: 1px solid #eee; }
         .pineal-table tr:nth-child(even) td { background: #f8f4fc; }
-        .pineal-legend { font-size: 11px; color: #777; margin-top: 8px; }
-        .pineal-chart-box { border: 1px solid #e0d4f0; border-radius: 8px; padding: 15px; margin-top: 10px; height: 340px; }
+        .pineal-legend { font-size: 10px; color: #777; margin-top: 6px; }
+        .pineal-chart-box { border: 1px solid #e0d4f0; border-radius: 8px; padding: 10px; margin-top: 8px; height: 280px; }
 @media print {
 .sidebar, .card, .action-buttons, .header { display: none !important; }
 .main { margin-left: 0; padding: 0; }
@@ -121,9 +70,12 @@ body { background: #fff; }
 .doc-header-text h2 { font-size: 22px !important; }
 .doc-header-text p { font-size: 13px !important; }
 .doc-section h3 { background: #eee !important; -webkit-print-color-adjust: exact; }
-.pineal-table th { background: #4b0082 !important; -webkit-print-color-adjust: exact; }
+.pineal-scroll { overflow: visible !important; }
+.pineal-table { min-width: 0 !important; font-size: 9px !important; }
+.pineal-table th { font-size: 8px !important; padding: 4px 3px !important; -webkit-print-color-adjust: exact; }
+.pineal-table td { padding: 4px 3px !important; }
 .pineal-table tr:nth-child(even) td { background: #f8f4fc !important; -webkit-print-color-adjust: exact; }
-.pineal-chart-box { height: 300px !important; page-break-inside: avoid; }
+.pineal-chart-box { height: 230px !important; page-break-inside: avoid; }
 }
     </style>
     <link rel="stylesheet" href="responsivo.css">
@@ -269,7 +221,7 @@ function formatarData(valor) {
     }
     return valor;
 }
-// 🔧 Só converte para % os campos de chakras e aura (BOVIS fica como está)
+// Só converte para % os campos de chakras e aura (BOVIS fica como está)
 const CAMPOS_PORCENTAGEM = ['coronario', 'coronário', 'frontal', 'laringeo', 'laríngeo', 'cardiaco', 'cardíaco', 'umbilical', 'sacro', 'basico', 'básico', 'tamanho aura', 'tamanho_aura'];
 function formatarValor(valor, nomeCampo) {
     if (valor === null || valor === undefined || valor === '' || valor === '-') return valor;
@@ -285,7 +237,7 @@ function formatarLabel(str) {
     return str.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 }
 // =====================================================================
-// NOVO: HELPERS DA PROGRESSÃO DA PINEAL
+// HELPERS DA PROGRESSÃO DA PINEAL
 // =====================================================================
 function _pNorm(k) { return String(k || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ''); }
 function _pVal(obj, alvo) {
@@ -386,7 +338,7 @@ function renderizarRelatorio(data, nomeCliente) {
                 'observacoes': 'Observações',
                 'observações': 'Observações',
                 'obs': 'Observações',
-                // NOVO: rótulos das colunas da Pineal
+                // Rótulos das colunas da Pineal
                 'pineal desequilibrio %': 'Pineal — Desequilíbrio %',
                 'pineal bovis': 'Pineal — Bovis',
                 'pineal grafico vitalidade': 'Pineal — Gráfico (Vitalidade)',
@@ -444,7 +396,7 @@ function renderizarRelatorio(data, nomeCliente) {
         html += '<div class="doc-section"><h3>2. Atendimentos</h3><p class="sem-dados">Nenhum atendimento encontrado para este cliente.</p></div>';
     }
     // =================================================================
-    // NOVO: 3. PROGRESSÃO DA ANÁLISE DA PINEAL (só aparece se houver sessões)
+    // 3. PROGRESSÃO DA ANÁLISE DA PINEAL (só aparece se houver sessões)
     // =================================================================
     let sessoesPineal = (data.atendimentos || []).filter(a => {
         const d = _pVal(a, 'Pineal Desequilíbrio %');
@@ -454,9 +406,9 @@ function renderizarRelatorio(data, nomeCliente) {
         sessoesPineal.sort((a, b) => String(_pVal(a, 'Data do Atendimento')).localeCompare(String(_pVal(b, 'Data do Atendimento'))));
         html += '<div class="doc-section"><h3>3. Progressão da Análise da Pineal</h3>';
         html += '<div class="pineal-scroll"><table class="pineal-table"><thead><tr>' +
-            '<th>Sessão</th><th>Data</th><th>Atendimento</th><th>Desequil. %</th><th>Bovis</th>' +
-            '<th>Cristais %</th><th>Coronário %</th><th>Frontal %</th><th>Cardíaco %</th>' +
-            '<th>Alinhamento %</th><th>Gráficos</th>' +
+            '<th>Sessão</th><th>Data</th><th>ATEND</th><th>DESEQ %</th><th>Bovis</th>' +
+            '<th>CRIS %</th><th>CORO %</th><th>FRONT %</th><th>CARD %</th>' +
+            '<th>ALINH %</th><th>Gráficos</th>' +
             '</tr></thead><tbody>';
         let deseqAnterior = null;
         sessoesPineal.forEach((a, i) => {
@@ -505,7 +457,8 @@ function renderizarRelatorio(data, nomeCliente) {
 function desenharGraficoPineal(sessoes) {
     const labels = [], deseq = [], cristais = [], alinh = [], chakras = [], bovis = [];
     sessoes.forEach((a, i) => {
-        labels.push('Sessão ' + (i + 1));
+        // Eixo X com as DATAS das sessões (formato brasileiro)
+        labels.push(_pDataBR(_pVal(a, 'Data do Atendimento')));
         deseq.push(_pNum(_pVal(a, 'Pineal Desequilíbrio %')));
         cristais.push(_pNum(_pVal(a, 'Pineal Cristais %')));
         alinh.push(_pNum(_pVal(a, 'Pineal Alinhamento %')));
@@ -534,6 +487,7 @@ function desenharGraficoPineal(sessoes) {
                 legend: { position: 'bottom' }
             },
             scales: {
+                x: { ticks: { maxRotation: 45, minRotation: 0, font: { size: 10 } } },
                 y: { beginAtZero: true, max: 100, position: 'left', title: { display: true, text: '%' } },
                 yBovis: { beginAtZero: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Bovis' } }
             }
