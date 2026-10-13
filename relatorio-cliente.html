@@ -103,6 +103,14 @@ display: block;
         .btn-print { background: #4b0082; color: #fff; }
         .btn-refresh { background: #6c757d; color: #fff; }
         .btn:hover { opacity: .9; }
+        /* ===== NOVO: PINEAL - tabela e gráfico de progressão ===== */
+        .pineal-scroll { overflow-x: auto; margin-bottom: 15px; }
+        .pineal-table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 760px; }
+        .pineal-table th { background: #4b0082; color: #fff; padding: 8px 6px; text-align: left; font-size: 11px; text-transform: uppercase; }
+        .pineal-table td { padding: 8px 6px; border-bottom: 1px solid #eee; }
+        .pineal-table tr:nth-child(even) td { background: #f8f4fc; }
+        .pineal-legend { font-size: 11px; color: #777; margin-top: 8px; }
+        .pineal-chart-box { border: 1px solid #e0d4f0; border-radius: 8px; padding: 15px; margin-top: 10px; height: 340px; }
 @media print {
 .sidebar, .card, .action-buttons, .header { display: none !important; }
 .main { margin-left: 0; padding: 0; }
@@ -113,6 +121,9 @@ body { background: #fff; }
 .doc-header-text h2 { font-size: 22px !important; }
 .doc-header-text p { font-size: 13px !important; }
 .doc-section h3 { background: #eee !important; -webkit-print-color-adjust: exact; }
+.pineal-table th { background: #4b0082 !important; -webkit-print-color-adjust: exact; }
+.pineal-table tr:nth-child(even) td { background: #f8f4fc !important; -webkit-print-color-adjust: exact; }
+.pineal-chart-box { height: 300px !important; page-break-inside: avoid; }
 }
     </style>
     <link rel="stylesheet" href="responsivo.css">
@@ -170,6 +181,7 @@ body { background: #fff; }
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 const URL_ATEND = 'https://script.google.com/macros/s/AKfycbx-uKmdoSwoTelfZsl_Mjx0dCOE2uVdowAOyg9L0u23te_g7getcZAhKMtrRQ5f3pi0/exec';
 let clientes = [];
@@ -257,13 +269,10 @@ function formatarData(valor) {
     }
     return valor;
 }
-
 // 🔧 Só converte para % os campos de chakras e aura (BOVIS fica como está)
 const CAMPOS_PORCENTAGEM = ['coronario', 'coronário', 'frontal', 'laringeo', 'laríngeo', 'cardiaco', 'cardíaco', 'umbilical', 'sacro', 'basico', 'básico', 'tamanho aura', 'tamanho_aura'];
-
 function formatarValor(valor, nomeCampo) {
     if (valor === null || valor === undefined || valor === '' || valor === '-') return valor;
-    // Só converte se for um campo de porcentagem
     if (nomeCampo && CAMPOS_PORCENTAGEM.includes(nomeCampo)) {
         let num = typeof valor === 'number' ? valor : parseFloat(String(valor).replace(',', '.'));
         if (!isNaN(num) && num > 0 && num < 1) {
@@ -272,9 +281,31 @@ function formatarValor(valor, nomeCampo) {
     }
     return valor;
 }
-
 function formatarLabel(str) {
     return str.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+}
+// =====================================================================
+// NOVO: HELPERS DA PROGRESSÃO DA PINEAL
+// =====================================================================
+function _pNorm(k) { return String(k || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ''); }
+function _pVal(obj, alvo) {
+    const t = _pNorm(alvo);
+    for (let k in obj) { if (_pNorm(k) === t) return obj[k]; }
+    return '';
+}
+function _pDataBR(v) {
+    let s = String(v || '');
+    if (!s || s === '-') return '-';
+    if (s.includes('T')) s = s.split('T')[0];
+    if (s.includes('-')) {
+        const p = s.split('-');
+        if (p[0].length === 4) return p[2] + '/' + p[1] + '/' + p[0];
+    }
+    return s;
+}
+function _pNum(v) {
+    const n = parseFloat(String(v === null || v === undefined ? '' : v).replace(',', '.').replace('%', ''));
+    return isNaN(n) ? 0 : n;
 }
 function renderizarRelatorio(data, nomeCliente) {
     const container = document.getElementById('conteudoRelatorio');
@@ -285,7 +316,6 @@ function renderizarRelatorio(data, nomeCliente) {
         return;
     }
     let html = '';
-    // Logo no início, depois de verificar se data.cliente existe
     html += '<p style="font-size:18px;font-weight:600;color:#4b0082;margin-bottom:15px;">Cliente: ' + nomeCliente + '</p>';
     // 1. DADOS CADASTRAIS
     html += '<div class="doc-section"><h3>1. Dados Cadastrais</h3><div class="data-grid">';
@@ -355,7 +385,19 @@ function renderizarRelatorio(data, nomeCliente) {
                 'tamanho_aura': 'Tamanho Aura',
                 'observacoes': 'Observações',
                 'observações': 'Observações',
-                'obs': 'Observações'
+                'obs': 'Observações',
+                // NOVO: rótulos das colunas da Pineal
+                'pineal desequilibrio %': 'Pineal — Desequilíbrio %',
+                'pineal bovis': 'Pineal — Bovis',
+                'pineal grafico vitalidade': 'Pineal — Gráfico (Vitalidade)',
+                'pineal cristais %': 'Pineal — Cristais %',
+                'pineal grafico cristais': 'Pineal — Gráfico (Cristais)',
+                'pineal coronario %': 'Pineal — Coronário %',
+                'pineal frontal %': 'Pineal — Frontal %',
+                'pineal cardiaco %': 'Pineal — Cardíaco %',
+                'pineal grafico chakras': 'Pineal — Gráfico (Chakras)',
+                'pineal alinhamento %': 'Pineal — Alinhamento %',
+                'pineal grafico alinhamento': 'Pineal — Gráfico (Alinhamento)'
             };
             const atNorm = {};
             for (let k in at) {
@@ -369,7 +411,6 @@ function renderizarRelatorio(data, nomeCliente) {
                 if (!val || val === '' || val === '-' || val === null || val === undefined) continue;
                 let label = mapaLabels[chaveSemAcento] || formatarLabel(chaveSemAcento);
                 if (chaveSemAcento.includes('data')) val = formatarData(val);
-                // 🔧 Aplica formatação de porcentagem apenas nos campos de chakras/aura
                 val = formatarValor(val, chaveSemAcento);
                 htmlAt += '<div class="data-item"><span class="data-label">' + label + ':</span> ' + val + '</div>';
             }
@@ -402,9 +443,102 @@ function renderizarRelatorio(data, nomeCliente) {
     } else {
         html += '<div class="doc-section"><h3>2. Atendimentos</h3><p class="sem-dados">Nenhum atendimento encontrado para este cliente.</p></div>';
     }
+    // =================================================================
+    // NOVO: 3. PROGRESSÃO DA ANÁLISE DA PINEAL (só aparece se houver sessões)
+    // =================================================================
+    let sessoesPineal = (data.atendimentos || []).filter(a => {
+        const d = _pVal(a, 'Pineal Desequilíbrio %');
+        return d !== '' && d !== '-' && d !== null && d !== undefined;
+    });
+    if (sessoesPineal.length > 0) {
+        sessoesPineal.sort((a, b) => String(_pVal(a, 'Data do Atendimento')).localeCompare(String(_pVal(b, 'Data do Atendimento'))));
+        html += '<div class="doc-section"><h3>3. Progressão da Análise da Pineal</h3>';
+        html += '<div class="pineal-scroll"><table class="pineal-table"><thead><tr>' +
+            '<th>Sessão</th><th>Data</th><th>Atendimento</th><th>Desequil. %</th><th>Bovis</th>' +
+            '<th>Cristais %</th><th>Coronário %</th><th>Frontal %</th><th>Cardíaco %</th>' +
+            '<th>Alinhamento %</th><th>Gráficos</th>' +
+            '</tr></thead><tbody>';
+        let deseqAnterior = null;
+        sessoesPineal.forEach((a, i) => {
+            const d = _pNum(_pVal(a, 'Pineal Desequilíbrio %'));
+            const bovis = _pVal(a, 'Pineal Bovis');
+            const c = _pNum(_pVal(a, 'Pineal Cristais %'));
+            const co = _pNum(_pVal(a, 'Pineal Coronário %'));
+            const fr = _pNum(_pVal(a, 'Pineal Frontal %'));
+            const ca = _pNum(_pVal(a, 'Pineal Cardíaco %'));
+            const al = _pNum(_pVal(a, 'Pineal Alinhamento %'));
+            let seta = '';
+            if (deseqAnterior !== null) {
+                if (d < deseqAnterior) seta = ' <span style="color:#2e7d32;font-weight:bold;">▼</span>';
+                else if (d > deseqAnterior) seta = ' <span style="color:#d32f2f;font-weight:bold;">▲</span>';
+            }
+            deseqAnterior = d;
+            const graficos = [_pVal(a, 'Pineal Gráfico Vitalidade'), _pVal(a, 'Pineal Gráfico Cristais'), _pVal(a, 'Pineal Gráfico Chakras'), _pVal(a, 'Pineal Gráfico Alinhamento')]
+                .filter(g => g && g !== '-' && g !== '').join(', ');
+            html += '<tr>' +
+                '<td><strong>Sessão ' + (i + 1) + '</strong></td>' +
+                '<td>' + _pDataBR(_pVal(a, 'Data do Atendimento')) + '</td>' +
+                '<td>' + (_pVal(a, 'ID Atendimento') || '-') + '</td>' +
+                '<td><strong>' + d + '%</strong>' + seta + '</td>' +
+                '<td>' + (bovis || '-') + '</td>' +
+                '<td>' + c + '%</td>' +
+                '<td>' + co + '%</td>' +
+                '<td>' + fr + '%</td>' +
+                '<td>' + ca + '%</td>' +
+                '<td>' + al + '%</td>' +
+                '<td>' + (graficos || '-') + '</td>' +
+                '</tr>';
+        });
+        html += '</tbody></table></div>';
+        html += '<div class="pineal-chart-box"><canvas id="graficoPineal"></canvas></div>';
+        html += '<p class="pineal-legend">Desequilíbrio: quanto menor, melhor (▼ melhora). Demais indicadores: quanto maior, melhor. Bovis no eixo direito.</p>';
+        html += '</div>';
+    }
     container.innerHTML = html;
     document.getElementById('relatorioContainer').style.display = 'block';
     document.getElementById('btnContainer').style.display = 'flex';
+    // Desenha o gráfico DEPOIS que o HTML está na página
+    if (sessoesPineal.length > 0) {
+        desenharGraficoPineal(sessoesPineal);
+    }
+}
+function desenharGraficoPineal(sessoes) {
+    const labels = [], deseq = [], cristais = [], alinh = [], chakras = [], bovis = [];
+    sessoes.forEach((a, i) => {
+        labels.push('Sessão ' + (i + 1));
+        deseq.push(_pNum(_pVal(a, 'Pineal Desequilíbrio %')));
+        cristais.push(_pNum(_pVal(a, 'Pineal Cristais %')));
+        alinh.push(_pNum(_pVal(a, 'Pineal Alinhamento %')));
+        chakras.push(Math.round((_pNum(_pVal(a, 'Pineal Coronário %')) + _pNum(_pVal(a, 'Pineal Frontal %')) + _pNum(_pVal(a, 'Pineal Cardíaco %'))) / 3));
+        bovis.push(_pNum(_pVal(a, 'Pineal Bovis')));
+    });
+    if (window.graficoPinealChart) window.graficoPinealChart.destroy();
+    const ctx = document.getElementById('graficoPineal').getContext('2d');
+    window.graficoPinealChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                { label: 'Desequilíbrio %', data: deseq, borderColor: '#d32f2f', backgroundColor: '#d32f2f', tension: 0.3, fill: false },
+                { label: 'Cristais %', data: cristais, borderColor: '#6a0dad', backgroundColor: '#6a0dad', tension: 0.3, fill: false },
+                { label: 'Alinhamento %', data: alinh, borderColor: '#b8860b', backgroundColor: '#b8860b', tension: 0.3, fill: false },
+                { label: 'Conexão média c/ chakras', data: chakras, borderColor: '#2e7d32', backgroundColor: '#2e7d32', tension: 0.3, fill: false },
+                { label: 'Bovis', data: bovis, borderColor: '#1976d2', backgroundColor: '#1976d2', borderDash: [6, 4], tension: 0.3, fill: false, yAxisID: 'yBovis' }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: { display: true, text: 'Evolução da Glândula Pineal ao longo das sessões', color: '#4b0082', font: { weight: 'bold' } },
+                legend: { position: 'bottom' }
+            },
+            scales: {
+                y: { beginAtZero: true, max: 100, position: 'left', title: { display: true, text: '%' } },
+                yBovis: { beginAtZero: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Bovis' } }
+            }
+        }
+    });
 }
 </script>
     <script src="js/menu.js"></script>
