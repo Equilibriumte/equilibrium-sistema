@@ -458,7 +458,7 @@ function renderizarRelatorio(data, nomeCliente) {
         desenharGraficoPineal(sessoesPineal);
     }
 }
-// Gráfico pequeno do Bovis (barras) - vem ANTES do principal
+// Gráfico pequeno do Bovis - MESMO FORMATO do principal (linha, mais compacto)
 function desenharGraficoBovis(sessoes) {
     const labels = [], bovis = [];
     sessoes.forEach(a => {
@@ -468,10 +468,10 @@ function desenharGraficoBovis(sessoes) {
     if (window.graficoBovisChart) window.graficoBovisChart.destroy();
     const ctx = document.getElementById('graficoBovis').getContext('2d');
     window.graficoBovisChart = new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: {
             labels: labels,
-            datasets: [{ label: 'Bovis', data: bovis, backgroundColor: '#1976d2', borderRadius: 4 }]
+            datasets: [{ label: 'Bovis', data: bovis, borderColor: '#1976d2', backgroundColor: '#1976d2', tension: 0.3, fill: false }]
         },
         options: {
             responsive: true,
@@ -487,7 +487,8 @@ function desenharGraficoBovis(sessoes) {
         }
     });
 }
-// Gráfico principal: CADA CHAKRA com sua linha própria (sem média)
+// Gráfico principal: cada chakra com linha própria, na ORDEM DE PREENCHIMENTO
+// (Desequilíbrio → Cristais → Coronário → Frontal → Cardíaco → Alinhamento por último)
 function desenharGraficoPineal(sessoes) {
     const labels = [], deseq = [], cristais = [], alinh = [], coro = [], front = [], card = [];
     sessoes.forEach(a => {
@@ -508,10 +509,10 @@ function desenharGraficoPineal(sessoes) {
             datasets: [
                 { label: 'Desequilíbrio %', data: deseq, borderColor: '#d32f2f', backgroundColor: '#d32f2f', tension: 0.3, fill: false },
                 { label: 'Cristais %', data: cristais, borderColor: '#6a0dad', backgroundColor: '#6a0dad', tension: 0.3, fill: false },
-                { label: 'Alinhamento %', data: alinh, borderColor: '#b8860b', backgroundColor: '#b8860b', tension: 0.3, fill: false },
                 { label: 'Coronário %', data: coro, borderColor: '#e91e63', backgroundColor: '#e91e63', tension: 0.3, fill: false },
                 { label: 'Frontal %', data: front, borderColor: '#1976d2', backgroundColor: '#1976d2', tension: 0.3, fill: false },
-                { label: 'Cardíaco %', data: card, borderColor: '#2e7d32', backgroundColor: '#2e7d32', tension: 0.3, fill: false }
+                { label: 'Cardíaco %', data: card, borderColor: '#2e7d32', backgroundColor: '#2e7d32', tension: 0.3, fill: false },
+                { label: 'Alinhamento %', data: alinh, borderColor: '#b8860b', backgroundColor: '#b8860b', tension: 0.3, fill: false }
             ]
         },
         options: {
